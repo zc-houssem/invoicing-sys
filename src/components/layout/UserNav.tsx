@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { identifyUser, identifyUserAvatar } from '@/lib/user';
 import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
 import { signOut } from 'next-auth/react';
+import { useAuthPersistStore } from '@/hooks/stores/useAuthPersistStore';
 
 interface UserNavProps {
   className?: string;
@@ -27,6 +28,7 @@ export function UserNav({ className }: UserNavProps) {
   const { t } = useTranslation('common');
   const router = useRouter();
   const { user } = useCurrentUser();
+  const authPersistStore = useAuthPersistStore();
 
   const identity = React.useMemo(() => identifyUser(user), [user]);
   const avatarIdentity = React.useMemo(() => identifyUserAvatar(user), [user]);
@@ -39,6 +41,7 @@ export function UserNav({ className }: UserNavProps) {
   // });
 
   const handleSignOut = async () => {
+    authPersistStore.logout();
     await signOut({ callbackUrl: '/auth' });
   };
 
