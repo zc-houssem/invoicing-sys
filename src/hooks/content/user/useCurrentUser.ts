@@ -2,15 +2,19 @@ import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
 
-export const useCurrentUser = (enabled: boolean = true) => {
+interface useCurrentUserProps {
+  enabled?: boolean;
+}
+
+export const useCurrentUser = ({ enabled }: useCurrentUserProps = { enabled: true }) => {
   const {
     data: userResp,
     isFetching: isFetchUserPending,
     refetch: refetchUser
   } = useQuery({
     queryKey: ['current-user'],
-    queryFn: () => api.user.findById(api.auth.getCurrentUserId()),
-    enabled: typeof localStorage != 'undefined' && enabled
+    queryFn: () => api.user.findCurrent(),
+    enabled
   });
 
   const user = React.useMemo(() => {
