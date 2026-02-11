@@ -10,12 +10,14 @@ export function AuthTokenSync() {
   const session = rawSession as Session;
 
   React.useEffect(() => {
-    if (session?.user?.access_token && session?.user?.refresh_token) {
+    if (status === 'authenticated' && session?.user?.access_token && session?.user?.refresh_token) {
       authPersistStore.setAccessToken(session.user.access_token);
       authPersistStore.setRefreshToken(session.user.refresh_token);
       authPersistStore.setAuthenticated(true);
+    } else if (status === 'unauthenticated' && authPersistStore.isAuthenticated) {
+      authPersistStore.logout();
     }
-  }, [session, status, authPersistStore.isAuthenticated]);
+  }, [session, status, authPersistStore.isAuthenticated, authPersistStore.logout]);
 
   return null;
 }

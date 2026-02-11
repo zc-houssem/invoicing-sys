@@ -1,6 +1,5 @@
-import { create } from "zustand";
-import { signOut } from "next-auth/react";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface AuthPersistData {
   accessToken: string;
@@ -16,17 +15,17 @@ interface AuthPersistStore extends AuthPersistData {
 }
 
 const authPersistStore: AuthPersistData = {
-  accessToken: "",
-  refreshToken: "",
-  isAuthenticated: false,
+  accessToken: '',
+  refreshToken: '',
+  isAuthenticated: false
 };
 
-const isClient = typeof window !== "undefined";
+const isClient = typeof window !== 'undefined';
 
 const fallbackStorage = {
   getItem: () => null,
   setItem: () => {},
-  removeItem: () => {},
+  removeItem: () => {}
 };
 
 export const useAuthPersistStore = create(
@@ -37,17 +36,12 @@ export const useAuthPersistStore = create(
       setRefreshToken: (token: string) => set({ refreshToken: token }),
       setAuthenticated: (isAuth: boolean) => set({ isAuthenticated: isAuth }),
       logout: () => {
-        set(authPersistStore);
-        if (typeof window !== "undefined") {
-          signOut();
-        }
-      },
+        set({ ...authPersistStore });
+      }
     }),
     {
-      name: "auth-storage",
-      storage: createJSONStorage(() =>
-        isClient ? localStorage : fallbackStorage,
-      ),
-    },
-  ),
+      name: 'auth-storage',
+      storage: createJSONStorage(() => (isClient ? localStorage : fallbackStorage))
+    }
+  )
 );
