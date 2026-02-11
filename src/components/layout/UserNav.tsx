@@ -17,6 +17,7 @@ import { api } from '@/api';
 import { useTranslation } from 'react-i18next';
 import { identifyUser, identifyUserAvatar } from '@/lib/user';
 import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
+import { signOut } from 'next-auth/react';
 
 interface UserNavProps {
   className?: string;
@@ -38,7 +39,7 @@ export function UserNav({ className }: UserNavProps) {
   // });
 
   const handleSignOut = async () => {
-    // await signOut({ callbackUrl: '/auth' });
+    await signOut({ callbackUrl: '/auth' });
   };
 
   return (

@@ -41,7 +41,7 @@ export interface UserPreferences {
 }
 
 export interface ResponseUserDto {
-  id?: number;
+  id: string;
   username?: string;
   firstName?: string;
   lastName?: string;
@@ -51,5 +51,6 @@ export interface ResponseUserDto {
   roleId?: number;
   picture?: Upload;
   pictureId?: number;
-  isActive?: string;
+  isActive?: boolean;
+  isApproved?: boolean;
 }
