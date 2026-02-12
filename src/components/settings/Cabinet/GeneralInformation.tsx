@@ -151,7 +151,7 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                         <SelectContent>
                           {countries?.map((country) => (
                             <SelectItem key={country.id} value={country?.id?.toString() || ''}>
-                              {country?.alpha2code && tCountry(country?.alpha2code)}
+                              {country?.alpha2Code && tCountry(country?.alpha2Code)}
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -2,6 +2,6 @@ import { DatabaseEntity } from './response/DatabaseEntity';
 
 export interface Country extends DatabaseEntity {
   id?: number;
-  alpha2code?: string;
-  alpha3code?: string;
+  alpha2Code?: string;
+  alpha3Code?: string;
 }

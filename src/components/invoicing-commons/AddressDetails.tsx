@@ -58,7 +58,7 @@ export const AddressDetails: React.FC<AddressDetailsProps> = ({
               <Label>
                 {tContacts('common.address.country')}:{' '}
                 <span className="font-light">
-                  {address?.country?.alpha2code && tCountry(address?.country?.alpha2code)}
+                  {address?.country?.alpha2Code && tCountry(address?.country?.alpha2Code)}
                 </span>
               </Label>
             )}
