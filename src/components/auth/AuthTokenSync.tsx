@@ -2,6 +2,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import { useAuthPersistStore } from '@/hooks/stores/useAuthPersistStore';
 import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 
 export function AuthTokenSync() {
   const { data: rawSession, status } = useSession();
@@ -16,6 +17,7 @@ export function AuthTokenSync() {
       authPersistStore.setAuthenticated(true);
     } else if (status === 'unauthenticated' && authPersistStore.isAuthenticated) {
       authPersistStore.logout();
+      signOut({ callbackUrl: '/auth' });
     }
   }, [session, status, authPersistStore.isAuthenticated, authPersistStore.logout]);
 
