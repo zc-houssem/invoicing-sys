@@ -39,7 +39,7 @@ export function DataTablePagination<TData>({
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center justify-center text-xs font-medium">
-          {t('common.table.page')} {context.page} {t('common.table.of')} {context.totalPageCount}
+          {t('datatable.paginationPhrase', { page: context.page, total: context.totalPageCount })}
         </div>
         <div className="flex items-center space-x-2">
           <Button

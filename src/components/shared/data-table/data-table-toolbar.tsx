@@ -28,7 +28,7 @@ export function DataTableToolbar<TData>({ table, context }: DataTableToolbarProp
         />
         {context.searchTerm && (
           <Button variant="ghost" onClick={() => context?.setSearchTerm?.('')}>
-            {t('common.buttons.reset')}
+            {t('commands.reset')}
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>({ table, context }: DataTableToolbarProp
       {context.createCallback && (
         <Button onClick={() => context.createCallback?.()}>
           <Plus className="h-4 w-4" />
-          {t('common.buttons.new')} {context.singularName}
+          {t('commands.new')} {context.singularName}
         </Button>
       )}
     </div>

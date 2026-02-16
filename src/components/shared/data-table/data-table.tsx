@@ -135,7 +135,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   <div className="flex items-center justify-center gap-2 font-bold">
-                    {t('common.table.noResults')} <PackageOpen />
+                    {t('datatable.noResults')} <PackageOpen />
                   </div>
                 </TableCell>
               </TableRow>
@@ -143,7 +143,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center ">
                   <div className="flex items-center justify-center gap-2 font-bold">
-                    {t('common.table.loading')} <Spinner />
+                    {t('table.loading')} <Spinner />
                   </div>
                 </TableCell>
               </TableRow>

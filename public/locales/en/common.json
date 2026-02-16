@@ -43,6 +43,7 @@
     "to_invoice": "To Invoice",
     "inspect": "Inspect",
     "modify": "Modify",
+    "new": "New",
     "reject": "Reject",
     "resend": "Resend",
     "save": "Save",
@@ -157,5 +158,10 @@
     "main_m": "Main",
     "main_f": "Main",
     "or": "or"
+  },
+  "datatable": {
+    "paginationPhrase": "Showing Page {{page}} of {{total}}",
+    "search": "Search {{entity}}...",
+    "noResults": "No results"
   }
 }

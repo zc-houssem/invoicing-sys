@@ -21,7 +21,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
           <Eye />
-          {t('common.buttons.display')}
+          {t('commands.display')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">

@@ -43,6 +43,7 @@
     "to_invoice": "Facturer",
     "inspect": "Inspecter",
     "modify": "Modifier",
+    "new": "Nouveau",
     "reject": "Rejeter",
     "resend": "Renvoyer",
     "save": "Enregistrer",
@@ -154,5 +155,10 @@
     "main_m": "Principal",
     "main_f": "Principale",
     "or": "ou"
+  },
+  "datatable": {
+    "paginationPhrase": "Affichage de la page {{page}} sur {{total}}",
+    "search": "Rechercher {{entity}}...",
+    "noResults": "Aucun résultat"
   }
 }
