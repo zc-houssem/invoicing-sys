@@ -8,28 +8,36 @@ import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
 import { FirmDeleteDialog } from './dialogs/FirmDeleteDialog';
 import { useFirmManager } from '@/components/contacts/firm/hooks/useFirmManager';
-import { DataTable } from './data-table/data-table';
-import { FirmActionsContext } from './data-table/ActionsContext';
-import { getFirmColumns } from './data-table/columns';
+import { useFirmColumns } from './columns';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useIntro } from '@/context/IntroContext';
+import { cn } from '@/lib/utils';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { Firm } from '@/types';
 
-interface FirmMainProps {
+interface FirmPortalProps {
   className?: string;
 }
 
-export const FirmMain: React.FC<FirmMainProps> = ({ className }) => {
+export const FirmPortal = ({ className }: FirmPortalProps) => {
   const router = useRouter();
 
-  const { setRoutes } = useBreadcrumb();
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
-  const { t: tCurrency } = useTranslation('currency');
+  const { setIntro, clearIntro } = useIntro();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
 
   React.useEffect(() => {
+    setIntro?.(tCommon('routes.contacts.firm.title'), tCommon('routes.contacts.firm.description'));
     setRoutes?.([
       { title: tCommon('menu.contacts'), href: '/contacts' },
       { title: tCommon('submenu.firms') }
     ]);
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+    };
   }, [router.locale]);
 
   const firmManager = useFirmManager();
@@ -79,22 +87,6 @@ export const FirmMain: React.FC<FirmMainProps> = ({ className }) => {
     return firmsResp?.data || [];
   }, [firmsResp]);
 
-  const context = {
-    //dialogs
-    openDeleteDialog: () => setDeleteDialog(true),
-    //search, filtering, sorting & paging
-    searchTerm,
-    setSearchTerm,
-    page,
-    totalPageCount: firmsResp?.meta.pageCount || 1,
-    setPage,
-    size,
-    setSize,
-    order: sortDetails.order,
-    sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
-  };
-
   const { mutate: removeFirm, isPending: isDeletePending } = useMutation({
     mutationFn: (id: number) => api.firm.remove(id),
     onSuccess: () => {
@@ -108,11 +100,46 @@ export const FirmMain: React.FC<FirmMainProps> = ({ className }) => {
     }
   });
 
+  const context: DataTableConfig<Firm> = {
+    singularName: tContacts('firm.singular'),
+    pluralName: tContacts('firm.plural'),
+    inspectCallback: () => {
+      
+    },
+    createCallback: () => {
+      router.push('/contacts/new-firm');
+    },
+    updateCallback: () => {},
+    deleteCallback: () => {},
+    additionalActions: {},
+    searchTerm,
+    setSearchTerm,
+    page,
+    totalPageCount: firmsResp?.meta.pageCount || 0,
+    setPage,
+    size,
+    setSize,
+    order: sortDetails.order,
+    sortKey: sortDetails.sortKey,
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+  };
+
+  const columns = useFirmColumns(context);
+
   const isPending = isFetchPending || isDeletePending || paging || resizing || searching || sorting;
 
   if (error) return 'An error has occurred: ' + error.message;
   return (
-    <>
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <DataTable
+        className="flex flex-col flex-1 overflow-auto p-1"
+        containerClassName="overflow-auto"
+        data={firms}
+        columns={columns}
+        context={context}
+        isPending={isPending}
+      />
+      {/*       
       <FirmDeleteDialog
         open={deleteDialog}
         deleteFirm={() => {
@@ -124,15 +151,7 @@ export const FirmMain: React.FC<FirmMainProps> = ({ className }) => {
         onClose={() => {
           setDeleteDialog(false);
         }}
-      />
-      <FirmActionsContext.Provider value={context}>
-        <DataTable
-          className="my-5"
-          data={firms}
-          columns={getFirmColumns(tContacts, tCurrency, router)}
-          isPending={isPending}
-        />
-      </FirmActionsContext.Provider>
-    </>
+      /> */}
+    </div>
   );
 };

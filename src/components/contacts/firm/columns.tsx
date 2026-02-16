@@ -1,22 +1,17 @@
 import { Firm } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTableRowActions } from './data-table-row-actions';
-import { DataTableColumnHeader } from './data-table-column-header';
 import { transformDateTime } from '@/utils/date.utils';
-import { NextRouter } from 'next/router';
 import { ExternalLinkIcon } from 'lucide-react';
 import { FIRM_FILTER_ATTRIBUTES } from '@/constants/firm.filter-attributes';
+import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
+import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useTranslation } from 'react-i18next';
 
-export const getFirmColumns = (
-  t: Function,
-  tCurrency: Function,
-  router: NextRouter
-): ColumnDef<Firm>[] => {
-  const translationNamespace = 'contacts';
-  const translate = (value: string, namespace: string = '') => {
-    return t(value, { ns: namespace || translationNamespace });
-  };
+export const useFirmColumns = (context: DataTableConfig<Firm>): ColumnDef<Firm>[] => {
+  const { t } = useTranslation('contacts');
+  const { t: tCurrency } = useTranslation('currency');
 
   return [
     {
@@ -24,7 +19,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.entreprise_name')}
+          context={context}
+          title={t('firm.attributes.entreprise_name')}
           attribute={FIRM_FILTER_ATTRIBUTES.ENTREPRISENAME}
         />
       ),
@@ -37,7 +33,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.main_interlocurtor_name')}
+          context={context}
+          title={t('firm.attributes.main_interlocurtor_name')}
           attribute={FIRM_FILTER_ATTRIBUTES.INTERLOCUTORNAME}
         />
       ),
@@ -55,7 +52,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.main_interlocurtor_surname')}
+          context={context}
+          title={t('firm.attributes.main_interlocurtor_surname')}
           attribute={FIRM_FILTER_ATTRIBUTES.INTERLOCUTORSURNAME}
         />
       ),
@@ -73,7 +71,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.phone')}
+          context={context}
+          title={t('firm.attributes.phone')}
           attribute={FIRM_FILTER_ATTRIBUTES.PHONE}
         />
       ),
@@ -82,7 +81,7 @@ export const getFirmColumns = (
           {row.original.phone ? (
             row.original?.phone
           ) : (
-            <span className="text-zinc-400">{translate('firm.empty_cells.phone')}</span>
+            <span className="text-zinc-400">{t('firm.empty_cells.phone')}</span>
           )}
         </div>
       ),
@@ -94,7 +93,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.website')}
+          context={context}
+          title={t('firm.attributes.website')}
           attribute={FIRM_FILTER_ATTRIBUTES.WEBSITE}
         />
       ),
@@ -111,7 +111,7 @@ export const getFirmColumns = (
               <ExternalLinkIcon className="h-5 w-5" />
             </a>
           ) : (
-            <span className="text-zinc-400">{translate('firm.empty_cells.website')}</span>
+            <span className="text-zinc-400">{t('firm.empty_cells.website')}</span>
           )}
         </div>
       ),
@@ -123,14 +123,15 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.tax_number')}
+          context={context}
+          title={t('firm.attributes.tax_number')}
           attribute={FIRM_FILTER_ATTRIBUTES.TAXIDNUMBER}
         />
       ),
       cell: ({ row }) => (
         <div>
           {row.original?.taxIdNumber || (
-            <span className="text-zinc-400">{translate('firm.empty_cells.tax_number')}</span>
+            <span className="text-zinc-400">{t('firm.empty_cells.tax_number')}</span>
           )}
         </div>
       ),
@@ -142,7 +143,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.type')}
+          context={context}
+          title={t('firm.attributes.type')}
           attribute={FIRM_FILTER_ATTRIBUTES.ISPERSON}
         />
       ),
@@ -150,8 +152,8 @@ export const getFirmColumns = (
         <div>
           <Badge className="px-4 py-1">
             {row.original?.isPerson
-              ? translate('firm.attributes.particular_entreprise_type')
-              : translate('firm.attributes.entreprise_type')}
+              ? t('firm.attributes.particular_entreprise_type')
+              : t('firm.attributes.entreprise_type')}
           </Badge>
         </div>
       ),
@@ -163,7 +165,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.activity')}
+          context={context}
+          title={t('firm.attributes.activity')}
           attribute={FIRM_FILTER_ATTRIBUTES.ACTIVITY}
         />
       ),
@@ -172,7 +175,7 @@ export const getFirmColumns = (
           {row.original?.activity?.label ? (
             row.original?.activity?.label
           ) : (
-            <span className="text-zinc-400">{translate('firm.empty_cells.activity')}</span>
+            <span className="text-zinc-400">{t('firm.empty_cells.activity')}</span>
           )}
         </div>
       ),
@@ -184,7 +187,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.currency')}
+          context={context}
+          title={t('firm.attributes.currency')}
           attribute={FIRM_FILTER_ATTRIBUTES.CURRENCY}
         />
       ),
@@ -196,7 +200,7 @@ export const getFirmColumns = (
               {row.original?.currency?.symbol})
             </span>
           ) : (
-            <span className="text-zinc-400">{translate('firm.empty_cells.currency')}</span>
+            <span className="text-zinc-400">{t('firm.empty_cells.currency')}</span>
           )}
         </div>
       ),
@@ -208,7 +212,8 @@ export const getFirmColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('firm.attributes.created_at')}
+          context={context}
+          title={t('firm.attributes.created_at')}
           attribute={FIRM_FILTER_ATTRIBUTES.CREATEDAT}
         />
       ),
@@ -220,7 +225,7 @@ export const getFirmColumns = (
       id: 'actions',
       cell: ({ row }) => (
         <div className="flex justify-end">
-          <DataTableRowActions row={row} />
+          <DataTableRowActions row={row} context={context} />
         </div>
       )
     }
