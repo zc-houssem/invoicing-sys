@@ -1,4 +1,36 @@
 {
+  "routes": {
+    "contacts": {
+      "firm": {
+        "title": "Gestion des entreprises",
+        "description": "Gérez vos entreprises et leurs détails"
+      },
+      "interlocutor": {
+        "title": "Gestion des interlocuteurs",
+        "description": "Gérez vos interlocuteurs et leurs détails"
+      }
+    },
+    "selling": {
+      "invoice": {
+        "title": "Gestion des factures",
+        "description": "Gérez vos factures et leurs détails"
+      },
+      "quotation": {
+        "title": "Gestion des devis",
+        "description": "Gérez vos devis et leurs détails"
+      }
+    },
+    "buying": {
+      "invoice": {
+        "title": "Gestion des factures",
+        "description": "Gérez vos factures et leurs détails"
+      },
+      "quotation": {
+        "title": "Gestion des devis",
+        "description": "Gérez vos devis et leurs détails"
+      }
+    }
+  },
   "404": {
     "go_back": "Retour au tableau de bord",
     "note1": "Il manque quelque chose...",
@@ -38,6 +70,7 @@
     "display": "Afficher",
     "download": "Télécharger",
     "duplicate": "Dupliquer",
+    "edit": "Modifier",
     "hide": "Masquer",
     "initialize": "Initialiser",
     "to_invoice": "Facturer",

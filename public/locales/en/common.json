@@ -1,4 +1,36 @@
 {
+  "routes": {
+    "contacts": {
+      "firm": {
+        "title": "Firm Management",
+        "description": "Manage your firms and their details"
+      },
+      "interlocutor": {
+        "title": "Interlocutor Management",
+        "description": "Manage your interlocutors and their details"
+      }
+    },
+    "selling": {
+      "invoice": {
+        "title": "Invoice Management",
+        "description": "Manage your invoices and their details"
+      },
+      "quotation": {
+        "title": "Quotation Management",
+        "description": "Manage your quotations and their details"
+      }
+    },
+    "buying": {
+      "invoice": {
+        "title": "Invoice Management",
+        "description": "Manage your invoices and their details"
+      },
+      "quotation": {
+        "title": "Quotation Management",
+        "description": "Manage your quotations and their details"
+      }
+    }
+  },
   "404": {
     "go_back": "Go Back to Dashboard",
     "note1": "Something is missing...",
@@ -38,6 +70,7 @@
     "display": "Display",
     "download": "Download",
     "duplicate": "Duplicate",
+    "edit": "Edit",
     "hide": "Hide",
     "initialize": "Initialize",
     "to_invoice": "To Invoice",
