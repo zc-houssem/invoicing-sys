@@ -9,14 +9,14 @@ import { QuotationDuplicateDialog } from './dialogs/QuotationDuplicateDialog';
 import { useTranslation } from 'react-i18next';
 import { QuotationDeleteDialog } from './dialogs/QuotationDeleteDialog';
 import { QuotationDownloadDialog } from './dialogs/QuotationDownloadDialog';
-import { DataTable } from './data-table/data-table';
 import { getQuotationColumns } from './data-table/columns';
 import { useQuotationManager } from './hooks/useQuotationManager';
-import { QuotationActionsContext } from './data-table/ActionsContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { DuplicateQuotationDto } from '@/types';
+import { DuplicateQuotationDto, Quotation } from '@/types';
 import { QuotationInvoiceDialog } from './dialogs/QuotationInvoiceDialog';
+import { useIntro } from '@/context/IntroContext';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { DataTableConfig } from '@/components/shared/data-table/types';
 
 interface QuotationMainProps {
   className?: string;
@@ -24,11 +24,16 @@ interface QuotationMainProps {
 
 export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
   const router = useRouter();
+
   const { t: tCommon, ready: commonReady } = useTranslation('common');
   const { t: tInvoicing, ready: invoicingReady } = useTranslation('invoicing');
+
+  const { setIntro } = useIntro();
   const { setRoutes } = useBreadcrumb();
+
   React.useEffect(() => {
-    setRoutes([
+    setIntro?.(tInvoicing('quotation.singular'), tInvoicing('quotation.card_description'));
+    setRoutes?.([
       { title: tCommon('menu.selling'), href: '/selling' },
       { title: tCommon('submenu.quotations') }
     ]);
@@ -85,12 +90,20 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
     return quotationsResp?.data || [];
   }, [quotationsResp]);
 
-  const context = {
+  const context: DataTableConfig<Quotation> = {
+    singularName: tInvoicing('quotation.singular'),
+    pluralName: tInvoicing('quotation.plural'),
+
     //dialogs
-    openDeleteDialog: () => setDeleteDialog(true),
-    openDuplicateDialog: () => setDuplicateDialog(true),
-    openDownloadDialog: () => setDownloadDialog(true),
-    openInvoiceDialog: () => setInvoiceDialog(true),
+    createCallback: () => {
+      router.push('/selling/new-quotation');
+    },
+    updateCallback: () => {},
+    deleteCallback: () => setDeleteDialog(true),
+
+    // openInvoiceDialog: () => setInvoiceDialog(true),
+    // openDownloadDialog: () => setDownloadDialog(true),
+    // openDuplicateDialog: () => setDuplicateDialog(true),
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
@@ -223,23 +236,14 @@ export const QuotationMain: React.FC<QuotationMainProps> = ({ className }) => {
         }}
         onClose={() => setInvoiceDialog(false)}
       />
-      <QuotationActionsContext.Provider value={context}>
-        <Card className={className}>
-          <CardHeader>
-            <CardTitle>{tInvoicing('quotation.singular')}</CardTitle>
-            <CardDescription>{tInvoicing('quotation.card_description')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              className="flex flex-col flex-1 overflow-hidden p-1"
-              containerClassName="overflow-auto"
-              data={quotations}
-              columns={getQuotationColumns(tInvoicing, router)}
-              isPending={isPending}
-            />
-          </CardContent>
-        </Card>
-      </QuotationActionsContext.Provider>
+      <DataTable
+        context={context}
+        className="flex flex-col flex-1 overflow-hidden p-1"
+        containerClassName="overflow-auto"
+        data={quotations}
+        columns={getQuotationColumns(tInvoicing, router)}
+        isPending={isPending}
+      />
     </>
   );
 };
