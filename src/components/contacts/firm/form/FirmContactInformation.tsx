@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { SOCIAL_TITLE } from '@/types/enums/social-titles';
 import { Input } from '@/components/ui/input';
-import { useFirmManager } from '@/components/contacts/firm/hooks/useFirmManager';
+import { useFirmStore } from '@/hooks/stores/useFirmStore';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 
@@ -22,7 +22,7 @@ interface FirmContactInformationProps {
 }
 
 const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ className, loading }) => {
-  const firmManager = useFirmManager();
+  const firmStore = useFirmStore();
   const { t: tContacts } = useTranslation('contacts');
   const { t: tSocial } = useTranslation('social-title');
   return (
@@ -46,9 +46,9 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
                 <SelectShimmer isPending={loading || false}>
                   <Select
                     onValueChange={(e) => {
-                      firmManager.set('title', e);
+                      firmStore.set('title', e);
                     }}
-                    value={firmManager?.title}>
+                    value={firmStore?.title}>
                     <SelectTrigger>
                       <SelectValue placeholder={tContacts('interlocutor.attributes.title')} />
                     </SelectTrigger>
@@ -66,21 +66,19 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
             <div className="mx-1 w-2/5">
               <Label>{tContacts('interlocutor.attributes.name')} (*)</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. John"
-                value={firmManager?.name}
-                onChange={(e) => firmManager.set('name', e.target.value)}
+                value={firmStore?.name}
+                onChange={(e) => firmStore.set('name', e.target.value)}
               />
             </div>
             <div className="mx-1 w-2/5">
               <Label>{tContacts('interlocutor.attributes.surname')} (*)</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. Doe"
-                value={firmManager?.surname}
-                onChange={(e) => firmManager.set('surname', e.target.value)}
+                value={firmStore?.surname}
+                onChange={(e) => firmStore.set('surname', e.target.value)}
               />
             </div>
           </div>
@@ -89,11 +87,10 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
             <div className="mx-1 w-full">
               <Label>{tContacts('interlocutor.attributes.position')} (*)</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. CEO"
-                value={firmManager?.position}
-                onChange={(e) => firmManager.set('position', e.target.value)}
+                value={firmStore?.position}
+                onChange={(e) => firmStore.set('position', e.target.value)}
               />
             </div>
           </div>
@@ -101,12 +98,11 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
             <div className="mx-1 w-3/5">
               <Label>{tContacts('interlocutor.attributes.email')}</Label>
               <Input
-                isPending={loading}
                 type="email"
                 className="mt-1"
                 placeholder="Ex. johndoe@zedneycreative.com"
-                value={firmManager?.email}
-                onChange={(e) => firmManager.set('email', e.target.value)}
+                value={firmStore?.email}
+                onChange={(e) => firmStore.set('email', e.target.value)}
               />
             </div>
             <div className="mx-1 w-2/5">
@@ -117,8 +113,8 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
                 type="tel"
                 className="mt-1"
                 placeholder="Ex. +216 72 398 389"
-                value={firmManager?.phone}
-                onChange={(value) => firmManager.set('phone', value)}
+                value={firmStore?.phone}
+                onChange={(value) => firmStore.set('phone', value)}
               />
             </div>
           </div>

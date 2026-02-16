@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Activity, Currency, PaymentCondition } from '@/types';
-import { useFirmManager } from '@/components/contacts/firm/hooks/useFirmManager';
+import { useFirmStore } from '@/hooks/stores/useFirmStore';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 
@@ -35,7 +35,7 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
   const { t: tContact } = useTranslation('contacts');
   const { t: tCurrency } = useTranslation('currency');
 
-  const firmManager = useFirmManager();
+  const firmStore = useFirmStore();
   return (
     <Card className={className}>
       <CardHeader className="p-5">
@@ -52,11 +52,11 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
             <Label>{tContact('firm.attributes.type')} (*)</Label>
             <div className="flex items-center my-4">
               <RadioGroup
-                value={firmManager.isPerson ? 'particulier' : 'entreprise'}
+                value={firmStore.isPerson ? 'particulier' : 'entreprise'}
                 className="block md:flex justify-center items-center"
                 onValueChange={(e) => {
-                  firmManager.set('isPerson', e === 'particulier');
-                  firmManager.set('taxIdNumber', '');
+                  firmStore.set('isPerson', e === 'particulier');
+                  firmStore.set('taxIdNumber', '');
                 }}>
                 <div className="flex items-center">
                   <RadioGroupItem value="entreprise" />
@@ -73,15 +73,14 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
               </RadioGroup>
             </div>
           </div>
-          {!firmManager.isPerson && (
+          {!firmStore.isPerson && (
             <div className="w-3/5">
               <Label>{tContact('firm.attributes.tax_number')} (*)</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. 123456789"
-                value={firmManager?.taxIdNumber}
-                onChange={(e) => firmManager.set('taxIdNumber', e.target.value)}
+                value={firmStore?.taxIdNumber}
+                onChange={(e) => firmStore.set('taxIdNumber', e.target.value)}
               />
             </div>
           )}
@@ -90,22 +89,20 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
           <div className="mr-1 w-1/3">
             <Label>{tContact('firm.attributes.entreprise_name')} (*)</Label>
             <Input
-              isPending={loading}
               className="mt-1"
               placeholder="Ex. Zedney Creative"
-              value={firmManager?.enterpriseName}
-              onChange={(e) => firmManager.set('enterpriseName', e.target.value)}
+              value={firmStore?.enterpriseName}
+              onChange={(e) => firmStore.set('enterpriseName', e.target.value)}
             />
           </div>
           <div className="mx-1 w-1/3">
             <Label>{tContact('firm.attributes.website')}</Label>
             <Input
-              isPending={loading}
               type="url"
               className="mt-1"
               placeholder="Ex. zedneycreative.com"
-              value={firmManager?.website}
-              onChange={(e) => firmManager.set('website', e.target.value)}
+              value={firmStore?.website}
+              onChange={(e) => firmStore.set('website', e.target.value)}
             />
           </div>
           <div className="mx-1 w-1/3">
@@ -116,8 +113,8 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
               defaultCountry="TN"
               className="mt-1"
               placeholder="Ex. +216 72 398 389"
-              value={firmManager?.entreprisePhone}
-              onChange={(value) => firmManager.set('entreprisePhone', value)}
+              value={firmStore?.entreprisePhone}
+              onChange={(value) => firmStore.set('entreprisePhone', value)}
             />
           </div>
         </div>
@@ -128,11 +125,9 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
             <div className="mt-2">
               <SelectShimmer isPending={loading}>
                 <Select
-                  key={firmManager.activity?.id || 'activity'}
-                  onValueChange={(e) =>
-                    firmManager.set('activity', { id: parseInt(e) } as Activity)
-                  }
-                  value={firmManager?.activity?.id?.toString() || ''}>
+                  key={firmStore.activity?.id || 'activity'}
+                  onValueChange={(e) => firmStore.set('activity', { id: parseInt(e) } as Activity)}
+                  value={firmStore?.activity?.id?.toString() || ''}>
                   <SelectTrigger>
                     <SelectValue placeholder={tContact('firm.attributes.activity')} />
                   </SelectTrigger>
@@ -152,11 +147,9 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
             <div className="mt-2">
               <SelectShimmer isPending={loading}>
                 <Select
-                  key={firmManager.currency?.id || 'currency'}
-                  onValueChange={(e) =>
-                    firmManager.set('currency', { id: parseInt(e) } as Currency)
-                  }
-                  value={firmManager?.currency?.id?.toString() || ''}>
+                  key={firmStore.currency?.id || 'currency'}
+                  onValueChange={(e) => firmStore.set('currency', { id: parseInt(e) } as Currency)}
+                  value={firmStore?.currency?.id?.toString() || ''}>
                   <SelectTrigger>
                     <SelectValue placeholder={tContact('firm.attributes.currency')} />
                   </SelectTrigger>
@@ -178,11 +171,11 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
             <div className="mt-1">
               <SelectShimmer isPending={loading}>
                 <Select
-                  key={firmManager.paymentCondition?.id || 'paymentCondition'}
+                  key={firmStore.paymentCondition?.id || 'paymentCondition'}
                   onValueChange={(e) =>
-                    firmManager.set('paymentCondition', { id: parseInt(e) } as PaymentCondition)
+                    firmStore.set('paymentCondition', { id: parseInt(e) } as PaymentCondition)
                   }
-                  value={firmManager?.paymentCondition?.id?.toString() || ''}>
+                  value={firmStore?.paymentCondition?.id?.toString() || ''}>
                   <SelectTrigger>
                     <SelectValue placeholder={tContact('firm.attributes.payment_conditions')} />
                   </SelectTrigger>

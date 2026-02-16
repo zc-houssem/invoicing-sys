@@ -7,7 +7,6 @@ import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
 import { FirmDeleteDialog } from './dialogs/FirmDeleteDialog';
-import { useFirmManager } from '@/components/contacts/firm/hooks/useFirmManager';
 import { useFirmColumns } from './columns';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
@@ -15,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { Firm } from '@/types';
+import { useFirmStore } from '@/hooks/stores/useFirmStore';
 
 interface FirmPortalProps {
   className?: string;
@@ -40,7 +40,7 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
     };
   }, [router.locale]);
 
-  const firmManager = useFirmManager();
+  const firmStore = useFirmStore();
 
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -93,7 +93,7 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
       if (firms?.length == 1 && page > 1) setPage(page - 1);
       toast.success(tContacts('firm.action_remove_success'));
       refetchFirms();
-      firmManager.reset();
+      firmStore.reset();
     },
     onError: (error) => {
       toast.error(getErrorMessage('contacts', error, tContacts('firm.action_remove_failure')));
@@ -103,14 +103,16 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
   const context: DataTableConfig<Firm> = {
     singularName: tContacts('firm.singular'),
     pluralName: tContacts('firm.plural'),
-    inspectCallback: () => {
-      
+    inspectCallback: (entity: Firm) => {
+      router.push(`/contacts/firm/${entity.id}`);
     },
     createCallback: () => {
       router.push('/contacts/new-firm');
     },
     updateCallback: () => {},
-    deleteCallback: () => {},
+    deleteCallback: () => {
+      setDeleteDialog(true);
+    },
     additionalActions: {},
     searchTerm,
     setSearchTerm,
@@ -121,7 +123,10 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    targetEntity: (firm: Firm) => {
+      firmStore.set('id', firm.id);
+    }
   };
 
   const columns = useFirmColumns(context);
@@ -139,19 +144,19 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
         context={context}
         isPending={isPending}
       />
-      {/*       
+
       <FirmDeleteDialog
         open={deleteDialog}
         deleteFirm={() => {
-          firmManager?.id && removeFirm(firmManager?.id);
+          firmStore?.id && removeFirm(firmStore?.id);
           setDeleteDialog(false);
         }}
         isDeletionPending={isDeletePending}
-        label={firmManager?.name}
+        label={firmStore?.name}
         onClose={() => {
           setDeleteDialog(false);
         }}
-      /> */}
+      />
     </div>
   );
 };

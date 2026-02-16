@@ -25,8 +25,8 @@ export function DataTableRowActions<TData>({ row, context }: DataTableRowActions
   const { t } = useTranslation('common');
 
   const targetAndTrigger = (callback: (entity: TData) => void) => {
-    context.targetEntity?.(entity);
     if (callback) {
+      context.targetEntity?.(entity);
       callback(entity);
     }
   };

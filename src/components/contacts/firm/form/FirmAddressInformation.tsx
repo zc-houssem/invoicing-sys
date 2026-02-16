@@ -65,7 +65,6 @@ const FirmAddressInformation = React.memo<FirmAddressInformationProps>(
             <div>
               <Label>{tContacts('common.address.address')} (*)</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. 188 Avenue 14 Janvier"
                 disabled={disabled}
@@ -78,7 +77,6 @@ const FirmAddressInformation = React.memo<FirmAddressInformationProps>(
             <div>
               <Label>{tContacts('common.address.address2')}</Label>
               <Input
-                isPending={loading}
                 className="mt-1"
                 placeholder="Ex. 188 Avenue 14 Janvier"
                 disabled={disabled}
@@ -90,7 +88,6 @@ const FirmAddressInformation = React.memo<FirmAddressInformationProps>(
               <div className="w-2/3">
                 <Label>{tContacts('common.address.region')} (*)</Label>
                 <Input
-                  isPending={loading}
                   className="mt-1"
                   placeholder="Ex. Bizerte"
                   disabled={disabled}
@@ -102,7 +99,6 @@ const FirmAddressInformation = React.memo<FirmAddressInformationProps>(
                 <Label>{tContacts('common.address.zip_code')} (*)</Label>
                 <Input
                   type="number"
-                  isPending={loading}
                   className="mt-1"
                   placeholder="Ex. 7000"
                   disabled={disabled}

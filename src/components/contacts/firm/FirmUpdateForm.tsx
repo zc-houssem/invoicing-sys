@@ -11,7 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
-import { useFirmManager } from '@/components/contacts/firm/hooks/useFirmManager';
+import { useFirmManager } from '@/hooks/stores/useFirmStore';
 import FirmContactInformation from './form/FirmContactInformation';
 import FirmEntrepriseInformation from './form/FirmEntrepriseInformation';
 import FirmAddressInformation from './form/FirmAddressInformation';
