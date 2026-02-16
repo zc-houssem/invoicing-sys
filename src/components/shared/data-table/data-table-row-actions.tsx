@@ -39,9 +39,9 @@ export function DataTableRowActions<TData>({ row, context }: DataTableRowActions
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="center" className="w-[160px] font-medium ">
+      <DropdownMenuContent align="center" className="w-40 font-medium ">
         <DropdownMenuLabel className="text-center font-black text-xs">
-          {t('common.table.actions')}
+          {t('commands.actions')}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
@@ -49,8 +49,8 @@ export function DataTableRowActions<TData>({ row, context }: DataTableRowActions
           <>
             <DropdownMenuItem
               onClick={() => targetAndTrigger(() => context.inspectCallback?.(entity))}>
-              <Telescope />
-              <span className="mx-1 text-xs">{t('common.buttons.inspect')}</span>
+              <Telescope className="size-4" />
+              <span className="mx-1 text-xs">{t('commands.inspect')}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </>
@@ -79,16 +79,16 @@ export function DataTableRowActions<TData>({ row, context }: DataTableRowActions
         {context.updateCallback && (
           <DropdownMenuItem
             onClick={() => targetAndTrigger(() => context.updateCallback?.(entity))}>
-            <Edit />
-            <span className="mx-1 text-xs">{t('common.buttons.edit')}</span>
+            <Edit className="size-4" />
+            <span className="mx-1 text-xs">{t('commands.edit')}</span>
           </DropdownMenuItem>
         )}
 
         {context.deleteCallback && (
           <DropdownMenuItem
             onClick={() => targetAndTrigger(() => context.deleteCallback?.(entity))}>
-            <Trash2 />
-            <span className="mx-1 text-xs">{t('common.buttons.delete')}</span>
+            <Trash2 className="size-4" />
+            <span className="mx-1 text-xs">{t('commands.delete')}</span>
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
