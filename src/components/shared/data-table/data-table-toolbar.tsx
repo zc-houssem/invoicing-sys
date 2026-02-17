@@ -35,9 +35,8 @@ export function DataTableToolbar<TData>({ table, context }: DataTableToolbarProp
       </div>
       <DataTableViewOptions table={table} />
       {context.createCallback && (
-        <Button onClick={() => context.createCallback?.()}>
+        <Button size={'icon'} variant={'outline'} onClick={() => context.createCallback?.()}>
           <Plus className="h-4 w-4" />
-          {t('commands.new')} {context.singularName}
         </Button>
       )}
     </div>

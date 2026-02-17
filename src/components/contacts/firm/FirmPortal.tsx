@@ -45,7 +45,7 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
 
-  const [size, setSize] = React.useState(5);
+  const [size, setSize] = React.useState(10);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
   const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
@@ -135,7 +135,7 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
 
   if (error) return 'An error has occurred: ' + error.message;
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+    <div className={cn('flex flex-col flex-1 overflow-hidden container mx-auto', className)}>
       <DataTable
         className="flex flex-col flex-1 overflow-auto p-1"
         containerClassName="overflow-auto"
