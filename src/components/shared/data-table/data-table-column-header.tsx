@@ -56,19 +56,19 @@ export function DataTableColumnHeader<TData, TValue>({
               if (attribute) context?.setSortDetails?.(false, attribute);
             }}>
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {t('common.table.Asc')}
+            {t('datatable.order.asc')}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               if (attribute) context?.setSortDetails?.(true, attribute);
             }}>
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {t('common.table.Desc')}
+            {t('datatable.order.desc')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="font-bold" onClick={() => column.toggleVisibility(false)}>
             <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {t('common.table.hide')}
+            {t('commands.hide')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

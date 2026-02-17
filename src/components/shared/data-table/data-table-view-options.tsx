@@ -26,7 +26,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">
         <DropdownMenuLabel className="text-center">
-          {t('common.table.visibleColumns')}
+          {t('datatable.visibleColumns')}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table

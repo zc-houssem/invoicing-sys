@@ -195,6 +195,11 @@
   "datatable": {
     "paginationPhrase": "Showing Page {{page}} of {{total}}",
     "search": "Search {{entity}}...",
-    "noResults": "No results"
+    "noResults": "No results",
+    "visibleColumns": "Visible Columns",
+    "order": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    }
   }
 }
