@@ -7,30 +7,44 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
-import { DuplicateInvoiceDto } from '@/types';
+import { DuplicateInvoiceDto, Invoice } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useInvoiceManager } from './hooks/useInvoiceManager';
 import { InvoiceDeleteDialog } from './dialogs/InvoiceDeleteDialog';
 import { InvoiceDuplicateDialog } from './dialogs/InvoiceDuplicateDialog';
 import { InvoiceDownloadDialog } from './dialogs/InvoiceDownloadDialog';
-import { InvoiceActionsContext } from './data-table/ActionsContext';
-import { DataTable } from './data-table/data-table';
-import { getInvoiceColumns } from './data-table/columns';
+import { useIntro } from '@/context/IntroContext';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { cn } from '@/lib/utils';
+import { useInvoiceColumns } from './columns';
+import { DataTableConfig } from '@/components/shared/data-table/types';
 
-interface InvoiceMainProps {
+interface InvoicePortalProps {
   className?: string;
+  firmId?: number;
+  interlocutorId?: number;
 }
 
-export const InvoiceMain: React.FC<InvoiceMainProps> = ({ className }) => {
+export const InvoicePortal = ({ className, firmId, interlocutorId }: InvoicePortalProps) => {
   const router = useRouter();
   const { t: tCommon } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
-  const { setRoutes } = useBreadcrumb();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { setIntro, clearIntro } = useIntro();
+
   React.useEffect(() => {
-    setRoutes([
+    setIntro?.(
+      tCommon('routes.selling.invoice.title'),
+      tCommon('routes.selling.invoice.description')
+    );
+    setRoutes?.([
       { title: tCommon('menu.selling'), href: '/selling' },
       { title: tCommon('submenu.invoices') }
     ]);
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+    };
   }, [router.locale]);
 
   const invoiceManager = useInvoiceManager();
@@ -83,24 +97,6 @@ export const InvoiceMain: React.FC<InvoiceMainProps> = ({ className }) => {
     return invoicesResp?.data || [];
   }, [invoicesResp]);
 
-  const context = {
-    //dialogs
-    openDeleteDialog: () => setDeleteDialog(true),
-    openDuplicateDialog: () => setDuplicateDialog(true),
-    openDownloadDialog: () => setDownloadDialog(true),
-    //search, filtering, sorting & paging
-    searchTerm,
-    setSearchTerm,
-    page,
-    totalPageCount: invoicesResp?.meta.pageCount || 1,
-    setPage,
-    size,
-    setSize,
-    order: sortDetails.order,
-    sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
-  };
-
   //Remove Invoice
   const { mutate: removeInvoice, isPending: isDeletePending } = useMutation({
     mutationFn: (id: number) => api.invoice.remove(id),
@@ -146,11 +142,36 @@ export const InvoiceMain: React.FC<InvoiceMainProps> = ({ className }) => {
     }
   });
 
+  const context: DataTableConfig<Invoice> = {
+    singularName: tInvoicing('invoice.singular'),
+    pluralName: tInvoicing('invoice.plural'),
+    inspectCallback: () => {},
+    createCallback: () => {
+      router.push('/selling/new-invoice');
+    },
+    updateCallback: () => {},
+    deleteCallback: () => {},
+    additionalActions: {},
+    //search, filtering, sorting & paging
+    searchTerm,
+    setSearchTerm,
+    page,
+    totalPageCount: invoicesResp?.meta.pageCount || 1,
+    setPage,
+    size,
+    setSize,
+    order: sortDetails.order,
+    sortKey: sortDetails.sortKey,
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+  };
+
+  const columns = useInvoiceColumns(context, firmId, interlocutorId);
+
   const isPending = isFetchPending || isDeletePending || paging || resizing || searching || sorting;
 
   if (error) return 'An error has occurred: ' + error.message;
   return (
-    <>
+    <div className={cn('flex flex-col flex-1 overflow-hidden container mx-auto', className)}>
       <InvoiceDeleteDialog
         id={invoiceManager?.id}
         sequential={invoiceManager?.sequential || ''}
@@ -184,22 +205,15 @@ export const InvoiceMain: React.FC<InvoiceMainProps> = ({ className }) => {
         isDownloadPending={isDownloadPending}
         onClose={() => setDownloadDialog(false)}
       />
-      <InvoiceActionsContext.Provider value={context}>
-        <Card className={className}>
-          <CardHeader>
-            <CardTitle>{tInvoicing('invoice.singular')}</CardTitle>
-            <CardDescription>{tInvoicing('invoice.card_description')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              className="my-5"
-              data={invoices}
-              columns={getInvoiceColumns(tInvoicing, router)}
-              isPending={isPending}
-            />
-          </CardContent>
-        </Card>
-      </InvoiceActionsContext.Provider>
-    </>
+
+      <DataTable
+        className="flex flex-col flex-1 overflow-auto p-1"
+        containerClassName="overflow-auto"
+        data={invoices}
+        columns={columns}
+        context={context}
+        isPending={isPending}
+      />
+    </div>
   );
 };

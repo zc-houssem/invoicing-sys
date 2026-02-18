@@ -1,10 +1,6 @@
 import React from 'react';
-import { InvoiceMain } from '@/components/selling/invoice/InvoiceMain';
+import { InvoicePortal } from '@/components/selling/invoice/InvoicePortal';
 
 export default function InvoicesPage() {
-  return (
-    <div className="flex-1 flex flex-col overflow-hidden p-8">
-      <InvoiceMain className="p-5 my-10" />
-    </div>
-  );
+  return <InvoicePortal />;
 }
