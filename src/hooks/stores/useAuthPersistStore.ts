@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface AuthPersistData {
+  _ready: boolean;
   accessToken: string;
   refreshToken: string;
   isAuthenticated: boolean;
@@ -14,7 +15,8 @@ interface AuthPersistStore extends AuthPersistData {
   logout: () => void;
 }
 
-const authPersistStore: AuthPersistData = {
+const initialState: AuthPersistData = {
+  _ready: false,
   accessToken: '',
   refreshToken: '',
   isAuthenticated: false
@@ -28,20 +30,26 @@ const fallbackStorage = {
   removeItem: () => {}
 };
 
-export const useAuthPersistStore = create(
-  persist<AuthPersistStore>(
+export const useAuthPersistStore = create<AuthPersistStore>()(
+  persist(
     (set) => ({
-      ...authPersistStore,
-      setAccessToken: (token: string) => set({ accessToken: token }),
-      setRefreshToken: (token: string) => set({ refreshToken: token }),
-      setAuthenticated: (isAuth: boolean) => set({ isAuthenticated: isAuth }),
-      logout: () => {
-        set({ ...authPersistStore });
-      }
+      ...initialState,
+
+      setAccessToken: (token) => set({ accessToken: token }),
+      setRefreshToken: (token) => set({ refreshToken: token }),
+      setAuthenticated: (isAuth) => set({ isAuthenticated: isAuth }),
+
+      logout: () => set({ ...initialState, _ready: true })
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => (isClient ? localStorage : fallbackStorage))
+      storage: createJSONStorage(() => (isClient ? localStorage : fallbackStorage)),
+
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._ready = true;
+        }
+      }
     }
   )
 );

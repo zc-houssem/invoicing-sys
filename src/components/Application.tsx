@@ -6,6 +6,7 @@ import { Spinner } from './shared/Spinner';
 import { Layout } from './layout/Layout';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
+import { useAuthPersistStore } from '@/hooks/stores/useAuthPersistStore';
 
 interface ApplicationProps {
   className?: string;
@@ -17,6 +18,7 @@ const publicRoutes = ['/auth'];
 const protectedHome = '/';
 
 function Application({ className, Component, pageProps }: ApplicationProps) {
+  const authPersistStore = useAuthPersistStore();
   const router = useRouter();
   const { data: session, status } = useSession();
   const [hasMounted, setHasMounted] = React.useState(false);
@@ -46,7 +48,7 @@ function Application({ className, Component, pageProps }: ApplicationProps) {
     (isAuthPage && session) ||
     (isProtectedRoute && !session);
 
-  if (shouldBlockRender) {
+  if (shouldBlockRender || !authPersistStore._ready) {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <Spinner />
