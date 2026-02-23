@@ -15,7 +15,6 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
 import { InvoiceTaxEntries } from './InvoiceTaxEntries';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
 
 interface InvoiceArticleItemProps {
   className?: string;
@@ -184,7 +183,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
                   onChange={handleUnitPriceChange}
                 />
               ) : (
-                <UneditableInput value={article.unit_price} />
+                <Input value={article.unit_price} />
               )}
               <Label className="font-bold mx-1">{currency?.symbol}</Label>
             </div>

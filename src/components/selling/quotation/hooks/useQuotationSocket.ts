@@ -1,24 +1,25 @@
 import React from 'react';
-import useConfig from '@/hooks/content/useConfig';
 import useSocket from '@/hooks/useSocket';
 import { toast } from 'sonner';
 import { SocketRoom } from '@/types/enums/socket-room';
-import { Sequential } from '@/types';
+import { ResponseSequenceDto, Sequences } from '@/types';
+import { useSequence } from '@/hooks/content/useSequence';
 
 const useQuotationSocket = () => {
-  const {
-    configs: [sequence],
-    isConfigPending: isQuotationSequencePending
-  } = useConfig(['quotation_sequence']);
+  const { sequence, isSequencePending, refetchSequence } = useSequence({
+    label: Sequences.QUOTATION
+  });
 
-  const [currentSequence, setCurrentSequence] = React.useState<Sequential | null>(null);
+  const [currentSequence, setCurrentSequence] = React.useState<Partial<ResponseSequenceDto> | null>(
+    null
+  );
   const hasJoinedRef = React.useRef(false);
 
   const socket = useSocket('/ws');
 
   React.useEffect(() => {
-    if (sequence?.value) {
-      setCurrentSequence(sequence.value);
+    if (sequence) {
+      setCurrentSequence(sequence);
     }
   }, [sequence]);
 
@@ -27,8 +28,7 @@ const useQuotationSocket = () => {
 
     const handleConnect = () => {
       if (!hasJoinedRef.current) {
-        socket.emit('joinRoom', SocketRoom.QUOTATION_SEQUENCE);
-        console.log('Joined room: QUOTATION_SEQUENCE');
+        socket.emit('joinRoom', SocketRoom.QUOTATION);
         hasJoinedRef.current = true;
       }
     };
@@ -58,7 +58,7 @@ const useQuotationSocket = () => {
 
     return () => {
       if (socket && hasJoinedRef.current) {
-        socket.emit('leaveRoom', SocketRoom.QUOTATION_SEQUENCE);
+        socket.emit('leaveRoom', SocketRoom.QUOTATION);
         console.log('Left room: QUOTATION_SEQUENCE');
         hasJoinedRef.current = false;
       }
@@ -72,7 +72,8 @@ const useQuotationSocket = () => {
 
   return {
     currentSequence,
-    isQuotationSequencePending
+    isSequencePending,
+    refetchSequence
   };
 };
 

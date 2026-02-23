@@ -38,6 +38,8 @@ import { quotation } from './quotation';
 export * from './quotation';
 import { role } from './role';
 export * from './role';
+import { sequence } from './sequence';
+export * from './sequence';
 import { tax } from './tax';
 export * from './tax';
 import { taxWithholding } from './tax-withholding';
@@ -71,6 +73,7 @@ export const api = {
   permission,
   quotation,
   role,
+  sequence,
   tax,
   taxWithholding,
   upload,

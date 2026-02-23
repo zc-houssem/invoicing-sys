@@ -17,7 +17,6 @@ import { SequenceInput } from '@/components/invoicing-commons/SequenceInput';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { UneditableCalendarDayPicker } from '@/components/ui/uneditable/uneditable-calendar-day-picker';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
 import { DatePicker } from '@/components/ui/date-picker';
 
 interface QuotationGeneralInformationProps {
@@ -94,21 +93,19 @@ export const QuotationGeneralInformation = ({
               onChange={(e) => {
                 quotationManager.set('object', e.target.value);
               }}
-              isPending={loading}
             />
           ) : (
-            <UneditableInput value={quotationManager.object} />
+            <Input value={quotationManager.object} disabled />
           )}
         </div>
         {/* Sequential */}
         <div className="w-2/6">
           <Label>{tInvoicing('quotation.singular')} N°</Label>
-          <SequenceInput
+          {/* <SequenceInput
             prefix={quotationManager.sequentialNumber?.prefix}
-            dateFormat={quotationManager.sequentialNumber?.dynamicSequence}
+            dateFormat={quotationManager.sequentialNumber?.dateFormat}
             value={quotationManager.sequentialNumber?.next}
-            loading={loading}
-          />
+          /> */}
         </div>
       </div>
       <div>
@@ -142,7 +139,7 @@ export const QuotationGeneralInformation = ({
                   </Select>
                 </SelectShimmer>
               ) : (
-                <UneditableInput value={quotationManager?.firm?.name} />
+                <Input value={quotationManager?.firm?.name} />
               )}
             </div>
 
@@ -183,18 +180,7 @@ export const QuotationGeneralInformation = ({
                   </SelectContent>
                 </Select>
               </SelectShimmer>
-            ) : (
-              <UneditableInput
-                value={
-                  <div>
-                    {quotationManager?.interlocutor?.name} {quotationManager.interlocutor?.surname}{' '}
-                    {quotationManager?.interlocutor?.id == mainInterlocutor?.interlocutor?.id && (
-                      <span className="font-bold mx-1"> ({tCommon('words.main_m')})</span>
-                    )}
-                  </div>
-                }
-              />
-            )}
+            ) : null}
           </div>
         </div>
         {!(

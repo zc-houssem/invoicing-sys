@@ -9,7 +9,7 @@ import {
   InvoiceUploadedFile,
   PaymentCondition
 } from '@/types';
-import { DATE_FORMAT } from '@/types/enums/date-formats';
+import { DateFormat } from '@/types/enums/date-formats';
 import { DISCOUNT_TYPE } from '@/types/enums/discount-types';
 import { fromStringToSequentialObject } from '@/utils/string.utils';
 import { create } from 'zustand';
@@ -18,7 +18,7 @@ type InvoiceManager = {
   // data
   id?: number;
   sequentialNumber: {
-    dynamicSequence: DATE_FORMAT;
+    dateFormat: DateFormat;
     next: number;
     prefix: string;
   };
@@ -85,7 +85,7 @@ const initialState: Omit<
   id: undefined,
   sequentialNumber: {
     prefix: '',
-    dynamicSequence: DATE_FORMAT.yy_MM,
+    dateFormat: DateFormat.YYYYMM,
     next: 0
   },
   sequential: '',

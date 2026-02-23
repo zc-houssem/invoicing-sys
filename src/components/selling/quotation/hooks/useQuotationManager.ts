@@ -9,7 +9,7 @@ import {
   Quotation,
   QuotationUploadedFile
 } from '@/types';
-import { DATE_FORMAT } from '@/types/enums/date-formats';
+import { DateFormat } from '@/types/enums/date-formats';
 import { DISCOUNT_TYPE } from '@/types/enums/discount-types';
 import { fromStringToSequentialObject } from '@/utils/string.utils';
 import { create } from 'zustand';
@@ -18,7 +18,7 @@ type QuotationManager = {
   // data
   id?: number;
   sequentialNumber: {
-    dynamicSequence: DATE_FORMAT;
+    dateFormat: DateFormat;
     next: number;
     prefix: string;
   };
@@ -81,7 +81,7 @@ const initialState: Omit<
   id: -1,
   sequentialNumber: {
     prefix: '',
-    dynamicSequence: DATE_FORMAT.yy_MM,
+    dateFormat: DateFormat.yy_MM,
     next: 0
   },
   sequential: '',

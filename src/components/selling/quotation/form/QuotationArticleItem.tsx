@@ -15,7 +15,6 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
 import { QuotationTaxEntries } from './QuotationTaxEntries';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
 
 interface QuotationArticleItemProps {
   className?: string;
@@ -130,7 +129,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
 
   const handleAddTax = () => {
     if ((article.articleQuotationEntryTaxes?.length || 0) >= taxes.length) {
-      toast.warn(tInvoicing('quotation.errors.surpassed_tax_limit'));
+      toast.info(tInvoicing('quotation.errors.surpassed_tax_limit'));
       return;
     }
     onChange({
@@ -158,7 +157,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
                 onChange={handleTitleChange}
               />
             ) : (
-              <UneditableInput value={article.article?.title} />
+              <Input value={article.article?.title} />
             )}
           </div>
           {/* Quantity */}
@@ -172,7 +171,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
                 onChange={handleQuantityChange}
               />
             ) : (
-              <UneditableInput value={article.quantity} />
+              <Input value={article.quantity} />
             )}
           </div>
           {/* Price */}
@@ -187,7 +186,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
                   onChange={handleUnitPriceChange}
                 />
               ) : (
-                <UneditableInput value={article.unit_price} />
+                <Input value={article.unit_price} disabled />
               )}
               <Label className="font-bold mx-1">{currency?.symbol}</Label>
             </div>
@@ -254,7 +253,7 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
                 onChange={handleDiscountChange}
               />
             ) : (
-              <UneditableInput className="w-1/2" value={article.discount || '0'} />
+              <Input className="w-1/2" value={article.discount || '0'} disabled />
             )}
             {edit ? (
               <Select
@@ -271,11 +270,12 @@ export const QuotationArticleItem: React.FC<QuotationArticleItemProps> = ({
                 </SelectContent>
               </Select>
             ) : (
-              <UneditableInput
+              <Input
                 className="w-1/2 font-bold mx-1"
                 value={
                   article.discount_type === DISCOUNT_TYPE.PERCENTAGE ? '%' : currency?.symbol || '$'
                 }
+                disabled
               />
             )}
           </div>

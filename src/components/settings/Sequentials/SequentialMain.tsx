@@ -5,9 +5,9 @@ import { SequentialItem } from './SequentialItem';
 import useConfig from '@/hooks/content/useConfig';
 import { useSequentialsManager } from './hooks/useSequentialManager';
 import React from 'react';
-import { DATE_FORMAT } from '@/types/enums/date-formats';
+import { DateFormat } from '@/types/enums/date-formats';
 import { useMutation } from '@tanstack/react-query';
-import { UpdateQuotationSequentialNumber, UpdateSequentialDto } from '@/types';
+import { UpdateSequentialDto } from '@/types';
 import { getErrorMessage } from '@/utils/errors';
 import { toast } from 'sonner';
 import { api } from '@/api';
@@ -29,7 +29,7 @@ export const SequentialMain: React.FC<SequentialMainProps> = ({ className }) => 
   //set page title in the breadcrumb
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setRoutes([
+    setRoutes?.([
       { title: tCommon('menu.settings') },
       { title: tCommon('submenu.system') },
       { title: tCommon('settings.system.sequence') }
@@ -55,21 +55,21 @@ export const SequentialMain: React.FC<SequentialMainProps> = ({ className }) => 
     }
   }, [sequentials]);
 
-  const { mutate: updateQuotationSequential } = useMutation({
-    mutationFn: (updateSequential: UpdateQuotationSequentialNumber) =>
-      api.quotation.updateQuotationsSequentials(updateSequential),
-    onSuccess: (data) => {
-      toast.success(`mises à jour avec succès`);
-    },
-    onError: (error) => {
-      toast.error(getErrorMessage('', error, 'Erreur lors de la mise à jour'));
-    }
-  });
+  // const { mutate: updateQuotationSequential } = useMutation({
+  //   mutationFn: (updateSequential: UpdateQuotationSequentialNumber) =>
+  //     api.quotation.updateQuotationsSequentials(updateSequential),
+  //   onSuccess: (data) => {
+  //     toast.success(`mises à jour avec succès`);
+  //   },
+  //   onError: (error) => {
+  //     toast.error(getErrorMessage('', error, 'Erreur lors de la mise à jour'));
+  //   }
+  // });
 
-  const handleSubmit = async () => {
-    sequentialsManager.sellingQuotation &&
-      updateQuotationSequential(sequentialsManager.sellingQuotation);
-  };
+  // const handleSubmit = async () => {
+  //   sequentialsManager.sellingQuotation &&
+  //     updateQuotationSequential(sequentialsManager.sellingQuotation);
+  // };
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
@@ -82,9 +82,7 @@ export const SequentialMain: React.FC<SequentialMainProps> = ({ className }) => 
             <SequentialItem
               title={tSettings('sequence.elements.quotation')}
               prefix={sequentialsManager?.sellingQuotation?.prefix}
-              dynamicSequence={
-                sequentialsManager?.sellingQuotation?.dynamicSequence || DATE_FORMAT.yyyy
-              }
+              dateFormat={sequentialsManager?.sellingQuotation?.dateFormat || DateFormat.YYYY}
               nextNumber={sequentialsManager?.sellingQuotation?.next || 0}
               loading={isSequentialsPending}
               onSequenceChange={(key: keyof UpdateSequentialDto, value: any) =>
@@ -94,9 +92,7 @@ export const SequentialMain: React.FC<SequentialMainProps> = ({ className }) => 
             <SequentialItem
               title={tSettings('sequence.elements.invoice')}
               prefix={sequentialsManager?.sellingInvoice?.prefix}
-              dynamicSequence={
-                sequentialsManager?.sellingInvoice?.dynamicSequence || DATE_FORMAT.yyyy
-              }
+              dateFormat={sequentialsManager?.sellingInvoice?.dateFormat || DateFormat.YYYY}
               nextNumber={sequentialsManager?.sellingInvoice?.next || 0}
               loading={isSequentialsPending}
               onSequenceChange={(key: keyof UpdateSequentialDto, value: any) =>
@@ -105,7 +101,7 @@ export const SequentialMain: React.FC<SequentialMainProps> = ({ className }) => 
             />
           </div>
           <div className="flex justify-end w-full gap-2 mt-5">
-            <Button onClick={handleSubmit}>
+            <Button>
               {tCommon('commands.save')}
               {isSequentialsPending && <Spinner show />}
             </Button>

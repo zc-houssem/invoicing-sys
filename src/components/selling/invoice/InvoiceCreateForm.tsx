@@ -58,7 +58,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   //set page title in the breadcrumb
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setRoutes(
+    setRoutes?.(
       !firmId
         ? [
             { title: tCommon('menu.selling'), href: '/selling' },
@@ -98,7 +98,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   const { taxWithholdings, isFetchTaxWithholdingsPending } = useTaxWithholding();
   const { dateRange, isFetchInvoiceRangePending } = useInvoiceRangeDates(invoiceManager.id);
   //websocket to listen for server changes related to sequence number
-  const { currentSequence, isInvoiceSequencePending } = useInvoiceSocket();
+  const { currentSequence, isSequencePending, refetchSequence } = useInvoiceSocket();
 
   //handle Sequential Number
   React.useEffect(() => {
@@ -186,6 +186,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
       if (!firmId) router.push('/selling/invoices');
       else router.push(`/contacts/firm/${firmId}/?tab=invoices`);
       toast.success('Facture crée avec succès');
+      globalReset();
     },
     onError: (error) => {
       const message = getErrorMessage('invoicing', error, 'Erreur lors de la création de facture');
@@ -281,7 +282,6 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
         invoice,
         files: invoiceManager.uploadedFiles.filter((u) => !u.upload).map((u) => u.file)
       });
-      globalReset();
     }
   };
 
@@ -302,7 +302,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
                   firms={firms}
                   isInvoicingAddressHidden={controlManager.isInvoiceAddressHidden}
                   isDeliveryAddressHidden={controlManager.isDeliveryAddressHidden}
-                  loading={isFetchFirmsPending || isInvoiceSequencePending}
+                  loading={isFetchFirmsPending || isSequencePending}
                 />
                 {/* Article Management */}
                 <InvoiceArticleManagement

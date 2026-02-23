@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '@/types/enums/date-formats';
+import { DateFormat } from '@/types/enums/date-formats';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,7 +20,7 @@ interface SequentialItemProps {
   id?: number;
   title: string;
   prefix?: string;
-  dynamicSequence?: DATE_FORMAT;
+  dateFormat?: DateFormat;
   nextNumber?: number;
   loading?: boolean;
   onSequenceChange?: (fieldname: keyof UpdateSequentialDto, value: any) => void;
@@ -30,7 +30,7 @@ export const SequentialItem: React.FC<SequentialItemProps> = ({
   className,
   title,
   prefix,
-  dynamicSequence,
+  dateFormat,
   nextNumber,
   loading,
   onSequenceChange
@@ -38,9 +38,9 @@ export const SequentialItem: React.FC<SequentialItemProps> = ({
   const { t: tSettings } = useTranslation('settings');
 
   const sequenceOptions = {
-    [DATE_FORMAT.yyyy]: 'yyyy',
-    [DATE_FORMAT.yy_MM]: 'yy-MM',
-    [DATE_FORMAT.yyyy_MM]: 'yyyy-MM'
+    [DateFormat.YYYY]: 'yyyy',
+    [DateFormat.YYMM]: 'yy-MM',
+    [DateFormat.YYYYMM]: 'yyyy-MM'
   };
 
   return (
@@ -52,7 +52,6 @@ export const SequentialItem: React.FC<SequentialItemProps> = ({
         <div>
           <Label className="text-sm my-1">{tSettings('sequence.attributes.prefix')} :</Label>
           <Input
-            isPending={loading}
             value={prefix}
             onChange={(e) => {
               onSequenceChange?.('prefix', e.target.value);
@@ -64,9 +63,9 @@ export const SequentialItem: React.FC<SequentialItemProps> = ({
             {tSettings('sequence.attributes.dynamic_sequence')} :
           </Label>
           <Select
-            value={sequenceOptions[dynamicSequence || DATE_FORMAT.yyyy]}
+            value={sequenceOptions[dateFormat || DateFormat.YYYY]}
             onValueChange={(value) => {
-              onSequenceChange?.('dynamicSequence', value);
+              onSequenceChange?.('dateFormat', value);
             }}>
             <SelectTrigger>
               <SelectValue />
@@ -84,7 +83,6 @@ export const SequentialItem: React.FC<SequentialItemProps> = ({
           <Label className="text-sm my-1">{tSettings('sequence.attributes.next')} :</Label>
           <Input
             type="number"
-            isPending={loading}
             value={nextNumber}
             onChange={(e) => {
               onSequenceChange?.('next', parseInt(e.target.value));

@@ -31,7 +31,7 @@ import { useQuotationArticleManager } from '../hooks/useQuotationArticleManager'
 import { QUOTATION_LIFECYCLE_ACTIONS } from '@/constants/quotation.lifecycle';
 import { QuotationInvoiceDialog } from '../dialogs/QuotationInvoiceDialog';
 import { QuotationInvoiceList } from './QuotationInvoiceList';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
+import { Input } from '@/components/ui/input';
 
 interface QuotationLifecycle {
   label: string;
@@ -471,12 +471,13 @@ export const QuotationControlSection = ({
                 )}
               </div>
             ) : (
-              <UneditableInput
+              <Input
                 className="font-bold my-4"
                 value={
                   quotationManager.currency &&
                   `${quotationManager.currency?.code && tCurrency(quotationManager.currency?.code)} (${quotationManager?.currency?.symbol})`
                 }
+                disabled
               />
             )}
           </div>

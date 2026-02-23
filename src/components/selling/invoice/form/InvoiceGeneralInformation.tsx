@@ -17,7 +17,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useInvoiceManager } from '../hooks/useInvoiceManager';
 import { UneditableCalendarDayPicker } from '@/components/ui/uneditable/uneditable-calendar-day-picker';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
 import { DatePicker } from '@/components/ui/date-picker';
 
 interface InvoiceGeneralInformationProps {
@@ -89,19 +88,17 @@ export const InvoiceGeneralInformation = ({
               onChange={(e) => {
                 invoiceManager.set('object', e.target.value);
               }}
-              isPending={loading}
             />
           ) : (
-            <UneditableInput value={invoiceManager.object} />
+            <Input value={invoiceManager.object} disabled />
           )}
         </div>
         <div className="w-2/6">
           <Label>{tInvoicing('invoice.singular')} N°</Label>
           <SequenceInput
             prefix={invoiceManager.sequentialNumber?.prefix}
-            dateFormat={invoiceManager.sequentialNumber?.dynamicSequence}
+            dateFormat={invoiceManager.sequentialNumber?.dateFormat}
             value={invoiceManager.sequentialNumber?.next}
-            loading={loading}
           />
         </div>
       </div>
@@ -135,7 +132,7 @@ export const InvoiceGeneralInformation = ({
                   </Select>
                 </SelectShimmer>
               ) : (
-                <UneditableInput value={invoiceManager?.firm?.name} />
+                <Input value={invoiceManager?.firm?.name} />
               )}
             </div>
 
@@ -176,18 +173,17 @@ export const InvoiceGeneralInformation = ({
                   </SelectContent>
                 </Select>
               </SelectShimmer>
-            ) : (
-              <UneditableInput
-                value={
-                  <div>
-                    {invoiceManager?.interlocutor?.name} {invoiceManager.interlocutor?.surname}
-                    {invoiceManager?.interlocutor?.id == mainInterlocutor?.interlocutor?.id && (
-                      <span className="font-bold mx-1"> ({tCommon('words.main_m')})</span>
-                    )}
-                  </div>
-                }
-              />
-            )}
+            ) : // <Input
+            //   value={
+            //     <div>
+            //       {invoiceManager?.interlocutor?.name} {invoiceManager.interlocutor?.surname}
+            //       {invoiceManager?.interlocutor?.id == mainInterlocutor?.interlocutor?.id && (
+            //         <span className="font-bold mx-1"> ({tCommon('words.main_m')})</span>
+            //       )}
+            //     </div>
+            //   }
+            // />
+            null}
           </div>
         </div>
         {!(

@@ -1,24 +1,24 @@
 import React from 'react';
-import useConfig from '@/hooks/content/useConfig';
 import useSocket from '@/hooks/useSocket';
 import { toast } from 'sonner';
 import { SocketRoom } from '@/types/enums/socket-room';
-import { Sequential } from '@/types';
+import { useSequence } from '@/hooks/content/useSequence';
+import { ResponseSequenceDto, Sequences } from '@/types';
 
 const useInvoiceSocket = () => {
-  const {
-    configs: [sequence],
-    isConfigPending: isInvoiceSequencePending
-  } = useConfig(['invoice_sequence']);
-
-  const [currentSequence, setCurrentSequence] = React.useState<Sequential | null>(null);
+  const { sequence, isSequencePending, refetchSequence } = useSequence({
+    label: Sequences.INVOICE
+  });
+  const [currentSequence, setCurrentSequence] = React.useState<Partial<ResponseSequenceDto> | null>(
+    null
+  );
   const hasJoinedRef = React.useRef(false);
 
   const socket = useSocket('/ws');
 
   React.useEffect(() => {
-    if (sequence?.value) {
-      setCurrentSequence(sequence.value);
+    if (sequence) {
+      setCurrentSequence(sequence);
     }
   }, [sequence]);
 
@@ -27,8 +27,7 @@ const useInvoiceSocket = () => {
 
     const handleConnect = () => {
       if (!hasJoinedRef.current) {
-        socket.emit('joinRoom', SocketRoom.INVOICE_SEQUENCE);
-        console.log('Joined room: INVOICE_SEQUENCE');
+        socket.emit('joinRoom', SocketRoom.INVOICE);
         hasJoinedRef.current = true;
       }
     };
@@ -58,7 +57,7 @@ const useInvoiceSocket = () => {
 
     return () => {
       if (socket && hasJoinedRef.current) {
-        socket.emit('leaveRoom', SocketRoom.INVOICE_SEQUENCE);
+        socket.emit('leaveRoom', SocketRoom.INVOICE);
         console.log('Left room: INVOICE_SEQUENCE');
         hasJoinedRef.current = false;
       }
@@ -72,7 +71,8 @@ const useInvoiceSocket = () => {
 
   return {
     currentSequence,
-    isInvoiceSequencePending
+    isSequencePending,
+    refetchSequence
   };
 };
 

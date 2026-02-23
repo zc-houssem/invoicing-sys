@@ -38,7 +38,7 @@ import { InvoiceDownloadDialog } from '../dialogs/InvoiceDownloadDialog';
 import { InvoiceDeleteDialog } from '../dialogs/InvoiceDeleteDialog';
 import { INVOICE_LIFECYCLE_ACTIONS } from '@/constants/invoice.lifecycle';
 import { InvoicePaymentList } from './InvoicePaymentList';
-import { UneditableInput } from '@/components/ui/uneditable/uneditable-input';
+import { Input } from '@/components/ui/input';
 
 interface InvoiceLifecycle {
   label: string;
@@ -353,7 +353,7 @@ export const InvoiceControlSection = ({
                   </Select>
                 </SelectShimmer>
               ) : invoiceManager.quotationId ? (
-                <UneditableInput
+                <Input
                   className="font-bold my-4"
                   value={quotations.find((q) => q.id == invoiceManager.quotationId)?.sequential}
                 />
@@ -464,7 +464,7 @@ export const InvoiceControlSection = ({
                   )}
                 </div>
               ) : (
-                <UneditableInput
+                <Input
                   className="font-bold my-4"
                   value={
                     invoiceManager.currency &&

@@ -81,7 +81,7 @@ export const InvoiceUpdateForm = ({ className, invoiceId }: InvoiceFormProps) =>
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
     if (invoice?.sequential)
-      setRoutes([
+      setRoutes?.([
         { title: tCommon('menu.selling'), href: '/selling' },
         { title: tInvoicing('invoice.plural'), href: '/selling/invoices' },
         { title: tInvoicing('invoice.singular') + ' N° ' + invoice?.sequential }
