@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
-import { useMediaQuery } from '@/hooks/other/useMediaQuery';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const SHEET_SIDES = ['top', 'right', 'bottom', 'left'] as const;
 type SheetSide = (typeof SHEET_SIDES)[number];
@@ -13,6 +13,7 @@ interface UseSheetOptions {
   description: React.ReactNode;
   side?: SheetSide;
   className?: string;
+  canScroll?: boolean;
   onToggle?: () => void;
 }
 
@@ -25,6 +26,7 @@ interface UseSheetReturn {
 export function useSheet({
   children,
   className = '',
+  canScroll = false,
   title,
   description,
   side,
@@ -32,13 +34,8 @@ export function useSheet({
 }: UseSheetOptions): UseSheetReturn {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const openSheet = (): void => {
-    setIsOpen(true);
-  };
-  const closeSheet = (): void => {
-    setIsOpen(false);
-    onToggle?.();
-  };
+  const openSheet = (): void => setIsOpen(true);
+  const closeSheet = (): void => setIsOpen(false);
   const onOpenChange = (b: boolean) => {
     setIsOpen(b);
     onToggle?.();
@@ -46,25 +43,32 @@ export function useSheet({
 
   const isDesktop = useMediaQuery('(min-width: 1500px)');
   const suitableSide = side ? side : isDesktop ? 'right' : 'bottom';
-  const suitableHeight = isDesktop ? 'min-h-screen' : 'h-[500px]';
+  const suitableHeight = side || isDesktop ? 'min-h-screen' : 'h-[500px]';
+
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return { SheetFragment: null, openSheet, closeSheet };
+  }
 
   const SheetFragment = ReactDOM.createPortal(
-    <React.Fragment>
-      <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent
-          side={suitableSide}
-          className={cn(suitableHeight, 'overflow-auto', className)}
-          onPointerDownOutside={(e) => {
-            e.preventDefault();
-          }}>
-          <SheetHeader>
-            <SheetTitle>{title}</SheetTitle>
-            <SheetDescription>{description}</SheetDescription>
-          </SheetHeader>
-          {children}
-        </SheetContent>
-      </Sheet>
-    </React.Fragment>,
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={suitableSide}
+        className={cn(
+          suitableHeight,
+          'flex flex-col flex-1',
+          canScroll ? 'overflow-auto' : 'overflow-hidden',
+          className
+        )}
+        onPointerDownOutside={(e) => {
+          e.preventDefault();
+        }}>
+        <SheetHeader>
+          <SheetTitle>{title}</SheetTitle>
+          <SheetDescription>{description}</SheetDescription>
+        </SheetHeader>
+        {children}
+      </SheetContent>
+    </Sheet>,
     document.body
   );
 
