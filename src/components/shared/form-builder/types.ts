@@ -31,7 +31,6 @@ export enum FieldVariant {
   SELECT = 'select',
   MULTI_SELECT = 'multi_select',
   CHECKBOX = 'checkbox',
-  CHECK = 'check',
   RADIO = 'radio',
   SWITCH = 'switch',
   TEXTAREA = 'textarea',

@@ -38,7 +38,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
               'flex  w-full',
               structure.orientation === 'vertical'
                 ? 'flex-row xl:flex-col gap-10'
-                : 'flex-col gap-4'
+                : 'flex-col gap-5'
             )}>
             {fieldset.includeHeader && (
               <div className="flex flex-col gap-2">
@@ -70,26 +70,22 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                       return (
                         <div
                           key={field.id}
-                          className={cn('flex flex-col gap-2 w-full', field.wrapperClassName)}>
-                          <div className="flex flex-row justify-between items-center">
-                            <Label
-                              className={cn(
-                                'text-xs font-semibold',
-                                field.variant === 'check' && 'invisible'
-                              )}
-                              htmlFor={field.label}>
-                              {field.variant !== 'check' ? field.label || '\u00A0' : '\u00A0'}
-                              {field.required && <span className="text-red-500 mx-1">*</span>}
-                            </Label>
-                          </div>
-
+                          className={cn('flex flex-col gap-1 w-full', field.wrapperClassName)}>
+                          <Label className={cn('text-xs font-medium')} htmlFor={field.id}>
+                            <span>{field.label}</span>
+                            {field.required && <span className="text-red-500 mx-1">*</span>}
+                          </Label>
                           <FieldBuilder field={field} />
+
                           <div className="flex justify-between items-center gap-2">
-                            {field.variant !== FieldVariant.SWITCH && !field.error && (
-                              <span className="font-medium text-xs opacity-70 leading-3">
-                                {field.description}
-                              </span>
-                            )}
+                            {![FieldVariant.SWITCH, FieldVariant.CHECKBOX].includes(
+                              field.variant
+                            ) &&
+                              !field.error && (
+                                <span className="font-medium text-xs opacity-70 leading-3">
+                                  {field.description}
+                                </span>
+                              )}
                             {field?.error && (
                               <span className="font-medium text-xs text-red-500 leading-3">
                                 {field?.error}

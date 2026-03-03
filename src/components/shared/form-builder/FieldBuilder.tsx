@@ -113,7 +113,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           // disabled={field?.props?.disabled}
         />
       );
-    case 'check':
+    case 'checkbox':
       return (
         <div className="flex items-center gap-2 h-8">
           <Checkbox
@@ -123,8 +123,8 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             defaultChecked={field?.props?.defaultChecked}
             onCheckedChange={(value) => field?.props?.onCheckedChange?.(value)}
           />
-          <Label className={cn('text-sm font-semibold')} htmlFor={field.label}>
-            {field.label}
+          <Label className={cn('text-xs')} htmlFor={field.label}>
+            {field.description}
           </Label>
         </div>
       );
