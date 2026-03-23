@@ -77,7 +77,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                           </Label>
                           <FieldBuilder field={field} />
 
-                          <div className="flex justify-between items-center gap-2">
+                          <div className="flex justify-between items-center gap-2 mt-1">
                             {![FieldVariant.SWITCH, FieldVariant.CHECKBOX].includes(
                               field.variant
                             ) &&
