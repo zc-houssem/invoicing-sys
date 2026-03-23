@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { api } from '@/api';
+import { api, invoice } from '@/api';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { DuplicateInvoiceDto, Invoice } from '@/types';
@@ -145,11 +145,15 @@ export const InvoicePortal = ({ className, firmId, interlocutorId }: InvoicePort
   const context: DataTableConfig<Invoice> = {
     singularName: tInvoicing('invoice.singular'),
     pluralName: tInvoicing('invoice.plural'),
-    inspectCallback: () => {},
+    inspectCallback: (invoice: Invoice) => {
+      router.push('/selling/invoice/' + invoice.id);
+    },
     createCallback: () => {
       router.push('/selling/new-invoice');
     },
-    updateCallback: () => {},
+    updateCallback: (invoice: Invoice) => {
+      router.push('/selling/invoice/' + invoice.id);
+    },
     deleteCallback: () => {},
     additionalActions: {},
     //search, filtering, sorting & paging

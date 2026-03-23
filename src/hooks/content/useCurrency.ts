@@ -2,8 +2,16 @@ import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
 
-const useCurrency = (enabled: boolean = true) => {
-  const { isPending: isFetchCurrenciesPending, data: currenciesResp } = useQuery({
+interface useCurrenciesProps {
+  enabled?: boolean;
+}
+
+const useCurrencies = ({ enabled }: useCurrenciesProps = { enabled: true }) => {
+  const {
+    data: currenciesResp,
+    isPending: isCurrenciesPending,
+    refetch: refetchCurrencies
+  } = useQuery({
     queryKey: ['currencies'],
     queryFn: () => api.currency.find(),
     enabled
@@ -16,8 +24,9 @@ const useCurrency = (enabled: boolean = true) => {
 
   return {
     currencies,
-    isFetchCurrenciesPending
+    isCurrenciesPending,
+    refetchCurrencies
   };
 };
 
-export default useCurrency;
+export default useCurrencies;

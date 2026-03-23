@@ -16,7 +16,8 @@ import {
   UserCog,
   Users,
   Wallet,
-  Wrench
+  Wrench,
+  X
 } from 'lucide-react';
 
 import {
@@ -141,6 +142,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 5,
+        title: 'Content Management',
+        url: '/content-management',
+        icon: X,
+        items: [
+          {
+            title: 'Bank Accounts',
+            url: '/content-management/bank-accounts',
+            icon: Wallet
+          }
+        ]
+      },
+      {
+        id: 6,
         title: tCommon('menu.administrative_tools'),
         url: '#',
         icon: Shield,
@@ -158,7 +172,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ]
       },
       {
-        id: 6,
+        id: 7,
         title: tCommon('menu.settings'),
         url: '#',
         icon: Settings,

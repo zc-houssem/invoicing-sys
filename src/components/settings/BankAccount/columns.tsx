@@ -1,19 +1,18 @@
-import { BankAccount } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTableRowActions } from './data-table-row-actions';
 import { X } from 'lucide-react';
-import { DataTableColumnHeader } from './data-table-column-header';
 import { BANK_ACCOUNT_FILTER_ATTRIBUTES } from '@/constants/bank-account.filter-attributes';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useTranslation } from 'react-i18next';
+import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
+import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
+import { ResponseBankAccountDto } from '@/types';
 
-export const getBankAccountColumns = (
-  t: Function,
-  tCurrency: Function
-): ColumnDef<BankAccount>[] => {
-  const translationNamespace = 'settings';
-  const translate = (value: string, namespace: string = '') => {
-    return t(value, { ns: namespace || translationNamespace });
-  };
+export const useBankAccountColumns = (
+  context: DataTableConfig<ResponseBankAccountDto>
+): ColumnDef<ResponseBankAccountDto>[] => {
+  const { t } = useTranslation('settings');
+  const { t: tCurrency } = useTranslation('currency');
 
   return [
     {
@@ -21,7 +20,8 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.name')}
+          context={context}
+          title={t('bank_account.attributes.name')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.NAME}
         />
       ),
@@ -34,7 +34,8 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.bic')}
+          context={context}
+          title={t('bank_account.attributes.bic')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.BIC}
         />
       ),
@@ -47,7 +48,8 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.rib')}
+          context={context}
+          title={t('bank_account.attributes.rib')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.RIB}
         />
       ),
@@ -60,7 +62,8 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.iban')}
+          context={context}
+          title={t('bank_account.attributes.iban')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.IBAN}
         />
       ),
@@ -73,14 +76,15 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.currency')}
+          context={context}
+          title={t('bank_account.attributes.currency')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.CURRENCY}
         />
       ),
       cell: ({ row }) =>
         row.original.currency ? (
           <div>
-            {tCurrency(row.original.currency?.code)} ({row.original.currency?.symbol})
+            {tCurrency(row.original?.currency?.code)} ({row.original.currency?.symbol})
           </div>
         ) : (
           <div className="flex items-center gap-2 font-bold">
@@ -95,17 +99,16 @@ export const getBankAccountColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('bank_account.attributes.isMain')}
+          context={context}
+          title={t('bank_account.attributes.isMain')}
           attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.ISMAIN}
         />
       ),
       cell: ({ row }) => (
         <div>
           {
-            <Badge className="px-5">
-              {row.original.isMain
-                ? translate('answer.yes', 'common')
-                : translate('answer.no', 'common')}
+            <Badge variant={row.original.isMain ? 'default' : 'outline'} className="px-5">
+              {row.original.isMain ? 'Primary' : 'Secondary'}
             </Badge>
           }
         </div>
@@ -117,7 +120,7 @@ export const getBankAccountColumns = (
       id: 'actions',
       cell: ({ row }) => (
         <div className="flex justify-end">
-          <DataTableRowActions row={row} />
+          <DataTableRowActions row={row} context={context} />
         </div>
       )
     }

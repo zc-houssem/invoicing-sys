@@ -1,20 +1,24 @@
-import { Currency } from './currency';
-import { PagedResponse } from './response';
+import { ResponseCurrencyDto } from './currency';
 import { DatabaseEntity } from './response/DatabaseEntity';
 
-export interface BankAccount extends DatabaseEntity {
-  id?: number;
-  name?: string;
-  bic?: string;
-  rib?: string;
-  iban?: string;
-  currency?: Currency;
+export interface ResponseBankAccountDto extends DatabaseEntity {
+  id: number;
+  name: string;
+  bic: string;
+  rib: string;
+  iban: string;
+  currencyId: number;
+  currency: ResponseCurrencyDto;
+  isMain: boolean;
+}
+
+export interface CreateBankAccountDto {
+  name: string;
+  bic: string;
+  rib: string;
+  iban: string;
   currencyId?: number;
   isMain?: boolean;
 }
 
-export interface CreateBankAccountDto
-  extends Omit<BankAccount, 'id' | 'currency' | 'isDeletionRestricted'> {}
-export interface UpdateBankAccountDto
-  extends Omit<BankAccount, 'currency' | 'isDeletionRestricted'> {}
-export interface PagedBankAccount extends PagedResponse<BankAccount> {}
+export interface UpdateBankAccountDto extends Partial<CreateBankAccountDto> {}
