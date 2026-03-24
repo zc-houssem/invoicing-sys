@@ -50,12 +50,12 @@ export const FirmCreateForm = ({ className }: FirmFormProps) => {
 
   // Fetch options
   const { activities, isFetchActivitiesPending } = useActivities();
-  const { currencies, isFetchCurrenciesPending } = useCurrency();
+  const { currencies, isCurrenciesPending } = useCurrency();
   const { countries, isFetchCountriesPending } = useCountry();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const loading =
     isFetchActivitiesPending ||
-    isFetchCurrenciesPending ||
+    isCurrenciesPending ||
     isFetchCountriesPending ||
     isFetchPaymentConditionsPending;
 

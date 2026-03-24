@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -43,24 +42,22 @@ const FirmContactInformation: React.FC<FirmContactInformationProps> = ({ classNa
             <div className="-mt-1 mx-1 w-1/5">
               <Label>{tContacts('interlocutor.attributes.title')} (*)</Label>
               <div className="mt-2">
-                <SelectShimmer isPending={loading || false}>
-                  <Select
-                    onValueChange={(e) => {
-                      firmStore.set('title', e);
-                    }}
-                    value={firmStore?.title}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={tContacts('interlocutor.attributes.title')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(SOCIAL_TITLE).map((title) => (
-                        <SelectItem key={title} value={title}>
-                          {tSocial(title)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </SelectShimmer>
+                <Select
+                  onValueChange={(e) => {
+                    firmStore.set('title', e);
+                  }}
+                  value={firmStore?.title}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={tContacts('interlocutor.attributes.title')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(SOCIAL_TITLE).map((title) => (
+                      <SelectItem key={title} value={title}>
+                        {tSocial(title)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="mx-1 w-2/5">

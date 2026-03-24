@@ -10,14 +10,14 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { ArticleInvoiceEntry, Currency, Tax } from '@/types';
+import { ArticleInvoiceEntry, ResponseCurrencyDto, Tax } from '@/types';
 import { Plus, X } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface TaxDisplayProps {
   tax?: Tax;
-  currency?: Currency;
+  currency?: ResponseCurrencyDto;
 }
 const TaxDisplay = ({ tax, currency }: TaxDisplayProps) => {
   const value = tax?.value ?? 0;
@@ -38,7 +38,7 @@ interface InvoiceTaxEntriesProps {
   article: ArticleInvoiceEntry;
   taxes: Tax[];
   selectedTaxIds: (number | undefined)[];
-  currency?: Currency;
+  currency?: ResponseCurrencyDto;
   handleTaxAdd: () => void;
   handleTaxChange: (value: string, index: number) => void;
   handleTaxDelete: (index: number) => void;

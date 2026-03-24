@@ -6,13 +6,12 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Activity, Currency, PaymentCondition } from '@/types';
+import { Activity, ResponseCurrencyDto, PaymentCondition } from '@/types';
 import { useFirmStore } from '@/hooks/stores/useFirmStore';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
@@ -20,7 +19,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
 interface FirmProfessionalInformationProps {
   className?: string;
   activities?: Activity[];
-  currencies?: Currency[];
+  currencies?: ResponseCurrencyDto[];
   paymentConditions?: PaymentCondition[];
   loading?: boolean;
 }
@@ -123,45 +122,43 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
           <div className="mt-1 mr-2 w-1/2">
             <Label>{tContact('firm.attributes.activity')}</Label>
             <div className="mt-2">
-              <SelectShimmer isPending={loading}>
-                <Select
-                  key={firmStore.activity?.id || 'activity'}
-                  onValueChange={(e) => firmStore.set('activity', { id: parseInt(e) } as Activity)}
-                  value={firmStore?.activity?.id?.toString() || ''}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={tContact('firm.attributes.activity')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {activities?.map((activity) => (
-                      <SelectItem key={activity.id} value={activity?.id?.toString() || ''}>
-                        {activity.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                key={firmStore.activity?.id || 'activity'}
+                onValueChange={(e) => firmStore.set('activity', { id: parseInt(e) } as Activity)}
+                value={firmStore?.activity?.id?.toString() || ''}>
+                <SelectTrigger>
+                  <SelectValue placeholder={tContact('firm.attributes.activity')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {activities?.map((activity) => (
+                    <SelectItem key={activity.id} value={activity?.id?.toString() || ''}>
+                      {activity.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="mt-1 mr-2 w-1/2">
             <Label>{tContact('firm.attributes.currency')}</Label>
             <div className="mt-2">
-              <SelectShimmer isPending={loading}>
-                <Select
-                  key={firmStore.currency?.id || 'currency'}
-                  onValueChange={(e) => firmStore.set('currency', { id: parseInt(e) } as Currency)}
-                  value={firmStore?.currency?.id?.toString() || ''}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={tContact('firm.attributes.currency')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencies?.map((currency) => (
-                      <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
-                        {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                key={firmStore.currency?.id || 'currency'}
+                onValueChange={(e) =>
+                  firmStore.set('currency', { id: parseInt(e) } as ResponseCurrencyDto)
+                }
+                value={firmStore?.currency?.id?.toString() || ''}>
+                <SelectTrigger>
+                  <SelectValue placeholder={tContact('firm.attributes.currency')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencies?.map((currency) => (
+                    <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
+                      {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -169,25 +166,23 @@ const FirmProfessionalInformation: React.FC<FirmProfessionalInformationProps> = 
           <div className="mr-2 w-full">
             <Label>{tContact('firm.attributes.payment_conditions')}</Label>
             <div className="mt-1">
-              <SelectShimmer isPending={loading}>
-                <Select
-                  key={firmStore.paymentCondition?.id || 'paymentCondition'}
-                  onValueChange={(e) =>
-                    firmStore.set('paymentCondition', { id: parseInt(e) } as PaymentCondition)
-                  }
-                  value={firmStore?.paymentCondition?.id?.toString() || ''}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={tContact('firm.attributes.payment_conditions')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {paymentConditions?.map((condition) => (
-                      <SelectItem key={condition.id} value={condition?.id?.toString() || ''}>
-                        {condition.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                key={firmStore.paymentCondition?.id || 'paymentCondition'}
+                onValueChange={(e) =>
+                  firmStore.set('paymentCondition', { id: parseInt(e) } as PaymentCondition)
+                }
+                value={firmStore?.paymentCondition?.id?.toString() || ''}>
+                <SelectTrigger>
+                  <SelectValue placeholder={tContact('firm.attributes.payment_conditions')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {paymentConditions?.map((condition) => (
+                    <SelectItem key={condition.id} value={condition?.id?.toString() || ''}>
+                      {condition.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

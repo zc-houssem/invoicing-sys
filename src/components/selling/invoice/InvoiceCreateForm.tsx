@@ -89,7 +89,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
   const { quotations, isFetchQuotationPending } = useQuotationChoices(QUOTATION_STATUS.Invoiced);
   const { cabinet, isFetchCabinetPending } = useCabinet();
   const { taxes, isFetchTaxesPending } = useTax();
-  const { currencies, isFetchCurrenciesPending } = useCurrency();
+  const { currencies, isCurrenciesPending } = useCurrency();
   const { bankAccounts, isFetchBankAccountsPending } = useBankAccount();
   const { defaultCondition, isFetchDefaultConditionPending } = useDefaultCondition(
     ACTIVITY_TYPE.SELLING,
@@ -198,7 +198,7 @@ export const InvoiceCreateForm = ({ className, firmId }: InvoiceFormProps) => {
     isFetchTaxesPending ||
     isFetchCabinetPending ||
     isFetchBankAccountsPending ||
-    isFetchCurrenciesPending ||
+    isCurrenciesPending ||
     isFetchDefaultConditionPending ||
     isCreatePending ||
     isFetchQuotationPending ||

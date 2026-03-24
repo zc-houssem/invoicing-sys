@@ -96,6 +96,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Package,
         items: [
           {
+            title: '_Devis',
+            url: '/selling/_quotations',
+            icon: File
+          },
+          {
             title: tCommon('submenu.quotations'),
             url: '/selling/quotations',
             icon: File

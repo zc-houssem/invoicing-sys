@@ -3,6 +3,16 @@ import { CreateBankAccountDto, ResponseBankAccountDto, UpdateBankAccountDto } fr
 import { BANK_ACCOUNT_FILTER_ATTRIBUTES } from '@/constants/bank-account.filter-attributes';
 import { PagedResponse } from '@/types/response';
 
+const factory = (): UpdateBankAccountDto => {
+  return {
+    name: '',
+    bic: '',
+    iban: '',
+    rib: '',
+    isMain: false
+  };
+};
+
 const findPaginated = async (
   page: number = 1,
   size: number = 5,
@@ -57,6 +67,7 @@ const remove = async (id: number) => {
 };
 
 export const bankAccount = {
+  factory,
   find,
   findPaginated,
   create,

@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -112,24 +111,22 @@ const FirmAddressInformation = React.memo<FirmAddressInformationProps>(
           <div className="mt-2 mr-2 w-full">
             <Label>{tContacts('common.address.country')}</Label>
             <div className="mt-2">
-              <SelectShimmer isPending={loading}>
-                <Select
-                  key={address?.countryId || 'country'}
-                  disabled={disabled}
-                  value={address?.countryId?.toString()}
-                  onValueChange={(e) => setAddressField?.('countryId', parseInt(e))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={tContacts('common.address.country')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries?.map((country) => (
-                      <SelectItem key={country.id} value={country?.id?.toString() || ''}>
-                        {country?.alpha2Code && tCountry(country?.alpha2Code)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                key={address?.countryId || 'country'}
+                disabled={disabled}
+                value={address?.countryId?.toString()}
+                onValueChange={(e) => setAddressField?.('countryId', parseInt(e))}>
+                <SelectTrigger>
+                  <SelectValue placeholder={tContacts('common.address.country')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {countries?.map((country) => (
+                    <SelectItem key={country.id} value={country?.id?.toString() || ''}>
+                      {country?.alpha2Code && tCountry(country?.alpha2Code)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardContent>

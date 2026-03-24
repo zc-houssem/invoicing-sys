@@ -5,7 +5,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -20,12 +19,12 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { useRouter } from 'next/router';
 import {
-  BankAccount,
-  Currency,
+  ResponseBankAccountDto,
+  ResponseCurrencyDto,
   DuplicateInvoiceDto,
   INVOICE_STATUS,
   PaymentInvoiceEntry,
-  Quotation,
+  ResponseQuotationDto,
   TaxWithholding
 } from '@/types';
 import { useInvoiceManager } from '../hooks/useInvoiceManager';
@@ -57,9 +56,9 @@ interface InvoiceControlSectionProps {
   className?: string;
   status?: INVOICE_STATUS;
   isDataAltered?: boolean;
-  bankAccounts: BankAccount[];
-  currencies: Currency[];
-  quotations: Quotation[];
+  bankAccounts: ResponseBankAccountDto[];
+  currencies: ResponseCurrencyDto[];
+  quotations: ResponseQuotationDto[];
   payments?: PaymentInvoiceEntry[];
   taxWithholdings?: TaxWithholding[];
   handleSubmit?: () => void;
@@ -326,32 +325,30 @@ export const InvoiceControlSection = ({
             <h1 className="font-bold">{tInvoicing('controls.associate_quotation')}</h1>
             <div className="my-4">
               {edit ? (
-                <SelectShimmer isPending={loading}>
-                  <Select
-                    key={invoiceManager?.quotationId || 'quotationId'}
-                    onValueChange={(e) => {
-                      invoiceManager.set(
-                        'quotationId',
-                        quotations?.find((q) => q.id == parseInt(e))?.id
+                <Select
+                  key={invoiceManager?.quotationId || 'quotationId'}
+                  onValueChange={(e) => {
+                    invoiceManager.set(
+                      'quotationId',
+                      quotations?.find((q) => q.id == parseInt(e))?.id
+                    );
+                  }}
+                  value={invoiceManager?.quotationId?.toString()}>
+                  <SelectTrigger className="my-1 w-full">
+                    <SelectValue
+                      placeholder={tInvoicing('controls.quotation_select_placeholder')}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {quotations?.map((q) => {
+                      return (
+                        <SelectItem key={q.id} value={q?.id?.toString() || ''}>
+                          <span className="font-bold">{q?.sequential}</span>
+                        </SelectItem>
                       );
-                    }}
-                    value={invoiceManager?.quotationId?.toString()}>
-                    <SelectTrigger className="my-1 w-full">
-                      <SelectValue
-                        placeholder={tInvoicing('controls.quotation_select_placeholder')}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {quotations?.map((q: Quotation) => {
-                        return (
-                          <SelectItem key={q.id} value={q?.id?.toString() || ''}>
-                            <span className="font-bold">{q?.sequential}</span>
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </SelectShimmer>
+                    })}
+                  </SelectContent>
+                </Select>
               ) : invoiceManager.quotationId ? (
                 <Input
                   className="font-bold my-4"
@@ -395,32 +392,30 @@ export const InvoiceControlSection = ({
               <div>
                 <h1 className="font-bold">{tInvoicing('controls.bank_details')}</h1>
                 <div className="my-5">
-                  <SelectShimmer isPending={loading}>
-                    <Select
-                      key={invoiceManager.bankAccount?.id || 'bankAccount'}
-                      onValueChange={(e) =>
-                        invoiceManager.set(
-                          'bankAccount',
-                          bankAccounts.find((account) => account.id == parseInt(e))
-                        )
-                      }
-                      defaultValue={invoiceManager?.bankAccount?.id?.toString() || ''}>
-                      <SelectTrigger className="mty1 w-full">
-                        <SelectValue placeholder={tInvoicing('controls.bank_select_placeholder')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {bankAccounts?.map((account: BankAccount) => {
-                          return (
-                            <SelectItem key={account.id} value={account?.id?.toString() || ''}>
-                              <span className="font-bold">{account?.name}</span> - (
-                              {account?.currency?.code && tCurrency(account?.currency?.code)}(
-                              {account?.currency?.symbol})
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
-                  </SelectShimmer>
+                  <Select
+                    key={invoiceManager.bankAccount?.id || 'bankAccount'}
+                    onValueChange={(e) =>
+                      invoiceManager.set(
+                        'bankAccount',
+                        bankAccounts.find((account) => account.id == parseInt(e))
+                      )
+                    }
+                    defaultValue={invoiceManager?.bankAccount?.id?.toString() || ''}>
+                    <SelectTrigger className="mty1 w-full">
+                      <SelectValue placeholder={tInvoicing('controls.bank_select_placeholder')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bankAccounts?.map((account) => {
+                        return (
+                          <SelectItem key={account.id} value={account?.id?.toString() || ''}>
+                            <span className="font-bold">{account?.name}</span> - (
+                            {account?.currency?.code && tCurrency(account?.currency?.code)}(
+                            {account?.currency?.symbol})
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             )}
@@ -432,34 +427,30 @@ export const InvoiceControlSection = ({
                   {' '}
                   {currencies.length != 0 && (
                     <div className="my-5">
-                      <SelectShimmer isPending={loading}>
-                        <Select
-                          key={invoiceManager.currency?.id || 'currency'}
-                          onValueChange={(e) => {
-                            invoiceManager.set(
-                              'currency',
-                              currencies.find((currency) => currency.id == parseInt(e))
+                      <Select
+                        key={invoiceManager.currency?.id || 'currency'}
+                        onValueChange={(e) => {
+                          invoiceManager.set(
+                            'currency',
+                            currencies.find((currency) => currency.id == parseInt(e))
+                          );
+                        }}
+                        defaultValue={invoiceManager?.currency?.id?.toString() || ''}>
+                        <SelectTrigger className="mty1 w-full">
+                          <SelectValue
+                            placeholder={tInvoicing('controls.currency_select_placeholder')}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {currencies?.map((currency) => {
+                            return (
+                              <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
+                                {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
+                              </SelectItem>
                             );
-                          }}
-                          defaultValue={invoiceManager?.currency?.id?.toString() || ''}>
-                          <SelectTrigger className="mty1 w-full">
-                            <SelectValue
-                              placeholder={tInvoicing('controls.currency_select_placeholder')}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {currencies?.map((currency: Currency) => {
-                              return (
-                                <SelectItem
-                                  key={currency.id}
-                                  value={currency?.id?.toString() || ''}>
-                                  {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </SelectShimmer>
+                          })}
+                        </SelectContent>
+                      </Select>
                     </div>
                   )}
                 </div>
@@ -589,29 +580,27 @@ export const InvoiceControlSection = ({
           <div className="w-full py-5">
             <h1 className="font-bold">{tInvoicing('controls.withholding')}</h1>
             <div className="my-4">
-              <SelectShimmer isPending={loading}>
-                <Select
-                  key={invoiceManager?.taxWithholdingId || 'taxWithholdingId'}
-                  onValueChange={(e) => {
-                    invoiceManager.set('taxWithholdingId', parseInt(e));
-                  }}
-                  value={invoiceManager?.taxWithholdingId?.toString()}>
-                  <SelectTrigger className="my-1 w-full">
-                    <SelectValue
-                      placeholder={tInvoicing('controls.tax_withholding_select_placeholder')}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {taxWithholdings?.map((t: TaxWithholding) => {
-                      return (
-                        <SelectItem key={t.id} value={t?.id?.toString() || ''}>
-                          <span className="font-bold">{t?.label}</span> <span>({t?.rate} %)</span>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                key={invoiceManager?.taxWithholdingId || 'taxWithholdingId'}
+                onValueChange={(e) => {
+                  invoiceManager.set('taxWithholdingId', parseInt(e));
+                }}
+                value={invoiceManager?.taxWithholdingId?.toString()}>
+                <SelectTrigger className="my-1 w-full">
+                  <SelectValue
+                    placeholder={tInvoicing('controls.tax_withholding_select_placeholder')}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {taxWithholdings?.map((t: TaxWithholding) => {
+                    return (
+                      <SelectItem key={t.id} value={t?.id?.toString() || ''}>
+                        <span className="font-bold">{t?.label}</span> <span>({t?.rate} %)</span>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         )}

@@ -5,7 +5,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -108,29 +107,24 @@ export const InvoiceGeneralInformation = ({
             <div>
               <Label>{tInvoicing('invoice.attributes.firm')} (*)</Label>
               {edit ? (
-                <SelectShimmer isPending={loading}>
-                  <Select
-                    onValueChange={(e) => {
-                      const firm = firms?.find((firm) => firm.id === parseInt(e));
-                      invoiceManager.setFirm(firm);
-                      invoiceManager.set('currency', firm?.currency);
-                    }}
-                    value={invoiceManager.firm?.id?.toString()}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder={tInvoicing('invoice.associate_firm')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {firms?.map((firm: Partial<Firm>) => (
-                        <SelectItem
-                          key={firm.id}
-                          value={firm.id?.toString() || ''}
-                          className="mx-1">
-                          {firm.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </SelectShimmer>
+                <Select
+                  onValueChange={(e) => {
+                    const firm = firms?.find((firm) => firm.id === parseInt(e));
+                    invoiceManager.setFirm(firm);
+                    invoiceManager.set('currency', firm?.currency);
+                  }}
+                  value={invoiceManager.firm?.id?.toString()}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder={tInvoicing('invoice.associate_firm')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {firms?.map((firm: Partial<Firm>) => (
+                      <SelectItem key={firm.id} value={firm.id?.toString() || ''} className="mx-1">
+                        {firm.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : (
                 <Input value={invoiceManager?.firm?.name} />
               )}
@@ -148,31 +142,29 @@ export const InvoiceGeneralInformation = ({
           <div className="w-1/2">
             <Label>{tInvoicing('invoice.attributes.interlocutor')} (*)</Label>
             {edit ? (
-              <SelectShimmer isPending={loading}>
-                <Select
-                  disabled={!invoiceManager?.firm?.id}
-                  onValueChange={(e) => {
-                    invoiceManager.setInterlocutor({ id: parseInt(e) } as Interlocutor);
-                  }}
-                  value={invoiceManager.interlocutor?.id?.toString()}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder={tInvoicing('invoice.associate_interlocutor')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {invoiceManager.firm?.interlocutorsToFirm?.map((entry: any) => (
-                      <SelectItem
-                        key={entry.interlocutor?.id || 'interlocutor'}
-                        value={entry.interlocutor?.id?.toString()}
-                        className="mx-1">
-                        {entry.interlocutor?.name} {entry.interlocutor?.surname}{' '}
-                        {entry.isMain && (
-                          <span className="font-bold">({tCommon('words.main_m')})</span>
-                        )}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                disabled={!invoiceManager?.firm?.id}
+                onValueChange={(e) => {
+                  invoiceManager.setInterlocutor({ id: parseInt(e) } as Interlocutor);
+                }}
+                value={invoiceManager.interlocutor?.id?.toString()}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder={tInvoicing('invoice.associate_interlocutor')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {invoiceManager.firm?.interlocutorsToFirm?.map((entry: any) => (
+                    <SelectItem
+                      key={entry.interlocutor?.id || 'interlocutor'}
+                      value={entry.interlocutor?.id?.toString()}
+                      className="mx-1">
+                      {entry.interlocutor?.name} {entry.interlocutor?.surname}{' '}
+                      {entry.isMain && (
+                        <span className="font-bold">({tCommon('words.main_m')})</span>
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             ) : // <Input
             //   value={
             //     <div>

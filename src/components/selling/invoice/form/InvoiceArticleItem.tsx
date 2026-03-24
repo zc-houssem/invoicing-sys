@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { ArticleInvoiceEntry, Currency, InvoiceTaxEntry, Tax } from '@/types';
+import { ArticleInvoiceEntry, ResponseCurrencyDto, InvoiceTaxEntry, Tax } from '@/types';
 import {
   Select,
   SelectTrigger,
@@ -21,7 +21,7 @@ interface InvoiceArticleItemProps {
   article: ArticleInvoiceEntry;
   onChange: (item: ArticleInvoiceEntry) => void;
   showDescription?: boolean;
-  currency?: Currency;
+  currency?: ResponseCurrencyDto;
   taxes: Tax[];
   edit?: boolean;
 }
@@ -129,7 +129,7 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
 
   const handleAddTax = () => {
     if ((article.articleInvoiceEntryTaxes?.length || 0) >= taxes.length) {
-      toast.warn(tInvoicing('invoice.errors.surpassed_tax_limit'));
+      toast.warning(tInvoicing('invoice.errors.surpassed_tax_limit'));
       return;
     }
     onChange({
@@ -147,29 +147,21 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
           {/* Title */}
           <div className="w-3/5">
             <Label className="mx-1">{tInvoicing('article.attributes.title')}</Label>
-            {edit ? (
-              <Input
-                placeholder="Title"
-                value={article.article?.title}
-                onChange={handleTitleChange}
-              />
-            ) : (
-              <UneditableInput value={article.article?.title} />
-            )}
+            <Input
+              placeholder="Title"
+              value={article.article?.title}
+              onChange={handleTitleChange}
+            />
           </div>
           {/* Quantity */}
           <div className="w-1/5">
             <Label className="mx-1">{tInvoicing('article.attributes.quantity')}</Label>
-            {edit ? (
-              <Input
-                type="number"
-                placeholder="0"
-                value={article.quantity}
-                onChange={handleQuantityChange}
-              />
-            ) : (
-              <UneditableInput value={article.quantity} />
-            )}
+            <Input
+              type="number"
+              placeholder="0"
+              value={article.quantity}
+              onChange={handleQuantityChange}
+            />
           </div>
           {/* Price */}
           <div className="w-1/5">
@@ -241,39 +233,26 @@ export const InvoiceArticleItem: React.FC<InvoiceArticleItemProps> = ({
         <div className="my-auto py-5">
           <Label className="mx-1">{tInvoicing('invoice.attributes.discount')}</Label>
           <div className="flex items-center gap-2">
-            {edit ? (
-              <Input
-                className="w-1/2"
-                type="number"
-                placeholder="0"
-                value={article.discount}
-                onChange={handleDiscountChange}
-              />
-            ) : (
-              <UneditableInput className="w-1/2" value={article.discount || '0'} />
-            )}
-            {edit ? (
-              <Select
-                onValueChange={handleDiscountTypeChange}
-                defaultValue={
-                  article.discount_type === DISCOUNT_TYPE.PERCENTAGE ? 'PERCENTAGE' : 'AMOUNT'
-                }>
-                <SelectTrigger className="w-1/2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PERCENTAGE">%</SelectItem>
-                  <SelectItem value="AMOUNT">{currency?.symbol || '$'}</SelectItem>
-                </SelectContent>
-              </Select>
-            ) : (
-              <UneditableInput
-                className="w-1/2 font-bold mx-1"
-                value={
-                  article.discount_type === DISCOUNT_TYPE.PERCENTAGE ? '%' : currency?.symbol || '$'
-                }
-              />
-            )}
+            <Input
+              className="w-1/2"
+              type="number"
+              placeholder="0"
+              value={article.discount}
+              onChange={handleDiscountChange}
+            />
+            <Select
+              onValueChange={handleDiscountTypeChange}
+              defaultValue={
+                article.discount_type === DISCOUNT_TYPE.PERCENTAGE ? 'PERCENTAGE' : 'AMOUNT'
+              }>
+              <SelectTrigger className="w-1/2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PERCENTAGE">%</SelectItem>
+                <SelectItem value="AMOUNT">{currency?.symbol || '$'}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
