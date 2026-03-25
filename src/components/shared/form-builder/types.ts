@@ -34,6 +34,7 @@ export enum FieldVariant {
   RADIO = 'radio',
   SWITCH = 'switch',
   TEXTAREA = 'textarea',
+  EDITOR = 'editor',
   IMAGE = 'image',
   IMAGE_GALLERY = 'image_gallery',
   FILE = 'file',
@@ -127,6 +128,11 @@ export interface TextareaFieldProps extends BaseFieldProps {
   cols?: number;
   rows?: number;
   resizable?: boolean;
+}
+
+export interface EditorFieldProps extends BaseFieldProps {
+  value?: string;
+  onChange?: (e: string) => void;
 }
 
 export interface ImageFieldProps extends BaseFieldProps {

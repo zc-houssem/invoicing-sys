@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageUploaderManager } from '@/components/shared/form-builder/ImageUploaderManager';
 import { ImageUploader } from './ImageUploader';
 import { PasswordField } from './PasswordField';
+import { Editor } from '@/components/blocks/editor-x/editor';
 
 interface FieldBuilderProps {
   field?: Field<any>;
@@ -98,6 +99,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'date':
       return (
         <DatePicker
+          {...field.props}
           className={cn(
             'w-full',
             field?.className,
@@ -108,9 +110,8 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             undefined
           }
           onChange={(value: Date | null) => field?.props?.onDateChange?.(value)}
-          placeholder={t('common.placeholders.selectDate')}
-          // nullable={field?.props?.nullable}
-          // disabled={field?.props?.disabled}
+          nullable={field?.props?.nullable}
+          disabled={field?.props?.disabled}
         />
       );
     case 'checkbox':
@@ -165,6 +166,14 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             field?.props?.onChange?.(e.target.value)
           }
+        />
+      );
+    case 'editor':
+      return (
+        <Editor
+          {...field.props}
+          editorSerializedState={field?.props?.value}
+          onSerializedChange={(value) => field?.props?.onChange?.(value)}
         />
       );
     case 'checkbox':
