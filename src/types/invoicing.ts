@@ -2,6 +2,7 @@ import { DatabaseEntity } from './response/DatabaseEntity';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
+  status: string;
   direction: 'incoming' | 'outgoing';
   date: Date;
   dueDate: Date;

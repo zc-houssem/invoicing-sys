@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import React from "react";
-import { DataTableCellVariant } from "../types";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
+import React from 'react';
+import { DataTableCellVariant } from '../types';
 
 interface DataTableCellProps {
   className?: string;
@@ -10,11 +10,7 @@ interface DataTableCellProps {
   variant?: DataTableCellVariant;
 }
 
-export default function DataTableCell({
-  className,
-  variant,
-  value,
-}: DataTableCellProps) {
+export default function DataTableCell({ className, variant, value }: DataTableCellProps) {
   if (variant === DataTableCellVariant.TEXT) {
     return <div className={className}>{value}</div>;
   } else if (variant === DataTableCellVariant.NUMBER) {
@@ -26,14 +22,12 @@ export default function DataTableCell({
     return (
       <div className="flex items-start flex-col">
         <div>{value?.toLocaleDateString()}</div>
-        <div className="text-muted-foreground">
-          {value?.toLocaleTimeString()}
-        </div>
+        <div className="text-muted-foreground">{value?.toLocaleTimeString()}</div>
       </div>
     );
   } else if (variant === DataTableCellVariant.AVATAR) {
     return (
-      <Avatar className={cn("w-24 h-24", className)}>
+      <Avatar className={cn('w-24 h-24', className)}>
         <AvatarImage src={value?.url} />
         <AvatarFallback>{value?.fallback}</AvatarFallback>
       </Avatar>

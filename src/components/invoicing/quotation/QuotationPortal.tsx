@@ -1,3 +1,4 @@
+import React from 'react';
 import { api } from '@/api';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
@@ -8,9 +9,7 @@ import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { cn } from '@/lib/utils';
 import { ResponseQuotationDto, UpdateQuotationDto } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import { dir } from 'console';
 import { useRouter } from 'next/router';
-import React from 'react';
 import { useSellingQuotationColumns } from './columns';
 
 interface QuotationPortalProps {
@@ -40,7 +39,7 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
 
-  const [size, setSize] = React.useState(5);
+  const [size, setSize] = React.useState(10);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
   const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
