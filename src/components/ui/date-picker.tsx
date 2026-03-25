@@ -50,7 +50,7 @@ export function DatePicker({
   placeholder,
   isPending
 }: DatePickerProps) {
-  const { i18n, t } = useTranslation('common');
+  const { i18n } = useTranslation();
 
   const months = React.useMemo(() => {
     return getLocalizedMonths(i18n.language == 'fr' ? fr : enUS);
@@ -86,17 +86,18 @@ export function DatePicker({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={'default'}
+          size={'sm'}
+          variant={'outline'}
           className={cn(
             'flex gap-2 justify-center items-center',
             !value && 'text-muted-foreground',
             className
           )}>
-          <CalendarIcon className="h-4 w-4 text-white dark:text-black" />
-          <span className="text-white dark:text-black">
+          <CalendarIcon className="h-4 w-4" />
+          <span>
             {date
               ? format(date, 'PPP', { locale: i18n.language == 'fr' ? fr : enUS })
-              : placeholder || t('pick_date')}
+              : placeholder || 'Select a date'}
           </span>
         </Button>
       </PopoverTrigger>
