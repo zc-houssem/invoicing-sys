@@ -10,9 +10,11 @@ import {
   Magnet,
   Package,
   Printer,
+  Rows3Icon,
   Settings,
   Shield,
   ShoppingCart,
+  Table,
   UserCog,
   Users,
   Wallet,
@@ -151,6 +153,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: '/content-management',
         icon: X,
         items: [
+          {
+            title: 'Reference Types',
+            url: '/content-management/reference-types',
+            icon: Rows3Icon
+          },
+          {
+            title: 'Reference Parameters',
+            url: '/content-management/reference-parameters',
+            icon: Table
+          },
           {
             title: 'Bank Accounts',
             url: '/content-management/bank-accounts',
