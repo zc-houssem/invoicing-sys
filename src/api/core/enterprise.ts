@@ -32,7 +32,7 @@ const findAll = async (): Promise<ResponseEnterpriseDto[]> => {
   return response.data;
 };
 
-const findById = async (id: string): Promise<ResponseEnterpriseDto> => {
+const findById = async (id: number): Promise<ResponseEnterpriseDto> => {
   const response = await axios.get<ResponseEnterpriseDto>(`/enterprise/${id}`);
   return response.data;
 };
@@ -43,14 +43,14 @@ const create = async (enterprise: CreateEnterpriseDto): Promise<ResponseEnterpri
 };
 
 const update = async (
-  id?: string,
+  id?: number,
   enterprise?: UpdateEnterpriseDto
 ): Promise<ResponseEnterpriseDto> => {
   const response = await axios.put(`/enterprise/${id}`, enterprise);
   return response.data;
 };
 
-const remove = async (id?: string): Promise<ResponseEnterpriseDto> => {
+const remove = async (id?: number): Promise<ResponseEnterpriseDto> => {
   const response = await axios.delete(`/enterprise/${id}`);
   return response.data;
 };

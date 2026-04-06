@@ -110,6 +110,13 @@ export interface MultiSelectFieldProps extends BaseFieldProps {
   options?: SelectOption[];
 }
 
+export interface RadioFieldProps extends BaseFieldProps {
+  value?: string;
+  onValueChange?: (value: string) => void;
+  options?: SelectOption[];
+  spread?: 'horizontal' | 'vertical';
+}
+
 export interface CheckboxFieldProps extends BaseFieldProps {
   checked?: boolean;
   defaultChecked?: boolean;

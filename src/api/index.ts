@@ -52,6 +52,8 @@ export * from './user';
 export * from '../types/response';
 export * from '../types/enums';
 
+import { core } from './core';
+export * from './core';
 import { invoicing } from './invoicing';
 
 export const api = {
@@ -80,6 +82,6 @@ export const api = {
   taxWithholding,
   upload,
   user,
-
+  core,
   invoicing
 };

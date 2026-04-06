@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { SOCIAL_TITLE } from '@/types/enums/social-titles';
 import { Input } from '@/components/ui/input';
-import { useFirmStore } from '@/hooks/stores/useFirmStore';
+import { useFirmStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 

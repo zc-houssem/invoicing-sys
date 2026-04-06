@@ -6,21 +6,21 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
-import { FirmDeleteDialog } from './dialogs/FirmDeleteDialog';
-import { useFirmColumns } from './columns';
+import { useEnterpriseColumns } from './columns';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
-import { Firm } from '@/types';
-import { useFirmStore } from '@/hooks/stores/useFirmStore';
+import { ResponseEnterpriseDto } from '@/types';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { EnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
 
-interface FirmPortalProps {
+interface EnterprisePortalProps {
   className?: string;
 }
 
-export const FirmPortal = ({ className }: FirmPortalProps) => {
+export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
   const router = useRouter();
 
   const { t: tCommon } = useTranslation('common');
@@ -29,10 +29,13 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
   const { setRoutes, clearRoutes } = useBreadcrumb();
 
   React.useEffect(() => {
-    setIntro?.(tCommon('routes.contacts.firm.title'), tCommon('routes.contacts.firm.description'));
+    setIntro?.(
+      tCommon('routes.contacts.enterprise.title'),
+      tCommon('routes.contacts.enterprise.description')
+    );
     setRoutes?.([
       { title: tCommon('menu.contacts'), href: '/contacts' },
-      { title: tCommon('submenu.firms') }
+      { title: tCommon('submenu.enterprises') }
     ]);
     return () => {
       clearIntro?.();
@@ -40,7 +43,7 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
     };
   }, [router.locale]);
 
-  const firmStore = useFirmStore();
+  const enterpriseStore = useEnterpriseStore();
 
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -62,11 +65,11 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
   const {
     isPending: isFetchPending,
     error,
-    data: firmsResp,
-    refetch: refetchFirms
+    data: enterprisesResp,
+    refetch: refetchEnterprises
   } = useQuery({
     queryKey: [
-      'firms',
+      'enterprises',
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -74,40 +77,41 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.firm.findPaginated(
-        debouncedPage,
-        debouncedSize,
-        debouncedSortDetails.order ? 'ASC' : 'DESC',
-        debouncedSortDetails.sortKey,
-        debouncedSearchTerm
-      )
+      api.core.enterprise.findPaginated({
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
+        sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+        search: debouncedSearchTerm
+      })
   });
 
-  const firms = React.useMemo(() => {
-    return firmsResp?.data || [];
-  }, [firmsResp]);
+  const enterprises = React.useMemo(() => {
+    return enterprisesResp?.data || [];
+  }, [enterprisesResp]);
 
-  const { mutate: removeFirm, isPending: isDeletePending } = useMutation({
-    mutationFn: (id: number) => api.firm.remove(id),
+  const { mutate: removeEnterprise, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => api.core.enterprise.remove(id),
     onSuccess: () => {
-      if (firms?.length == 1 && page > 1) setPage(page - 1);
-      toast.success(tContacts('firm.action_remove_success'));
-      refetchFirms();
-      firmStore.reset();
+      if (enterprises?.length == 1 && page > 1) setPage(page - 1);
+      toast.success(tContacts('enterprise.action_remove_success'));
+      refetchEnterprises();
+      enterpriseStore.reset();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('contacts', error, tContacts('firm.action_remove_failure')));
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('enterprise.action_remove_failure'))
+      );
     }
   });
 
-  const context: DataTableConfig<Firm> = {
-    singularName: tContacts('firm.singular'),
-    pluralName: tContacts('firm.plural'),
-    inspectCallback: (entity: Firm) => {
-      router.push(`/contacts/firm/${entity.id}`);
+  const context: DataTableConfig<ResponseEnterpriseDto> = {
+    singularName: tContacts('enterprise.singular'),
+    pluralName: tContacts('enterprise.plural'),
+    inspectCallback: (entity: ResponseEnterpriseDto) => {
+      router.push(`/contacts/enterprise/${entity.id}`);
     },
     createCallback: () => {
-      router.push('/contacts/new-firm');
+      router.push('/contacts/new-enterprise');
     },
     updateCallback: () => {},
     deleteCallback: () => {
@@ -117,19 +121,19 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
     searchTerm,
     setSearchTerm,
     page,
-    totalPageCount: firmsResp?.meta.pageCount || 0,
+    totalPageCount: enterprisesResp?.meta.pageCount || 0,
     setPage,
     size,
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
-    targetEntity: (firm: Firm) => {
-      firmStore.set('id', firm.id);
+    targetEntity: (enterprise: ResponseEnterpriseDto) => {
+      enterpriseStore.set('id', enterprise.id);
     }
   };
 
-  const columns = useFirmColumns(context);
+  const columns = useEnterpriseColumns(context);
 
   const isPending = isFetchPending || isDeletePending || paging || resizing || searching || sorting;
 
@@ -139,20 +143,20 @@ export const FirmPortal = ({ className }: FirmPortalProps) => {
       <DataTable
         className="flex flex-col flex-1 overflow-auto p-1"
         containerClassName="overflow-auto"
-        data={firms}
+        data={enterprises}
         columns={columns}
         context={context}
         isPending={isPending}
       />
 
-      <FirmDeleteDialog
+      <EnterpriseDeleteDialog
         open={deleteDialog}
-        deleteFirm={() => {
-          firmStore?.id && removeFirm(firmStore?.id);
+        deleteEnterprise={() => {
+          enterpriseStore?.id && removeEnterprise(enterpriseStore?.id);
           setDeleteDialog(false);
         }}
         isDeletionPending={isDeletePending}
-        label={firmStore?.name}
+        label={enterpriseStore?.name}
         onClose={() => {
           setDeleteDialog(false);
         }}

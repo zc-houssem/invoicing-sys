@@ -21,6 +21,7 @@ import { ImageUploaderManager } from '@/components/shared/form-builder/ImageUplo
 import { ImageUploader } from './ImageUploader';
 import { PasswordField } from './PasswordField';
 import { Editor } from '@/components/blocks/editor-x/editor';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface FieldBuilderProps {
   field?: Field<any>;
@@ -128,6 +129,56 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             {field.description}
           </Label>
         </div>
+      );
+
+    case 'radio':
+      return (
+        // <div
+        //   className={cn(
+        //     'flex flex-col gap-2 my-1',
+        //     field.props?.spread === 'horizontal' ? 'flex-row' : 'flex-col'
+        //   )}>
+        //   {field.props?.options?.map((option: SelectOption) => (
+        //     <div key={option.value} className="flex items-center gap-2">
+        //       <input
+        //         type="radio"
+        //         id={`${field.id}-${option.value}`}
+        //         name={field.id}
+        //         value={option.value}
+        //         checked={field.props?.value === option.value}
+        //         onChange={() => field?.props?.onValueChange?.(option.value)}
+        //         disabled={field?.props?.disabled}
+        //         className={cn(field?.className)}
+        //       />
+        //       <Label className="text-sm font-semibold" htmlFor={`${field.id}-${option.value}`}>
+        //         {option.label}
+        //       </Label>
+        //     </div>
+        //   ))}
+        // </div>
+        <RadioGroup
+          defaultValue={field.props?.value}
+          className={cn(
+            'flex w-fit my-2',
+            field?.props?.spread === 'horizontal' ? 'flex-row' : 'flex-col',
+            field?.className
+          )}
+          onValueChange={(value) => {
+            console.log('radio changed', value);
+            field?.props?.onValueChange?.(value);
+          }}>
+          {field.props?.options?.map((option: SelectOption) => (
+            <div key={option.value} className="flex items-center gap-3">
+              <RadioGroupItem
+                value={option.value}
+                id={`${field.id}-${option.value}`}
+                disabled={field?.props?.disabled}
+                className={cn(field?.className)}
+              />
+              <Label htmlFor={`${field.id}-${option.value}`}>{option.label}</Label>
+            </div>
+          ))}
+        </RadioGroup>
       );
     case 'password':
       return (

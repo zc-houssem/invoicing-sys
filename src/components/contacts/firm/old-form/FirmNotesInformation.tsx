@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { NotepadText } from 'lucide-react';
-import { useFirmStore } from '@/hooks/stores/useFirmStore';
+import { useFirmStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 
 interface FirmNotesInformation {

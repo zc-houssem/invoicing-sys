@@ -15,20 +15,20 @@ import {
   DrawerHeader
 } from '@/components/ui/drawer';
 
-interface FirmDeleteDialogProps {
+interface EnterpriseDeleteDialogProps {
   className?: string;
   label?: string;
   open: boolean;
-  deleteFirm: () => void;
+  deleteEnterprise: () => void;
   isDeletionPending?: boolean;
   onClose: () => void;
 }
 
-export const FirmDeleteDialog: React.FC<FirmDeleteDialogProps> = ({
+export const EnterpriseDeleteDialog: React.FC<EnterpriseDeleteDialogProps> = ({
   className,
   label,
   open,
-  deleteFirm,
+  deleteEnterprise,
   isDeletionPending,
   onClose
 }) => {
@@ -46,7 +46,7 @@ export const FirmDeleteDialog: React.FC<FirmDeleteDialogProps> = ({
       <Button
         className="w-1/2 flex gap-2"
         onClick={() => {
-          deleteFirm?.();
+          deleteEnterprise?.();
         }}>
         <Check />
         {tCommon('commands.delete')}

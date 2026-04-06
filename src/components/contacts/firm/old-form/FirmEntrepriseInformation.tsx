@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Activity, ResponseCurrencyDto, PaymentCondition } from '@/types';
-import { useFirmStore } from '@/hooks/stores/useFirmStore';
+import { useFirmStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 

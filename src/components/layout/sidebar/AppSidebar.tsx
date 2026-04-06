@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: tCommon('submenu.firms'),
-            url: '/contacts/firms',
+            url: '/contacts/enterprises',
             icon: Building
           },
           {
