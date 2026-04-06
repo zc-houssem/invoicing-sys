@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { FirmDetails } from '@/components/contacts/firm/FirmDetails';
-import { InterlocutorEmbeddedMain } from '@/components/contacts/interlocutor/InterlocutorEmbeddedMain';
+import { InterlocutorPortal } from '@/components/contacts/interlocutor/InterlocutorPortal';
 import { useTranslation } from 'react-i18next';
 
 export default function Page() {
@@ -22,7 +22,7 @@ export default function Page() {
 
   return (
     <FirmDetails firmId={id}>
-      <InterlocutorEmbeddedMain firmId={parseInt(id)} routes={routes} />
+      <InterlocutorPortal firmId={parseInt(id)} />
     </FirmDetails>
   );
 }

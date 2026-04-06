@@ -14,7 +14,7 @@ import { SOCIAL_TITLE } from '@/api';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
-import { useInterlocutorManager } from '../hooks/useInterlocutorManager';
+import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { cn } from '@/lib/utils';
 
 interface InterlocutorContactInformationProps {
@@ -29,7 +29,7 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
   const { t: tCommon } = useTranslation('contacts');
   const { t: tSocial } = useTranslation('social-title');
 
-  const interlocutorManager = useInterlocutorManager();
+  const interlocutorStore = useInterlocutorStore();
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       {/* title */}
@@ -39,9 +39,9 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
           <SelectShimmer isPending={loading || false}>
             <Select
               onValueChange={(e) => {
-                interlocutorManager.set('title', e);
+                interlocutorStore.set('title', e);
               }}
-              value={interlocutorManager.title}>
+              value={interlocutorStore.title}>
               <SelectTrigger>
                 <SelectValue placeholder="Titre" />
               </SelectTrigger>
@@ -63,8 +63,8 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
           isPending={loading || false}
           className="mt-1"
           placeholder="Ex. John"
-          value={interlocutorManager.name}
-          onChange={(e) => interlocutorManager.set('name', e.target.value)}
+          value={interlocutorStore.name}
+          onChange={(e) => interlocutorStore.set('name', e.target.value)}
         />
       </div>
       {/* surname */}
@@ -74,8 +74,8 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
           isPending={loading || false}
           className="mt-1"
           placeholder="Ex. Doe"
-          value={interlocutorManager.surname}
-          onChange={(e) => interlocutorManager.set('surname', e.target.value)}
+          value={interlocutorStore.surname}
+          onChange={(e) => interlocutorStore.set('surname', e.target.value)}
         />
       </div>
       {/* email */}
@@ -87,8 +87,8 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
             type="email"
             className="mt-1"
             placeholder="Ex. johndoe@zedneycreative.com"
-            value={interlocutorManager.email}
-            onChange={(e) => interlocutorManager.set('email', e.target.value)}
+            value={interlocutorStore.email}
+            onChange={(e) => interlocutorStore.set('email', e.target.value)}
           />
         </div>
       </div>
@@ -102,8 +102,8 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
             defaultCountry="TN"
             className="mt-1"
             placeholder="Ex. +216 72 398 389"
-            value={interlocutorManager.phone}
-            onChange={(value) => interlocutorManager.set('phone', value)}
+            value={interlocutorStore.phone}
+            onChange={(value) => interlocutorStore.set('phone', value)}
           />
         </div>
       </div>
@@ -115,9 +115,9 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
             isPending={loading || false}
             className="mt-1"
             placeholder="Ex. CEO"
-            value={interlocutorManager && interlocutorManager.position}
+            value={interlocutorStore && interlocutorStore.position}
             onChange={(e) => {
-              interlocutorManager.set('position', e.target.value);
+              interlocutorStore.set('position', e.target.value);
             }}
           />
         </div>

@@ -1,20 +1,20 @@
 import { Interlocutor } from '@/types';
+import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTableRowActions } from './data-table-row-actions';
-import { DataTableColumnHeader } from './data-table-column-header';
 import { transformDateTime } from '@/utils/date.utils';
 import { INTERLOCUTOR_FILTER_ATTRIBUTES } from '@/constants/interlocutor.filter-attributes';
-import { Badge } from '@/components/ui/badge';
+import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
+import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-export const getInterlocutorColumns = (
-  t: Function,
-  tCommon: Function,
-  context?: { firmId: number }
+export const useInterlocutorColumns = (
+  context: DataTableConfig<Interlocutor>,
+  firmId?: number
 ): ColumnDef<Interlocutor>[] => {
-  const translationNamespace = 'contacts';
-  const translate = (value: string, namespace: string = '') =>
-    t(value, { ns: namespace || translationNamespace });
+  const { t } = useTranslation('contacts');
+  const { t: tCommon } = useTranslation('common');
 
   const columns: ColumnDef<Interlocutor>[] = [
     {
@@ -22,7 +22,8 @@ export const getInterlocutorColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('interlocutor.attributes.title')}
+          context={context}
+          title={t('interlocutor.attributes.title')}
           attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.TITLE}
         />
       ),
@@ -35,7 +36,8 @@ export const getInterlocutorColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('interlocutor.attributes.name')}
+          context={context}
+          title={t('interlocutor.attributes.name')}
           attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.NAME}
         />
       ),
@@ -48,7 +50,8 @@ export const getInterlocutorColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('interlocutor.attributes.surname')}
+          context={context}
+          title={t('interlocutor.attributes.surname')}
           attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.SURNAME}
         />
       ),
@@ -61,7 +64,8 @@ export const getInterlocutorColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('interlocutor.attributes.phone')}
+          context={context}
+          title={t('interlocutor.attributes.phone')}
           attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.PHONE}
         />
       ),
@@ -70,7 +74,7 @@ export const getInterlocutorColumns = (
           {row.original?.phone ? (
             row.original?.phone
           ) : (
-            <span className="text-zinc-400">{translate('interlocutor.empty_cells.phone')}</span>
+            <span className="text-zinc-400">{t('interlocutor.empty_cells.phone')}</span>
           )}
         </div>
       ),
@@ -82,7 +86,8 @@ export const getInterlocutorColumns = (
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate('interlocutor.attributes.email')}
+          context={context}
+          title={t('interlocutor.attributes.email')}
           attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.EMAIL}
         />
       ),
@@ -94,20 +99,23 @@ export const getInterlocutorColumns = (
     }
   ];
 
-  // Conditionally add the "firms" column if `context?.firmId` is undefined
-  if (!context?.firmId) {
+  if (!firmId) {
     columns.push({
       accessorKey: 'firms',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={translate('interlocutor.attributes.firms')} />
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('interlocutor.attributes.firms')}
+        />
       ),
       cell: ({ row }) => {
         const firms = row.original.firmsToInterlocutor || [];
         if (firms.length === 0) {
-          return <div className="opacity-70">{translate('interlocutor.empty_cells.firms')}</div>;
+          return <div className="opacity-70">{t('interlocutor.empty_cells.firms')}</div>;
         }
 
-        const visibleFirms = firms.slice(0, 3); // Show up to 3 firms
+        const visibleFirms = firms.slice(0, 3);
         const hiddenFirms = firms.length - visibleFirms.length;
 
         return (
@@ -142,20 +150,20 @@ export const getInterlocutorColumns = (
     });
   }
 
-  // Conditionally add "position" and "is_main" columns if `context?.firmId` is provided
-  if (context?.firmId) {
+  if (firmId) {
     columns.push(
       {
         accessorKey: 'position',
         header: ({ column }) => (
           <DataTableColumnHeader
             column={column}
-            title={translate('interlocutor.attributes.position')}
+            context={context}
+            title={t('interlocutor.attributes.position')}
           />
         ),
         cell: ({ row }) => {
           const position = row.original.firmsToInterlocutor?.find(
-            (firm) => firm.firmId === context.firmId
+            (firm) => firm.firmId === firmId
           )?.position;
 
           return (
@@ -163,9 +171,7 @@ export const getInterlocutorColumns = (
               {position ? (
                 position
               ) : (
-                <span className="text-zinc-400">
-                  {translate('interlocutor.empty_cells.position')}
-                </span>
+                <span className="text-zinc-400">{t('interlocutor.empty_cells.position')}</span>
               )}
             </div>
           );
@@ -178,14 +184,14 @@ export const getInterlocutorColumns = (
         header: ({ column }) => (
           <DataTableColumnHeader
             column={column}
-            title={translate('interlocutor.attributes.is_main')}
+            context={context}
+            title={t('interlocutor.attributes.is_main')}
           />
         ),
         cell: ({ row }) => (
           <div>
             <Badge className="px-4 py-1">
-              {row.original.firmsToInterlocutor?.find((firm) => firm.firmId === context.firmId)
-                ?.isMain
+              {row.original.firmsToInterlocutor?.find((firm) => firm.firmId === firmId)?.isMain
                 ? tCommon('answer.yes')
                 : tCommon('answer.no')}
             </Badge>
@@ -197,28 +203,30 @@ export const getInterlocutorColumns = (
     );
   }
 
-  columns.push({
-    accessorKey: 'created_at',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={translate('interlocutor.attributes.created_at')}
-        attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.CREATEDAT}
-      />
-    ),
-    cell: ({ row }) => <div>{transformDateTime(row.original?.createdAt || '')}</div>,
-    enableSorting: true,
-    enableHiding: true
-  });
-
-  columns.push({
-    id: 'actions',
-    cell: ({ row }) => (
-      <div className="flex justify-end">
-        <DataTableRowActions row={row} />
-      </div>
-    )
-  });
+  columns.push(
+    {
+      accessorKey: 'created_at',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('interlocutor.attributes.created_at')}
+          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.CREATEDAT}
+        />
+      ),
+      cell: ({ row }) => <div>{transformDateTime(row.original?.createdAt || '')}</div>,
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <DataTableRowActions row={row} context={context} />
+        </div>
+      )
+    }
+  );
 
   return columns;
 };

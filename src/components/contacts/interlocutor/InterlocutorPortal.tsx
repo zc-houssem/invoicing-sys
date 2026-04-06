@@ -1,50 +1,62 @@
+import { api } from '@/api';
+import { CreateInterlocutorDto, Interlocutor, UpdateInterlocutorDto } from '@/types';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
-import { useDebounce } from '@/hooks/other/useDebounce';
-import { api } from '@/api';
 import { getErrorMessage } from '@/utils/errors';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
-import { DataTable } from './data-table/data-table';
-import { CreateInterlocutorDto, UpdateInterlocutorDto } from '@/types';
-import ContentSection from '@/components/shared/ContentSection';
-import { cn } from '@/lib/utils';
-import { BreadcrumbRoute, useBreadcrumb } from '@/context/BreadcrumbContext';
-import { useInterlocutorManager } from './hooks/useInterlocutorManager';
-import { useInterlocutorUpdateSheet } from './modals/InterlocutorUpdateSheet';
-import { useInterlocutorCreateOrAssociateSheet } from './modals/InterlocutorCreateOrAssociateSheet';
-import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassociateDialog';
-import { InterlocutorActionsContext } from './data-table/ActionsContext';
-import { getInterlocutorColumns } from './data-table/columns';
 import { useInterlocutorDeleteDialog } from './modals/InterlocutorDeleteDialog';
+import { useInterlocutorCreateOrAssociateSheet } from './modals/InterlocutorCreateOrAssociateSheet';
+import { useInterlocutorUpdateSheet } from './modals/InterlocutorUpdateSheet';
 import { useInterlocutorPromoteDialog } from './modals/InterlocutorPromoteDialog';
+import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassociateDialog';
+import { useInterlocutorColumns } from './columns';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useIntro } from '@/context/IntroContext';
+import { cn } from '@/lib/utils';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
+import { ArrowUp, Trash2, Unlink } from 'lucide-react';
 
-interface InterlocutorEmbeddedMainProps {
+interface InterlocutorPortalProps {
   className?: string;
   firmId?: number;
-  routes?: BreadcrumbRoute[];
 }
 
-export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> = ({
-  className,
-  firmId,
-  routes
-}) => {
+export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProps) => {
   const router = useRouter();
+
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    if (routes && firmId) setRoutes([...routes, { title: tContacts('interlocutor.plural') }]);
-  }, [router.locale, firmId]);
+  const { setIntro, clearIntro } = useIntro();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
 
-  const interlocutorManager = useInterlocutorManager();
+  React.useEffect(() => {
+    if (!firmId) {
+      setIntro?.(
+        tCommon('routes.contacts.interlocutor.title'),
+        tCommon('routes.contacts.interlocutor.description')
+      );
+      setRoutes?.([
+        { title: tCommon('menu.contacts'), href: '/contacts' },
+        { title: tCommon('submenu.interlocutors') }
+      ]);
+    }
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+    };
+  }, [router.locale]);
+
+  const interlocutorStore = useInterlocutorStore();
 
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
 
-  const [size, setSize] = React.useState(5);
+  const [size, setSize] = React.useState(10);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
   const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
@@ -56,11 +68,13 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
   const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
+  const [deleteDialog, setDeleteDialog] = React.useState(false);
+
   const {
     isPending: isFetchPending,
     error,
     data: interlocutorsResp,
-    refetch: refetchInterloctors
+    refetch: refetchInterlocutors
   } = useQuery({
     queryKey: [
       'interlocutors',
@@ -83,22 +97,20 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
   });
 
   const interlocutors = React.useMemo(() => {
-    //sort interlocutors by main field
     return interlocutorsResp?.data || [];
   }, [interlocutorsResp]);
 
-  //associate interlocutor
   const { mutate: associateInterlocutor, isPending: isAssociatePending } = useMutation({
     mutationFn: (interlocutorId?: number) =>
       api.firmInterlocutorEntry.create({
         firmId,
-        position: interlocutorManager.position,
+        position: interlocutorStore.position,
         interlocutorId: interlocutorId
       }),
     onSuccess: () => {
-      refetchInterloctors();
+      refetchInterlocutors();
       toast.success(tContacts('interlocutor.action_associate_success'));
-      interlocutorManager.reset();
+      interlocutorStore.reset();
     },
     onError: () => {
       toast.error(tContacts('interlocutor.action_associate_error'));
@@ -108,7 +120,7 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
   const { mutate: disassociateInterlocutor, isPending: isDisassociatePending } = useMutation({
     mutationFn: (id?: number) => api.firmInterlocutorEntry.remove(firmId, id),
     onSuccess: () => {
-      refetchInterloctors();
+      refetchInterlocutors();
       toast.success(tContacts('interlocutor.action_disassociate_success'));
     },
     onError: () => {
@@ -116,24 +128,19 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
     }
   });
 
-  //promote interlocutor
   const { mutate: promoteInterlocutor, isPending: isPromotionPending } = useMutation({
     mutationFn: (id?: number) => api.interlocutor.promote(id, firmId),
     onSuccess: () => {
-      refetchInterloctors();
+      refetchInterlocutors();
       toast.success(tContacts('interlocutor.action_promote_success'));
     },
     onError: (error): void => {
-      const message = getErrorMessage(
-        'contacts',
-        error,
-        tContacts('interlocutor.action_promote_failure')
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('interlocutor.action_promote_failure'))
       );
-      toast.error(message);
     }
   });
 
-  //create interlocutor
   const { mutate: createInterlocutor, isPending: isCreatePending } = useMutation({
     mutationFn: (data: CreateInterlocutorDto) => api.interlocutor.create(data),
     onSuccess: (data) => {
@@ -141,16 +148,10 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
       toast.success(tContacts('interlocutor.action_add_success'));
     },
     onError: (error): void => {
-      const message = getErrorMessage(
-        'contacts',
-        error,
-        tContacts('interlocutor.action_add_failure')
-      );
-      toast.error(message);
+      toast.error(getErrorMessage('contacts', error, tContacts('interlocutor.action_add_failure')));
     }
   });
 
-  //update interlocutor
   const { mutate: updateInterlocutor, isPending: isUpdatePending } = useMutation({
     mutationFn: (data: UpdateInterlocutorDto) => api.interlocutor.update(data),
     onSuccess: (data) => {
@@ -158,23 +159,19 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
       toast.success(tContacts('interlocutor.action_update_success'));
     },
     onError: (error): void => {
-      const message = getErrorMessage(
-        'contacts',
-        error,
-        tContacts('interlocutor.action_update_failure')
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('interlocutor.action_update_failure'))
       );
-      toast.error(message);
     }
   });
 
-  //remove interlocutor
   const { mutate: removeInterlocutor, isPending: isDeletePending } = useMutation({
     mutationFn: (id?: number) => api.interlocutor.remove(id),
     onSuccess: () => {
       if (interlocutors?.length == 1 && page > 1) setPage(page - 1);
-      interlocutorManager.reset();
-      refetchInterloctors();
       toast.success(tContacts('interlocutor.action_remove_success'));
+      refetchInterlocutors();
+      interlocutorStore.reset();
     },
     onError: (error) => {
       toast.error(
@@ -183,9 +180,14 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
     }
   });
 
-  //handle interlocutor update
   const handleUpdateSubmit = () => {
-    const data: UpdateInterlocutorDto = interlocutorManager.getInterlocutor();
+    const data: UpdateInterlocutorDto = {
+      title: interlocutorStore.title,
+      firstName: interlocutorStore.name,
+      lastName: interlocutorStore.surname,
+      email: interlocutorStore.email,
+      phone: interlocutorStore.phone
+    };
     const validation = api.interlocutor.validate(data);
     if (validation.message) toast.error(validation.message);
     else {
@@ -193,17 +195,23 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
       closeUpdateInterlocutorSheet();
     }
   };
+
   const { updateInterlocutorSheet, openUpdateInterlocutorSheet, closeUpdateInterlocutorSheet } =
     useInterlocutorUpdateSheet(
       firmId,
       handleUpdateSubmit,
       isUpdatePending,
-      interlocutorManager.reset
+      interlocutorStore.reset
     );
 
-  //handle interlocutor creation
   const handleCreateSubmit = () => {
-    const data: CreateInterlocutorDto = interlocutorManager.getInterlocutor();
+    const data: CreateInterlocutorDto = {
+      title: interlocutorStore.title,
+      firstName: interlocutorStore.name,
+      lastName: interlocutorStore.surname,
+      email: interlocutorStore.email,
+      phone: interlocutorStore.phone
+    };
     const validation = api.interlocutor.validate(data);
     if (validation.message) toast.error(validation.message);
     else {
@@ -214,12 +222,12 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
 
   const handleAssociateSubmit = () => {
     const validation = api.interlocutor.validateAssociations(
-      interlocutorManager?.id,
-      interlocutorManager?.position
+      interlocutorStore?.id,
+      interlocutorStore?.position
     );
     if (validation.message) toast.error(validation.message);
     else {
-      associateInterlocutor(interlocutorManager?.id);
+      associateInterlocutor(interlocutorStore?.id);
       closeCreateInterlocutorSheet();
     }
   };
@@ -230,48 +238,95 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
       handleCreateSubmit,
       handleAssociateSubmit,
       isCreatePending || isAssociatePending,
-      interlocutorManager.reset
+      interlocutorStore.reset
     );
 
   const { deleteInterlocutorDialog, openDeleteInterlocutorDialog } = useInterlocutorDeleteDialog(
-    `${interlocutorManager.name} ${interlocutorManager.surname}`,
-    () => removeInterlocutor(interlocutorManager.id),
-    isCreatePending
+    `${interlocutorStore.name} ${interlocutorStore.surname}`,
+    () => removeInterlocutor(interlocutorStore.id),
+    isDeletePending
   );
 
   const { promoteInterlocutorDialog, openPromoteInterlocutorDialog } = useInterlocutorPromoteDialog(
-    `${interlocutorManager.name} ${interlocutorManager.surname}`,
-    () => promoteInterlocutor(interlocutorManager.id),
-    isCreatePending
+    `${interlocutorStore.name} ${interlocutorStore.surname}`,
+    () => promoteInterlocutor(interlocutorStore.id),
+    isPromotionPending
   );
 
   const { disassociateInterlocutorDialog, openDisassociateInterlocutorDialog } =
     useInterlocutorDisassociateDialog(
-      `${interlocutorManager.name} ${interlocutorManager.surname}`,
+      `${interlocutorStore.name} ${interlocutorStore.surname}`,
       (id?: number) => disassociateInterlocutor(id),
       isDisassociatePending
     );
 
-  const context = {
-    //dialogs
-    openCreateDialog: () => openCreateInterlocutorSheet(),
-    openUpdateDialog: () => openUpdateInterlocutorSheet(),
-    openDeleteDialog: () => openDeleteInterlocutorDialog(),
-    openPromoteDialog: () => openPromoteInterlocutorDialog(),
-    openDisassociateDialog: () => openDisassociateInterlocutorDialog(),
-    //search, filtering, sorting & paging
+  const isMainInterlocutor = (entity: Interlocutor) => {
+    if (!firmId) return false;
+    return !!entity.firmsToInterlocutor?.find((e) => e.firmId === firmId && e.isMain)?.isMain;
+  };
+
+  const additionalActions: Record<
+    number,
+    {
+      actionCallback?: (entity: Interlocutor) => void;
+      actionLabel: string;
+      actionIcon: React.ReactNode;
+      isActionVisible?: (entity: Interlocutor) => boolean;
+    }[]
+  > = {};
+  let groupIndex = 0;
+
+  if (firmId) {
+    additionalActions[groupIndex++] = [
+      {
+        actionLabel: tCommon('commands.promote'),
+        actionIcon: <ArrowUp className="size-4" />,
+        actionCallback: () => openPromoteInterlocutorDialog(),
+        isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
+      },
+      {
+        actionLabel: tCommon('commands.unassociate'),
+        actionIcon: <Unlink className="size-4" />,
+        actionCallback: () => openDisassociateInterlocutorDialog(),
+        isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
+      }
+    ];
+  }
+
+  additionalActions[groupIndex] = [
+    {
+      actionLabel: tCommon('commands.delete'),
+      actionIcon: <Trash2 className="size-4" />,
+      actionCallback: () => openDeleteInterlocutorDialog(),
+      isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
+    }
+  ];
+
+  const context: DataTableConfig<Interlocutor> = {
+    singularName: tContacts('interlocutor.singular'),
+    pluralName: tContacts('interlocutor.plural'),
+    inspectCallback: (entity: Interlocutor) => {
+      router.push(`/contacts/interlocutor/${entity.id}`);
+    },
+    createCallback: firmId ? () => openCreateInterlocutorSheet() : undefined,
+    updateCallback: firmId ? () => openUpdateInterlocutorSheet() : undefined,
+    additionalActions,
     searchTerm,
     setSearchTerm,
     page,
-    totalPageCount: interlocutorsResp?.meta.pageCount || 1,
+    totalPageCount: interlocutorsResp?.meta.pageCount || 0,
     setPage,
     size,
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
-    firmId
+    targetEntity: (interlocutor: Interlocutor) => {
+      interlocutorStore.setInterlocutor(interlocutor, firmId);
+    }
   };
+
+  const columns = useInterlocutorColumns(context, firmId);
 
   const isPending =
     isFetchPending ||
@@ -286,27 +341,21 @@ export const InterlocutorEmbeddedMain: React.FC<InterlocutorEmbeddedMainProps> =
 
   if (error) return 'An error has occurred: ' + error.message;
   return (
-    <ContentSection
-      title={tContacts('interlocutor.singular')}
-      desc={tContacts('interlocutor.card_description')}
-      className="w-full"
-      childrenClassName={cn('overflow-hidden', className)}>
-      <>
-        {createInterlocutorSheet}
-        {updateInterlocutorSheet}
-        {deleteInterlocutorDialog}
-        {promoteInterlocutorDialog}
-        {disassociateInterlocutorDialog}
-        <InterlocutorActionsContext.Provider value={context}>
-          <DataTable
-            className="flex flex-col flex-1 overflow-hidden p-1"
-            containerClassName="overflow-auto"
-            data={interlocutors}
-            columns={getInterlocutorColumns(tContacts, tCommon, firmId ? { firmId } : undefined)}
-            isPending={isPending}
-          />
-        </InterlocutorActionsContext.Provider>
-      </>
-    </ContentSection>
+    <div className={cn('flex flex-col flex-1 overflow-hidden container mx-auto', className)}>
+      <DataTable
+        className="flex flex-col flex-1 overflow-auto p-1"
+        containerClassName="overflow-auto"
+        data={interlocutors}
+        columns={columns}
+        context={context}
+        isPending={isPending}
+      />
+
+      {createInterlocutorSheet}
+      {updateInterlocutorSheet}
+      {deleteInterlocutorDialog}
+      {promoteInterlocutorDialog}
+      {disassociateInterlocutorDialog}
+    </div>
   );
 };

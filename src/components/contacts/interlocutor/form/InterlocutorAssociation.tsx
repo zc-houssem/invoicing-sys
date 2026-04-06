@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { useTranslation } from 'react-i18next';
-import { useInterlocutorManager } from '../hooks/useInterlocutorManager';
+import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { cn } from '@/lib/utils';
 import { Interlocutor } from '@/types';
 import { Input } from '@/components/ui/input';
@@ -29,7 +29,7 @@ export const InterlocutorAssociation: React.FC<InterlocutorAssociationProps> = (
   const { t: tCommon } = useTranslation('contacts');
   const { t: tInvoicing } = useTranslation('invoicing');
 
-  const interlocutorManager = useInterlocutorManager();
+  const interlocutorStore = useInterlocutorStore();
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       {/* interlocutor */}
@@ -37,15 +37,15 @@ export const InterlocutorAssociation: React.FC<InterlocutorAssociationProps> = (
         <Label>{tCommon('interlocutor.singular')} (*)</Label>
         <Combobox
           value={
-            interlocutorManager?.id
-              ? `${interlocutorManager?.name}|${interlocutorManager?.surname}|${interlocutorManager?.id}`
+            interlocutorStore?.id
+              ? `${interlocutorStore?.name}|${interlocutorStore?.surname}|${interlocutorStore?.id}`
               : undefined
           }
           onValueChange={(e) => {
             const [name, surname, id] = e.split('|');
-            interlocutorManager.set('id', id);
-            interlocutorManager.set('name', name);
-            interlocutorManager.set('surname', surname);
+            interlocutorStore.set('id', id);
+            interlocutorStore.set('name', name);
+            interlocutorStore.set('surname', surname);
           }}
           data={interlocutors?.map((i) => ({
             label: `${i.name} ${i.surname} (${i.email})`,
@@ -63,9 +63,9 @@ export const InterlocutorAssociation: React.FC<InterlocutorAssociationProps> = (
           isPending={loading || false}
           className="mt-1"
           placeholder="Ex. CEO"
-          value={interlocutorManager && interlocutorManager.position}
+          value={interlocutorStore && interlocutorStore.position}
           onChange={(e) => {
-            interlocutorManager.set('position', e.target.value);
+            interlocutorStore.set('position', e.target.value);
           }}
         />
       </div>
