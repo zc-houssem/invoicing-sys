@@ -71,9 +71,9 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                         <div
                           key={field.id}
                           className={cn('flex flex-col gap-1 w-full', field.wrapperClassName)}>
-                          <Label className={cn('text-xs font-medium')} htmlFor={field.id}>
+                          <Label className={cn('text-xs font-bold')} htmlFor={field.id}>
                             <span>{field.label}</span>
-                            {field.required && <span className="text-red-500 mx-1">*</span>}
+                            {field.required && <span className="text-destructive mx-1">*</span>}
                           </Label>
                           <FieldBuilder field={field} />
 
@@ -87,7 +87,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                                 </span>
                               )}
                             {field?.error && (
-                              <span className="font-medium text-xs text-red-500 leading-3">
+                              <span className="font-bold text-xs text-destructive leading-3">
                                 {field?.error}
                               </span>
                             )}

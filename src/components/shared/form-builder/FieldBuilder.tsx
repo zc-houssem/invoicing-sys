@@ -86,7 +86,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             )}>
             <SelectValue placeholder={field.placeholder} />
           </SelectTrigger>
-          <SelectContent className="overflow-y-auto max-h-[15rem]">
+          <SelectContent className="overflow-y-auto max-h-60">
             {field?.props?.options?.map((option: SelectOption) => {
               return (
                 <SelectItem key={option.value} value={option.value}>
@@ -133,33 +133,10 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
 
     case 'radio':
       return (
-        // <div
-        //   className={cn(
-        //     'flex flex-col gap-2 my-1',
-        //     field.props?.spread === 'horizontal' ? 'flex-row' : 'flex-col'
-        //   )}>
-        //   {field.props?.options?.map((option: SelectOption) => (
-        //     <div key={option.value} className="flex items-center gap-2">
-        //       <input
-        //         type="radio"
-        //         id={`${field.id}-${option.value}`}
-        //         name={field.id}
-        //         value={option.value}
-        //         checked={field.props?.value === option.value}
-        //         onChange={() => field?.props?.onValueChange?.(option.value)}
-        //         disabled={field?.props?.disabled}
-        //         className={cn(field?.className)}
-        //       />
-        //       <Label className="text-sm font-semibold" htmlFor={`${field.id}-${option.value}`}>
-        //         {option.label}
-        //       </Label>
-        //     </div>
-        //   ))}
-        // </div>
         <RadioGroup
           defaultValue={field.props?.value}
           className={cn(
-            'flex w-fit my-2',
+            'flex w-fit my-2.5',
             field?.props?.spread === 'horizontal' ? 'flex-row' : 'flex-col',
             field?.className
           )}
