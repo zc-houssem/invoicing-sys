@@ -17,7 +17,7 @@ export interface CreateEnterpriseDto {
   phone: string;
   website?: string;
   particular?: boolean;
-  taxIdNumber: string;
+  taxId: string;
   notes?: string;
   system?: boolean;
 }

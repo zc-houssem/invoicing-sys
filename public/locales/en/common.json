@@ -1,9 +1,9 @@
 {
   "routes": {
     "contacts": {
-      "firm": {
-        "title": "Firm Management",
-        "description": "Manage your firms and their details"
+      "enterprise": {
+        "title": "Enterprise Management",
+        "description": "Manage your enterprises and their details"
       },
       "interlocutor": {
         "title": "Interlocutor Management",

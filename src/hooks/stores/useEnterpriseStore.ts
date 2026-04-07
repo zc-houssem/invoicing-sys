@@ -7,7 +7,7 @@ interface EnterpriseData {
   response?: ResponseEnterpriseDto;
   createDto: CreateEnterpriseDto;
   updateDto?: UpdateEnterpriseDto;
-  error?: Record<string, any>;
+  errors?: Record<string, any>;
 }
 
 export interface EnterpriseStore extends EnterpriseData {
@@ -20,7 +20,7 @@ const initialState: EnterpriseData = {
   createDto: {
     name: '',
     phone: '',
-    taxIdNumber: '',
+    taxId: '',
     notes: '',
     website: '',
     particular: false

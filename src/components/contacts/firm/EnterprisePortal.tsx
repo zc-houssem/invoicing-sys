@@ -129,7 +129,8 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (enterprise: ResponseEnterpriseDto) => {
-      enterpriseStore.set('id', enterprise.id);
+      enterpriseStore.setNested('response.id', enterprise.id);
+      enterpriseStore.setNested('response.name', enterprise.name);
     }
   };
 
@@ -152,11 +153,11 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
       <EnterpriseDeleteDialog
         open={deleteDialog}
         deleteEnterprise={() => {
-          enterpriseStore?.id && removeEnterprise(enterpriseStore?.id);
+          enterpriseStore?.response && removeEnterprise(enterpriseStore?.response.id);
           setDeleteDialog(false);
         }}
         isDeletionPending={isDeletePending}
-        label={enterpriseStore?.name}
+        label={enterpriseStore?.response?.name}
         onClose={() => {
           setDeleteDialog(false);
         }}

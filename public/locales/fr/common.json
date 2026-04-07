@@ -1,7 +1,7 @@
 {
   "routes": {
     "contacts": {
-      "firm": {
+      "enterprise": {
         "title": "Gestion des entreprises",
         "description": "Gérez vos entreprises et leurs détails"
       },
@@ -36,7 +36,12 @@
     "note1": "Il manque quelque chose...",
     "note2": "Désolé, nous ne pouvons pas trouver cette page. Vous trouverez beaucoup de choses à explorer sur la page d'accueil."
   },
-  "add_joints": "Ajouter des Pièces Jointes",
+  "coming_soon": {
+    "coming_soon": "Bientôt disponible",
+    "go_back": "Retour au tableau de bord",
+    "note1": "Quelque chose d'incroyable arrive bientôt !",
+    "note2": "Nous travaillons dur pour vous apporter de nouvelles fonctionnalités. Restez à l'écoute !"
+  },
   "answer": {
     "yes": "Oui",
     "no": "Non"
@@ -46,13 +51,7 @@
     "dark": "Sombre",
     "light": "Clair",
     "system": "Système",
-    "theme": "Theme"
-  },
-  "coming_soon": {
-    "coming_soon": "Bientôt disponible",
-    "go_back": "Retour au tableau de bord",
-    "note1": "Quelque chose d'incroyable arrive bientôt !",
-    "note2": "Nous travaillons dur pour vous apporter de nouvelles fonctionnalités. Restez à l'écoute !"
+    "theme": "Thème"
   },
   "commands": {
     "apply": "Appliquer",
@@ -138,20 +137,6 @@
   "pick_date": "Choisissez une Date",
   "start_date": "Date de début",
   "end_date": "Date de fin",
-  "submenu": {
-    "account": "Compte",
-    "firms": "Entreprises",
-    "interlocutors": "Interlocuteurs",
-    "invoices": "Factures",
-    "other": "Autre",
-    "quotations": "Devis",
-    "payments": "Paiements",
-    "user_management": "Gestion des utilisateurs",
-    "logger": "Journalisation",
-    "system": "Système",
-    "withholding": "Retenue à la source",
-    "pdf": "PDF"
-  },
   "settings": {
     "account": {
       "singular": "Compte",

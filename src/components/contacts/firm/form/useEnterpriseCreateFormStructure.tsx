@@ -1,4 +1,5 @@
 import {
+  EditorFieldProps,
   Field,
   FieldVariant,
   FormStructure,
@@ -23,23 +24,29 @@ export const useEnterpriseCreateFormStructure = ({
     label: 'Name',
     variant: FieldVariant.TEXT,
     required: true,
-    error: store.error?.name?.[0],
+    error: store.errors?.name?.[0],
     description: 'The name of the enterprise.',
     props: {
       value: store.createDto.name,
-      onChange: (value) => store.setNested('createDto.name', value)
+      onChange: (value) => {
+        store.setNested('createDto.name', value);
+        store.setNested('errors.name', []);
+      }
     }
   };
 
   const websiteField: Field<TextFieldProps> = {
     id: 'website',
     label: 'Website',
-    variant: FieldVariant.TEXT,
-    error: store.error?.website?.[0],
+    variant: FieldVariant.URL,
+    error: store.errors?.website?.[0],
     description: 'The website of the enterprise.',
     props: {
       value: store.createDto.website,
-      onChange: (value) => store.setNested('createDto.website', value)
+      onChange: (value) => {
+        store.setNested('createDto.website', value);
+        store.setNested('errors.website', []);
+      }
     }
   };
 
@@ -47,11 +54,14 @@ export const useEnterpriseCreateFormStructure = ({
     id: 'taxIdNumber',
     label: 'Tax ID Number',
     variant: FieldVariant.TEXT,
-    error: store.error?.taxIdNumber?.[0],
+    error: store.errors?.taxId?.[0],
     description: 'The tax ID number of the enterprise.',
     props: {
-      value: store.createDto.taxIdNumber,
-      onChange: (value) => store.setNested('createDto.taxIdNumber', value)
+      value: store.createDto.taxId,
+      onChange: (value) => {
+        store.setNested('createDto.taxId', value);
+        store.setNested('errors.taxId', []);
+      }
     }
   };
 
@@ -59,11 +69,14 @@ export const useEnterpriseCreateFormStructure = ({
     id: 'phone',
     label: 'Phone',
     variant: FieldVariant.TEXT,
-    error: store.error?.phone?.[0],
+    error: store.errors?.phone?.[0],
     description: 'The phone number of the enterprise.',
     props: {
       value: store.createDto.phone,
-      onChange: (value) => store.setNested('createDto.phone', value)
+      onChange: (value) => {
+        store.setNested('createDto.phone', value);
+        store.setNested('errors.phone', []);
+      }
     }
   };
 
@@ -74,7 +87,12 @@ export const useEnterpriseCreateFormStructure = ({
     description: 'Whether the enterprise is a particular or not.',
     props: {
       value: store.createDto.particular ? 'true' : 'false',
-      onValueChange: (value) => store.setNested('createDto.particular', value === 'true'),
+      onValueChange: (value) => {
+        store.setNested('createDto.particular', value === 'true');
+        store.setNested('errors.particular', []);
+        store.setNested('createDto.taxId', '');
+        store.setNested('errors.taxId', []);
+      },
       options: [
         { label: 'Yes', value: 'true' },
         { label: 'No', value: 'false' }
@@ -85,12 +103,15 @@ export const useEnterpriseCreateFormStructure = ({
 
   const enterpriseInformation: FormStructure = {
     title: 'Enterprise information',
+    orientation: 'horizontal',
     fieldsets: [
       {
         rows: [
           {
+            fields: [nameField]
+          },
+          {
             fields: [
-              nameField,
               particularField,
               store.createDto.particular ? fieldBuilderFactory() : taxIdNumberField
             ]
@@ -116,9 +137,31 @@ export const useEnterpriseCreateFormStructure = ({
   };
 
   // additional information ****************************************************************************
+  const noteField: Field<EditorFieldProps> = {
+    id: 'note',
+    label: 'Note',
+    variant: FieldVariant.EDITOR,
+    description: 'Additional notes about the enterprise.',
+    props: {
+      value: store.createDto?.notes,
+      onChange: (value) => {
+        store.setNested('createDto.notes', value);
+        store.setNested('errors.notes', []);
+      }
+    }
+  };
+
   const additionalInformation: FormStructure = {
     title: 'Additional information',
-    fieldsets: []
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [noteField]
+          }
+        ]
+      }
+    ]
   };
 
   return {

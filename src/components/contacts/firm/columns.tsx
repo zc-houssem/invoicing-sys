@@ -1,13 +1,12 @@
 import { ResponseEnterpriseDto } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { transformDateTime } from '@/utils/date.utils';
 import { ExternalLinkIcon } from 'lucide-react';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
-import { FIRM_FILTER_ATTRIBUTES } from '@/constants/firm.filter-attributes';
+import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 
 export const useEnterpriseColumns = (
   context: DataTableConfig<ResponseEnterpriseDto>
@@ -17,65 +16,27 @@ export const useEnterpriseColumns = (
 
   return [
     {
-      accessorKey: 'entreprise_name',
+      accessorKey: t('enterprise.table.columns.name'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.entreprise_name')}
-          attribute={FIRM_FILTER_ATTRIBUTES.ENTREPRISENAME}
+          title={t('enterprise.table.columns.name')}
+          attribute={'name'}
         />
       ),
       cell: ({ row }) => <div>{row.original.name}</div>,
       enableSorting: true,
       enableHiding: true
     },
-    // {
-    //   accessorKey: 'main_interlocurtor_name',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader
-    //       column={column}
-    //       context={context}
-    //       title={t('enterprise.attributes.main_interlocurtor_name')}
-    //       attribute={FIRM_FILTER_ATTRIBUTES.INTERLOCUTORNAME}
-    //     />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const mainInterlocutor = row.original.interlocutorsToEnterprise?.find(
-    //       (entry) => entry.isMain
-    //     )?.interlocutor;
-    //     return <div>{mainInterlocutor?.name}</div>;
-    //   },
-    //   enableSorting: true,
-    //   enableHiding: true
-    // },
-    // {
-    //   accessorKey: 'main_interlocurtor_surname',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader
-    //       column={column}
-    //       context={context}
-    //       title={t('enterprise.attributes.main_interlocurtor_surname')}
-    //       attribute={FIRM_FILTER_ATTRIBUTES.INTERLOCUTORSURNAME}
-    //     />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const mainInterlocutor = row.original.interlocutorsToEnterprise?.find(
-    //       (interlocutor) => interlocutor.isMain
-    //     )?.interlocutor;
-    //     return <div>{mainInterlocutor?.surname}</div>;
-    //   },
-    //   enableSorting: true,
-    //   enableHiding: true
-    // },
     {
-      accessorKey: 'phone',
+      accessorKey: t('enterprise.table.columns.phone'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.phone')}
-          attribute={FIRM_FILTER_ATTRIBUTES.PHONE}
+          title={t('enterprise.table.columns.phone')}
+          attribute={'phone'}
         />
       ),
       cell: ({ row }) => (
@@ -83,7 +44,7 @@ export const useEnterpriseColumns = (
           {row.original.phone ? (
             row.original?.phone
           ) : (
-            <span className="text-zinc-400">{t('enterprise.empty_cells.phone')}</span>
+            <span className="opacity-50">{t('enterprise.table.emptyCells.phone')}</span>
           )}
         </div>
       ),
@@ -91,13 +52,13 @@ export const useEnterpriseColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'website',
+      accessorKey: t('enterprise.table.columns.website'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.website')}
-          attribute={FIRM_FILTER_ATTRIBUTES.WEBSITE}
+          title={t('enterprise.table.columns.website')}
+          attribute={'website'}
         />
       ),
       cell: ({ row }) => (
@@ -113,7 +74,7 @@ export const useEnterpriseColumns = (
               <ExternalLinkIcon className="h-5 w-5" />
             </a>
           ) : (
-            <span className="text-zinc-400">{t('enterprise.empty_cells.website')}</span>
+            <span className="opacity-50">{t('enterprise.table.emptyCells.website')}</span>
           )}
         </div>
       ),
@@ -121,19 +82,19 @@ export const useEnterpriseColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'tax_number',
+      accessorKey: t('enterprise.table.columns.taxId'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.tax_number')}
-          attribute={FIRM_FILTER_ATTRIBUTES.TAXIDNUMBER}
+          title={t('enterprise.table.columns.taxId')}
+          attribute={'taxId'}
         />
       ),
       cell: ({ row }) => (
         <div>
           {row.original?.taxId || (
-            <span className="text-zinc-400">{t('enterprise.empty_cells.tax_number')}</span>
+            <span className="opacity-50">{t('enterprise.table.emptyCells.taxId')}</span>
           )}
         </div>
       ),
@@ -141,21 +102,21 @@ export const useEnterpriseColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'type',
+      accessorKey: t('enterprise.table.columns.particular.noun'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.type')}
-          attribute={FIRM_FILTER_ATTRIBUTES.ISPERSON}
+          title={t('enterprise.table.columns.particular.noun')}
+          attribute={'particular'}
         />
       ),
       cell: ({ row }) => (
         <div>
-          <Badge className="px-4 py-1">
+          <Badge variant={row.original?.particular ? 'default' : 'outline'}>
             {row.original?.particular
-              ? t('enterprise.attributes.particular_entreprise_type')
-              : t('enterprise.attributes.entreprise_type')}
+              ? t('enterprise.table.columns.particular.positive')
+              : t('enterprise.table.columns.particular.negative')}
           </Badge>
         </div>
       ),
@@ -210,16 +171,36 @@ export const useEnterpriseColumns = (
     //   enableHiding: true
     // },
     {
-      accessorKey: 'created_at',
+      accessorKey: t('enterprise.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('enterprise.attributes.created_at')}
-          attribute={FIRM_FILTER_ATTRIBUTES.CREATEDAT}
+          title={t('enterprise.table.columns.createdAt')}
+          attribute={'createdAt'}
         />
       ),
-      cell: ({ row }) => <div>{transformDateTime(row.original?.createdAt || '')}</div>,
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.createdAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('enterprise.table.columns.updatedAt'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('enterprise.table.columns.updatedAt')}
+          attribute={'updatedAt'}
+        />
+      ),
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.updatedAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
       enableSorting: true,
       enableHiding: true
     },

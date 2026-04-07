@@ -20,12 +20,7 @@ import { currency } from './currency';
 export * from './currency';
 import { defaultCondition } from './default-condition';
 export * from './default-condition';
-import { firm } from './firm';
-export * from './firm';
-import { firmInterlocutorEntry } from './firm-interlocutor-entry';
-export * from './firm-interlocutor-entry';
-import { interlocutor } from './interlocutor';
-export * from './interlocutor';
+
 import { invoice } from './invoice';
 export * from './invoice';
 import { payment } from './payment';
@@ -68,9 +63,6 @@ export const api = {
   country,
   currency,
   defaultCondition,
-  firm,
-  firmInterlocutorEntry,
-  interlocutor,
   invoice,
   payment,
   paymentCondition,
