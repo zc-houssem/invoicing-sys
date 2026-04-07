@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { FirmUpdateForm } from '@/components/contacts/firm/FirmUpdateForm';
+import { FirmUpdateForm } from '@/components/contacts/enterprise/FirmUpdateForm';
 import { Page404 } from '@/components/shared';
 
 export default function Page() {

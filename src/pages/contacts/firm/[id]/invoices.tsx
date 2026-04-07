@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { FirmDetails } from '@/components/contacts/firm/FirmDetails';
+import { FirmDetails } from '@/components/contacts/enterprise/FirmDetails';
 import { useTranslation } from 'react-i18next';
 import { InvoicePortal } from '@/components/selling/invoice/InvoicePortal';
 
