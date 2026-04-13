@@ -79,6 +79,10 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
       { title: tCommon('submenu.enterprises'), href: '/contacts/enterprises' },
       { title: tContact('enterprise.new') }
     ]);
+    return () => {
+      setRoutes?.([]);
+      enterpriseStore.reset();
+    };
   }, [router.locale]);
 
   // Fetch options

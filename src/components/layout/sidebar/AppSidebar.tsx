@@ -201,7 +201,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: tCommon('submenu.system'),
-            url: '/settings/system/activity',
+            url: '/settings/system/sequence',
             icon: FileCog
           },
           {

@@ -29,24 +29,9 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({ className, child
   //menu items
   const sidebarNavItems = [
     {
-      title: tCommon('settings.system.activity'),
-      icon: <BriefcaseBusiness size={18} />,
-      href: '/settings/system/activity'
-    },
-    {
       title: tCommon('settings.system.sequence'),
       icon: <HashIcon size={18} />,
       href: '/settings/system/sequence'
-    },
-    {
-      title: tCommon('settings.system.payment_condition'),
-      icon: <Receipt size={18} />,
-      href: 'payment-conditions'
-    },
-    {
-      title: tCommon('settings.system.tax_withholding'),
-      icon: <Magnet size={18} />,
-      href: '/settings/system/withholding'
     },
     {
       title: tCommon('settings.system.tax'),

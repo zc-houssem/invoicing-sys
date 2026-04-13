@@ -2,8 +2,6 @@ import { admin } from './admin';
 export * from './admin';
 import { auth } from './auth';
 export * from './auth';
-import { activity } from './activity';
-export * from './activity';
 import { address } from './address';
 export * from './address';
 import { article } from './article';
@@ -14,10 +12,6 @@ import { bankAccount } from './bank-account';
 export * from './bank-account';
 import { cabinet } from './cabinet';
 export * from './cabinet';
-import { country } from './country';
-export * from './country';
-import { currency } from './currency';
-export * from './currency';
 import { defaultCondition } from './default-condition';
 export * from './default-condition';
 
@@ -25,8 +19,6 @@ import { invoice } from './invoice';
 export * from './invoice';
 import { payment } from './payment';
 export * from './payment';
-import { paymentCondition } from './payment-condition';
-export * from './payment-condition';
 import { permission } from './permission';
 export * from './permission';
 import { quotation } from './quotation';
@@ -37,8 +29,6 @@ import { sequence } from './sequence';
 export * from './sequence';
 import { tax } from './tax';
 export * from './tax';
-import { taxWithholding } from './tax-withholding';
-export * from './tax-withholding';
 import { upload } from './upload';
 export * from './upload';
 import { user } from './user';
@@ -54,24 +44,19 @@ import { invoicing } from './invoicing';
 export const api = {
   admin,
   auth,
-  activity,
   address,
   article,
   appConfig,
   bankAccount,
   cabinet,
-  country,
-  currency,
   defaultCondition,
   invoice,
   payment,
-  paymentCondition,
   permission,
   quotation,
   role,
   sequence,
   tax,
-  taxWithholding,
   upload,
   user,
   core,
