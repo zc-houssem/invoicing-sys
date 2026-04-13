@@ -1,0 +1,131 @@
+import { useFullScreen } from '@/hooks/useFullScreen';
+import React from 'react';
+import type { Template } from '@pdfme/common';
+import { BLANK_PDF } from '@pdfme/common';
+import { Designer } from '@pdfme/ui';
+import { text, image, date, table } from '@pdfme/schemas';
+import { cn } from '@/lib/utils';
+import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
+import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
+import { Input } from '../ui/input';
+
+interface PDFEditorProps {
+  className?: string;
+}
+
+export const PDFEditor = ({ className }: PDFEditorProps) => {
+  const [isMounted, setIsMounted] = React.useState(false);
+  const initializedRef = React.useRef(false);
+  const designerRef = React.useRef<Designer | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [basePdf, setBasePdf] = React.useState<ArrayBuffer | string>(BLANK_PDF);
+
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const { isFullscreen, toggle } = useFullScreen({
+    onToggle(isFullscreen) {
+      const hamburgerButton = document.getElementById('nav-toggler');
+      if (hamburgerButton) hamburgerButton.style.display = isFullscreen ? 'none' : '';
+    }
+  });
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isMounted) return;
+
+    let cancelled = false;
+    let designer: Designer | null = null;
+
+    const init = async () => {
+      if (typeof window === 'undefined') return;
+
+      const domContainer = containerRef.current;
+      if (!domContainer) return;
+      let buffer: ArrayBuffer | string = BLANK_PDF;
+
+      if (file) {
+        try {
+          buffer = await file.arrayBuffer();
+          setBasePdf(buffer);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      if (cancelled) return;
+
+      const template: Template = { basePdf: buffer, schemas: [[]] };
+
+      const plugins = {
+        text,
+        image,
+        date,
+        table
+      };
+
+      // const fonts = await loadFonts();
+
+      if (cancelled) return;
+
+      designer = new Designer({
+        domContainer,
+        template,
+        options: {
+          zoomLevel: 1,
+          sidebarOpen: true
+          // font: fonts
+        },
+        plugins
+      });
+
+      initializedRef.current = true;
+      designerRef.current = designer;
+
+      designer.onChangeTemplate((tpl) => {
+        const { basePdf: _basePdf, ...rest } = tpl;
+      });
+    };
+
+    if (!initializedRef.current) {
+      init();
+    }
+
+    return () => {
+      cancelled = true;
+      if (designer) {
+        designer.destroy();
+        designerRef.current = null;
+        initializedRef.current = false;
+      }
+    };
+  }, [isMounted, file]);
+
+  return (
+    <div
+      className={cn(
+        'flex flex-col gap-4 h-full transition-all duration-300 ease-in-out',
+        isFullscreen && 'fixed inset-0 z-[9999] bg-background p-4 animate-in fade-in zoom-in-95',
+        className
+      )}>
+      {isMounted ? <ApplyPDFTemplateEditorStyles /> : null}
+      <PDFTemplateEditorFieldActions isFullscreen={isFullscreen} toggle={toggle} />
+
+      <div
+        ref={containerRef}
+        className={cn(
+          'w-full rounded-xl border transition-all duration-100 ease-in-out',
+          isFullscreen ? 'h-full' : 'h-[80vh]'
+        )}
+      />
+      <Input
+        type="file"
+        onChange={(e) => {
+          setFile(e.target.files ? e.target.files[0] : null);
+        }}
+      />
+    </div>
+  );
+};
