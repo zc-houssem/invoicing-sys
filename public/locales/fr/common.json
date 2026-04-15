@@ -112,12 +112,57 @@
     "fr": "Français 🇫🇷"
   },
   "menu": {
-    "buying": "Achat",
-    "contacts": "Contacts",
-    "dashboard": "Tableau de bord",
-    "selling": "Vente",
-    "administrative_tools": "Outils Administratifs",
-    "settings": "Réglage"
+    "dashboard": {
+      "title": "Tableau de bord",
+      "subs": {}
+    },
+    "contacts": {
+      "title": "Contacts",
+      "subs": {
+        "enterprise": "Entreprises",
+        "interlocutor": "Interlocuteurs"
+      }
+    },
+    "selling": {
+      "title": "Ventes",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements"
+      }
+    },
+    "buying": {
+      "title": "Achats",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements",
+        "taxWithholding": "Retenue à la source"
+      }
+    },
+    "contentManagement": {
+      "title": "Gestion de contenu",
+      "subs": {
+        "refTypes": "Types de référence",
+        "refParams": "Paramètres de référence",
+        "bankAccounts": "Comptes bancaires"
+      }
+    },
+    "administrativeTools": {
+      "title": "Outils administratifs",
+      "subs": {
+        "userManagement": "Gestion des utilisateurs",
+        "logger": "Journal",
+        "system": "Système"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subs": {
+        "account": "Compte",
+        "system": "Système"
+      }
+    }
   },
   "order": {
     "asc": "Croissant",

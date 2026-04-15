@@ -42,7 +42,7 @@ import { useTranslation } from 'react-i18next';
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
   const { theme } = useTheme();
-  const { t: tCommon } = useTranslation('common');
+  const { t } = useTranslation('common');
 
   const data = {
     user: {
@@ -68,24 +68,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     navMain: [
       {
         id: 1,
-        title: tCommon('menu.dashboard'),
+        title: t('menu.dashboard.title'),
         url: '#',
         icon: LayoutDashboard,
         items: []
       },
       {
         id: 2,
-        title: tCommon('menu.contacts'),
+        title: t('menu.contacts.title'),
         url: '#',
         icon: Users,
         items: [
           {
-            title: tCommon('submenu.firms'),
+            title: t('menu.contacts.subs.enterprise'),
             url: '/contacts/enterprises',
             icon: Building
           },
           {
-            title: tCommon('submenu.interlocutors'),
+            title: t('menu.contacts.subs.interlocutor'),
             url: '/contacts/interlocutors',
             icon: BookUser
           }
@@ -93,27 +93,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 3,
-        title: tCommon('menu.selling'),
+        title: t('menu.selling.title'),
         url: '#',
         icon: Package,
         items: [
           {
-            title: '_Devis',
+            title: t('menu.selling.subs.quotation'),
             url: '/selling/_quotations',
             icon: File
           },
           {
-            title: tCommon('submenu.quotations'),
+            title: t('menu.selling.subs.quotation'),
             url: '/selling/quotations',
             icon: File
           },
           {
-            title: tCommon('submenu.invoices'),
+            title: t('menu.selling.subs.invoice'),
             url: '/selling/invoices',
             icon: FileText
           },
           {
-            title: tCommon('submenu.payments'),
+            title: t('menu.selling.subs.payment'),
             url: '/selling/payments',
             icon: Wallet
           }
@@ -121,27 +121,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 4,
-        title: tCommon('menu.buying'),
+        title: t('menu.buying.title'),
         url: '#',
         icon: ShoppingCart,
         items: [
           {
-            title: tCommon('submenu.quotations'),
+            title: t('menu.buying.subs.quotation'),
             url: '/buying/quotation',
             icon: File
           },
           {
-            title: tCommon('submenu.invoices'),
+            title: t('menu.buying.subs.invoice'),
             url: '/buying/invoices',
             icon: FileText
           },
           {
-            title: tCommon('submenu.payments'),
+            title: t('menu.buying.subs.payment'),
             url: '/buying/payments',
             icon: Wallet
           },
           {
-            title: tCommon('submenu.withholding'),
+            title: t('menu.buying.subs.taxWithholding'),
             url: '/buying/withholding',
             icon: Magnet
           }
@@ -149,22 +149,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 5,
-        title: 'Content Management',
+        title: t('menu.contentManagement.title'),
         url: '/content-management',
         icon: X,
         items: [
           {
-            title: 'Reference Types',
+            title: t('menu.contentManagement.subs.refTypes'),
             url: '/content-management/reference-types',
             icon: Rows3Icon
           },
           {
-            title: 'Reference Parameters',
+            title: t('menu.contentManagement.subs.refParams'),
             url: '/content-management/reference-parameters',
             icon: Table
           },
           {
-            title: 'Bank Accounts',
+            title: t('menu.contentManagement.subs.bankAccounts'),
             url: '/content-management/bank-accounts',
             icon: Wallet
           }
@@ -172,17 +172,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 6,
-        title: tCommon('menu.administrative_tools'),
+        title: t('menu.administrativeTools.title'),
         url: '#',
         icon: Shield,
         items: [
           {
-            title: tCommon('submenu.user_management'),
+            title: t('menu.administrativeTools.subs.userManagement'),
             url: '/administrative-tools/user-management/users',
             icon: Users
           },
           {
-            title: tCommon('submenu.logger'),
+            title: t('menu.administrativeTools.subs.logger'),
             url: '/administrative-tools/logger',
             icon: Cpu
           }
@@ -190,27 +190,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 7,
-        title: tCommon('menu.settings'),
+        title: t('menu.settings.title'),
         url: '#',
         icon: Settings,
         items: [
           {
-            title: tCommon('submenu.account'),
+            title: t('menu.settings.subs.account'),
             url: '/settings/account/profile',
             icon: UserCog
           },
           {
-            title: tCommon('submenu.system'),
+            title: t('menu.settings.subs.system'),
             url: '/settings/system/sequence',
             icon: FileCog
           },
           {
-            title: tCommon('submenu.pdf'),
+            title: t('menu.settings.subs.pdf'),
             url: '/settings/pdf/live',
             icon: Printer
           },
           {
-            title: tCommon('submenu.other'),
+            title: t('menu.settings.subs.other'),
             url: '#',
             icon: Wrench
           }

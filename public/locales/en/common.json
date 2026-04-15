@@ -113,12 +113,56 @@
     "fr": "French 🇫🇷"
   },
   "menu": {
-    "buying": "Buying",
-    "contacts": "Contacts",
-    "dashboard": "Dashboard",
-    "selling": "Selling",
-    "administrative_tools": "Administrative Tools",
-    "settings": "Settings"
+    "dashboard": {
+      "title": "Dashboard",
+      "subs": {}
+    },
+    "contacts": {
+      "title": "Contacts",
+      "subs": {
+        "enterprises": "Enterprises",
+        "interlocutors": "Interlocutors"
+      }
+    },
+    "buying": {
+      "title": "Buying",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments"
+      }
+    },
+    "selling": {
+      "title": "Selling",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments",
+        "taxWithholdings": "Tax Withholdings"
+      }
+    },
+    "contentManagement": {
+      "title": "Content Management",
+      "subs": {
+        "refTypes": "Reference Types",
+        "refParams": "Reference Parameters"
+      }
+    },
+    "administrativeTools": {
+      "title": "Administrative Tools",
+      "subs": {
+        "userManagement": "User Management",
+        "logger": "Logger",
+        "system": "System"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subs": {
+        "account": "Account",
+        "system": "System"
+      }
+    }
   },
   "order": {
     "asc": "Ascending",
