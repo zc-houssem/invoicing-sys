@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';
 import _ from 'lodash';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRouter } from 'next/router';

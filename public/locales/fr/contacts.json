@@ -15,13 +15,35 @@
         "positive": "Particulier",
         "negative": "Entreprise"
       },
+      "activity": "Activité",
+      "currency": "Devise",
+      "paymentConditions": "Conditions de paiement",
+      "deliveryAddress": "Adresse de livraison",
+      "invoicingAddress": "Adresse de facturation",
       "placeholders": {
         "name": "Entrez le nom de l'entreprise",
         "email": "Entrez l'email de l'entreprise",
         "phone": "Entrez le téléphone de l'entreprise",
         "website": "Entrez le site web de l'entreprise",
         "taxId": "Entrez le numéro d'identification fiscale de l'entreprise",
-        "notes": "Entrez des notes sur l'entreprise"
+        "notes": "Entrez des notes sur l'entreprise",
+        "activity": "Entrez l'activité de l'entreprise",
+        "currency": "Entrez la devise de l'entreprise",
+        "paymentConditions": "Entrez les conditions de paiement de l'entreprise"
+      },
+      "descriptions": {
+        "name": "Le nom de l'entreprise.",
+        "email": "L'adresse email de l'entreprise.",
+        "phone": "Le numéro de téléphone de l'entreprise.",
+        "website": "Le site web de l'entreprise.",
+        "taxId": "Le numéro d'identification fiscale de l'entreprise.",
+        "notes": "Des notes supplémentaires sur l'entreprise.",
+        "particular": "Indique si l'entreprise est un particulier ou non.",
+        "activity": "L'activité de l'entreprise.",
+        "currency": "La devise utilisée par l'entreprise.",
+        "paymentConditions": "Les conditions de paiement de l'entreprise.",
+        "deliveryAddress": "L'adresse de livraison de l'entreprise.",
+        "invoicingAddress": "L'adresse de facturation de l'entreprise."
       }
     },
     "table": {
@@ -43,6 +65,29 @@
         "phone": "Aucun téléphone",
         "website": "Aucun site web",
         "taxId": "Aucun numéro d'identification fiscale"
+      }
+    }
+  },
+  "address": {
+    "form": {
+      "address": "Adresse",
+      "address2": "Adresse ligne 2",
+      "zipCode": "Code postal",
+      "region": "Région",
+      "country": "Pays",
+      "placeholders": {
+        "address": "Entrez l'adresse",
+        "address2": "Entrez des informations supplémentaires sur l'adresse",
+        "zipCode": "Entrez le code postal",
+        "region": "Entrez la région",
+        "country": "Sélectionnez le pays"
+      },
+      "descriptions": {
+        "address": "L'adresse.",
+        "address2": "Des informations supplémentaires sur l'adresse.",
+        "zipCode": "Le code postal.",
+        "region": "La région.",
+        "country": "Le pays."
       }
     }
   },

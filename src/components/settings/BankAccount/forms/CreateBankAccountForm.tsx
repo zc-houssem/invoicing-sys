@@ -1,7 +1,7 @@
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useCreateBankAccountFormStructure } from './useCreateBankAccountFormStructure';
 import { useBankAccountStore } from '@/hooks/stores/useBankAccountStore';
-import useCurrencies from '@/hooks/content/useCurrency';
+import useCurrencies from '@/hooks/content/core/useCurrencies';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';

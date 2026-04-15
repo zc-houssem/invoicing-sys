@@ -1,10 +1,9 @@
 import React from 'react';
-import useCurrency from '@/hooks/content/useCurrency';
-import useActivities from '@/hooks/content/useActivities';
-import useCountry from '@/hooks/content/useCountry';
+import { useActivities } from '@/hooks/content/core/useActivities';
+import { useCountries } from '@/hooks/content/core/useCountries';
 import { Button } from '../../../ui/button';
 import { Spinner } from '@/components/shared';
-import usePaymentCondition from '@/hooks/content/usePaymentCondition';
+import { usePaymentCondition } from '@/hooks/content/core/usePaymentConditions';
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
 import { api } from '@/api';
 import { toast } from 'sonner';
@@ -14,13 +13,15 @@ import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
-import { CreateEnterpriseDto } from '@/types';
+import { CreateEnterpriseDto, ResponseRefParamDto } from '@/types';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { defineStepper } from '@/components/ui/stepper';
 import { useEnterpriseCreateFormStructure } from './useEnterpriseCreateFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 
 const steps = [
   {
@@ -58,9 +59,16 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   //translations
   const { t: tCommon } = useTranslation('common');
   const { t: tContact } = useTranslation('contacts');
+  const { t: tCountry } = useTranslation('country');
 
   // Stores
   const enterpriseStore = useEnterpriseStore();
+
+  // Fetch options
+  const { activities, isFetchActivitiesPending } = useActivities();
+  const { currencies, isCurrenciesPending } = useCurrencies();
+  const { countries, isFetchCountriesPending } = useCountries();
+  const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
 
   const {
     enterpriseInformation,
@@ -68,7 +76,30 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
     interlocutorInformation,
     additionalInformation
   } = useEnterpriseCreateFormStructure({
-    store: enterpriseStore
+    store: enterpriseStore,
+    activityOptions: mapToSelectOptions({
+      data: activities,
+      labelKey: 'label',
+      valueKey: 'id'
+    }),
+    currencyOptions: mapToSelectOptions({
+      data: currencies,
+      labelKey: 'label',
+      valueKey: 'id',
+      labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
+        `${tCommon(label)} ${entity?.extras?.symbol}`
+    }),
+    paymentConditionOptions: mapToSelectOptions({
+      data: paymentConditions,
+      labelKey: 'label',
+      valueKey: 'id'
+    }),
+    countryOptions: mapToSelectOptions({
+      data: countries,
+      labelKey: 'label',
+      valueKey: 'id',
+      labelKeyTransformer: (label) => tCountry(label)
+    })
   });
 
   //set page title in the breadcrumb
@@ -84,17 +115,6 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
       enterpriseStore.reset();
     };
   }, [router.locale]);
-
-  // Fetch options
-  const { activities, isFetchActivitiesPending } = useActivities();
-  const { currencies, isCurrenciesPending } = useCurrency();
-  const { countries, isFetchCountriesPending } = useCountry();
-  const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
-  const loading =
-    isFetchActivitiesPending ||
-    isCurrenciesPending ||
-    isFetchCountriesPending ||
-    isFetchPaymentConditionsPending;
 
   //create enterprise mutator
   const { mutate: createEnterprise, isPending: isCreatePending } = useMutation({
@@ -136,6 +156,12 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
       notes: JSON.stringify(enterpriseStore.createDto.notes)
     });
   };
+
+  const loading =
+    isFetchActivitiesPending ||
+    isCurrenciesPending ||
+    isFetchCountriesPending ||
+    isFetchPaymentConditionsPending;
 
   //component representation
   if (loading) return <Spinner className="h-screen" show={loading} />;

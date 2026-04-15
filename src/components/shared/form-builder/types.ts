@@ -1,16 +1,29 @@
 import { CheckedState } from '@radix-ui/react-checkbox';
 
 export interface FormStructure {
-  title?: string;
-  description?: string;
+  title?: {
+    value: string;
+    className?: string;
+  };
+  description?: {
+    value: string;
+    className?: string;
+  };
   orientation?: 'vertical' | 'horizontal';
   includeHeader?: boolean;
   fieldsets: Fieldset[];
 }
 
 export interface Fieldset {
-  title?: string;
-  description?: string;
+  title?: {
+    value: string;
+    className?: string;
+  };
+  description?: {
+    value: string;
+    className?: string;
+  };
+  component?: React.ReactNode;
   includeHeader?: boolean;
   rows: FieldsetRow[];
 }

@@ -2,7 +2,7 @@ export * from './enums';
 export * from './auth';
 export * from './activity';
 export * from './app-config';
-export * from './address';
+export * from './core/address';
 export * from './article';
 export * from './bank-account';
 export * from './cabinet';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTaxManager } from './hooks/useTaxManager';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { cn } from '@/lib/utils';
 import { useTaxFormStructure } from './useTaxFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';

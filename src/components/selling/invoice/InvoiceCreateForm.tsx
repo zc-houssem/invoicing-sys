@@ -17,7 +17,7 @@ import { useInvoiceArticleManager } from './hooks/useInvoiceArticleManager';
 import useInvoiceSocket from './hooks/useInvoiceSocket';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useInvoiceControlManager } from './hooks/useInvoiceControlManager';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import useCabinet from '@/hooks/content/useCabinet';

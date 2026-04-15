@@ -3,29 +3,45 @@ import {
   Field,
   FieldVariant,
   FormStructure,
+  NumberFieldProps,
   RadioFieldProps,
+  SelectFieldProps,
+  SelectOption,
   TelFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
+import { Button } from '@/components/ui/button';
 import { EnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface useEnterpriseCreateFormStructureProps {
   store: EnterpriseStore;
+  activityOptions: SelectOption[];
+  currencyOptions: SelectOption[];
+  paymentConditionOptions: SelectOption[];
+  countryOptions: SelectOption[];
 }
 
 export const useEnterpriseCreateFormStructure = ({
-  store
+  store,
+  activityOptions,
+  currencyOptions,
+  paymentConditionOptions,
+  countryOptions
 }: useEnterpriseCreateFormStructureProps) => {
+  const { t: tContact } = useTranslation('contacts');
   // enterprise information ****************************************************************************
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
-    label: 'Name',
+    label: tContact('enterprise.form.name'),
     variant: FieldVariant.TEXT,
     required: true,
     error: store.errors?.name?.[0],
-    description: 'The name of the enterprise.',
+    description: tContact('enterprise.form.descriptions.name'),
+    placeholder: tContact('enterprise.form.placeholders.name'),
     props: {
       value: store.createDto.name,
       onChange: (value) => {
@@ -37,10 +53,11 @@ export const useEnterpriseCreateFormStructure = ({
 
   const websiteField: Field<TextFieldProps> = {
     id: 'website',
-    label: 'Website',
+    label: tContact('enterprise.form.website'),
     variant: FieldVariant.URL,
     error: store.errors?.website?.[0],
-    description: 'The website of the enterprise.',
+    description: tContact('enterprise.form.descriptions.website'),
+    placeholder: tContact('enterprise.form.placeholders.website'),
     props: {
       value: store.createDto.website,
       onChange: (value) => {
@@ -52,10 +69,11 @@ export const useEnterpriseCreateFormStructure = ({
 
   const taxIdNumberField: Field<TextFieldProps> = {
     id: 'taxIdNumber',
-    label: 'Tax ID Number',
+    label: tContact('enterprise.form.taxId'),
     variant: FieldVariant.TEXT,
     error: store.errors?.taxId?.[0],
-    description: 'The tax ID number of the enterprise.',
+    description: tContact('enterprise.form.descriptions.taxId'),
+    placeholder: tContact('enterprise.form.placeholders.taxId'),
     props: {
       value: store.createDto.taxId,
       onChange: (value) => {
@@ -67,10 +85,11 @@ export const useEnterpriseCreateFormStructure = ({
 
   const phoneField: Field<TelFieldProps> = {
     id: 'phone',
-    label: 'Phone',
+    label: tContact('enterprise.form.phone'),
     variant: FieldVariant.TEXT,
     error: store.errors?.phone?.[0],
-    description: 'The phone number of the enterprise.',
+    description: tContact('enterprise.form.descriptions.phone'),
+    placeholder: tContact('enterprise.form.placeholders.phone'),
     props: {
       value: store.createDto.phone,
       onChange: (value) => {
@@ -82,9 +101,9 @@ export const useEnterpriseCreateFormStructure = ({
 
   const particularField: Field<RadioFieldProps> = {
     id: 'particular',
-    label: 'Particular',
+    label: tContact('enterprise.form.particular.noun'),
     variant: FieldVariant.RADIO,
-    description: 'Whether the enterprise is a particular or not.',
+    description: tContact('enterprise.form.descriptions.particular'),
     props: {
       value: store.createDto.particular ? 'true' : 'false',
       onValueChange: (value) => {
@@ -101,11 +120,65 @@ export const useEnterpriseCreateFormStructure = ({
     }
   };
 
+  const activityField: Field<SelectFieldProps> = {
+    id: 'activityId',
+    label: tContact('enterprise.form.activity'),
+    variant: FieldVariant.SELECT,
+    description: tContact('enterprise.form.descriptions.activity'),
+    placeholder: tContact('enterprise.form.placeholders.activity'),
+    error: store.errors?.activityId?.[0],
+    props: {
+      value: store.createDto.activityId?.toString(),
+      onValueChange: (value) => {
+        store.setNested('createDto.activityId', Number(value));
+        store.setNested('errors.activityId', []);
+      },
+      options: activityOptions
+    }
+  };
+
+  const currencyField: Field<SelectFieldProps> = {
+    id: 'currencyId',
+    label: tContact('enterprise.form.currency'),
+    variant: FieldVariant.SELECT,
+    description: tContact('enterprise.form.descriptions.currency'),
+    placeholder: tContact('enterprise.form.placeholders.currency'),
+    error: store.errors?.currencyId?.[0],
+    props: {
+      value: store.createDto.currencyId?.toString(),
+      onValueChange: (value) => {
+        store.setNested('createDto.currencyId', Number(value));
+        store.setNested('errors.currencyId', []);
+      },
+      options: currencyOptions
+    }
+  };
+
+  const paymentConditionField: Field<SelectFieldProps> = {
+    id: 'paymentConditionId',
+    label: tContact('enterprise.form.paymentConditions'),
+    variant: FieldVariant.SELECT,
+    description: tContact('enterprise.form.descriptions.paymentConditions'),
+    placeholder: tContact('enterprise.form.placeholders.paymentConditions'),
+    error: store.errors?.paymentConditionId?.[0],
+    props: {
+      value: store.createDto.paymentConditionId?.toString(),
+      onValueChange: (value) => {
+        store.setNested('createDto.paymentConditionId', Number(value));
+        store.setNested('errors.paymentConditionId', []);
+      },
+      options: paymentConditionOptions
+    }
+  };
+
   const enterpriseInformation: FormStructure = {
-    title: 'Enterprise information',
+    title: {
+      value: 'Enterprise information'
+    },
     orientation: 'horizontal',
     fieldsets: [
       {
+        includeHeader: true,
         rows: [
           {
             fields: [nameField]
@@ -118,6 +191,9 @@ export const useEnterpriseCreateFormStructure = ({
           },
           {
             fields: [phoneField, websiteField]
+          },
+          {
+            fields: [activityField, currencyField, paymentConditionField]
           }
         ]
       }
@@ -126,14 +202,233 @@ export const useEnterpriseCreateFormStructure = ({
 
   // interlocutor information ****************************************************************************
   const interlocutorInformation: FormStructure = {
-    title: 'Interlocutor information',
+    title: {
+      value: 'Interlocutor information'
+    },
     fieldsets: []
   };
 
   // address information ****************************************************************************
+  const deliveryAddressField: Field<TextFieldProps> = {
+    id: 'delivery-address',
+    label: tContact('address.form.address'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.address'),
+    placeholder: tContact('address.form.placeholders.address'),
+    props: {
+      value: store.createDto.deliveryAddress.address,
+      onChange: (value) => {
+        store.setNested('createDto.deliveryAddress.address', value);
+        store.setNested('errors.deliveryAddress.address', []);
+      }
+    }
+  };
+
+  const deliveryAddress2Field: Field<TextFieldProps> = {
+    id: 'delivery-address2',
+    label: tContact('address.form.address2'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.address2'),
+    placeholder: tContact('address.form.placeholders.address2'),
+    props: {
+      value: store.createDto.deliveryAddress.address2,
+      onChange: (value) => {
+        store.setNested('createDto.deliveryAddress.address2', value);
+        store.setNested('errors.deliveryAddress.address2', []);
+      }
+    }
+  };
+
+  const deliveryRegionField: Field<TextFieldProps> = {
+    id: 'delivery-region',
+    label: tContact('address.form.region'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.region'),
+    placeholder: tContact('address.form.placeholders.region'),
+    props: {
+      value: store.createDto.deliveryAddress.region,
+      onChange: (value) => {
+        store.setNested('createDto.deliveryAddress.region', value);
+        store.setNested('errors.deliveryAddress.region', []);
+      }
+    }
+  };
+
+  const deliveryZipCodeField: Field<NumberFieldProps> = {
+    id: 'delivery-zipcode',
+    label: tContact('address.form.zipCode'),
+    variant: FieldVariant.NUMBER,
+    description: tContact('address.form.descriptions.zipCode'),
+    placeholder: tContact('address.form.placeholders.zipCode'),
+    props: {
+      value: store.createDto.deliveryAddress.zipcode,
+      onChange: (value) => {
+        store.setNested('createDto.deliveryAddress.zipcode', value);
+        store.setNested('errors.deliveryAddress.zipcode', []);
+      }
+    }
+  };
+
+  const deliveryCountryField: Field<SelectFieldProps> = {
+    id: 'delivery-country',
+    label: tContact('address.form.country'),
+    variant: FieldVariant.SELECT,
+    description: tContact('address.form.descriptions.country'),
+    placeholder: tContact('address.form.placeholders.country'),
+    props: {
+      value: store.createDto.deliveryAddress.countryId?.toString(),
+      onValueChange: (value) => {
+        store.setNested('createDto.deliveryAddress.countryId', Number(value));
+        store.setNested('errors.deliveryAddress.countryId', []);
+      },
+      options: countryOptions
+    }
+  };
+
+  const invoicingAddressField: Field<TextFieldProps> = {
+    id: 'invoicing-address',
+    label: tContact('address.form.address'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.address'),
+    placeholder: tContact('address.form.placeholders.address'),
+    props: {
+      value: store.createDto.invoicingAddress.address,
+      onChange: (value) => {
+        store.setNested('createDto.invoicingAddress.address', value);
+        store.setNested('errors.invoicingAddress.address', []);
+      }
+    }
+  };
+
+  const invoicingAddress2Field: Field<TextFieldProps> = {
+    id: 'invoicing-address2',
+    label: tContact('address.form.address2'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.address2'),
+    placeholder: tContact('address.form.placeholders.address2'),
+    props: {
+      value: store.createDto.invoicingAddress.address2,
+      onChange: (value) => {
+        store.setNested('createDto.invoicingAddress.address2', value);
+        store.setNested('errors.invoicingAddress.address2', []);
+      }
+    }
+  };
+
+  const invoicingRegionField: Field<TextFieldProps> = {
+    id: 'invoicing-region',
+    label: tContact('address.form.region'),
+    variant: FieldVariant.TEXT,
+    description: tContact('address.form.descriptions.region'),
+    placeholder: tContact('address.form.placeholders.region'),
+    props: {
+      value: store.createDto.invoicingAddress.region,
+      onChange: (value) => {
+        store.setNested('createDto.invoicingAddress.region', value);
+        store.setNested('errors.invoicingAddress.region', []);
+      }
+    }
+  };
+
+  const invoicingZipCodeField: Field<NumberFieldProps> = {
+    id: 'invoicing-zipcode',
+    label: tContact('address.form.zipCode'),
+    variant: FieldVariant.NUMBER,
+    description: tContact('address.form.descriptions.zipCode'),
+    placeholder: tContact('address.form.placeholders.zipCode'),
+    props: {
+      value: store.createDto.invoicingAddress.zipcode,
+      onChange: (value) => {
+        store.setNested('createDto.invoicingAddress.zipcode', value);
+        store.setNested('errors.invoicingAddress.zipcode', []);
+      }
+    }
+  };
+
+  const invoicingCountryField: Field<SelectFieldProps> = {
+    id: 'invoicing-country',
+    label: tContact('address.form.country'),
+    variant: FieldVariant.SELECT,
+    description: tContact('address.form.descriptions.country'),
+    placeholder: tContact('address.form.placeholders.country'),
+    props: {
+      value: store.createDto.invoicingAddress.countryId?.toString(),
+      onValueChange: (value) => {
+        store.setNested('createDto.invoicingAddress.countryId', Number(value));
+        store.setNested('errors.invoicingAddress.countryId', []);
+      },
+      options: countryOptions
+    }
+  };
+
   const addressInformation: FormStructure = {
-    title: 'Address information',
-    fieldsets: []
+    title: {
+      value: tContact('enterprise.form.addressInformation')
+    },
+    fieldsets: [
+      {
+        title: {
+          value: tContact('enterprise.form.deliveryAddress'),
+          className: 'text-sm font-bold'
+        },
+        description: {
+          value: tContact('enterprise.form.descriptions.deliveryAddress'),
+          className: 'text-xs'
+        },
+        component: (
+          <Button
+            variant={'outline'}
+            size="sm"
+            type="button"
+            onClick={() => {
+              store.setNested('createDto.deliveryAddress', { ...store.createDto.invoicingAddress });
+            }}>
+            <Copy />
+            <span className="text-xs">Copy Invoicing Address</span>
+          </Button>
+        ),
+        includeHeader: true,
+        rows: [
+          {
+            fields: [deliveryAddressField, deliveryAddress2Field]
+          },
+          {
+            fields: [deliveryRegionField, deliveryZipCodeField, deliveryCountryField]
+          }
+        ]
+      },
+      {
+        title: {
+          value: tContact('enterprise.form.invoicingAddress'),
+          className: 'text-sm font-bold'
+        },
+        description: {
+          value: tContact('enterprise.form.descriptions.invoicingAddress'),
+          className: 'text-xs'
+        },
+        component: (
+          <Button
+            variant={'outline'}
+            size="sm"
+            type="button"
+            onClick={() => {
+              store.setNested('createDto.invoicingAddress', { ...store.createDto.deliveryAddress });
+            }}>
+            <Copy />
+            <span className="text-xs">Copy Delivery Address</span>
+          </Button>
+        ),
+        includeHeader: true,
+        rows: [
+          {
+            fields: [invoicingAddressField, invoicingAddress2Field]
+          },
+          {
+            fields: [invoicingRegionField, invoicingZipCodeField, invoicingCountryField]
+          }
+        ]
+      }
+    ]
   };
 
   // additional information ****************************************************************************
@@ -152,7 +447,9 @@ export const useEnterpriseCreateFormStructure = ({
   };
 
   const additionalInformation: FormStructure = {
-    title: 'Additional information',
+    title: {
+      value: 'Additional information'
+    },
     fieldsets: [
       {
         rows: [

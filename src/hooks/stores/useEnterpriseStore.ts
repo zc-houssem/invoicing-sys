@@ -1,4 +1,3 @@
-import { api } from '@/api';
 import { CreateEnterpriseDto, ResponseEnterpriseDto, UpdateEnterpriseDto } from '@/types';
 import _ from 'lodash';
 import create from 'zustand';
@@ -23,7 +22,25 @@ const initialState: EnterpriseData = {
     taxId: '',
     notes: '',
     website: '',
-    particular: false
+    particular: false,
+    activityId: undefined,
+    currencyId: undefined,
+    paymentConditionId: undefined,
+    system: false,
+    deliveryAddress: {
+      address: '',
+      address2: '',
+      region: '',
+      zipcode: undefined,
+      countryId: undefined
+    },
+    invoicingAddress: {
+      address: '',
+      address2: '',
+      region: '',
+      zipcode: undefined,
+      countryId: undefined
+    }
   }
 };
 

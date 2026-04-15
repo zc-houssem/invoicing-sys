@@ -15,13 +15,35 @@
         "positive": "Particular",
         "negative": "Enterprise"
       },
+      "activity": "Activity",
+      "currency": "Currency",
+      "paymentConditions": "Payment Conditions",
+      "deliveryAddress": "Delivery Address",
+      "invoicingAddress": "Invoicing Address",
       "placeholders": {
         "name": "Enter the enterprise name",
         "email": "Enter the enterprise email",
         "phone": "Enter the enterprise phone",
         "website": "Enter the enterprise website",
         "taxId": "Enter the enterprise tax ID number",
-        "notes": "Enter notes about the enterprise"
+        "notes": "Enter notes about the enterprise",
+        "activity": "Enter the enterprise activity",
+        "currency": "Enter the enterprise currency",
+        "paymentConditions": "Enter the enterprise payment conditions"
+      },
+      "descriptions": {
+        "name": "The name of the enterprise.",
+        "email": "The email address of the enterprise.",
+        "phone": "The phone number of the enterprise.",
+        "website": "The website of the enterprise.",
+        "taxId": "The tax ID number of the enterprise.",
+        "notes": "Additional notes about the enterprise.",
+        "particular": "Indicates whether the enterprise is a particular or not.",
+        "activity": "The activity of the enterprise.",
+        "currency": "The currency used by the enterprise.",
+        "paymentConditions": "The payment conditions of the enterprise.",
+        "deliveryAddress": "The delivery address of the enterprise.",
+        "invoicingAddress": "The invoicing address of the enterprise."
       }
     },
     "table": {
@@ -43,6 +65,29 @@
         "phone": "No phone",
         "website": "No website",
         "taxId": "No tax ID"
+      }
+    }
+  },
+  "address": {
+    "form": {
+      "address": "Address",
+      "address2": "Address Line 2",
+      "zipCode": "Postal Code",
+      "region": "Region",
+      "country": "Country",
+      "placeholders": {
+        "address": "Enter the address",
+        "address2": "Enter the address line 2",
+        "zipCode": "Enter the postal code",
+        "region": "Enter the region",
+        "country": "Select the country"
+      },
+      "descriptions": {
+        "address": "The address.",
+        "address2": "Additional address information.",
+        "zipCode": "The postal code.",
+        "region": "The region.",
+        "country": "The country."
       }
     }
   },

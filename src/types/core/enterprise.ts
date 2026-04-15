@@ -1,4 +1,6 @@
 import { DatabaseEntity } from '../response/DatabaseEntity';
+import { CreateAddressDto, ResponseAddressDto } from './address';
+import { ResponseRefParamDto } from './reference-types';
 
 // enterprise *******************************************************
 export interface ResponseEnterpriseDto extends DatabaseEntity {
@@ -10,6 +12,16 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
   taxId?: string;
   notes?: string;
   system?: boolean;
+  activityId?: number;
+  activity?: ResponseRefParamDto;
+  currencyId?: number;
+  currency?: ResponseRefParamDto;
+  paymentConditionId?: number;
+  paymentCondition?: ResponseRefParamDto;
+  deliveryAddress?: ResponseAddressDto;
+  deliveryAddressId?: number;
+  invoicingAddress?: ResponseAddressDto;
+  invoicingAddressId?: number;
 }
 
 export interface CreateEnterpriseDto {
@@ -20,6 +32,11 @@ export interface CreateEnterpriseDto {
   taxId: string;
   notes?: string;
   system?: boolean;
+  activityId?: number;
+  currencyId?: number;
+  paymentConditionId?: number;
+  deliveryAddress: CreateAddressDto;
+  invoicingAddress: CreateAddressDto;
 }
 
 export interface UpdateEnterpriseDto extends Partial<CreateEnterpriseDto> {}

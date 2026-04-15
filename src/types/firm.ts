@@ -1,6 +1,6 @@
 import { FirmInterlocutorEntry } from './firm-interlocutor-entry';
 import { Activity } from './activity';
-import { Address } from './address';
+import { Address } from './core/address';
 import { Cabinet } from './cabinet';
 import { Currency } from './currency';
 import { PaymentCondition } from './payment-condition';

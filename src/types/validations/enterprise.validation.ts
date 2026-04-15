@@ -10,7 +10,10 @@ export const baseEnterpriseInformationValidationSchema = z.object({
   phone: z.string().optional(),
   notes: z.string().optional(),
   website: z.string().url().optional(),
-  particular: z.boolean()
+  particular: z.boolean(),
+  activityId: z.number().optional(),
+  currencyId: z.number().optional(),
+  paymentConditionsId: z.number().optional()
 });
 
 export const createEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(

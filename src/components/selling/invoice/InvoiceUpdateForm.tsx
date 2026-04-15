@@ -23,7 +23,7 @@ import { useInvoiceManager } from './hooks/useInvoiceManager';
 import { useInvoiceArticleManager } from './hooks/useInvoiceArticleManager';
 import { useInvoiceControlManager } from './hooks/useInvoiceControlManager';
 import _ from 'lodash';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InvoiceExtraOptions } from './form/InvoiceExtraOptions';

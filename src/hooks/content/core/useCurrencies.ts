@@ -6,14 +6,17 @@ interface useCurrenciesProps {
   enabled?: boolean;
 }
 
-const useCurrencies = ({ enabled }: useCurrenciesProps = { enabled: true }) => {
+export const useCurrencies = ({ enabled = true }: useCurrenciesProps = { enabled: true }) => {
   const {
     data: currenciesResp,
     isPending: isCurrenciesPending,
     refetch: refetchCurrencies
   } = useQuery({
     queryKey: ['currencies'],
-    queryFn: () => api.currency.find(),
+    queryFn: () =>
+      api.admin.refParam.findAll({
+        filter: 'refTypeId||$eq||currency'
+      }),
     enabled
   });
 
@@ -28,5 +31,3 @@ const useCurrencies = ({ enabled }: useCurrenciesProps = { enabled: true }) => {
     refetchCurrencies
   };
 };
-
-export default useCurrencies;

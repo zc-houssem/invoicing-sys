@@ -17,7 +17,7 @@ import { useQuotationArticleManager } from './hooks/useQuotationArticleManager';
 import useQuotationSocket from './hooks/useQuotationSocket';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useQuotationControlManager } from './hooks/useQuotationControlManager';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import useCabinet from '@/hooks/content/useCabinet';

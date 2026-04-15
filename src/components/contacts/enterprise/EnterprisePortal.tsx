@@ -140,7 +140,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
 
   if (error) return 'An error has occurred: ' + error.message;
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden container mx-auto', className)}>
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
       <DataTable
         className="flex flex-col flex-1 overflow-auto p-1"
         containerClassName="overflow-auto"

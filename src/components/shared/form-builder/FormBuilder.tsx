@@ -16,13 +16,22 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
       {!!structure?.includeHeader && (
         <div>
           <div className="space-y-1 py-5 sm:py-0">
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{structure.title}</h1>
-            <p className="text-muted-foreground">{structure.description}</p>
+            <h1
+              className={cn(
+                'text-2xl font-bold tracking-tight md:text-3xl',
+                structure.title?.className
+              )}>
+              {structure.title?.value}
+            </h1>
+            {structure.description && (
+              <p className={cn('text-muted-foreground', structure.description.className)}>
+                {structure.description.value}
+              </p>
+            )}
           </div>
           <Separator className="mt-2 mb-4 lg:mb-6" />
         </div>
       )}
-
       <form
         className={cn(
           'flex gap-4 xl:gap-10',
@@ -41,10 +50,26 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                 : 'flex-col gap-5'
             )}>
             {fieldset.includeHeader && (
-              <div className="flex flex-col gap-2">
-                <h2 className="text-lg font-semibold">{fieldset.title}</h2>
+              <>
+                <div className="flex flex-row gap-2 justify-between">
+                  <div className="flex flex-col gap-2">
+                    <h2 className={cn('text-lg font-semibold', fieldset.title?.className)}>
+                      {fieldset.title?.value}
+                    </h2>
+                    {fieldset.description && (
+                      <p
+                        className={cn(
+                          'text-sm text-muted-foreground',
+                          fieldset.description?.className
+                        )}>
+                        {fieldset.description.value}
+                      </p>
+                    )}
+                  </div>
+                  {fieldset.component && <div>{fieldset.component}</div>}
+                </div>
                 <Separator />
-              </div>
+              </>
             )}
 
             {fieldset?.rows?.map((row, index) => {

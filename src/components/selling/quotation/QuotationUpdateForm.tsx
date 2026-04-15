@@ -22,7 +22,7 @@ import { useQuotationManager } from './hooks/useQuotationManager';
 import { useQuotationArticleManager } from './hooks/useQuotationArticleManager';
 import { useQuotationControlManager } from './hooks/useQuotationControlManager';
 import _ from 'lodash';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { QuotationExtraOptions } from './form/QuotationExtraOptions';

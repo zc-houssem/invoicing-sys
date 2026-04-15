@@ -1,5 +1,5 @@
 import { Activity } from './activity';
-import { Address, UpdateAddressDto } from './address';
+import { Address, UpdateAddressDto } from './core/address';
 import { Currency } from './currency';
 import { DatabaseEntity } from './response/DatabaseEntity';
 

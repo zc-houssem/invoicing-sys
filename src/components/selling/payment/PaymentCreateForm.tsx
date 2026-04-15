@@ -7,7 +7,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaymentGeneralInformation } from './form/PaymentGeneralInformation';
 import useFirmChoices from '@/hooks/content/useFirmChoice';
-import useCurrency from '@/hooks/content/useCurrency';
+import useCurrency from '@/hooks/content/core/useCurrencies';
 import { PaymentInvoiceManagement } from './form/PaymentInvoiceManagement';
 import { PaymentFinancialInformation } from './form/PaymentFinancialInformation';
 import { Textarea } from '@/components/ui/textarea';
