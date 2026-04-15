@@ -91,5 +91,49 @@
       }
     }
   },
-  "interlocutor": {}
+  "interlocutor": {
+    "singular": "Interlocuteur",
+    "plural": "Interlocuteurs",
+    "form": {
+      "socialTitle": "Civilité",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "position": "Poste",
+      "placeholders": {
+        "socialTitle": "Sélectionnez la civilité",
+        "firstName": "Entrez le prénom de l'interlocuteur",
+        "lastName": "Entrez le nom de l'interlocuteur",
+        "email": "Entrez l'email de l'interlocuteur",
+        "phone": "Entrez le téléphone de l'interlocuteur",
+        "position": "Entrez le poste de l'interlocuteur"
+      },
+      "descriptions": {
+        "socialTitle": "La civilité de l'interlocuteur.",
+        "firstName": "Le prénom de l'interlocuteur.",
+        "lastName": "Le nom de l'interlocuteur.",
+        "email": "L'adresse email de l'interlocuteur.",
+        "phone": "Le numéro de téléphone de l'interlocuteur.",
+        "position": "Le poste de l'interlocuteur."
+      }
+    },
+    "table": {
+      "columns": {
+        "socialTitle": "Civilité",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le",
+        "position": "Poste"
+      },
+      "emptyCells": {
+        "email": "Aucun email",
+        "phone": "Aucun téléphone",
+        "position": "Aucun poste"
+      }
+    }
+  }
 }

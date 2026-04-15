@@ -1,30 +1,27 @@
-import { Interlocutor } from '@/types';
+import { Interlocutor, ResponseInterlocutorDto } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { transformDateTime } from '@/utils/date.utils';
-import { INTERLOCUTOR_FILTER_ATTRIBUTES } from '@/constants/interlocutor.filter-attributes';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const useInterlocutorColumns = (
-  context: DataTableConfig<Interlocutor>,
-  firmId?: number
-): ColumnDef<Interlocutor>[] => {
+  context: DataTableConfig<ResponseInterlocutorDto>
+): ColumnDef<ResponseInterlocutorDto>[] => {
   const { t } = useTranslation('contacts');
   const { t: tCommon } = useTranslation('common');
 
-  const columns: ColumnDef<Interlocutor>[] = [
+  const columns: ColumnDef<ResponseInterlocutorDto>[] = [
     {
-      accessorKey: 'title',
+      accessorKey: t('interlocutor.table.columns.socialTitle'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.title')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.TITLE}
+          title={t('interlocutor.table.columns.socialTitle')}
+          attribute={'title'}
         />
       ),
       cell: ({ row }) => <div>{row.original.title}</div>,
@@ -32,41 +29,41 @@ export const useInterlocutorColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'name',
+      accessorKey: t('interlocutor.table.columns.firstName'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.name')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.NAME}
+          title={t('interlocutor.table.columns.firstName')}
+          attribute={'firstName'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.name}</div>,
+      cell: ({ row }) => <div>{row.original.firstName}</div>,
       enableSorting: true,
       enableHiding: true
     },
     {
-      accessorKey: 'surname',
+      accessorKey: t('interlocutor.table.columns.lastName'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.surname')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.SURNAME}
+          title={t('interlocutor.table.columns.lastName')}
+          attribute={'lastName'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.surname}</div>,
+      cell: ({ row }) => <div>{row.original.lastName}</div>,
       enableSorting: true,
       enableHiding: true
     },
     {
-      accessorKey: 'phone',
+      accessorKey: t('interlocutor.table.columns.phone'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.phone')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.PHONE}
+          title={t('interlocutor.table.columns.phone')}
+          attribute={'phone'}
         />
       ),
       cell: ({ row }) => (
@@ -74,7 +71,7 @@ export const useInterlocutorColumns = (
           {row.original?.phone ? (
             row.original?.phone
           ) : (
-            <span className="text-zinc-400">{t('interlocutor.empty_cells.phone')}</span>
+            <span className="opacity-50">{t('interlocutor.emptyCells.phone')}</span>
           )}
         </div>
       ),
@@ -82,139 +79,50 @@ export const useInterlocutorColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'email',
+      accessorKey: t('interlocutor.table.columns.email'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.email')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.EMAIL}
+          title={t('interlocutor.table.columns.email')}
+          attribute={'email'}
         />
       ),
       cell: ({ row }) => (
-        <div className="font-bold cursor-pointer hover:underline">{row.original.email}</div>
+        <a
+          className="font-bold cursor-pointer hover:underline"
+          href={`mailto:${row.original.email}`}>
+          {row.original.email}
+        </a>
       ),
       enableSorting: true,
       enableHiding: true
-    }
-  ];
-
-  if (!firmId) {
-    columns.push({
-      accessorKey: 'firms',
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          context={context}
-          title={t('interlocutor.attributes.firms')}
-        />
-      ),
-      cell: ({ row }) => {
-        const firms = row.original.firmsToInterlocutor || [];
-        if (firms.length === 0) {
-          return <div className="opacity-70">{t('interlocutor.empty_cells.firms')}</div>;
-        }
-
-        const visibleFirms = firms.slice(0, 3);
-        const hiddenFirms = firms.length - visibleFirms.length;
-
-        return (
-          <div>
-            <div className="line-clamp-1">
-              {visibleFirms.map((entry, index) => (
-                <span key={index} className="mr-1">
-                  {entry.firm?.name}
-                  {index < visibleFirms.length - 1 && ', '}
-                </span>
-              ))}
-              {hiddenFirms > 0 && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="font-extralight cursor-pointer mx-1">
-                      {`+${hiddenFirms} more`}
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {firms.slice(3).map((entry, index) => (
-                        <p key={index}>{entry.firm?.name}</p>
-                      ))}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </div>
-          </div>
-        );
-      },
-      enableSorting: false,
-      enableHiding: true
-    });
-  }
-
-  if (firmId) {
-    columns.push(
-      {
-        accessorKey: 'position',
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            context={context}
-            title={t('interlocutor.attributes.position')}
-          />
-        ),
-        cell: ({ row }) => {
-          const position = row.original.firmsToInterlocutor?.find(
-            (firm) => firm.firmId === firmId
-          )?.position;
-
-          return (
-            <div>
-              {position ? (
-                position
-              ) : (
-                <span className="text-zinc-400">{t('interlocutor.empty_cells.position')}</span>
-              )}
-            </div>
-          );
-        },
-        enableSorting: false,
-        enableHiding: true
-      },
-      {
-        accessorKey: 'is_main',
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            context={context}
-            title={t('interlocutor.attributes.is_main')}
-          />
-        ),
-        cell: ({ row }) => (
-          <div>
-            <Badge className="px-4 py-1">
-              {row.original.firmsToInterlocutor?.find((firm) => firm.firmId === firmId)?.isMain
-                ? tCommon('answer.yes')
-                : tCommon('answer.no')}
-            </Badge>
-          </div>
-        ),
-        enableSorting: false,
-        enableHiding: true
-      }
-    );
-  }
-
-  columns.push(
+    },
     {
-      accessorKey: 'created_at',
+      accessorKey: t('interlocutor.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('interlocutor.attributes.created_at')}
-          attribute={INTERLOCUTOR_FILTER_ATTRIBUTES.CREATEDAT}
+          title={t('interlocutor.table.columns.createdAt')}
+          attribute={'createdAt'}
         />
       ),
       cell: ({ row }) => <div>{transformDateTime(row.original?.createdAt || '')}</div>,
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('interlocutor.table.columns.updatedAt'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('interlocutor.table.columns.updatedAt')}
+          attribute={'updatedAt'}
+        />
+      ),
+      cell: ({ row }) => <div>{transformDateTime(row.original?.updatedAt || '')}</div>,
       enableSorting: true,
       enableHiding: true
     },
@@ -226,7 +134,7 @@ export const useInterlocutorColumns = (
         </div>
       )
     }
-  );
+  ];
 
   return columns;
 };

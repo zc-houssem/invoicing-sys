@@ -13,6 +13,7 @@ import {
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
 import { Button } from '@/components/ui/button';
 import { EnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { SocialTitles } from '@/types';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -201,11 +202,120 @@ export const useEnterpriseCreateFormStructure = ({
   };
 
   // interlocutor information ****************************************************************************
+  const socialTitleField: Field<SelectFieldProps> = {
+    id: 'interlocutor-title',
+    label: tContact('interlocutor.form.socialTitle'),
+    variant: FieldVariant.SELECT,
+    description: tContact('interlocutor.form.descriptions.socialTitle'),
+    placeholder: tContact('interlocutor.form.placeholders.socialTitle'),
+    props: {
+      value: store.createDto.interlocutors?.[0].interlocutor.title,
+      onValueChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutor.title', value);
+        store.setNested('errors.interlocutors.0.interlocutor.title', []);
+      },
+      options: Object.values(SocialTitles).map((title) => ({
+        label: title,
+        value: title
+      }))
+    }
+  };
+
+  const firstNameField: Field<TextFieldProps> = {
+    id: 'interlocutor-first-name',
+    label: tContact('interlocutor.form.firstName'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.firstName'),
+    placeholder: tContact('interlocutor.form.placeholders.firstName'),
+    props: {
+      value: store.createDto.interlocutors?.[0].interlocutor.firstName,
+      onChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutor.firstName', value);
+        store.setNested('errors.interlocutors.0.interlocutor.firstName', []);
+        console.log(store.createDto);
+      }
+    }
+  };
+
+  const lastNameField: Field<TextFieldProps> = {
+    id: 'interlocutor-last-name',
+    label: tContact('interlocutor.form.lastName'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.lastName'),
+    placeholder: tContact('interlocutor.form.placeholders.lastName'),
+    props: {
+      value: store.createDto.interlocutors?.[0].interlocutor.lastName,
+      onChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutor.lastName', value);
+        store.setNested('errors.interlocutors.0.interlocutor.lastName', []);
+      }
+    }
+  };
+
+  const emailField: Field<TextFieldProps> = {
+    id: 'interlocutor-email',
+    label: tContact('interlocutor.form.email'),
+    variant: FieldVariant.EMAIL,
+    description: tContact('interlocutor.form.descriptions.email'),
+    placeholder: tContact('interlocutor.form.placeholders.email'),
+    props: {
+      value: store.createDto.interlocutors?.[0].interlocutor.email,
+      onChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutor.email', value);
+        store.setNested('errors.interlocutors.0.interlocutor.email', []);
+      }
+    }
+  };
+
+  const phoneFieldInterlocutor: Field<TelFieldProps> = {
+    id: 'interlocutor-phone',
+    label: tContact('interlocutor.form.phone'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.phone'),
+    placeholder: tContact('interlocutor.form.placeholders.phone'),
+    props: {
+      value: store.createDto.interlocutors?.[0].interlocutor.phone,
+      onChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutor.phone', value);
+        store.setNested('errors.interlocutors.0.interlocutor.phone', []);
+      }
+    }
+  };
+
+  const positionField: Field<TextFieldProps> = {
+    id: 'interlocutor-position',
+    label: tContact('interlocutor.form.position'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.position'),
+    placeholder: tContact('interlocutor.form.placeholders.position'),
+    props: {
+      value: store.createDto.interlocutors?.[0].position,
+      onChange: (value) => {
+        store.setNested('createDto.interlocutors.0.position', value);
+        store.setNested('errors.interlocutors.0.position', []);
+      }
+    }
+  };
+
   const interlocutorInformation: FormStructure = {
     title: {
       value: 'Interlocutor information'
     },
-    fieldsets: []
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [socialTitleField, firstNameField, lastNameField]
+          },
+          {
+            fields: [emailField, phoneFieldInterlocutor]
+          },
+          {
+            fields: [positionField]
+          }
+        ]
+      }
+    ]
   };
 
   // address information ****************************************************************************

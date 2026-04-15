@@ -91,5 +91,49 @@
       }
     }
   },
-  "interlocutor": {}
+  "interlocutor": {
+    "singular": "Interlocutor",
+    "plural": "Interlocutors",
+    "form": {
+      "socialTitle": "Social Title",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "position": "Position",
+      "placeholders": {
+        "socialTitle": "Select the social title",
+        "firstName": "Enter the first name",
+        "lastName": "Enter the last name",
+        "email": "Enter the email",
+        "phone": "Enter the phone number",
+        "position": "Enter the position"
+      },
+      "descriptions": {
+        "socialTitle": "The social title of the interlocutor.",
+        "firstName": "The first name of the interlocutor.",
+        "lastName": "The last name of the interlocutor.",
+        "email": "The email address of the interlocutor.",
+        "phone": "The phone number of the interlocutor.",
+        "position": "The position of the interlocutor within the enterprise."
+      }
+    },
+    "table": {
+      "columns": {
+        "socialTitle": "Social Title",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "position": "Position"
+      },
+      "emptyCells": {
+        "email": "No email",
+        "phone": "No phone",
+        "position": "No position"
+      }
+    }
+  }
 }

@@ -93,3 +93,46 @@ export const stableStringify = (value: any): string => {
 export const deepEqual = (a: any, b: any) => {
   return stableStringify(a) === stableStringify(b);
 };
+
+export function setDeep<T extends object>(obj: T, path: string, value: any): T {
+  const keys = path.split('.');
+
+  const clone: any = Array.isArray(obj) ? [...obj] : { ...obj };
+  let current: any = clone;
+
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+    const nextKey = keys[i + 1];
+
+    const isIndex = !isNaN(Number(key));
+    const isNextIndex = !isNaN(Number(nextKey));
+
+    const next = isIndex ? current[Number(key)] : current[key];
+
+    const newValue =
+      next !== undefined ? (Array.isArray(next) ? [...next] : { ...next }) : isNextIndex ? [] : {};
+
+    if (isIndex) {
+      current[Number(key)] = newValue;
+      current = current[Number(key)];
+    } else {
+      current[key] = newValue;
+      current = current[key];
+    }
+  }
+
+  const lastKey = keys[keys.length - 1];
+  const isLastIndex = !isNaN(Number(lastKey));
+
+  const prevValue = isLastIndex ? current[Number(lastKey)] : current[lastKey];
+
+  const finalValue = typeof value === 'function' ? value(prevValue) : value;
+
+  if (isLastIndex) {
+    current[Number(lastKey)] = finalValue;
+  } else {
+    current[lastKey] = finalValue;
+  }
+
+  return clone as T;
+}

@@ -86,221 +86,17 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
       firmId
     ],
     queryFn: () =>
-      api.interlocutor.findPaginated(
-        debouncedPage,
-        debouncedSize,
-        debouncedSortDetails.order ? 'ASC' : 'DESC',
-        debouncedSortDetails.sortKey,
-        debouncedSearchTerm,
-        firmId
-      )
+      api.core.interlocutor.findPaginated({
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
+        sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+        search: debouncedSearchTerm
+      })
   });
 
   const interlocutors = React.useMemo(() => {
     return interlocutorsResp?.data || [];
   }, [interlocutorsResp]);
-
-  const { mutate: associateInterlocutor, isPending: isAssociatePending } = useMutation({
-    mutationFn: (interlocutorId?: number) =>
-      api.firmInterlocutorEntry.create({
-        firmId,
-        position: interlocutorStore.position,
-        interlocutorId: interlocutorId
-      }),
-    onSuccess: () => {
-      refetchInterlocutors();
-      toast.success(tContacts('interlocutor.action_associate_success'));
-      interlocutorStore.reset();
-    },
-    onError: () => {
-      toast.error(tContacts('interlocutor.action_associate_error'));
-    }
-  });
-
-  const { mutate: disassociateInterlocutor, isPending: isDisassociatePending } = useMutation({
-    mutationFn: (id?: number) => api.firmInterlocutorEntry.remove(firmId, id),
-    onSuccess: () => {
-      refetchInterlocutors();
-      toast.success(tContacts('interlocutor.action_disassociate_success'));
-    },
-    onError: () => {
-      toast.error(tContacts('interlocutor.action_disassociate_error'));
-    }
-  });
-
-  const { mutate: promoteInterlocutor, isPending: isPromotionPending } = useMutation({
-    mutationFn: (id?: number) => api.interlocutor.promote(id, firmId),
-    onSuccess: () => {
-      refetchInterlocutors();
-      toast.success(tContacts('interlocutor.action_promote_success'));
-    },
-    onError: (error): void => {
-      toast.error(
-        getErrorMessage('contacts', error, tContacts('interlocutor.action_promote_failure'))
-      );
-    }
-  });
-
-  const { mutate: createInterlocutor, isPending: isCreatePending } = useMutation({
-    mutationFn: (data: CreateInterlocutorDto) => api.interlocutor.create(data),
-    onSuccess: (data) => {
-      associateInterlocutor(data.id);
-      toast.success(tContacts('interlocutor.action_add_success'));
-    },
-    onError: (error): void => {
-      toast.error(getErrorMessage('contacts', error, tContacts('interlocutor.action_add_failure')));
-    }
-  });
-
-  const { mutate: updateInterlocutor, isPending: isUpdatePending } = useMutation({
-    mutationFn: (data: UpdateInterlocutorDto) => api.interlocutor.update(data),
-    onSuccess: (data) => {
-      associateInterlocutor(data.id);
-      toast.success(tContacts('interlocutor.action_update_success'));
-    },
-    onError: (error): void => {
-      toast.error(
-        getErrorMessage('contacts', error, tContacts('interlocutor.action_update_failure'))
-      );
-    }
-  });
-
-  const { mutate: removeInterlocutor, isPending: isDeletePending } = useMutation({
-    mutationFn: (id?: number) => api.interlocutor.remove(id),
-    onSuccess: () => {
-      if (interlocutors?.length == 1 && page > 1) setPage(page - 1);
-      toast.success(tContacts('interlocutor.action_remove_success'));
-      refetchInterlocutors();
-      interlocutorStore.reset();
-    },
-    onError: (error) => {
-      toast.error(
-        getErrorMessage('contacts', error, tContacts('interlocutor.action_remove_failure'))
-      );
-    }
-  });
-
-  const handleUpdateSubmit = () => {
-    const data: UpdateInterlocutorDto = {
-      title: interlocutorStore.title,
-      firstName: interlocutorStore.name,
-      lastName: interlocutorStore.surname,
-      email: interlocutorStore.email,
-      phone: interlocutorStore.phone
-    };
-    const validation = api.interlocutor.validate(data);
-    if (validation.message) toast.error(validation.message);
-    else {
-      updateInterlocutor(data);
-      closeUpdateInterlocutorSheet();
-    }
-  };
-
-  const { updateInterlocutorSheet, openUpdateInterlocutorSheet, closeUpdateInterlocutorSheet } =
-    useInterlocutorUpdateSheet(
-      firmId,
-      handleUpdateSubmit,
-      isUpdatePending,
-      interlocutorStore.reset
-    );
-
-  const handleCreateSubmit = () => {
-    const data: CreateInterlocutorDto = {
-      title: interlocutorStore.title,
-      firstName: interlocutorStore.name,
-      lastName: interlocutorStore.surname,
-      email: interlocutorStore.email,
-      phone: interlocutorStore.phone
-    };
-    const validation = api.interlocutor.validate(data);
-    if (validation.message) toast.error(validation.message);
-    else {
-      createInterlocutor(data);
-      closeCreateInterlocutorSheet();
-    }
-  };
-
-  const handleAssociateSubmit = () => {
-    const validation = api.interlocutor.validateAssociations(
-      interlocutorStore?.id,
-      interlocutorStore?.position
-    );
-    if (validation.message) toast.error(validation.message);
-    else {
-      associateInterlocutor(interlocutorStore?.id);
-      closeCreateInterlocutorSheet();
-    }
-  };
-
-  const { createInterlocutorSheet, openCreateInterlocutorSheet, closeCreateInterlocutorSheet } =
-    useInterlocutorCreateOrAssociateSheet(
-      firmId,
-      handleCreateSubmit,
-      handleAssociateSubmit,
-      isCreatePending || isAssociatePending,
-      interlocutorStore.reset
-    );
-
-  const { deleteInterlocutorDialog, openDeleteInterlocutorDialog } = useInterlocutorDeleteDialog(
-    `${interlocutorStore.name} ${interlocutorStore.surname}`,
-    () => removeInterlocutor(interlocutorStore.id),
-    isDeletePending
-  );
-
-  const { promoteInterlocutorDialog, openPromoteInterlocutorDialog } = useInterlocutorPromoteDialog(
-    `${interlocutorStore.name} ${interlocutorStore.surname}`,
-    () => promoteInterlocutor(interlocutorStore.id),
-    isPromotionPending
-  );
-
-  const { disassociateInterlocutorDialog, openDisassociateInterlocutorDialog } =
-    useInterlocutorDisassociateDialog(
-      `${interlocutorStore.name} ${interlocutorStore.surname}`,
-      (id?: number) => disassociateInterlocutor(id),
-      isDisassociatePending
-    );
-
-  const isMainInterlocutor = (entity: Interlocutor) => {
-    if (!firmId) return false;
-    return !!entity.firmsToInterlocutor?.find((e) => e.firmId === firmId && e.isMain)?.isMain;
-  };
-
-  const additionalActions: Record<
-    number,
-    {
-      actionCallback?: (entity: Interlocutor) => void;
-      actionLabel: string;
-      actionIcon: React.ReactNode;
-      isActionVisible?: (entity: Interlocutor) => boolean;
-    }[]
-  > = {};
-  let groupIndex = 0;
-
-  if (firmId) {
-    additionalActions[groupIndex++] = [
-      {
-        actionLabel: tCommon('commands.promote'),
-        actionIcon: <ArrowUp className="size-4" />,
-        actionCallback: () => openPromoteInterlocutorDialog(),
-        isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
-      },
-      {
-        actionLabel: tCommon('commands.unassociate'),
-        actionIcon: <Unlink className="size-4" />,
-        actionCallback: () => openDisassociateInterlocutorDialog(),
-        isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
-      }
-    ];
-  }
-
-  additionalActions[groupIndex] = [
-    {
-      actionLabel: tCommon('commands.delete'),
-      actionIcon: <Trash2 className="size-4" />,
-      actionCallback: () => openDeleteInterlocutorDialog(),
-      isActionVisible: (entity: Interlocutor) => !isMainInterlocutor(entity)
-    }
-  ];
 
   const context: DataTableConfig<Interlocutor> = {
     singularName: tContacts('interlocutor.singular'),
@@ -308,9 +104,8 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     inspectCallback: (entity: Interlocutor) => {
       router.push(`/contacts/interlocutor/${entity.id}`);
     },
-    createCallback: firmId ? () => openCreateInterlocutorSheet() : undefined,
-    updateCallback: firmId ? () => openUpdateInterlocutorSheet() : undefined,
-    additionalActions,
+    createCallback: () => {},
+    updateCallback: () => {},
     searchTerm,
     setSearchTerm,
     page,
@@ -328,20 +123,10 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
 
   const columns = useInterlocutorColumns(context, firmId);
 
-  const isPending =
-    isFetchPending ||
-    isAssociatePending ||
-    isDisassociatePending ||
-    isPromotionPending ||
-    isDeletePending ||
-    paging ||
-    resizing ||
-    searching ||
-    sorting;
+  const isPending = isFetchPending || paging || resizing || searching || sorting;
 
-  if (error) return 'An error has occurred: ' + error.message;
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden container mx-auto', className)}>
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
       <DataTable
         className="flex flex-col flex-1 overflow-auto p-1"
         containerClassName="overflow-auto"
@@ -350,12 +135,6 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
         context={context}
         isPending={isPending}
       />
-
-      {createInterlocutorSheet}
-      {updateInterlocutorSheet}
-      {deleteInterlocutorDialog}
-      {promoteInterlocutorDialog}
-      {disassociateInterlocutorDialog}
     </div>
   );
 };

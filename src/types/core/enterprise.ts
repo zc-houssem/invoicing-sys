@@ -37,6 +37,7 @@ export interface CreateEnterpriseDto {
   paymentConditionId?: number;
   deliveryAddress: CreateAddressDto;
   invoicingAddress: CreateAddressDto;
+  interlocutors?: CreateEnterpriseInterlocutorDto[];
 }
 
 export interface UpdateEnterpriseDto extends Partial<CreateEnterpriseDto> {}
@@ -77,8 +78,18 @@ export interface ResponseEnterpriseInterlocutorDto extends DatabaseEntity {
   id: number;
   enterpriseId: number;
   interlocutorId: number;
-  enterprise: ResponseEnterpriseDto;
-  interlocutor: ResponseInterlocutorDto;
+  enterprise?: ResponseEnterpriseDto;
+  interlocutor?: ResponseInterlocutorDto;
   main: boolean;
   position: string;
+}
+
+export interface CreateEnterpriseInterlocutorDto {
+  interlocutor: CreateInterlocutorDto;
+  main: boolean;
+  position: string;
+}
+
+export interface UpdateEnterpriseInterlocutorDto extends Partial<CreateEnterpriseInterlocutorDto> {
+  interlocutors?: UpdateInterlocutorDto;
 }
