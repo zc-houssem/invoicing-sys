@@ -100,7 +100,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                             <span>{field.label}</span>
                             {field.required && <span className="text-destructive mx-1">*</span>}
                           </Label>
-                          <FieldBuilder field={field} />
+                          {!field.pending && <FieldBuilder field={field} />}
 
                           <div className="flex justify-between items-center gap-2 mt-1">
                             {![FieldVariant.SWITCH, FieldVariant.CHECKBOX].includes(
