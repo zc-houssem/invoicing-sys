@@ -1,9 +1,8 @@
 import { Log } from '@/types';
 import useUser from '../../../../hooks/content/useUser';
 import { EVENT_TYPE } from '@/types/enums/event-types';
-import useFirm from '../../../../hooks/content/useFirm';
 import useInterlocutor from '../../../../hooks/content/useInterlocutor';
-import useQuotation from '../../../../hooks/content/useQuotation';
+import useQuotation from '../../../../hooks/content/core/useQuotation';
 import useInvoice from '../../../../hooks/content/useInvoice';
 import useRole from '../../../../hooks/content/useRole';
 import { Trans } from '@/components/Trans';

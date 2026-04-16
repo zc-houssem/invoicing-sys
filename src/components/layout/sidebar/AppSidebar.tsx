@@ -99,11 +99,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: t('menu.selling.subs.quotation'),
-            url: '/selling/_quotations',
-            icon: File
-          },
-          {
-            title: t('menu.selling.subs.quotation'),
             url: '/selling/quotations',
             icon: File
           },

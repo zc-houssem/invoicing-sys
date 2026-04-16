@@ -6,7 +6,7 @@ import { Spinner } from '@/components/shared';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InterlocutorContactInformation } from '../form/InterlocutorContactInformation';
 import { InterlocutorAssociation } from '../form/InterlocutorAssociation';
-import useInterlocutors from '@/hooks/content/useInterlocutors';
+import useInterlocutors from '@/hooks/content/core/useEnterpriseInterlocutors';
 import React from 'react';
 import { firm } from '@/api';
 

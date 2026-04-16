@@ -13,7 +13,7 @@ export const useEnterprises = ({ enabled }: useEnterprisesProps = { enabled: tru
     refetch: refetchEnterprises
   } = useQuery({
     queryKey: ['enterprises'],
-    queryFn: async () => api.enterprise.findAll(),
+    queryFn: async () => api.core.enterprise.findAll(),
     enabled
   });
 

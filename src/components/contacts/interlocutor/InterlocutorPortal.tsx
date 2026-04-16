@@ -121,7 +121,7 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     }
   };
 
-  const columns = useInterlocutorColumns(context, firmId);
+  const columns = useInterlocutorColumns(context);
 
   const isPending = isFetchPending || paging || resizing || searching || sorting;
 

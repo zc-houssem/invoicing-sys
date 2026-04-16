@@ -1,4 +1,3 @@
-import { ResponseEnterpriseDto } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { ExternalLinkIcon } from 'lucide-react';
@@ -7,6 +6,7 @@ import { DataTableRowActions } from '@/components/shared/data-table/data-table-r
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
+import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 
 export const useEnterpriseColumns = (
   context: DataTableConfig<ResponseEnterpriseDto>

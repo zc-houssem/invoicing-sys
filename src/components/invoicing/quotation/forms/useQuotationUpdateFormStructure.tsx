@@ -15,21 +15,21 @@ import { QuotationStore } from '@/hooks/stores/useQuotationStore';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-interface useQuotationCreateFormStructureProps {
+interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
   enterpriseOptions: SelectOption[];
   interlocutorOptions: SelectOption[];
-  createQuotation: () => void;
-  isCreationPending: boolean;
+  updateQuotation: () => void;
+  isUpdatePending: boolean;
 }
 
-export const useQuotationCreateFormStructure = ({
+export const useQuotationUpdateFormStructure = ({
   store,
   enterpriseOptions,
   interlocutorOptions,
-  createQuotation,
-  isCreationPending
-}: useQuotationCreateFormStructureProps) => {
+  updateQuotation,
+  isUpdatePending
+}: useQuotationUpdateFormStructureProps) => {
   const { t } = useTranslation('invoicing');
 
   const singleFileField: Field<SingleFileFieldProps> = {
@@ -52,11 +52,11 @@ export const useQuotationCreateFormStructure = ({
     placeholder: t('quotation.form.placeholders.date'),
     description: t('quotation.form.descriptions.date'),
     props: {
-      disabled: isCreationPending,
-      value: store.createDto.date,
+      disabled: isUpdatePending,
+      value: store.updateDto?.date,
       onDateChange: (date) => {
-        store.setNested('createDto.date', date);
-        store.setNested('createDtoErrors.date', []);
+        store.setNested('updateDto.date', date);
+        store.setNested('updateDtoErrors.date', []);
       }
     }
   };
@@ -66,15 +66,15 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.dueDate'),
     variant: FieldVariant.DATE,
     required: true,
-    error: store.createDtoErrors.dueDate?.[0],
+    error: store.updateDtoErrors.dueDate?.[0],
     placeholder: t('quotation.form.placeholders.dueDate'),
     description: t('quotation.form.descriptions.dueDate'),
     props: {
-      disabled: isCreationPending,
-      value: store.createDto.dueDate,
+      disabled: isUpdatePending,
+      value: store.updateDto?.dueDate,
       onDateChange: (date) => {
-        store.setNested('createDto.dueDate', date);
-        store.setNested('createDtoErrors.dueDate', []);
+        store.setNested('updateDto.dueDate', date);
+        store.setNested('updateDtoErrors.dueDate', []);
       }
     }
   };
@@ -84,15 +84,15 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.object'),
     variant: FieldVariant.TEXT,
     required: true,
-    error: store.createDtoErrors.object?.[0],
+    error: store.updateDtoErrors.object?.[0],
     placeholder: t('quotation.form.placeholders.object'),
     description: t('quotation.form.descriptions.object'),
     props: {
-      disabled: isCreationPending,
-      value: store.createDto.object,
+      disabled: isUpdatePending,
+      value: store.updateDto?.object,
       onChange: (value) => {
-        store.setNested('createDto.object', value);
-        store.setNested('createDtoErrors.object', []);
+        store.setNested('updateDto.object', value);
+        store.setNested('updateDtoErrors.object', []);
       }
     }
   };
@@ -102,17 +102,17 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.enterprise'),
     variant: FieldVariant.SELECT,
     required: true,
-    error: store.createDtoErrors.enterpriseId?.[0],
+    error: store.updateDtoErrors.enterpriseId?.[0],
     placeholder: t('quotation.form.placeholders.enterprise'),
     description: t('quotation.form.descriptions.enterprise'),
     props: {
-      disabled: isCreationPending,
-      value: store.createDto.enterpriseId ? store.createDto.enterpriseId.toString() : undefined,
+      disabled: isUpdatePending,
+      value: store.updateDto?.enterpriseId ? store.updateDto.enterpriseId.toString() : undefined,
       onValueChange: (value) => {
-        store.setNested('createDto.interlocutorId', undefined);
-        store.setNested('createDtoErrors.interlocutorId', []);
-        store.setNested('createDto.enterpriseId', Number(value));
-        store.setNested('createDtoErrors.enterpriseId', []);
+        store.setNested('updateDto.interlocutorId', undefined);
+        store.setNested('updateDtoErrors.interlocutorId', []);
+        store.setNested('updateDto.enterpriseId', Number(value));
+        store.setNested('updateDtoErrors.enterpriseId', []);
       },
       options: enterpriseOptions
     }
@@ -123,15 +123,17 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.interlocutor'),
     variant: FieldVariant.SELECT,
     required: true,
-    error: store.createDtoErrors.interlocutorId?.[0],
+    error: store.updateDtoErrors.interlocutorId?.[0],
     placeholder: t('quotation.form.placeholders.interlocutor'),
     description: t('quotation.form.descriptions.interlocutor'),
     props: {
-      disabled: isCreationPending || !store.createDto.enterpriseId,
-      value: store.createDto.interlocutorId ? store.createDto.interlocutorId.toString() : undefined,
+      disabled: isUpdatePending || !store.updateDto?.enterpriseId,
+      value: store.updateDto?.interlocutorId
+        ? store.updateDto.interlocutorId.toString()
+        : undefined,
       onValueChange: (value) => {
-        store.setNested('createDto.interlocutorId', Number(value));
-        store.setNested('createDtoErrors.interlocutorId', []);
+        store.setNested('updateDto.interlocutorId', Number(value));
+        store.setNested('updateDtoErrors.interlocutorId', []);
       },
       options: interlocutorOptions
     }
@@ -142,14 +144,14 @@ export const useQuotationCreateFormStructure = ({
     label: t('quotation.form.generalConditions'),
     variant: FieldVariant.EDITOR,
     required: true,
-    error: store.createDtoErrors.generalConditions?.[0],
+    error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
     description: t('quotation.form.descriptions.generalConditions'),
     props: {
-      value: store.createDto.generalConditions,
+      value: store.updateDto?.generalConditions,
       onChange: (value) => {
-        store.setNested('createDto.generalConditions', value);
-        store.setNested('createDtoErrors.generalConditions', []);
+        store.setNested('updateDto.generalConditions', value);
+        store.setNested('updateDtoErrors.generalConditions', []);
       }
     }
   };
@@ -209,7 +211,7 @@ export const useQuotationCreateFormStructure = ({
             type="button"
             variant={'outline'}
             onClick={() => {
-              createQuotation();
+              updateQuotation();
             }}>
             <span>Save as draft</span>
             <Save className="size-10" />

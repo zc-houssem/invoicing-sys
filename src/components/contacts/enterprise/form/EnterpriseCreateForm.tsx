@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
-import { CreateEnterpriseDto, ResponseRefParamDto } from '@/types';
+import { ResponseRefParamDto } from '@/types';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { defineStepper } from '@/components/ui/stepper';
 import { useEnterpriseCreateFormStructure } from './useEnterpriseCreateFormStructure';
@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
+import { CreateEnterpriseDto } from '@/types/core/enterprise';
 
 const steps = [
   {

@@ -13,7 +13,7 @@ import {
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
 import { Button } from '@/components/ui/button';
 import { EnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
-import { SocialTitles } from '@/types';
+import { SocialTitles } from '@/types/core/enterprise';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

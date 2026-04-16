@@ -83,9 +83,11 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
     pluralName: 'Quotations',
     //dialogs
     createCallback: () => {
-      router.push('/selling/_quotations/new');
+      router.push('/selling/quotations/new');
     },
-    updateCallback: () => {},
+    updateCallback: (quotation) => {
+      router.push(`/selling/quotations/${quotation.id}`);
+    },
     deleteCallback: () => {},
     additionalActions: {},
     //search, filtering, sorting & paging

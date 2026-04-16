@@ -12,9 +12,9 @@ import { useIntro } from '@/context/IntroContext';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
-import { ResponseEnterpriseDto } from '@/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { EnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
+import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 
 interface EnterprisePortalProps {
   className?: string;

@@ -1,7 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { cn } from '@/lib/utils';
-import { useQuotationCreateFormStructure } from './useQuotationCreateFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
 import { api, ServerErrorResponse } from '@/api';
@@ -12,53 +11,68 @@ import { useEnterprises } from '@/hooks/content/core/useEnterprises';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseInterlocutors';
 import { Spinner } from '@/components/shared';
+import { useQuotationUpdateFormStructure } from './useQuotationUpdateFormStructure';
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useQuotation } from '@/hooks/content/core/useQuotation';
+import { UpdateQuotationDto } from '@/types';
 
-interface QuotationCreateFormProps {
+interface QuotationUpdateFormProps {
+  id: number;
   className?: string;
 }
 
-export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => {
-  const router = useRouter();
+export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
-
-  React.useEffect(() => {
-    return () => {
-      quotationStore.reset();
-    };
-  }, []);
+  const { quotation, isFetchQuotationPending } = useQuotation({
+    id
+  });
 
   const { enterprises, isEnterprisesPending } = useEnterprises();
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
-    enterpriseId: quotationStore.createDto.enterpriseId,
-    enabled: !!quotationStore.createDto.enterpriseId
+    enterpriseId: quotationStore.updateDto?.enterpriseId,
+    enabled: !!quotationStore.updateDto?.enterpriseId
   });
 
-  const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
-    mutationFn: async () => api.invoicing.quotation.create(quotationStore.createDto),
+  React.useEffect(() => {
+    if (quotation && enterprises && interlocutors) {
+      quotationStore.set('updateDto', {
+        date: quotation?.date ? new Date(quotation.date) : undefined,
+        dueDate: quotation?.dueDate ? new Date(quotation.dueDate) : undefined,
+        direction: quotation?.direction,
+        object: quotation?.object,
+        generalConditions: quotation?.generalConditions || '',
+        enterpriseId: quotation?.enterpriseId,
+        interlocutorId: quotation?.interlocutorId
+      });
+    }
+    return () => {
+      quotationStore.reset();
+    };
+  }, [quotation, enterprises, interlocutors]);
+
+  const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
+    mutationFn: async () => api.invoicing.quotation.update(id, quotationStore.updateDto),
     onSuccess: (data) => {
       quotationStore.reset();
-      router.push('/selling/quotations');
-      toast.success('Quotation created successfully!');
+      toast.success('Quotation updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
-      toast.error(error.message || 'An error occurred while creating the quotation.');
+      toast.error(error.message || 'An error occurred while updating the quotation.');
     }
   });
 
   const handleSubmit = () => {
-    const result = createDraftQuotationSchema.safeParse(quotationStore.createDto);
+    const result = createDraftQuotationSchema.safeParse(quotationStore.updateDto);
 
     if (!result.success) {
-      quotationStore.set('createDtoErrors', result.error.flatten().fieldErrors);
+      quotationStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
       return;
     }
-    createQuotation();
+    updateQuotation();
   };
 
-  const { mainFormStructure, sidebarFormStructure } = useQuotationCreateFormStructure({
+  const { mainFormStructure, sidebarFormStructure } = useQuotationUpdateFormStructure({
     store: quotationStore,
     enterpriseOptions: mapToSelectOptions({
       data: enterprises,
@@ -71,11 +85,11 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       valueKey: 'id',
       labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
     }),
-    createQuotation: handleSubmit,
-    isCreationPending
+    updateQuotation: handleSubmit,
+    isUpdatePending
   });
 
-  if (isEnterprisesPending) return <Spinner />;
+  if (isFetchQuotationPending || isEnterprisesPending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

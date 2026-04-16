@@ -9,26 +9,32 @@ import { useTranslation } from 'react-i18next';
 export const useSellingQuotationColumns = (
   context: DataTableConfig<ResponseQuotationDto>
 ): ColumnDef<ResponseQuotationDto>[] => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
 
   return [
     {
-      accessorKey: 'id',
+      accessorKey: t('quotation.table.columns.id'),
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} context={context} title="ID" attribute={'id'} />
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('quotation.table.columns.id')}
+          attribute={'id'}
+        />
       ),
+
       cell: ({ row }) => <div>{row.original.id}</div>,
       enableSorting: true,
       enableHiding: true
     },
     {
-      accessorKey: 'status',
+      accessorKey: t('quotation.table.columns.status'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title="Status"
+          title={t('quotation.table.columns.status')}
           attribute={'status'}
         />
       ),
@@ -37,9 +43,14 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'date',
+      accessorKey: t('quotation.table.columns.date'),
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} context={context} title="Date" attribute={'date'} />
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('quotation.table.columns.date')}
+          attribute={'date'}
+        />
       ),
       cell: ({ row }) => {
         const date = row.original.date ? new Date(row.original.date) : null;
@@ -49,12 +60,12 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'dueDate',
+      accessorKey: t('quotation.table.columns.dueDate'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title="Due Date"
+          title={t('quotation.table.columns.dueDate')}
           attribute={'dueDate'}
         />
       ),
@@ -66,12 +77,12 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'object',
+      accessorKey: t('quotation.table.columns.object'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title="Object"
+          title={t('quotation.table.columns.object')}
           attribute={'object'}
         />
       ),
@@ -80,12 +91,12 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'createdAt',
+      accessorKey: t('quotation.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title="Created At"
+          title={t('quotation.table.columns.createdAt')}
           attribute={'createdAt'}
         />
       ),
@@ -97,12 +108,12 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'updatedAt',
+      accessorKey: t('quotation.table.columns.updatedAt'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title="Updated At"
+          title={t('quotation.table.columns.updatedAt')}
           attribute={'updatedAt'}
         />
       ),

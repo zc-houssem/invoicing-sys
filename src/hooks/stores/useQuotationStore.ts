@@ -1,5 +1,6 @@
 import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
 import { create } from 'zustand';
+import { BaseActions, createBaseStore } from './useBaseStore';
 
 interface QuotationData {
   response: ResponseQuotationDto | null;
@@ -10,11 +11,9 @@ interface QuotationData {
   updateDtoErrors: Record<string, string[]>;
 }
 
-export interface QuotationStore extends QuotationData {
-  set: (name: keyof QuotationData, value: any) => void;
-  setNested: <T>(path: string, value: T) => void;
-  reset: () => void;
-}
+interface IQuotationStore extends QuotationData {}
+
+export interface QuotationStore extends IQuotationStore, BaseActions<IQuotationStore> {}
 
 const initialState: QuotationData = {
   response: null,
@@ -23,43 +22,14 @@ const initialState: QuotationData = {
     date: null,
     dueDate: null,
     object: '',
-    generalConditions: ''
+    generalConditions: undefined,
+    enterpriseId: undefined,
+    interlocutorId: undefined
   },
   createDtoErrors: {},
   updateDtoErrors: {}
 };
 
-export const useQuotationStore = create<QuotationStore>((set, get) => ({
-  ...initialState,
-
-  set: (name, value) => {
-    set((state) => ({
-      ...state,
-      [name]: value
-    }));
-  },
-
-  setNested: (path, value) => {
-    set((state) => {
-      const keys = path.split('.');
-      const newState = { ...state };
-
-      let current: any = newState;
-      for (let i = 0; i < keys.length - 1; i++) {
-        const key = keys[i];
-        if (typeof current[key] !== 'object' || current[key] === null) {
-          current[key] = {};
-        } else {
-          current[key] = { ...current[key] };
-        }
-        current = current[key];
-      }
-
-      current[keys[keys.length - 1]] = value;
-
-      return newState;
-    });
-  },
-
-  reset: () => set({ ...initialState })
-}));
+export const useQuotationStore = createBaseStore<IQuotationStore>({
+  ...initialState
+});

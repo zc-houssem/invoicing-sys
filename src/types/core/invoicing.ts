@@ -1,4 +1,4 @@
-import { ResponseEnterpriseDto } from './enterprise';
+import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/DatabaseEntity';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
@@ -11,6 +11,8 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   generalConditions: string;
   enterprise: ResponseEnterpriseDto;
   enterpriseId: number;
+  interlocutor: ResponseInterlocutorDto;
+  interlocutorId: number;
 }
 
 export interface CreateQuotationDto {
@@ -20,6 +22,7 @@ export interface CreateQuotationDto {
   object: string;
   generalConditions?: string;
   enterpriseId?: number;
+  interlocutorId?: number;
 }
 
 export interface UpdateQuotationDto extends Partial<CreateQuotationDto> {}

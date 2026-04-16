@@ -32,7 +32,7 @@ const findAll = async (): Promise<ResponseQuotationDto[]> => {
   return response.data;
 };
 
-const findById = async (id: string): Promise<ResponseQuotationDto> => {
+const findById = async (id: number): Promise<ResponseQuotationDto> => {
   const response = await axios.get<ResponseQuotationDto>(`/_quotation/${id}`);
   return response.data;
 };
@@ -43,14 +43,14 @@ const create = async (quotation: CreateQuotationDto): Promise<ResponseQuotationD
 };
 
 const update = async (
-  id?: string,
+  id?: number,
   quotation?: UpdateQuotationDto
 ): Promise<ResponseQuotationDto> => {
   const response = await axios.put(`/_quotation/${id}`, quotation);
   return response.data;
 };
 
-const remove = async (id?: string): Promise<ResponseQuotationDto> => {
+const remove = async (id?: number): Promise<ResponseQuotationDto> => {
   const response = await axios.delete(`/_quotation/${id}`);
   return response.data;
 };

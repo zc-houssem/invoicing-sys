@@ -2,14 +2,21 @@ import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
 
-const useInterlocutors = (params?: string, enabled: boolean = true) => {
+interface useEnterpriseInterlocutorsProps {
+  enterpriseId?: number;
+  enabled?: boolean;
+}
+
+export const useEnterpriseInterlocutors = (
+  { enterpriseId, enabled = true }: useEnterpriseInterlocutorsProps = { enabled: true }
+) => {
   const {
     isFetching: isFetchInterlocutorsPending,
     data: interlocutorsResp,
-    refetch: refetchInterloctors
+    refetch: refetchInterlocutors
   } = useQuery({
-    queryKey: ['interlocutor-choices', params],
-    queryFn: () => api.interlocutor.findAll(params),
+    queryKey: ['enterprise-interlocutors', enterpriseId],
+    queryFn: () => api.core.interlocutor.findByEnterprise(enterpriseId as number),
     enabled
   });
 
@@ -21,8 +28,6 @@ const useInterlocutors = (params?: string, enabled: boolean = true) => {
   return {
     interlocutors,
     isFetchInterlocutorsPending,
-    refetchInterloctors
+    refetchInterlocutors
   };
 };
-
-export default useInterlocutors;

@@ -1,11 +1,11 @@
+import _ from 'lodash';
+import { BaseActions, createBaseStore } from './useBaseStore';
 import {
   CreateEnterpriseDto,
   ResponseEnterpriseDto,
   SocialTitles,
   UpdateEnterpriseDto
-} from '@/types';
-import _ from 'lodash';
-import { createBaseStore } from './useBaseStore';
+} from '@/types/core/enterprise';
 
 interface EnterpriseData {
   response?: ResponseEnterpriseDto;
@@ -14,11 +14,9 @@ interface EnterpriseData {
   errors?: Record<string, any>;
 }
 
-export interface EnterpriseStore extends EnterpriseData {
-  set: (name: keyof EnterpriseData, value: any) => void;
-  setNested: (path: string, value: any) => void;
-  reset: () => void;
-}
+interface IEnterpriseStore extends EnterpriseData {}
+
+export interface EnterpriseStore extends IEnterpriseStore, BaseActions<IEnterpriseStore> {}
 
 const initialState: EnterpriseData = {
   createDto: {
@@ -61,6 +59,7 @@ const initialState: EnterpriseData = {
     ]
   }
 };
-export const useEnterpriseStore = createBaseStore<EnterpriseData>({
+
+export const useEnterpriseStore = createBaseStore<IEnterpriseStore>({
   ...initialState
 });
