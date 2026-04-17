@@ -91,6 +91,40 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
+      accessorKey: t('quotation.table.columns.enterprise'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('quotation.table.columns.enterprise')}
+          attribute={'enterprise.name'}
+        />
+      ),
+      cell: ({ row }) => <div>{row.original.enterprise?.name}</div>,
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('quotation.table.columns.interlocutor'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('quotation.table.columns.interlocutor')}
+          attribute={'interlocutor.firstName'}
+        />
+      ),
+      cell: ({ row }) => (
+        <div>
+          {row.original.interlocutor
+            ? `${row.original.interlocutor.firstName} ${row.original.interlocutor.lastName}`
+            : ''}
+        </div>
+      ),
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
       accessorKey: t('quotation.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader

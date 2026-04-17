@@ -200,7 +200,7 @@ export const useQuotationCreateFormStructure = ({
 
   const mainFormStructure: FormStructure = {
     title: {
-      value: 'Create Quotation'
+      value: 'General Information'
     },
     orientation: 'horizontal',
     fieldsets: [
@@ -220,7 +220,14 @@ export const useQuotationCreateFormStructure = ({
           },
           {
             fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
-          },
+          }
+        ]
+      },
+      {
+        rows: []
+      },
+      {
+        rows: [
           {
             fields: [generalConditionsField]
           }

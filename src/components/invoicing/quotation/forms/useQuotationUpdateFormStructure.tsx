@@ -223,7 +223,14 @@ export const useQuotationUpdateFormStructure = ({
           },
           {
             fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
-          },
+          }
+        ]
+      },
+      {
+        rows: []
+      },
+      {
+        rows: [
           {
             fields: [generalConditionsField]
           }

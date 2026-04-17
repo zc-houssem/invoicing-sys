@@ -14,6 +14,7 @@ import { Spinner } from '@/components/shared';
 import { useQuotationUpdateFormStructure } from './useQuotationUpdateFormStructure';
 import React from 'react';
 import { useQuotation } from '@/hooks/content/core/useQuotation';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -23,6 +24,7 @@ interface QuotationUpdateFormProps {
 export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
+  const enterpriseStore = useEnterpriseStore();
   const { quotation, isFetchQuotationPending } = useQuotation({
     id
   });
@@ -36,7 +38,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   });
 
   React.useEffect(() => {
-    if (quotation) {
+    if (quotation && enterprises) {
       quotationStore.set('updateDto', {
         date: quotation?.date ? new Date(quotation.date) : undefined,
         dueDate: quotation?.dueDate ? new Date(quotation.dueDate) : undefined,
@@ -46,16 +48,20 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         enterpriseId: quotation?.enterpriseId,
         interlocutorId: quotation?.interlocutorId
       });
+      const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
+      enterpriseStore.set('response', enterprise);
     }
     return () => {
       quotationStore.reset();
+      enterpriseStore.reset();
     };
-  }, [quotation]);
+  }, [quotation, enterprises]);
 
   const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
     mutationFn: async () => api.invoicing.quotation.update(id, quotationStore.updateDto),
     onSuccess: (data) => {
       quotationStore.reset();
+      enterpriseStore.reset();
       toast.success('Quotation updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
