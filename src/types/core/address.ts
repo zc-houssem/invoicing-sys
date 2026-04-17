@@ -1,13 +1,18 @@
 import { ResponseRefParamDto } from './reference-types';
 import { DatabaseEntity } from '../response/DatabaseEntity';
 
+export interface CountryExtras {
+  alpha2Code: string;
+  alpha3Code: string;
+}
+
 export interface ResponseAddressDto extends DatabaseEntity {
   id: number;
   address: string;
   address2: string;
   region: string;
   zipcode: number;
-  country: ResponseRefParamDto;
+  country: ResponseRefParamDto<CountryExtras>;
   countryId: number;
 }
 

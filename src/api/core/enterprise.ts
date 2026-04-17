@@ -27,8 +27,23 @@ const findPaginated = async ({
   return response.data;
 };
 
-const findAll = async (): Promise<ResponseEnterpriseDto[]> => {
-  const response = await axios.get<ResponseEnterpriseDto[]>(`/enterprise/all`);
+const findAll = async ({
+  sort,
+  search = '',
+  filter = '',
+  join = ''
+}: QueryParams): Promise<ResponseEnterpriseDto[]> => {
+  const params: { [key: string]: string | undefined } = {
+    sort
+  };
+
+  if (search) params.search = search;
+  if (filter) params.filter = filter;
+  if (join) params.join = join;
+
+  const response = await axios.get<ResponseEnterpriseDto[]>(`/enterprise/all`, {
+    params
+  });
   return response.data;
 };
 

@@ -4,16 +4,22 @@ import React from 'react';
 
 interface useEnterprisesProps {
   enabled?: boolean;
+  join: string[];
 }
 
-export const useEnterprises = ({ enabled }: useEnterprisesProps = { enabled: true }) => {
+export const useEnterprises = (
+  { enabled, join }: useEnterprisesProps = { enabled: true, join: [] }
+) => {
   const {
     data: enterpriseResp,
     isPending: isEnterprisesPending,
     refetch: refetchEnterprises
   } = useQuery({
     queryKey: ['enterprises'],
-    queryFn: async () => api.core.enterprise.findAll(),
+    queryFn: async () =>
+      api.core.enterprise.findAll({
+        join: join.join(',')
+      }),
     enabled
   });
 

@@ -1,3 +1,4 @@
+import { AddressDetails } from '@/components/invoicing-commons/AddressDetails';
 import {
   CustomFieldProps,
   DateFieldProps,
@@ -11,13 +12,15 @@ import {
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { Button } from '@/components/ui/button';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
+import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
-  enterpriseOptions: SelectOption[];
+  enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   createQuotation: () => void;
   isCreationPending: boolean;
@@ -25,12 +28,15 @@ interface useQuotationCreateFormStructureProps {
 
 export const useQuotationCreateFormStructure = ({
   store,
-  enterpriseOptions,
+  enterprises,
   interlocutorOptions,
   createQuotation,
   isCreationPending
 }: useQuotationCreateFormStructureProps) => {
+  const enterpriseStore = useEnterpriseStore();
+
   const { t } = useTranslation('invoicing');
+  const { t: tContacts } = useTranslation('contacts');
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -109,12 +115,21 @@ export const useQuotationCreateFormStructure = ({
       disabled: isCreationPending,
       value: store.createDto.enterpriseId ? store.createDto.enterpriseId.toString() : undefined,
       onValueChange: (value) => {
+        const numericValue = Number(value);
+
         store.setNested('createDto.interlocutorId', undefined);
         store.setNested('createDtoErrors.interlocutorId', []);
-        store.setNested('createDto.enterpriseId', Number(value));
+        store.setNested('createDto.enterpriseId', numericValue);
         store.setNested('createDtoErrors.enterpriseId', []);
+
+        const enterprise = enterprises.find((ent) => ent.id === numericValue);
+        console.log('Selected enterprise:', enterprise);
+        enterpriseStore.set('response', enterprise);
       },
-      options: enterpriseOptions
+      options: enterprises.map((ent) => ({
+        label: ent.name,
+        value: ent.id.toString()
+      }))
     }
   };
 
@@ -154,6 +169,35 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const invoicingAddressPseudoField: Field<CustomFieldProps> = {
+    id: 'invoicing-address',
+    variant: FieldVariant.CUSTOM,
+    pending: !enterpriseStore.response?.invoicingAddress,
+    props: {
+      children: (
+        <div>
+          <span className="font-bold">{tContacts('enterprise.form.invoicingAddress')}</span>
+          <AddressDetails address={enterpriseStore.response?.invoicingAddress} />
+        </div>
+      ),
+      className: 'bg-red-500'
+    }
+  };
+
+  const deliveryAddressPseudoField: Field<CustomFieldProps> = {
+    id: 'delivery-address',
+    variant: FieldVariant.CUSTOM,
+    pending: !enterpriseStore.response?.deliveryAddress,
+    props: {
+      children: (
+        <div>
+          <span className="font-bold">{tContacts('enterprise.form.deliveryAddress')}</span>
+          <AddressDetails address={enterpriseStore.response?.deliveryAddress} />
+        </div>
+      )
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
       value: 'Create Quotation'
@@ -173,6 +217,9 @@ export const useQuotationCreateFormStructure = ({
           },
           {
             fields: [enterpriseField, interlocutorField]
+          },
+          {
+            fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
           },
           {
             fields: [generalConditionsField]

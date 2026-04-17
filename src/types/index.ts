@@ -9,8 +9,6 @@ export * from './cabinet';
 export * from './country';
 export * from './currency';
 export * from './default-condition';
-export * from './firm';
-export * from './interlocutor';
 export * from './invoice';
 export * from './logger';
 export * from './payment';
@@ -27,5 +25,7 @@ export * from './utils';
 export * from './user';
 
 export * from './response';
+export * from './core/enterprise';
+export * from './core/address';
 export * from './core/invoicing';
 export * from './core/reference-types';

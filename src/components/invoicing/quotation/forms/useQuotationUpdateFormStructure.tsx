@@ -1,3 +1,4 @@
+import { AddressDetails } from '@/components/invoicing-commons/AddressDetails';
 import {
   CustomFieldProps,
   DateFieldProps,
@@ -11,13 +12,15 @@ import {
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { Button } from '@/components/ui/button';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
+import { ResponseEnterpriseDto } from '@/types';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
-  enterpriseOptions: SelectOption[];
+  enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   updateQuotation: () => void;
   isUpdatePending: boolean;
@@ -25,12 +28,14 @@ interface useQuotationUpdateFormStructureProps {
 
 export const useQuotationUpdateFormStructure = ({
   store,
-  enterpriseOptions,
+  enterprises,
   interlocutorOptions,
   updateQuotation,
   isUpdatePending
 }: useQuotationUpdateFormStructureProps) => {
+  const enterpriseStore = useEnterpriseStore();
   const { t } = useTranslation('invoicing');
+  const { t: tContacts } = useTranslation('contacts');
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -105,17 +110,25 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.enterpriseId?.[0],
     placeholder: t('quotation.form.placeholders.enterprise'),
     description: t('quotation.form.descriptions.enterprise'),
-    pending: !(enterpriseOptions && store.updateDto?.enterpriseId),
+    pending: !(enterprises && store.updateDto?.enterpriseId),
     props: {
       disabled: isUpdatePending,
       value: store.updateDto?.enterpriseId ? store.updateDto.enterpriseId.toString() : undefined,
       onValueChange: (value) => {
-        store.setNested('updateDto.enterpriseId', Number(value));
+        const numericValue = Number(value);
+
+        store.setNested('updateDto.enterpriseId', numericValue);
         store.setNested('updateDtoErrors.enterpriseId', []);
         store.setNested('updateDto.interlocutorId', undefined);
         store.setNested('updateDtoErrors.interlocutorId', []);
+
+        const enterprise = enterprises.find((ent) => ent.id === numericValue);
+        enterpriseStore.set('response', enterprise);
       },
-      options: enterpriseOptions
+      options: enterprises.map((ent) => ({
+        label: ent.name,
+        value: ent.id.toString()
+      }))
     }
   };
 
@@ -159,6 +172,35 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
+  const invoicingAddressPseudoField: Field<CustomFieldProps> = {
+    id: 'invoicing-address',
+    variant: FieldVariant.CUSTOM,
+    pending: !enterpriseStore.response?.invoicingAddress,
+    props: {
+      children: (
+        <div>
+          <span className="font-bold">{tContacts('enterprise.form.invoicingAddress')}</span>
+          <AddressDetails address={enterpriseStore.response?.invoicingAddress} />
+        </div>
+      ),
+      className: 'bg-red-500'
+    }
+  };
+
+  const deliveryAddressPseudoField: Field<CustomFieldProps> = {
+    id: 'delivery-address',
+    variant: FieldVariant.CUSTOM,
+    pending: !enterpriseStore.response?.deliveryAddress,
+    props: {
+      children: (
+        <div>
+          <span className="font-bold">{tContacts('enterprise.form.deliveryAddress')}</span>
+          <AddressDetails address={enterpriseStore.response?.deliveryAddress} />
+        </div>
+      )
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
       value: 'Create Quotation'
@@ -178,6 +220,9 @@ export const useQuotationUpdateFormStructure = ({
           },
           {
             fields: [enterpriseField, interlocutorField]
+          },
+          {
+            fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
           },
           {
             fields: [generalConditionsField]

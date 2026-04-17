@@ -27,7 +27,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     id
   });
 
-  const { enterprises, isEnterprisesPending } = useEnterprises();
+  const { enterprises, isEnterprisesPending } = useEnterprises({
+    join: ['invoicingAddress', 'deliveryAddress']
+  });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
     enterpriseId: quotationStore.updateDto?.enterpriseId,
     enabled: !!quotationStore.updateDto?.enterpriseId
@@ -73,11 +75,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   const { mainFormStructure, sidebarFormStructure } = useQuotationUpdateFormStructure({
     store: quotationStore,
-    enterpriseOptions: mapToSelectOptions({
-      data: enterprises,
-      labelKey: 'name',
-      valueKey: 'id'
-    }),
+    enterprises,
     interlocutorOptions: mapToSelectOptions({
       data: interlocutors,
       labelKey: '',
