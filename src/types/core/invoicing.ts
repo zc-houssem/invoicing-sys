@@ -1,6 +1,6 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/DatabaseEntity';
-import { ResponseArticleDto } from './article';
+import { CreateArticleDto, ResponseArticleDto } from './article';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -14,7 +14,7 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
   interlocutorId: number;
-  articles: ResponseQuotationArticleDto[];
+  quotationArticles: ResponseQuotationArticleDto[];
 }
 
 export interface CreateQuotationDto {
@@ -25,7 +25,7 @@ export interface CreateQuotationDto {
   generalConditions?: string;
   enterpriseId?: number;
   interlocutorId?: number;
-  articles: CreateQuotationArticleDto[];
+  quotationArticles: CreateQuotationArticleDto[];
 }
 
 export interface UpdateQuotationDto extends Partial<CreateQuotationDto> {}
@@ -43,8 +43,7 @@ export interface ResponseQuotationArticleDto extends DatabaseEntity {
 }
 
 export interface CreateQuotationArticleDto {
-  quotationId: number;
-  articleId: number;
+  article?: CreateArticleDto;
   unitPrice: number;
   quantity: number;
 }

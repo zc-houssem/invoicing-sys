@@ -39,6 +39,24 @@
     }
   },
   "invoice": {},
-  "article": {},
+  "article": {
+    "buttons": {
+      "addArticle": "Add article",
+      "deleteArticle": "Delete article"
+    },
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "quantity": "Quantity",
+      "unitPrice": "Unit price",
+      "totalPrice": "Total price",
+      "placeholders": {
+        "title": "Enter the article title",
+        "description": "Enter the article description",
+        "quantity": "Enter the quantity",
+        "unitPrice": "Enter the unit price"
+      }
+    }
+  },
   "payment": {}
 }

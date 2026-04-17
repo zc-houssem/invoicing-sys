@@ -1,0 +1,93 @@
+import {
+  Field,
+  FieldVariant,
+  FormStructure,
+  NumberFieldProps,
+  TextareaFieldProps,
+  TextFieldProps
+} from '@/components/shared/form-builder/types';
+import { ArticleStore } from '@/hooks/stores/useArticleStore';
+import { useTranslation } from 'react-i18next';
+
+interface useArticleItemFormStructureProps {
+  store: ArticleStore;
+  index: number;
+}
+
+export const useArticleItemFormStructure = ({
+  store,
+  index
+}: useArticleItemFormStructureProps): FormStructure => {
+  const { t } = useTranslation('invoicing');
+
+  const titleField: Field<TextFieldProps> = {
+    id: `article-${index}-title`,
+    label: t('article.form.title'),
+    variant: FieldVariant.TEXT,
+    placeholder: t('article.form.placeholders.title'),
+    props: {
+      value: store.articles[index].title,
+      onChange: (value) => {
+        store.updateArticle(store.articles[index].id, { title: value });
+      }
+    }
+  };
+
+  const quantityField: Field<NumberFieldProps> = {
+    id: `article-${index}-quantity`,
+    label: t('article.form.quantity'),
+    variant: FieldVariant.NUMBER,
+    placeholder: t('article.form.placeholders.quantity'),
+    props: {
+      value: store.articles[index].quantity,
+      onChange: (value) => {
+        store.updateArticle(store.articles[index].id, { quantity: value });
+      }
+    }
+  };
+
+  const unitPriceField: Field<NumberFieldProps> = {
+    id: `article-${index}-unitPrice`,
+    label: t('article.form.unitPrice'),
+    variant: FieldVariant.NUMBER,
+    placeholder: t('article.form.placeholders.unitPrice'),
+    props: {
+      value: store.articles[index].unitPrice,
+      onChange: (value) => {
+        store.updateArticle(store.articles[index].id, { unitPrice: value });
+      }
+    }
+  };
+
+  const descriptionField: Field<TextareaFieldProps> = {
+    id: `article-${index}-description`,
+    label: t('article.form.description'),
+    variant: FieldVariant.TEXTAREA,
+    placeholder: t('article.form.placeholders.description'),
+    props: {
+      value: store.articles[index].description,
+      onChange: (value) => {
+        store.updateArticle(store.articles[index].id, { description: value });
+      },
+      rows: 5
+    }
+  };
+
+  return {
+    title: {
+      value: `article-${index}`
+    },
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [titleField, quantityField, unitPriceField]
+          },
+          {
+            fields: [descriptionField]
+          }
+        ]
+      }
+    ]
+  };
+};

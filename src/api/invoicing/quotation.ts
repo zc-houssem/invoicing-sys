@@ -32,8 +32,8 @@ const findAll = async (): Promise<ResponseQuotationDto[]> => {
   return response.data;
 };
 
-const findById = async (id: number): Promise<ResponseQuotationDto> => {
-  const response = await axios.get<ResponseQuotationDto>(`/_quotation/${id}`);
+const findById = async (id: number, join?: string): Promise<ResponseQuotationDto> => {
+  const response = await axios.get<ResponseQuotationDto>(`/_quotation/${id}`, { params: { join } });
   return response.data;
 };
 

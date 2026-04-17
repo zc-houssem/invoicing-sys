@@ -15,6 +15,8 @@ import { useQuotationUpdateFormStructure } from './useQuotationUpdateFormStructu
 import React from 'react';
 import { useQuotation } from '@/hooks/content/core/useQuotation';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { useArticleStore } from '@/hooks/stores/useArticleStore';
+import { LineArticle } from '@/types/core/article';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -25,8 +27,11 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
   const enterpriseStore = useEnterpriseStore();
+  const articleStore = useArticleStore();
+
   const { quotation, isFetchQuotationPending } = useQuotation({
-    id
+    id,
+    join: ['quotationArticles', 'quotationArticles.article']
   });
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
@@ -50,10 +55,24 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       });
       const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
+
+      articleStore.set(
+        'articles',
+        quotation.quotationArticles.map((qa) => {
+          return {
+            id: qa.article.id.toString(),
+            title: qa.article.title,
+            description: qa.article.description,
+            unitPrice: qa.unitPrice,
+            quantity: qa.quantity
+          } satisfies LineArticle;
+        })
+      );
     }
     return () => {
       quotationStore.reset();
       enterpriseStore.reset();
+      articleStore.reset();
     };
   }, [quotation, enterprises]);
 
@@ -102,7 +121,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         orientation={isMobile ? 'vertical' : 'horizontal'}
         className=" rounded-lg border">
         <ResizablePanel defaultSize={isMobile ? '100%' : '75%'}>
-          <div className="flex items-center justify-center p-6">
+          <div className="flex items-center justify-center p-6 container mx-auto">
             <FormBuilder structure={mainFormStructure} />
           </div>
         </ResizablePanel>
@@ -112,7 +131,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
           minSize={isMobile ? '0%' : '20%'}
           maxSize={isMobile ? '0%' : '30%'}
           className="bg-card">
-          <div className="flex h-full items-start justify-center p-6">
+          <div className="flex h-full items-start justify-center p-6 container mx-auto">
             <FormBuilder structure={sidebarFormStructure} />
           </div>
         </ResizablePanel>

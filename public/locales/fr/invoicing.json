@@ -39,6 +39,24 @@
     }
   },
   "invoice": {},
-  "article": {},
+  "article": {
+    "buttons": {
+      "addArticle": "Ajouter un article",
+      "deleteArticle": "Supprimer l'article"
+    },
+    "form": {
+      "title": "Titre",
+      "description": "Description",
+      "quantity": "Quantité",
+      "unitPrice": "Prix unitaire",
+      "totalPrice": "Prix total",
+      "placeholders": {
+        "title": "Entrez le titre de l'article",
+        "description": "Entrez la description de l'article",
+        "quantity": "Entrez la quantité",
+        "unitPrice": "Entrez le prix unitaire"
+      }
+    }
+  },
   "payment": {}
 }

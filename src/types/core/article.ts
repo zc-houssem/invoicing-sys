@@ -1,5 +1,13 @@
 import { DatabaseEntity } from '../response/DatabaseEntity';
 
+export interface LineArticle {
+  id: string;
+  title?: string;
+  description?: string;
+  unitPrice: number;
+  quantity: number;
+}
+
 export interface ResponseArticleFamilyDto extends DatabaseEntity {
   id: number;
   title?: string;

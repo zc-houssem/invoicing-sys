@@ -17,6 +17,7 @@ import { QuotationStore } from '@/hooks/stores/useQuotationStore';
 import { ResponseEnterpriseDto } from '@/types';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { QuotationArticlesField } from './QuotationArticlesField';
 
 interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
@@ -201,13 +202,25 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
+  const articlesField: Field<CustomFieldProps> = {
+    id: 'articles',
+    variant: FieldVariant.CUSTOM,
+    props: {
+      children: <QuotationArticlesField />
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
-      value: 'Create Quotation'
+      value: 'General Information'
     },
     orientation: 'horizontal',
     fieldsets: [
       {
+        title: {
+          value: 'General Information'
+        },
+        includeHeader: true,
         rows: [
           {
             fields: [singleFileField]
@@ -227,9 +240,21 @@ export const useQuotationUpdateFormStructure = ({
         ]
       },
       {
-        rows: []
+        title: {
+          value: 'Articles'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [articlesField]
+          }
+        ]
       },
       {
+        title: {
+          value: 'Additional Information'
+        },
+        includeHeader: true,
         rows: [
           {
             fields: [generalConditionsField]

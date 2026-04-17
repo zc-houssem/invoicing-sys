@@ -17,6 +17,8 @@ import { QuotationStore } from '@/hooks/stores/useQuotationStore';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { QuotationArticlesField } from './QuotationArticlesField';
+import { Tax } from '@/types';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
@@ -24,6 +26,8 @@ interface useQuotationCreateFormStructureProps {
   interlocutorOptions: SelectOption[];
   createQuotation: () => void;
   isCreationPending: boolean;
+  taxes?: Tax[];
+  isArticleDescriptionHidden?: boolean;
 }
 
 export const useQuotationCreateFormStructure = ({
@@ -31,7 +35,9 @@ export const useQuotationCreateFormStructure = ({
   enterprises,
   interlocutorOptions,
   createQuotation,
-  isCreationPending
+  isCreationPending,
+  taxes = [],
+  isArticleDescriptionHidden = false
 }: useQuotationCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
 
@@ -198,6 +204,14 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const articlesField: Field<CustomFieldProps> = {
+    id: 'articles',
+    variant: FieldVariant.CUSTOM,
+    props: {
+      children: <QuotationArticlesField />
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
       value: 'General Information'
@@ -205,6 +219,10 @@ export const useQuotationCreateFormStructure = ({
     orientation: 'horizontal',
     fieldsets: [
       {
+        title: {
+          value: 'General Information'
+        },
+        includeHeader: true,
         rows: [
           {
             fields: [singleFileField]
@@ -224,9 +242,21 @@ export const useQuotationCreateFormStructure = ({
         ]
       },
       {
-        rows: []
+        title: {
+          value: 'Articles'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [articlesField]
+          }
+        ]
       },
       {
+        title: {
+          value: 'Additional Information'
+        },
+        includeHeader: true,
         rows: [
           {
             fields: [generalConditionsField]

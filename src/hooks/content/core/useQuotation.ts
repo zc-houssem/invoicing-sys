@@ -21,7 +21,7 @@ export const useQuotation = (
     refetch: refetchQuotation
   } = useQuery({
     queryKey: ['quotation', id, join],
-    queryFn: () => api.invoicing.quotation.findById(id!),
+    queryFn: () => api.invoicing.quotation.findById(id!, join?.join(',')),
     enabled: enabled && !!id
   });
 

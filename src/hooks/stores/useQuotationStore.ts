@@ -24,7 +24,7 @@ const initialState: QuotationData = {
     generalConditions: undefined,
     enterpriseId: undefined,
     interlocutorId: undefined,
-    articles: []
+    quotationArticles: []
   },
   createDtoErrors: {},
   updateDtoErrors: {}

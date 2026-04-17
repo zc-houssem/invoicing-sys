@@ -45,6 +45,7 @@ const SortableLinks: FC<SortableLinkCardProps> = ({ id, className, onDelete, chi
             </button>
           )}
           <button
+            type="button"
             {...attributes}
             {...listeners}
             className={cn(

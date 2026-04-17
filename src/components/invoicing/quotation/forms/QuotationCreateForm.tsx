@@ -15,6 +15,8 @@ import { Spinner } from '@/components/shared';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { useArticleStore } from '@/hooks/stores/useArticleStore';
+import { CreateQuotationArticleDto, CreateQuotationDto } from '@/types';
 
 interface QuotationCreateFormProps {
   className?: string;
@@ -25,6 +27,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
   const enterpriseStore = useEnterpriseStore();
+  const articleStore = useArticleStore();
 
   React.useEffect(() => {
     return () => {
@@ -42,7 +45,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
   });
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
-    mutationFn: async () => api.invoicing.quotation.create(quotationStore.createDto),
+    mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
     onSuccess: (data) => {
       quotationStore.reset();
       router.push('/selling/quotations');
@@ -61,8 +64,22 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     if (!result.success) {
       quotationStore.set('createDtoErrors', result.error.flatten().fieldErrors);
       return;
+    } else {
+      createQuotation({
+        ...quotationStore.createDto,
+        quotationArticles: articleStore.articles.map(
+          (article) =>
+            ({
+              article: {
+                title: article.title,
+                description: article.description
+              },
+              quantity: article.quantity,
+              unitPrice: article.unitPrice
+            }) satisfies CreateQuotationArticleDto
+        )
+      });
     }
-    createQuotation();
   };
 
   const { mainFormStructure, sidebarFormStructure } = useQuotationCreateFormStructure({
@@ -86,7 +103,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
         orientation={isMobile ? 'vertical' : 'horizontal'}
         className=" rounded-lg border">
         <ResizablePanel defaultSize={isMobile ? '100%' : '75%'}>
-          <div className="flex items-center justify-center p-6">
+          <div className="flex items-center justify-center p-6 container mx-auto">
             <FormBuilder structure={mainFormStructure} />
           </div>
         </ResizablePanel>
@@ -96,7 +113,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
           minSize={isMobile ? '0%' : '20%'}
           maxSize={isMobile ? '0%' : '30%'}
           className="bg-card">
-          <div className="flex h-full items-start justify-center p-6">
+          <div className="flex h-full items-start justify-center p-6 container mx-auto">
             <FormBuilder structure={sidebarFormStructure} />
           </div>
         </ResizablePanel>

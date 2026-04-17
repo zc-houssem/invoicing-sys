@@ -10,7 +10,7 @@ export type BaseActions<T> = {
 };
 
 export function createBaseStore<T extends object>(
-  initialState: T,
+  initialState: any,
   extend?: StateCreator<T & BaseActions<T>, [], [], object>
 ) {
   return create<T & BaseActions<T>>((set, get) => ({
