@@ -1,7 +1,5 @@
 import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
-import { create } from 'zustand';
 import { BaseActions, createBaseStore } from './useBaseStore';
-import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 
 interface QuotationData {
   response: ResponseQuotationDto | null;
@@ -25,7 +23,8 @@ const initialState: QuotationData = {
     object: '',
     generalConditions: undefined,
     enterpriseId: undefined,
-    interlocutorId: undefined
+    interlocutorId: undefined,
+    articles: []
   },
   createDtoErrors: {},
   updateDtoErrors: {}

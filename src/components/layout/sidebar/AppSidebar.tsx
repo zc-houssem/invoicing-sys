@@ -18,8 +18,7 @@ import {
   UserCog,
   Users,
   Wallet,
-  Wrench,
-  X
+  Wrench
 } from 'lucide-react';
 
 import {
@@ -146,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         id: 5,
         title: t('menu.contentManagement.title'),
         url: '/content-management',
-        icon: X,
+        icon: Package,
         items: [
           {
             title: t('menu.contentManagement.subs.refTypes'),

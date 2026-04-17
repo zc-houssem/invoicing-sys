@@ -65,7 +65,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       toast.success('Quotation updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
-      toast.error(error.message || 'An error occurred while updating the quotation.');
+      toast.error(
+        error.response?.data.message || 'An error occurred while updating the quotation.'
+      );
     }
   });
 

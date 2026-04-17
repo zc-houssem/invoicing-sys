@@ -2,10 +2,7 @@ import { admin } from './admin';
 export * from './admin';
 import { auth } from './auth';
 export * from './auth';
-import { address } from './address';
-export * from './address';
-import { article } from './article';
-export * from './article';
+
 import { appConfig } from './app-config';
 export * from './app-config';
 import { bankAccount } from './bank-account';
@@ -43,8 +40,6 @@ import { invoicing } from './invoicing';
 export const api = {
   admin,
   auth,
-  address,
-  article,
   appConfig,
   bankAccount,
   cabinet,
