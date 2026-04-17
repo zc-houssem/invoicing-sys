@@ -1,12 +1,14 @@
 import { ArticleManagement } from '../../articles/ArticleManagement';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { ArticleItem } from '../../articles/ArticleItem';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 
 interface QuotationArticlesFieldProps {
   className?: string;
+  currency?: ResponseRefParamDto<CurrencyPayload>;
 }
 
-export const QuotationArticlesField = ({ className }: QuotationArticlesFieldProps) => {
+export const QuotationArticlesField = ({ className, currency }: QuotationArticlesFieldProps) => {
   const articleStore = useArticleStore();
   return (
     <div className={className}>
@@ -16,7 +18,7 @@ export const QuotationArticlesField = ({ className }: QuotationArticlesFieldProp
         addArticle={() => articleStore.addArticle()}
         deleteArticle={articleStore.deleteArticle}
         disabled={false}
-        renderArticleItem={(item, edit, index) => <ArticleItem index={index} />}
+        renderArticleItem={(item, edit, index) => <ArticleItem index={index} currency={currency} />}
       />
     </div>
   );

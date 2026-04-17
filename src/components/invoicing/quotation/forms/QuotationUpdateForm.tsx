@@ -17,6 +17,8 @@ import { useQuotation } from '@/hooks/content/core/useQuotation';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { LineArticle } from '@/types/core/article';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -35,12 +37,21 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   });
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
-    join: ['invoicingAddress', 'deliveryAddress']
+    join: ['invoicingAddress', 'deliveryAddress', 'currency']
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
     enterpriseId: quotationStore.updateDto?.enterpriseId,
     enabled: !!quotationStore.updateDto?.enterpriseId
   });
+
+  const { currencies, isCurrenciesPending } = useCurrencies();
+  const selectedCurrency = React.useMemo(
+    () =>
+      currencies.find(
+        (c) => c.id === quotationStore.updateDto?.currencyId
+      ) as ResponseRefParamDto<CurrencyPayload>,
+    [quotationStore.updateDto?.currencyId, currencies]
+  );
 
   React.useEffect(() => {
     if (quotation && enterprises) {
@@ -51,7 +62,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         object: quotation?.object,
         generalConditions: quotation?.generalConditions,
         enterpriseId: quotation?.enterpriseId,
-        interlocutorId: quotation?.interlocutorId
+        interlocutorId: quotation?.interlocutorId,
+        currencyId: quotation?.currencyId
       });
       const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
@@ -109,11 +121,19 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       valueKey: 'id',
       labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
     }),
+    currencyOptions: mapToSelectOptions({
+      data: currencies,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+        `${item.label} (${item.extras.symbol})`
+    }),
     updateQuotation: handleSubmit,
-    isUpdatePending
+    isUpdatePending,
+    selectedCurrency
   });
 
-  if (isFetchQuotationPending || isEnterprisesPending) return <Spinner />;
+  if (isFetchQuotationPending || isEnterprisesPending || isCurrenciesPending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

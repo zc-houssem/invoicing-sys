@@ -18,26 +18,26 @@ import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
-import { Tax } from '@/types';
+import { CurrencyPayload, ResponseRefParamDto, Tax } from '@/types';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
+  currencyOptions: SelectOption[];
   createQuotation: () => void;
   isCreationPending: boolean;
-  taxes?: Tax[];
-  isArticleDescriptionHidden?: boolean;
+  selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
 }
 
 export const useQuotationCreateFormStructure = ({
   store,
   enterprises,
   interlocutorOptions,
+  currencyOptions,
   createQuotation,
   isCreationPending,
-  taxes = [],
-  isArticleDescriptionHidden = false
+  selectedCurrency
 }: useQuotationCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
 
@@ -208,7 +208,7 @@ export const useQuotationCreateFormStructure = ({
     id: 'articles',
     variant: FieldVariant.CUSTOM,
     props: {
-      children: <QuotationArticlesField />
+      children: <QuotationArticlesField currency={selectedCurrency} />
     }
   };
 
@@ -311,6 +311,25 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const currencyField: Field<SelectFieldProps> = {
+    id: 'currency',
+    label: 'Currency',
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.createDtoErrors.currencyId?.[0],
+    placeholder: 'Select currency',
+    description: 'Select the currency for this quotation',
+    props: {
+      disabled: isCreationPending,
+      value: store.createDto.currencyId ? store.createDto.currencyId.toString() : undefined,
+      onValueChange: (value) => {
+        store.setNested('createDto.currencyId', Number(value));
+        store.setNested('createDtoErrors.currencyId', []);
+      },
+      options: currencyOptions
+    }
+  };
+
   const sidebarFormStructure: FormStructure = {
     title: {
       value: 'Sidebar'
@@ -324,6 +343,9 @@ export const useQuotationCreateFormStructure = ({
           },
           {
             fields: [buttonsField]
+          },
+          {
+            fields: [currencyField]
           }
         ]
       }

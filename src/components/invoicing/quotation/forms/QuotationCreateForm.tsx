@@ -16,7 +16,14 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
-import { CreateQuotationArticleDto, CreateQuotationDto } from '@/types';
+import {
+  CreateQuotationArticleDto,
+  CreateQuotationDto,
+  CurrencyPayload,
+  ResponseRefParamDto
+} from '@/types';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
+import { useTranslation } from 'react-i18next';
 
 interface QuotationCreateFormProps {
   className?: string;
@@ -24,6 +31,7 @@ interface QuotationCreateFormProps {
 
 export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => {
   const router = useRouter();
+  const { t: tCurrency } = useTranslation('currency');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
   const enterpriseStore = useEnterpriseStore();
@@ -43,6 +51,15 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     enterpriseId: quotationStore.createDto.enterpriseId,
     enabled: !!quotationStore.createDto.enterpriseId
   });
+
+  const { currencies, isCurrenciesPending } = useCurrencies();
+  const selectedCurrency = React.useMemo(
+    () =>
+      currencies.find(
+        (c) => c.id === quotationStore.createDto.currencyId
+      ) as ResponseRefParamDto<CurrencyPayload>,
+    [quotationStore.createDto.currencyId, currencies]
+  );
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
@@ -91,11 +108,19 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       valueKey: 'id',
       labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
     }),
+    currencyOptions: mapToSelectOptions({
+      data: currencies,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+        `${tCurrency(item.label)} (${item.extras.symbol})`
+    }),
     createQuotation: handleSubmit,
-    isCreationPending
+    isCreationPending,
+    selectedCurrency: selectedCurrency
   });
 
-  if (isEnterprisesPending) return <Spinner />;
+  if (isEnterprisesPending || isCurrenciesPending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

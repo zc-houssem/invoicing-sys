@@ -1,6 +1,7 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/DatabaseEntity';
 import { CreateArticleDto, ResponseArticleDto } from './article';
+import { ResponseRefParamDto } from './reference-types';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -14,6 +15,8 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
   interlocutorId: number;
+  currency: ResponseRefParamDto;
+  currencyId: number;
   quotationArticles: ResponseQuotationArticleDto[];
 }
 
@@ -25,6 +28,7 @@ export interface CreateQuotationDto {
   generalConditions?: string;
   enterpriseId?: number;
   interlocutorId?: number;
+  currencyId?: number;
   quotationArticles: CreateQuotationArticleDto[];
 }
 

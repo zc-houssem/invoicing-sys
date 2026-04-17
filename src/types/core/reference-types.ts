@@ -39,3 +39,9 @@ export interface CreateRefParamDto<T = object> {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface UpdateRefParamDto<T = object> extends Partial<CreateRefParamDto<T>> {}
+
+export interface CurrencyPayload {
+  symbol: string;
+  code: string;
+  digitsAfterComma: number;
+}

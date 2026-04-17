@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
-import { ResponseEnterpriseDto } from '@/types';
+import { CurrencyPayload, ResponseEnterpriseDto, ResponseRefParamDto } from '@/types';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
@@ -23,16 +23,20 @@ interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
+  currencyOptions: SelectOption[];
   updateQuotation: () => void;
   isUpdatePending: boolean;
+  selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
 }
 
 export const useQuotationUpdateFormStructure = ({
   store,
   enterprises,
   interlocutorOptions,
+  currencyOptions,
   updateQuotation,
-  isUpdatePending
+  isUpdatePending,
+  selectedCurrency
 }: useQuotationUpdateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
   const { t } = useTranslation('invoicing');
@@ -206,7 +210,7 @@ export const useQuotationUpdateFormStructure = ({
     id: 'articles',
     variant: FieldVariant.CUSTOM,
     props: {
-      children: <QuotationArticlesField />
+      children: <QuotationArticlesField currency={selectedCurrency} />
     }
   };
 
@@ -309,6 +313,26 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
+  const currencyField: Field<SelectFieldProps> = {
+    id: 'currency',
+    label: 'Currency',
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.updateDtoErrors.currencyId?.[0],
+    placeholder: 'Select currency',
+    description: 'Select the currency for this quotation',
+    pending: !store.updateDto?.currencyId,
+    props: {
+      disabled: isUpdatePending,
+      value: store.updateDto?.currencyId ? store.updateDto.currencyId.toString() : undefined,
+      onValueChange: (value) => {
+        store.setNested('updateDto.currencyId', Number(value));
+        store.setNested('updateDtoErrors.currencyId', []);
+      },
+      options: currencyOptions
+    }
+  };
+
   const sidebarFormStructure: FormStructure = {
     title: {
       value: 'Sidebar'
@@ -322,6 +346,9 @@ export const useQuotationUpdateFormStructure = ({
           },
           {
             fields: [buttonsField]
+          },
+          {
+            fields: [currencyField]
           }
         ]
       }
