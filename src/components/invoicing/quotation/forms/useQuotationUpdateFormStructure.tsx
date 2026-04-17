@@ -36,10 +36,10 @@ export const useQuotationUpdateFormStructure = ({
     id: 'file',
     label: 'Document',
     variant: FieldVariant.FILE,
-    hidden: store.createDto.direction === 'outgoing',
+    hidden: store.updateDto?.direction === 'outgoing',
     props: {
-      // value: store.createDto.file,
-      // onChange: (file) => store.setNested('createDto.file', file)
+      // value: store.updateDto.file,
+      // onChange: (file) => store.setNested('updateDto.file', file)
     }
   };
 
@@ -48,7 +48,7 @@ export const useQuotationUpdateFormStructure = ({
     label: t('quotation.form.date'),
     variant: FieldVariant.DATE,
     required: true,
-    error: store.createDtoErrors.date?.[0],
+    error: store.updateDtoErrors.date?.[0],
     placeholder: t('quotation.form.placeholders.date'),
     description: t('quotation.form.descriptions.date'),
     props: {
@@ -105,14 +105,15 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.enterpriseId?.[0],
     placeholder: t('quotation.form.placeholders.enterprise'),
     description: t('quotation.form.descriptions.enterprise'),
+    pending: !(enterpriseOptions && store.updateDto?.enterpriseId),
     props: {
       disabled: isUpdatePending,
       value: store.updateDto?.enterpriseId ? store.updateDto.enterpriseId.toString() : undefined,
       onValueChange: (value) => {
-        store.setNested('updateDto.interlocutorId', undefined);
-        store.setNested('updateDtoErrors.interlocutorId', []);
         store.setNested('updateDto.enterpriseId', Number(value));
         store.setNested('updateDtoErrors.enterpriseId', []);
+        store.setNested('updateDto.interlocutorId', undefined);
+        store.setNested('updateDtoErrors.interlocutorId', []);
       },
       options: enterpriseOptions
     }
@@ -126,6 +127,7 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.interlocutorId?.[0],
     placeholder: t('quotation.form.placeholders.interlocutor'),
     description: t('quotation.form.descriptions.interlocutor'),
+    pending: !(interlocutorOptions && store.updateDto?.enterpriseId),
     props: {
       disabled: isUpdatePending || !store.updateDto?.enterpriseId,
       value: store.updateDto?.interlocutorId
@@ -147,6 +149,7 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
     description: t('quotation.form.descriptions.generalConditions'),
+    pending: !store.updateDto?.generalConditions,
     props: {
       value: store.updateDto?.generalConditions,
       onChange: (value) => {
@@ -209,19 +212,19 @@ export const useQuotationUpdateFormStructure = ({
         <div className="flex flex-col gap-2 w-full">
           <Button
             type="button"
-            variant={'outline'}
+            variant={'default'}
             onClick={() => {
               updateQuotation();
             }}>
-            <span>Save as draft</span>
+            <span>Save</span>
             <Save className="size-10" />
           </Button>
-          <Button variant={'secondary'} onClick={() => {}}>
-            <span>Save & Validate</span>
+          <Button variant={'outline'} onClick={() => {}}>
+            <span>Validate</span>
             <Check className="size-10" />
           </Button>
-          <Button variant={'secondary'} onClick={() => {}}>
-            <span>Save & Send</span>
+          <Button variant={'outline'} onClick={() => {}}>
+            <span>Send</span>
             <Send className="size-10" />
           </Button>
         </div>

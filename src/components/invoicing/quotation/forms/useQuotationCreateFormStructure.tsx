@@ -211,15 +211,15 @@ export const useQuotationCreateFormStructure = ({
             onClick={() => {
               createQuotation();
             }}>
-            <span>Save as draft</span>
+            <span>Save</span>
             <Save className="size-10" />
           </Button>
           <Button variant={'secondary'} onClick={() => {}}>
-            <span>Save & Validate</span>
+            <span>Validate</span>
             <Check className="size-10" />
           </Button>
           <Button variant={'secondary'} onClick={() => {}}>
-            <span>Save & Send</span>
+            <span>Send</span>
             <Send className="size-10" />
           </Button>
         </div>

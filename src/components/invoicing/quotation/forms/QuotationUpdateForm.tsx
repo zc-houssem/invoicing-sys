@@ -14,7 +14,6 @@ import { Spinner } from '@/components/shared';
 import { useQuotationUpdateFormStructure } from './useQuotationUpdateFormStructure';
 import React from 'react';
 import { useQuotation } from '@/hooks/content/core/useQuotation';
-import { UpdateQuotationDto } from '@/types';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -35,13 +34,13 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   });
 
   React.useEffect(() => {
-    if (quotation && enterprises && interlocutors) {
+    if (quotation) {
       quotationStore.set('updateDto', {
         date: quotation?.date ? new Date(quotation.date) : undefined,
         dueDate: quotation?.dueDate ? new Date(quotation.dueDate) : undefined,
         direction: quotation?.direction,
         object: quotation?.object,
-        generalConditions: quotation?.generalConditions || '',
+        generalConditions: quotation?.generalConditions,
         enterpriseId: quotation?.enterpriseId,
         interlocutorId: quotation?.interlocutorId
       });
@@ -49,7 +48,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     return () => {
       quotationStore.reset();
     };
-  }, [quotation, enterprises, interlocutors]);
+  }, [quotation]);
 
   const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
     mutationFn: async () => api.invoicing.quotation.update(id, quotationStore.updateDto),

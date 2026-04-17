@@ -21,8 +21,7 @@ import { payment } from './payment';
 export * from './payment';
 import { permission } from './permission';
 export * from './permission';
-import { quotation } from './quotation';
-export * from './quotation';
+
 import { role } from './role';
 export * from './role';
 import { sequence } from './sequence';
@@ -53,7 +52,6 @@ export const api = {
   invoice,
   payment,
   permission,
-  quotation,
   role,
   sequence,
   tax,
