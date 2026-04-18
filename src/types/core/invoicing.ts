@@ -1,6 +1,6 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/DatabaseEntity';
-import { CreateArticleDto, ResponseArticleDto } from './article';
+import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './article';
 import { ResponseRefParamDto } from './reference-types';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
@@ -32,7 +32,9 @@ export interface CreateQuotationDto {
   quotationArticles: CreateQuotationArticleDto[];
 }
 
-export interface UpdateQuotationDto extends Partial<CreateQuotationDto> {}
+export interface UpdateQuotationDto extends Partial<Omit<CreateQuotationDto, 'quotationArticles'>> {
+  quotationArticles: UpdateQuotationArticleDto[];
+}
 
 export interface ResponseQuotationArticleDto extends DatabaseEntity {
   id: number;
@@ -57,4 +59,9 @@ export interface CreateQuotationArticleDto {
   discountValue: number;
 }
 
-export interface UpdateQuotationArticleDto extends Partial<CreateQuotationArticleDto> {}
+export interface UpdateQuotationArticleDto
+  extends Partial<Omit<CreateQuotationArticleDto, 'article'>> {
+  id: number;
+  articleId?: number;
+  article?: UpdateArticleDto;
+}

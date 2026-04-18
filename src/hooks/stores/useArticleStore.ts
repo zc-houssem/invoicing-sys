@@ -17,7 +17,9 @@ export interface ArticleStore extends ArticleData, IArticleActions, BaseActions<
 const initialState: ArticleData = {
   articles: [
     {
-      id: uuidv4(),
+      clientId: uuidv4(),
+      id: undefined,
+      articleId: undefined,
       title: '',
       description: '',
       unitPrice: 0,
@@ -31,7 +33,9 @@ const initialState: ArticleData = {
 export const useArticleStore = createBaseStore<ArticleStore>(initialState, (set, get) => ({
   addArticle(article?: Partial<LineArticle>) {
     const newArticle: LineArticle = {
-      id: uuidv4(),
+      clientId: uuidv4(),
+      id: undefined,
+      articleId: undefined,
       title: article?.title || '',
       description: article?.description || '',
       unitPrice: article?.unitPrice || 0,
@@ -44,16 +48,18 @@ export const useArticleStore = createBaseStore<ArticleStore>(initialState, (set,
       articles: [...state.articles, newArticle]
     }));
   },
-  updateArticle(id: string, updatedArticle: Partial<LineArticle>) {
+  updateArticle(clientId: string, updatedArticle: Partial<LineArticle>) {
     set((state) => ({
       ...state,
-      articles: state.articles.map((a) => (a.id === id ? { ...a, ...updatedArticle } : a))
+      articles: state.articles.map((a) =>
+        a.clientId === clientId ? { ...a, ...updatedArticle } : a
+      )
     }));
   },
-  deleteArticle(id: string) {
+  deleteArticle(clientId: string) {
     set((state) => ({
       ...state,
-      articles: state.articles.filter((a) => a.id !== id)
+      articles: state.articles.filter((a) => a.clientId !== clientId)
     }));
   }
 }));

@@ -29,7 +29,7 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].title,
       onChange: (value) => {
-        store.updateArticle(store.articles[index].id, { title: value });
+        store.updateArticle(store.articles[index].clientId, { title: value });
       }
     }
   };
@@ -42,7 +42,7 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].quantity,
       onChange: (value) => {
-        store.updateArticle(store.articles[index].id, { quantity: value });
+        store.updateArticle(store.articles[index].clientId, { quantity: value });
       }
     }
   };
@@ -55,7 +55,7 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].unitPrice,
       onChange: (value) => {
-        store.updateArticle(store.articles[index].id, { unitPrice: value });
+        store.updateArticle(store.articles[index].clientId, { unitPrice: value });
       }
     }
   };
@@ -68,7 +68,7 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].description,
       onChange: (value) => {
-        store.updateArticle(store.articles[index].id, { description: value });
+        store.updateArticle(store.articles[index].clientId, { description: value });
       },
       rows: 5
     }
@@ -82,7 +82,9 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].discountType,
       onValueChange: (value) => {
-        store.updateArticle(store.articles[index].id, { discountType: value as 'rate' | 'fixed' });
+        store.updateArticle(store.articles[index].clientId, {
+          discountType: value as 'rate' | 'fixed'
+        });
       },
       options: [
         { label: t('article.form.discountType.options.rate'), value: 'rate' },
@@ -99,7 +101,7 @@ export const useArticleItemFormStructure = ({
     props: {
       value: store.articles[index].discountValue,
       onChange: (value) => {
-        store.updateArticle(store.articles[index].id, { discountValue: value });
+        store.updateArticle(store.articles[index].clientId, { discountValue: value });
       }
     }
   };

@@ -14,14 +14,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
 import SortableLinks from '@/components/ui/sortable';
 import { useTranslation } from 'react-i18next';
 import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
@@ -61,9 +53,9 @@ export function ArticleManagement({
 
   function handleDragEnd(event: any) {
     const { active, over } = event;
-    if (active.id !== over.id) {
-      const oldIndex = articles.findIndex((item) => item?.id === active.id);
-      const newIndex = articles.findIndex((item) => item?.id === over.id);
+    if (active.clientId !== over.clientId) {
+      const oldIndex = articles.findIndex((item) => item?.clientId === active.clientId);
+      const newIndex = articles.findIndex((item) => item?.clientId === over.clientId);
       setArticles(arrayMove(articles, oldIndex, newIndex));
     }
   }
@@ -87,7 +79,10 @@ export function ArticleManagement({
         modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
         <SortableContext items={articles} strategy={verticalListSortingStrategy}>
           {articles.map((item, index) => (
-            <SortableLinks key={item.id} id={item} onDelete={!disabled ? handleDelete : undefined}>
+            <SortableLinks
+              key={item.clientId}
+              id={item.clientId}
+              onDelete={!disabled ? handleDelete : undefined}>
               {renderArticleItem(item, !disabled, index)}
             </SortableLinks>
           ))}

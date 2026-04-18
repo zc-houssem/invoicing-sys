@@ -18,7 +18,12 @@ import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { LineArticle } from '@/types/core/article';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
-import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import {
+  CurrencyPayload,
+  ResponseRefParamDto,
+  UpdateQuotationArticleDto,
+  UpdateQuotationDto
+} from '@/types';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -55,6 +60,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   React.useEffect(() => {
     if (quotation && enterprises) {
+      quotationStore.set('response', quotation);
       quotationStore.set('updateDto', {
         date: quotation?.date ? new Date(quotation.date) : undefined,
         dueDate: quotation?.dueDate ? new Date(quotation.dueDate) : undefined,
@@ -63,7 +69,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         generalConditions: quotation?.generalConditions,
         enterpriseId: quotation?.enterpriseId,
         interlocutorId: quotation?.interlocutorId,
-        currencyId: quotation?.currencyId
+        currencyId: quotation?.currencyId,
+        quotationArticles: []
       });
       const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
@@ -72,7 +79,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         'articles',
         quotation.quotationArticles.map((qa) => {
           return {
-            id: qa.article.id.toString(),
+            clientId: qa.article.id.toString(),
+            id: qa.id,
+            articleId: qa.article.id,
             title: qa.article.title,
             description: qa.article.description,
             unitPrice: qa.unitPrice,
@@ -91,10 +100,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   }, [quotation, enterprises]);
 
   const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
-    mutationFn: async () => api.invoicing.quotation.update(id, quotationStore.updateDto),
+    mutationFn: async (payload: { id: number; data: UpdateQuotationDto }) =>
+      api.invoicing.quotation.update(payload.id, payload.data),
     onSuccess: (data) => {
-      quotationStore.reset();
-      enterpriseStore.reset();
       toast.success('Quotation updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
@@ -110,8 +118,29 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     if (!result.success) {
       quotationStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
       return;
+    } else {
+      updateQuotation({
+        id: quotationStore.response?.id as number,
+        data: {
+          ...quotationStore.updateDto,
+          quotationArticles: articleStore.articles.map(
+            (article) =>
+              ({
+                id: article.id!,
+                article: {
+                  title: article.title,
+                  description: article.description
+                },
+                articleId: article.articleId!,
+                quantity: article.quantity,
+                unitPrice: article.unitPrice,
+                discountType: article.discountType,
+                discountValue: article.discountValue
+              }) satisfies UpdateQuotationArticleDto
+          )
+        }
+      });
     }
-    updateQuotation();
   };
 
   const { mainFormStructure, sidebarFormStructure } = useQuotationUpdateFormStructure({

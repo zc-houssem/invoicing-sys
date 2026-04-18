@@ -1,7 +1,9 @@
 import { DatabaseEntity } from '../response/DatabaseEntity';
 
 export interface LineArticle {
-  id: string;
+  clientId: string;
+  id?: number;
+  articleId?: number;
   title?: string;
   description?: string;
   unitPrice: number;
