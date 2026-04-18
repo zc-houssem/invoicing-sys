@@ -36,6 +36,14 @@
         "createdAt": "Créé le",
         "updatedAt": "Mis à jour le"
       }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Êtes-vous sûr de vouloir supprimer ce devis",
+        "description": "Cette action est irréversible. Cela supprimera définitivement le devis de notre base de données.",
+        "confirm": "Oui, supprimez-le",
+        "cancel": "Non, conservez-le"
+      }
     }
   },
   "invoice": {},

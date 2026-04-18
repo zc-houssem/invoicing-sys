@@ -36,6 +36,14 @@
         "createdAt": "Created at",
         "updatedAt": "Updated at"
       }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete this quotation",
+        "description": "This action cannot be undone. This will permanently delete the quotation from our database.",
+        "confirm": "Yes, delete it",
+        "cancel": "No, keep it"
+      }
     }
   },
   "invoice": {},
