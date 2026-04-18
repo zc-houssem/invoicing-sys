@@ -30,7 +30,6 @@ export const useRefTypeCreateSheet = ({
     description: t("refType.sheet.create.description"),
     children: (
       <RefTypeCreateForm
-        className="mx-4"
         refTypeCallback={createRefType}
         cancelCallback={() => {
           closeCreateRefTypeSheet?.();
@@ -39,7 +38,7 @@ export const useRefTypeCreateSheet = ({
         isPending={isCreatePending}
       />
     ),
-    className: "min-w-[30vw] flex flex-col flex-1 overflow-hidden",
+    className: "min-w-[50vw] flex flex-col flex-1 overflow-hidden",
     onToggle: resetRefType,
   });
 

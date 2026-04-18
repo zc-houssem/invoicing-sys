@@ -30,7 +30,6 @@ export const useRefTypeUpdateSheet = ({
     description: t("refType.sheet.update.description"),
     children: (
       <RefTypeUpdateForm
-        className="mx-4"
         refTypeCallback={updateRefType}
         cancelCallback={() => {
           closeUpdateRefTypeSheet?.();
@@ -39,7 +38,7 @@ export const useRefTypeUpdateSheet = ({
         isPending={isUpdatePending}
       />
     ),
-    className: "min-w-[30vw] flex flex-col flex-1 overflow-hidden",
+    className: "min-w-[50vw] flex flex-col flex-1 overflow-hidden",
     onToggle: resetRefType,
   });
 

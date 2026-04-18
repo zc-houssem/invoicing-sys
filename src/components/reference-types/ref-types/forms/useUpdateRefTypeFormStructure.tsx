@@ -5,11 +5,11 @@ import {
   FormStructure,
   SelectFieldProps,
   SelectOption,
-  TextFieldProps,
-} from "@/components/shared/form-builder/types";
-import { JSONValue } from "@/components/shared/JsonEditor";
-import { JSONExtras } from "@/components/shared/JSONExtras";
-import { ReferenceTypesStore } from "@/hooks/stores/useReferenceTypesStore";
+  TextFieldProps
+} from '@/components/shared/form-builder/types';
+import { JSONValue } from '@/components/shared/JsonEditor';
+import { JSONExtras } from '@/components/shared/JSONExtras';
+import { ReferenceTypesStore } from '@/hooks/stores/useReferenceTypesStore';
 
 interface RefTypeUpdateFormStructureProps {
   referenceTypesStore?: ReferenceTypesStore;
@@ -17,71 +17,63 @@ interface RefTypeUpdateFormStructureProps {
 }
 export const useUpdateRefTypeFormStructure = ({
   referenceTypesStore,
-  refTypesOptions,
+  refTypesOptions
 }: RefTypeUpdateFormStructureProps) => {
   const labelField: Field<TextFieldProps> = {
-    id: "label",
-    label: "Label",
+    id: 'label',
+    label: 'Label',
     variant: FieldVariant.TEXT,
     required: true,
-    placeholder: "Ex. Currency",
+    placeholder: 'Ex. Currency',
     description: "Reference Type's label.",
     error: referenceTypesStore?.refTypeUpdateDtoErrors?.label?.[0],
     props: {
       value: referenceTypesStore?.refTypeUpdateDto.label || undefined,
       onChange: (value) => {
-        referenceTypesStore?.setNested("refTypeUpdateDto.label", value);
-        referenceTypesStore?.setNested("refTypeUpdateDtoErrors.label", []);
-      },
-    },
+        referenceTypesStore?.setNested('refTypeUpdateDto.label', value);
+        referenceTypesStore?.setNested('refTypeUpdateDtoErrors.label', []);
+      }
+    }
   };
 
   const descriptionField: Field<TextFieldProps> = {
-    id: "description",
-    label: "Description",
+    id: 'description',
+    label: 'Description',
     variant: FieldVariant.TEXTAREA,
     required: true,
-    placeholder:
-      "Ex. Currency RefType is a type that allows you to manage currencies.",
+    placeholder: 'Ex. Currency RefType is a type that allows you to manage currencies.',
     description: "Reference Type's description.",
     error: referenceTypesStore?.refTypeUpdateDtoErrors?.description?.[0],
     props: {
       value: referenceTypesStore?.refTypeUpdateDto.description || undefined,
       onChange: (value) => {
-        referenceTypesStore?.setNested("refTypeUpdateDto.description", value);
-        referenceTypesStore?.setNested(
-          "refTypeUpdateDtoErrors.description",
-          []
-        );
-      },
-    },
+        referenceTypesStore?.setNested('refTypeUpdateDto.description', value);
+        referenceTypesStore?.setNested('refTypeUpdateDtoErrors.description', []);
+      }
+    }
   };
 
   const refTypeField: Field<SelectFieldProps> = {
-    id: "refTypeId",
-    label: "Reference Type",
+    id: 'refTypeId',
+    label: 'Reference Type',
     variant: FieldVariant.SELECT,
     required: true,
-    placeholder: "Select a reference type",
+    placeholder: 'Select a reference type',
     description: "Reference Type's reference parameter.",
     error: referenceTypesStore?.refParamCreateDtoErrors?.refTypeId?.[0],
     props: {
       options: refTypesOptions,
-      value:
-        referenceTypesStore?.refTypeCreateDto.parentId?.toString() || undefined,
+      value: referenceTypesStore?.refTypeCreateDto.parentId?.toString() || undefined,
       onValueChange: (value) => {
-        referenceTypesStore?.setNested(
-          "refTypeCreateDto.parentId",
-          Number(value)
-        );
-        referenceTypesStore?.setNested("refTypeCreateDtoErrors.parentId", []);
-      },
-    },
+        referenceTypesStore?.setNested('refTypeCreateDto.parentId', Number(value));
+        referenceTypesStore?.setNested('refTypeCreateDtoErrors.parentId', []);
+      }
+    }
   };
 
   const extrasField: Field<CustomFieldProps> = {
-    id: "extras",
-    label: "Extras",
+    id: 'extras',
+    label: 'Extras',
     variant: FieldVariant.CUSTOM,
     description: "Reference Type's extras.",
     error: referenceTypesStore?.refTypeUpdateDtoErrors?.extras?.[0],
@@ -90,40 +82,48 @@ export const useUpdateRefTypeFormStructure = ({
         <JSONExtras
           value={referenceTypesStore?.refTypeUpdateDto.extras as JSONValue}
           onChange={(value) => {
-            referenceTypesStore?.setNested("refTypeUpdateDto.extras", value);
-            referenceTypesStore?.setNested("refTypeUpdateDtoErrors.extras", []);
+            referenceTypesStore?.setNested('refTypeUpdateDto.extras', value);
+            referenceTypesStore?.setNested('refTypeUpdateDtoErrors.extras', []);
           }}
         />
-      ),
-    },
+      )
+    }
   };
 
   const refTypeUpdateFormStructure: FormStructure = {
-    title: "",
-    description: "",
+    title: {
+      value: 'Update Reference Type'
+    },
+    description: {
+      value: 'Update an existing reference type.'
+    },
     fieldsets: [
       {
-        title: "Update Reference Type",
-        description: "Update a new reference type.",
+        title: {
+          value: 'Update Reference Type'
+        },
+        description: {
+          value: 'Update an existing reference type.'
+        },
         rows: [
           {
-            fields: [labelField],
+            fields: [labelField]
           },
           {
-            fields: [refTypeField],
+            fields: [refTypeField]
           },
           {
-            fields: [descriptionField],
+            fields: [descriptionField]
           },
           {
-            fields: [extrasField],
-          },
-        ],
-      },
-    ],
+            fields: [extrasField]
+          }
+        ]
+      }
+    ]
   };
 
   return {
-    refTypeUpdateFormStructure,
+    refTypeUpdateFormStructure
   };
 };

@@ -90,12 +90,20 @@ export const useCreateRefTypeFormStructure = ({
   };
 
   const refTypeCreateFormStructure: FormStructure = {
-    title: '',
-    description: '',
+    title: {
+      value: 'Create Reference Type'
+    },
+    description: {
+      value: 'Create a new reference type.'
+    },
     fieldsets: [
       {
-        title: 'Create Reference Type',
-        description: 'Create a new reference type.',
+        title: {
+          value: 'Reference Type Information'
+        },
+        description: {
+          value: 'Create a new reference type.'
+        },
         rows: [
           {
             fields: [labelField]
