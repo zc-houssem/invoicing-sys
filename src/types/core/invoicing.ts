@@ -44,12 +44,17 @@ export interface ResponseQuotationArticleDto extends DatabaseEntity {
 
   unitPrice: number;
   quantity: number;
+
+  discountType: 'rate' | 'fixed';
+  discountValue: number;
 }
 
 export interface CreateQuotationArticleDto {
   article?: CreateArticleDto;
   unitPrice: number;
   quantity: number;
+  discountType?: 'rate' | 'fixed';
+  discountValue: number;
 }
 
 export interface UpdateQuotationArticleDto extends Partial<CreateQuotationArticleDto> {}

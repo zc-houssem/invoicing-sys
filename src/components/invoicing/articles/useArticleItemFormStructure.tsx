@@ -3,6 +3,7 @@ import {
   FieldVariant,
   FormStructure,
   NumberFieldProps,
+  SelectFieldProps,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
@@ -73,6 +74,36 @@ export const useArticleItemFormStructure = ({
     }
   };
 
+  const discountTypeField: Field<SelectFieldProps> = {
+    id: `article-${index}-discountType`,
+    label: t('article.form.discountType.label'),
+    variant: FieldVariant.SELECT,
+    placeholder: t('article.form.placeholders.discountType'),
+    props: {
+      value: store.articles[index].discountType,
+      onValueChange: (value) => {
+        store.updateArticle(store.articles[index].id, { discountType: value as 'rate' | 'fixed' });
+      },
+      options: [
+        { label: t('article.form.discountType.options.rate'), value: 'rate' },
+        { label: t('article.form.discountType.options.fixed'), value: 'fixed' }
+      ]
+    }
+  };
+
+  const discountValueField: Field<NumberFieldProps> = {
+    id: `article-${index}-discountValue`,
+    label: t('article.form.discountValue'),
+    variant: FieldVariant.NUMBER,
+    placeholder: t('article.form.placeholders.discountValue'),
+    props: {
+      value: store.articles[index].discountValue,
+      onChange: (value) => {
+        store.updateArticle(store.articles[index].id, { discountValue: value });
+      }
+    }
+  };
+
   return {
     title: {
       value: `article-${index}`
@@ -82,6 +113,9 @@ export const useArticleItemFormStructure = ({
         rows: [
           {
             fields: [titleField, quantityField, unitPriceField]
+          },
+          {
+            fields: [discountTypeField, discountValueField]
           },
           {
             fields: [descriptionField]

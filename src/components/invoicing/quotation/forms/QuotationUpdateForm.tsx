@@ -76,7 +76,9 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             title: qa.article.title,
             description: qa.article.description,
             unitPrice: qa.unitPrice,
-            quantity: qa.quantity
+            quantity: qa.quantity,
+            discountType: qa.discountType,
+            discountValue: qa.discountValue
           } satisfies LineArticle;
         })
       );

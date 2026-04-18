@@ -6,6 +6,8 @@ export interface LineArticle {
   description?: string;
   unitPrice: number;
   quantity: number;
+  discountType?: 'rate' | 'fixed';
+  discountValue: number;
 }
 
 export interface ResponseArticleFamilyDto extends DatabaseEntity {

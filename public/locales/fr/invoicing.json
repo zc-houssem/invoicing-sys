@@ -49,12 +49,22 @@
       "description": "Description",
       "quantity": "Quantité",
       "unitPrice": "Prix unitaire",
+      "discountType": {
+        "label": "Type de remise",
+        "options": {
+          "rate": "Pourcentage",
+          "fixed": "Montant fixe"
+        }
+      },
+      "discountValue": "Valeur de la remise",
       "totalPrice": "Prix total",
       "placeholders": {
         "title": "Entrez le titre de l'article",
         "description": "Entrez la description de l'article",
         "quantity": "Entrez la quantité",
-        "unitPrice": "Entrez le prix unitaire"
+        "unitPrice": "Entrez le prix unitaire",
+        "discountType": "Sélectionnez le type de remise",
+        "discountValue": "Entrez la valeur de la remise"
       }
     }
   },

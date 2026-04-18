@@ -50,11 +50,21 @@
       "quantity": "Quantity",
       "unitPrice": "Unit price",
       "totalPrice": "Total price",
+      "discountType": {
+        "label": "Discount type",
+        "options": {
+          "rate": "Percentage",
+          "fixed": "Fixed amount"
+        }
+      },
+      "discountValue": "Discount value",
       "placeholders": {
         "title": "Enter the article title",
         "description": "Enter the article description",
         "quantity": "Enter the quantity",
-        "unitPrice": "Enter the unit price"
+        "unitPrice": "Enter the unit price",
+        "discountType": "Select the discount type",
+        "discountValue": "Enter the discount value"
       }
     }
   },
