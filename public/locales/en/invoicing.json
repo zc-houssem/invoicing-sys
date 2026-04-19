@@ -57,7 +57,8 @@
       "description": "Description",
       "quantity": "Quantity",
       "unitPrice": "Unit price",
-      "totalPrice": "Total price",
+      "priceExcludingTax": "Price excluding tax",
+      "priceIncludingTax": "Price including tax",
       "discountType": {
         "label": "Discount type",
         "options": {

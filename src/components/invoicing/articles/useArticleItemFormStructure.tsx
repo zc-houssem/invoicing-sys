@@ -117,7 +117,7 @@ export const useArticleItemFormStructure = ({
             fields: [titleField, quantityField, unitPriceField]
           },
           {
-            fields: [discountTypeField, discountValueField]
+            fields: [discountValueField, discountTypeField]
           },
           {
             fields: [descriptionField]

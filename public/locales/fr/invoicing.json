@@ -56,7 +56,8 @@
       "title": "Titre",
       "description": "Description",
       "quantity": "Quantité",
-      "unitPrice": "Prix unitaire",
+      "priceExcludingTax": "Prix HT",
+      "priceIncludingTax": "Prix TTC",
       "discountType": {
         "label": "Type de remise",
         "options": {
