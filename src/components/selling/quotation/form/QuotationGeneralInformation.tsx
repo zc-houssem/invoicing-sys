@@ -10,7 +10,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import React from 'react';
-import { AddressDetails } from '../../../invoicing-commons/AddressDetails';
+import { AddressDetails } from '../../../invoicing/AddressDetails';
 import { cn } from '@/lib/utils';
 import { useQuotationManager } from '@/components/selling/quotation/hooks/useQuotationManager';
 import { SequenceInput } from '@/components/invoicing-commons/SequenceInput';

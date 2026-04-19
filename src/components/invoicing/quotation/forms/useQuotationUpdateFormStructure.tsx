@@ -1,4 +1,4 @@
-import { AddressDetails } from '@/components/invoicing-commons/AddressDetails';
+import { AddressDetails } from '@/components/invoicing/AddressDetails';
 import {
   CustomFieldProps,
   DateFieldProps,
