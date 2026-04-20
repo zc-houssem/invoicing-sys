@@ -97,22 +97,24 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           </SelectContent>
         </Select>
       );
-    case 'multi_select':
+    case 'multi_select': {
+      const selectedOptions = (field.props?.options || []).filter((opt: SelectOption) =>
+        field.props?.value?.includes(opt.value)
+      );
       return (
         <MultipleSelector
-          {...field.props}
-          id={field.id}
           className={cn('w-full', field?.className)}
           options={field.props?.options}
-          value={field.props?.value}
-          isDisabled={field.props?.disabled}
-          onChange={(value) => field?.props?.onChange?.(value)}
+          value={selectedOptions}
+          disabled={field.props?.disabled}
+          onChange={(value) => field?.props?.onValueChange?.(value.map((v: any) => v.value))}
           placeholder={field?.placeholder}
-          hdePlaceholderWhenSelected={field.props?.hidePlaceholderWhenSelected}
+          hidePlaceholderWhenSelected={field.props?.hidePlaceholderWhenSelected}
           creatable={field.props?.creatable}
           emptyIndicator={<p className="text-center text-sm">{t('table.no_results')}</p>}
         />
       );
+    }
 
     case 'date':
       return (

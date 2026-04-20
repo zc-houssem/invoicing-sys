@@ -470,7 +470,7 @@ const MultipleSelector = ({
                 key={option.value}
                 variant="default"
                 className={cn('flex items-center justify-center h-6 gap-1', badgeClassName)}
-                data-fixed={option.fixed}
+                data-fixed={option.fixed || undefined}
                 data-disabled={disabled || undefined}>
                 {option.label}
                 <button
@@ -483,7 +483,7 @@ const MultipleSelector = ({
                     e.stopPropagation();
                   }}
                   onClick={() => handleUnselect(option)}
-                  disabled={option.fixed}
+                  disabled={option.fixed || undefined}
                   aria-label="Remove">
                   <X className="h-3 w-3" />
                 </button>

@@ -4,16 +4,22 @@ import { useQuery } from '@tanstack/react-query';
 
 interface useTaxRatesProps {
   enabled?: boolean;
+  join: string[];
 }
 
-export const useTaxRates = ({ enabled = true }: useTaxRatesProps = { enabled: true }) => {
+export const useTaxRates = (
+  { enabled = true, join = [] }: useTaxRatesProps = { enabled: true, join: [] }
+) => {
   const {
     data: taxRatesResp,
     isPending: isTaxRatesPending,
     refetch: refetchTaxRates
   } = useQuery({
     queryKey: ['tax-rates'],
-    queryFn: () => api.core.taxRate.findAll({}),
+    queryFn: () =>
+      api.core.taxRate.findAll({
+        join: join.join(',')
+      }),
     enabled
   });
 

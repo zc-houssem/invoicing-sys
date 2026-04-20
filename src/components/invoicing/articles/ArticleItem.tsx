@@ -19,7 +19,9 @@ interface ArticleItemProps {
 export function ArticleItem({ className, index, currency }: ArticleItemProps) {
   const { t } = useTranslation('invoicing');
   const articleStore = useArticleStore();
-  const { taxRates, isTaxRatesPending } = useTaxRates();
+  const { taxRates, isTaxRatesPending } = useTaxRates({
+    join: ['currency']
+  });
   const structure = useArticleItemFormStructure({
     store: articleStore,
     taxRateOptions: mapToSelectOptions({
@@ -27,7 +29,7 @@ export function ArticleItem({ className, index, currency }: ArticleItemProps) {
       labelKey: 'label',
       valueKey: 'id',
       labelKeyTransformer: (label, item: ResponseTaxRateDto) =>
-        `${label} (${item.value}${item.type === 'rate' ? '%' : currency?.extras.symbol})`
+        `${label} (${item.value}${item.type === 'rate' ? '%' : item.currency?.extras.symbol || ''})`
     }),
     index
   });

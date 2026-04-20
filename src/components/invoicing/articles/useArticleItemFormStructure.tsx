@@ -116,8 +116,9 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.MULTI_SELECT,
     placeholder: t('article.form.placeholders.taxRates'),
     props: {
-      value: store.articles[index].taxIds?.map(String),
+      value: store.articles[index]?.taxIds?.map(String),
       onValueChange: (value) => {
+        console.log(store.articles);
         store.updateArticle(store.articles[index].clientId, { taxIds: value.map(Number) });
       },
       options: taxRateOptions,

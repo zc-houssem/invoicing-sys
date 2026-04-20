@@ -92,7 +92,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             unitPrice: qa.unitPrice,
             quantity: qa.quantity,
             discountType: qa.discountType,
-            discountValue: qa.discountValue
+            discountValue: qa.discountValue,
+            taxIds: qa.taxes?.map((t) => t.id) || []
           } satisfies LineArticle;
         })
       );

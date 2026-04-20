@@ -32,14 +32,11 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
           <Separator className="mt-2 mb-4 lg:mb-6" />
         </div>
       )}
-      <form
+      <div
         className={cn(
           'flex gap-4 xl:gap-10',
           structure?.orientation === 'vertical' ? 'flex-col xl:flex-row' : 'flex-col'
-        )}
-        onSubmit={() => {
-          return false;
-        }}>
+        )}>
         {structure?.fieldsets?.map((fieldset, index) => (
           <div
             key={index}
@@ -125,7 +122,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
             })}
           </div>
         ))}
-      </form>
+      </div>
     </div>
   );
 };
