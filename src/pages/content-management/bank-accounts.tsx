@@ -1,4 +1,4 @@
-import { BankAccountPortal } from '@/components/settings/BankAccount/BankAccountPortal';
+import { BankAccountPortal } from '@/components/content-management/bank-accounts/BankAccountPortal';
 
 export default function Page() {
   return <BankAccountPortal />;
