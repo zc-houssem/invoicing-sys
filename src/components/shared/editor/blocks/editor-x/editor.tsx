@@ -4,7 +4,7 @@ import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalCompos
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { EditorState, SerializedEditorState } from 'lexical';
 
-import { editorTheme } from '@/components/editor/themes/editor-theme';
+import { editorTheme } from '@/components/shared/editor/themes/editor-theme';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 import { nodes } from './nodes';

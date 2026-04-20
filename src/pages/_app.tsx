@@ -7,7 +7,7 @@ import { appWithTranslation } from 'next-i18next';
 import nextI18nextConfig from '../../next-i18next.config';
 import { ThemeProvider } from '@/context/ThemeContext';
 import '@/styles/globals.css';
-import '@/components/editor/themes/editor-theme.css';
+import '@/components/shared/editor/themes/editor-theme.css';
 import { SessionProvider } from 'next-auth/react';
 import { AuthTokenSync } from '@/components/auth/AuthTokenSync';
 

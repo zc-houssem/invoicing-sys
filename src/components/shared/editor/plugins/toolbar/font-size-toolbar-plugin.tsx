@@ -5,8 +5,8 @@ import { $getSelectionStyleValueForProperty, $patchStyleText } from '@lexical/se
 import { $getSelection, $isRangeSelection, BaseSelection } from 'lexical';
 import { Minus, Plus } from 'lucide-react';
 
-import { useToolbarContext } from '@/components/editor/context/toolbar-context';
-import { useUpdateToolbarHandler } from '@/components/editor/editor-hooks/use-update-toolbar';
+import { useToolbarContext } from '@/components/shared/editor/context/toolbar-context';
+import { useUpdateToolbarHandler } from '@/components/shared/editor/editor-hooks/use-update-toolbar';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { Input } from '@/components/ui/input';

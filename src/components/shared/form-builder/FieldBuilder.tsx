@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageUploaderManager } from '@/components/shared/form-builder/ImageUploaderManager';
 import { ImageUploader } from './ImageUploader';
 import { PasswordField } from './PasswordField';
-import { Editor } from '@/components/editor/blocks/editor-x/editor';
+import { Editor } from '@/components/shared/editor/blocks/editor-x/editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface FieldBuilderProps {

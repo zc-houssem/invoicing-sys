@@ -11,9 +11,9 @@ import { PopoverPortal } from '@radix-ui/react-popover';
 import type { LexicalEditor } from 'lexical';
 import { Bird, Play } from 'lucide-react';
 
-import { useEditorModal } from '@/components/editor/editor-hooks/use-modal';
-import { INSERT_TWEET_COMMAND } from '@/components/editor/plugins/embeds/twitter-plugin';
-import { INSERT_YOUTUBE_COMMAND } from '@/components/editor/plugins/embeds/youtube-plugin';
+import { useEditorModal } from '@/components/shared/editor/editor-hooks/use-modal';
+import { INSERT_TWEET_COMMAND } from '@/components/shared/editor/plugins/embeds/twitter-plugin';
+import { INSERT_YOUTUBE_COMMAND } from '@/components/shared/editor/plugins/embeds/youtube-plugin';
 import { Button } from '@/components/ui/button';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { DialogFooter } from '@/components/ui/dialog';
