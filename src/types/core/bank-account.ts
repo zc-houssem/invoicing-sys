@@ -1,5 +1,5 @@
-import { ResponseCurrencyDto } from './currency';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { ResponseCurrencyDto } from '../currency';
+import { DatabaseEntity } from '../response/DatabaseEntity';
 
 export interface ResponseBankAccountDto extends DatabaseEntity {
   id: number;

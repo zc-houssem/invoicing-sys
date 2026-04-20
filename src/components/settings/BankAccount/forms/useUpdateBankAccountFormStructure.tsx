@@ -120,7 +120,9 @@ export const useUpdateBankAccountFormStructure = ({
   };
 
   const structure: FormStructure = {
-    title: 'Bank Account Update Form',
+    title: {
+      value: 'Update Bank Account'
+    },
     orientation: 'horizontal',
     fieldsets: [
       {

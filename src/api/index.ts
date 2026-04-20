@@ -5,8 +5,7 @@ export * from './auth';
 
 import { appConfig } from './app-config';
 export * from './app-config';
-import { bankAccount } from './bank-account';
-export * from './bank-account';
+
 import { cabinet } from './cabinet';
 export * from './cabinet';
 import { defaultCondition } from './default-condition';
@@ -41,7 +40,6 @@ export const api = {
   admin,
   auth,
   appConfig,
-  bankAccount,
   cabinet,
   defaultCondition,
   invoice,

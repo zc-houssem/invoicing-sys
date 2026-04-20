@@ -120,7 +120,9 @@ export const useCreateBankAccountFormStructure = ({
   };
 
   const structure: FormStructure = {
-    title: 'Bank Account Create Form',
+    title: {
+      value: 'Create Bank Account'
+    },
     orientation: 'horizontal',
     fieldsets: [
       {

@@ -2,6 +2,7 @@ import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/DatabaseEntity';
 import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './article';
 import { ResponseRefParamDto } from './reference-types';
+import { ResponseBankAccountDto } from './bank-account';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -17,6 +18,8 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   interlocutorId: number;
   currency: ResponseRefParamDto;
   currencyId: number;
+  bankAccount: ResponseBankAccountDto;
+  bankAccountId: number;
   quotationArticles: ResponseQuotationArticleDto[];
 }
 
@@ -29,6 +32,7 @@ export interface CreateQuotationDto {
   enterpriseId?: number;
   interlocutorId?: number;
   currencyId?: number;
+  bankAccountId?: number;
   quotationArticles: CreateQuotationArticleDto[];
 }
 

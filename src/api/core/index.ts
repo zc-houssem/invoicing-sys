@@ -2,10 +2,12 @@ import { enterprise } from './enterprise';
 import { interlocutor } from './interlocutor';
 import { articleFamily } from './article-family';
 import { article } from './article';
+import { bankAccount } from './bank-account';
 
 export const core = {
-  enterprise,
-  interlocutor,
+  article,
   articleFamily,
-  article
+  bankAccount,
+  enterprise,
+  interlocutor
 };

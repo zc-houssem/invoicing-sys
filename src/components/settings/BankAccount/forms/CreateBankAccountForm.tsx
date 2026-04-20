@@ -1,7 +1,7 @@
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useCreateBankAccountFormStructure } from './useCreateBankAccountFormStructure';
 import { useBankAccountStore } from '@/hooks/stores/useBankAccountStore';
-import useCurrencies from '@/hooks/content/core/useCurrencies';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
@@ -27,7 +27,7 @@ export const CreateBankAccountForm = ({
     currencies: isCurrenciesPending
       ? []
       : currencies.map((currency) => ({
-          label: `${currency.label} (${currency.symbol})`,
+          label: `${currency.label} (${currency.extras.symbol})`,
           value: currency.id.toString()
         }))
   });

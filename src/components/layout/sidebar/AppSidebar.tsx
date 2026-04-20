@@ -6,6 +6,7 @@ import {
   File,
   FileCog,
   FileText,
+  Landmark,
   LayoutDashboard,
   Magnet,
   Package,
@@ -148,6 +149,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Package,
         items: [
           {
+            title: t('menu.contentManagement.subs.bankAccounts'),
+            url: '/content-management/bank-accounts',
+            icon: Landmark
+          },
+          {
+            title: t('menu.contentManagement.subs.taxRates'),
+            url: '/content-management/tax-rates',
+            icon: Wallet
+          },
+          {
             title: t('menu.contentManagement.subs.refTypes'),
             url: '/content-management/reference-types',
             icon: Rows3Icon
@@ -156,11 +167,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('menu.contentManagement.subs.refParams'),
             url: '/content-management/reference-parameters',
             icon: Table
-          },
-          {
-            title: t('menu.contentManagement.subs.bankAccounts'),
-            url: '/content-management/bank-accounts',
-            icon: Wallet
           }
         ]
       },

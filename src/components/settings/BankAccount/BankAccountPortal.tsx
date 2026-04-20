@@ -82,34 +82,21 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.bankAccount.findPaginated(
-        debouncedPage,
-        debouncedSize,
-        debouncedSortDetails.order ? 'ASC' : 'DESC',
-        debouncedSortDetails.sortKey,
-        debouncedSearchTerm
-      )
+      api.core.bankAccount.findPaginated({
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
+        sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'asc' : 'desc'}`,
+        search: debouncedSearchTerm
+      })
   });
 
   const bankAccounts = React.useMemo(() => {
     return bankAccountsResp?.data || [];
   }, [bankAccountsResp]);
 
-  // determine if there are bank accounts available so we let the client decide to switch its main account
-  const [hasToCreateMainByDefault, setHasToCreateMainByDefault] = React.useState<boolean>(false);
-  const [hasToUpdateMainByDefault, setHasToUpdateMainByDefault] = React.useState<boolean>(false);
-  React.useEffect(() => {
-    const fetchInitialAccounts = async () => {
-      const resp = await api.bankAccount.findPaginated();
-      setHasToCreateMainByDefault(resp.data.length === 0);
-      setHasToUpdateMainByDefault(resp.data.length === 1);
-    };
-    fetchInitialAccounts();
-  }, [bankAccounts]);
-
   //create bank account
   const { mutate: createBankAccount, isPending: isCreatePending } = useMutation({
-    mutationFn: () => api.bankAccount.create(bankAccountStore.createDto),
+    mutationFn: () => api.core.bankAccount.create(bankAccountStore.createDto),
     onSuccess: () => {
       toast.success(tSettings('bank_account.action_add_success'));
       refetchBankAccounts();
@@ -125,7 +112,7 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
   //update bank account
   const { mutate: updateBankAccount, isPending: isUpdatePending } = useMutation({
     mutationFn: () =>
-      api.bankAccount.update(bankAccountStore?.response?.id, bankAccountStore.updateDto),
+      api.core.bankAccount.update(bankAccountStore?.response?.id, bankAccountStore.updateDto),
     onSuccess: () => {
       toast.success(tSettings('bank_account.action_add_success'));
       refetchBankAccounts();
@@ -140,7 +127,7 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
 
   //remove bank account
   const { mutate: removeBankAccount, isPending: isDeletePending } = useMutation({
-    mutationFn: (id: number) => api.bankAccount.remove(id),
+    mutationFn: (id: number) => api.core.bankAccount.remove(id),
     onSuccess: () => {
       if (bankAccounts?.length == 1 && page > 1) setPage(page - 1);
       toast.success(tSettings('bank_account.action_remove_success'));
@@ -148,21 +135,6 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     },
     onError: (error) => {
       toast.error(getErrorMessage('settings', error, 'bank_account.action_remove_failure'));
-    }
-  });
-
-  //promote bank account
-  const { mutate: promoteBankAccount, isPending: isPromotionPending } = useMutation({
-    mutationFn: () =>
-      api.bankAccount.update(bankAccountStore?.response?.id, bankAccountStore.updateDto),
-    onSuccess: (data) => {
-      toast.success(tSettings('bank_account.action_promote_success', { name: data.name }));
-      refetchBankAccounts();
-      bankAccountStore.reset();
-    },
-    onError: (error) => {
-      const message = getErrorMessage('settings', error, 'bank_account.action_promote_success');
-      toast.error(message);
     }
   });
 

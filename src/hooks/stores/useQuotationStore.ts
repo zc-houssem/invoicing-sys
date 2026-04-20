@@ -24,6 +24,8 @@ const initialState: QuotationData = {
     generalConditions: undefined,
     enterpriseId: undefined,
     interlocutorId: undefined,
+    currencyId: undefined,
+    bankAccountId: undefined,
     quotationArticles: []
   },
   createDtoErrors: {},
