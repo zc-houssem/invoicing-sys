@@ -21,12 +21,14 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
   });
 
   const totalPriceExcludingTax = React.useMemo(() => {
+    if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
       return prev + article.quantity * article.unitPrice;
     }, 0);
   }, [articleStore.articles]);
 
   const totalPriceIncludingTax = React.useMemo(() => {
+    if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
       let finalPrice = article.quantity * article.unitPrice;
 
@@ -48,6 +50,7 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
   }, [articleStore.articles, taxRates]);
 
   const discountValue = React.useMemo(() => {
+    if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
       let discount = 0;
       if (article.discountType === 'fixed') discount = article.discountValue;
@@ -57,6 +60,7 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
   }, [articleStore.articles]);
 
   const taxValue = React.useMemo(() => {
+    if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
       let taxAmount = 0;
       article.taxIds?.forEach((taxId) => {
@@ -75,35 +79,43 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
     }, 0);
   }, [articleStore.articles, taxRates]);
 
-  const data = React.useMemo(
-    () => [
+  const data = React.useMemo(() => {
+    if (articleStore.articles.length === 0) return [];
+    return [
       {
         label: t('article.form.priceExcludingTax'),
-        value: `${totalPriceExcludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-          currency?.extras.symbol || ''
-        }`
+        value: totalPriceExcludingTax
+          ? `${totalPriceExcludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
+              currency?.extras.symbol || ''
+            }`
+          : undefined
       },
       {
         label: t('article.form.totalDiscount'),
-        value: `${discountValue.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-          currency?.extras.symbol || ''
-        }`
+        value: discountValue
+          ? `${Number(discountValue).toFixed(currency?.extras.digitsAfterComma || 2)} ${
+              currency?.extras.symbol || ''
+            }`
+          : undefined
       },
       {
         label: t('article.form.totalTax'),
-        value: `${taxValue.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-          currency?.extras.symbol || ''
-        }`
+        value: taxValue
+          ? `${taxValue.toFixed(currency?.extras.digitsAfterComma || 2)} ${
+              currency?.extras.symbol || ''
+            }`
+          : undefined
       },
       {
         label: t('article.form.priceIncludingTax'),
-        value: `${totalPriceIncludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-          currency?.extras.symbol || ''
-        }`
+        value: totalPriceIncludingTax
+          ? `${totalPriceIncludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
+              currency?.extras.symbol || ''
+            }`
+          : undefined
       }
-    ],
-    [totalPriceExcludingTax, discountValue, taxValue, totalPriceIncludingTax, currency, t]
-  );
+    ];
+  }, [totalPriceExcludingTax, discountValue, taxValue, totalPriceIncludingTax, currency, t]);
 
   if (isTaxRatesPending) return <Spinner />;
   return (
@@ -113,7 +125,7 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
         {data.map((item, index) => (
           <tr key={index}>
             <td className="text-start">
-              <Label className="text-base font-bold">{item.label}</Label>
+              <Label className="text-sm font-semibold">{item.label}</Label>
             </td>
             <td className="text-muted-foreground text-end">{item.value}</td>
           </tr>
