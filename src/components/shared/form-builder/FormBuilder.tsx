@@ -107,7 +107,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
                               field.variant
                             ) &&
                               !field.error && (
-                                <span className="font-medium text-xs opacity-70 leading-3">
+                                <span className="font-medium text-xs opacity-70 leading-5">
                                   {field.description}
                                 </span>
                               )}
