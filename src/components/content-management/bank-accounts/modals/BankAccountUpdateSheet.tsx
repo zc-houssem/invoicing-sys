@@ -14,7 +14,7 @@ export const useBankAccountUpdateSheet = ({
   isUpdatePending = false,
   resetBankAccount
 }: BankAccountUpdateSheet) => {
-  const { t } = useTranslation('bankAccount');
+  const { t } = useTranslation('content-management');
 
   const {
     SheetFragment: updateBankAccountSheet,
@@ -24,10 +24,10 @@ export const useBankAccountUpdateSheet = ({
     title: (
       <div className="flex items-center gap-2">
         <BookUser />
-        {t('sheet.update.title')}
+        {t('bankAccount.sheets.update.title')}
       </div>
     ),
-    description: t('sheet.update.description'),
+    description: t('bankAccount.sheets.update.description'),
     children: (
       <UpdateBankAccountForm
         updateBankAccount={updateBankAccount}

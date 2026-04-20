@@ -8,6 +8,7 @@ import {
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { BankAccountStore } from '@/hooks/stores/useBankAccountStore';
+import { useTranslation } from 'react-i18next';
 
 interface useCreateBankAccountFormStructureProps {
   store: BankAccountStore;
@@ -18,13 +19,15 @@ export const useCreateBankAccountFormStructure = ({
   store,
   currencies
 }: useCreateBankAccountFormStructureProps) => {
+  const { t } = useTranslation('content-management');
+
   const nameField: Field<TextFieldProps> = {
     id: 'name',
-    label: 'Name',
-    description: 'Name of the bank account',
+    label: t('bankAccount.form.name'),
+    description: t('bankAccount.form.descriptions.name'),
     required: true,
     variant: FieldVariant.TEXT,
-    placeholder: 'Ex. Al Baraka',
+    placeholder: t('bankAccount.form.placeholders.name'),
     error: store.createDtoErrors?.name?.[0],
     props: {
       value: store.createDto.name,
@@ -37,11 +40,11 @@ export const useCreateBankAccountFormStructure = ({
 
   const bicField: Field<TextFieldProps> = {
     id: 'bic',
-    label: 'BIC',
-    description: 'Bank Identifier Code',
+    label: t('bankAccount.form.bic'),
+    description: t('bankAccount.form.descriptions.bic'),
     required: true,
     variant: FieldVariant.TEXT,
-    placeholder: 'Ex. BSTUTNTT',
+    placeholder: t('bankAccount.form.placeholders.bic'),
     error: store.createDtoErrors?.bic?.[0],
     props: {
       value: store.createDto.bic,
@@ -54,11 +57,11 @@ export const useCreateBankAccountFormStructure = ({
 
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
-    label: 'Currency',
-    description: 'Currency of the bank account',
+    label: t('bankAccount.form.currency'),
+    description: t('bankAccount.form.descriptions.currency'),
     required: true,
     variant: FieldVariant.SELECT,
-    placeholder: 'Select currency',
+    placeholder: t('bankAccount.form.placeholders.currency'),
     error: store.createDtoErrors?.currencyId?.[0],
     props: {
       options: currencies,
@@ -72,11 +75,11 @@ export const useCreateBankAccountFormStructure = ({
 
   const ribField: Field<TextFieldProps> = {
     id: 'rib',
-    label: 'RIB',
-    description: 'Bank account number',
+    label: t('bankAccount.form.rib'),
+    description: t('bankAccount.form.descriptions.rib'),
     required: true,
     variant: FieldVariant.TEXT,
-    placeholder: 'Ex. 1234567890',
+    placeholder: t('bankAccount.form.placeholders.rib'),
     error: store.createDtoErrors?.rib?.[0],
     props: {
       value: store.createDto.rib,
@@ -89,11 +92,11 @@ export const useCreateBankAccountFormStructure = ({
 
   const ibanField: Field<TextFieldProps> = {
     id: 'iban',
-    label: 'IBAN',
-    description: 'International Bank Account Number',
+    label: t('bankAccount.form.iban'),
+    description: t('bankAccount.form.descriptions.iban'),
     required: false,
     variant: FieldVariant.TEXT,
-    placeholder: 'Ex. FR76 3000 6000 0112 3456 7890 189',
+    placeholder: t('bankAccount.form.placeholders.iban'),
     error: store.createDtoErrors?.iban?.[0],
     props: {
       value: store.createDto.iban,
@@ -106,9 +109,8 @@ export const useCreateBankAccountFormStructure = ({
 
   const mainField: Field<CheckboxFieldProps> = {
     id: 'main',
-    label: 'Main Account',
-    description:
-      'If checked, this bank account will be set as the main account overriding the current main account if exists',
+    label: t('bankAccount.form.main'),
+    description: t('bankAccount.form.descriptions.main'),
     required: false,
     variant: FieldVariant.CHECKBOX,
     props: {

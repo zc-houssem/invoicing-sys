@@ -105,5 +105,53 @@
       "updateSuccess": "Reference Parameter updated successfully.",
       "deleteSuccess": "Reference Parameter deleted successfully."
     }
+  },
+  "bankAccount": {
+    "sheets": {
+      "create": {
+        "title": "Create Bank Account",
+        "description": "Use this form to define a new bank account."
+      },
+      "update": {
+        "title": "Update Bank Account",
+        "description": "Use this form to update an existing bank account."
+      }
+    },
+    "form": {
+      "name": "Bank Name",
+      "bic": "BIC",
+      "rib": "Account Number",
+      "iban": "IBAN",
+      "currency": "Currency",
+      "placeholders": {
+        "name": "Enter the bank name",
+        "bic": "Enter the BIC code",
+        "rib": "Enter the account number",
+        "iban": "Enter the IBAN code",
+        "currency": "Enter the currency"
+      },
+      "descriptions": {
+        "name": "The name of the bank.",
+        "bic": "The BIC code of the bank.",
+        "rib": "The account number of the bank account.",
+        "iban": "The IBAN code of the bank account.",
+        "currency": "The currency of the bank account."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Bank Name",
+        "bic": "BIC",
+        "rib": "Account Number",
+        "iban": "IBAN",
+        "currency": "Currency",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      }
+    },
+    "emptyCells": {
+      "currency": "No currency"
+    }
   }
 }

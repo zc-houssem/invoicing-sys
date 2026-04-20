@@ -101,5 +101,53 @@
         "cancel": "Annuler"
       }
     }
+  },
+  "bankAccount": {
+    "sheets": {
+      "create": {
+        "title": "Créer un compte bancaire",
+        "description": "Utilisez ce formulaire pour définir un nouveau compte bancaire."
+      },
+      "update": {
+        "title": "Mettre à jour un compte bancaire",
+        "description": "Utilisez ce formulaire pour mettre à jour un compte bancaire existant."
+      }
+    },
+    "form": {
+      "name": "Nom de la banque",
+      "bic": "BIC",
+      "rib": "Numéro de compte",
+      "iban": "IBAN",
+      "currency": "Devise",
+      "placeholders": {
+        "name": "Entrez le nom de la banque",
+        "bic": "Entrez le BIC",
+        "rib": "Entrez le numéro de compte",
+        "iban": "Entrez l'IBAN",
+        "currency": "Sélectionnez la devise"
+      },
+      "descriptions": {
+        "name": "Le nom de la banque.",
+        "bic": "Le code d'identification bancaire (BIC) est un code unique utilisé pour identifier les banques et les institutions financières dans le monde entier. Il est également connu sous le nom de code SWIFT. Le BIC est utilisé pour les transferts d'argent internationaux et autres transactions financières afin de garantir que les fonds sont envoyés à la bonne banque.",
+        "rib": "Le RIB (Relevé d'Identité Bancaire) est un document qui contient toutes les informations nécessaires sur un compte bancaire en France. Il comprend des détails tels que le nom du titulaire du compte, le nom de la banque, le code de l'agence, le numéro de compte et la clé RIB. Le RIB est couramment utilisé pour les transactions domestiques en France.",
+        "iban": "Le numéro de compte bancaire international (IBAN) est un format standardisé pour identifier les comptes bancaires à travers les frontières. Il se compose d'un code pays, de deux chiffres de contrôle et d'un numéro de compte bancaire de base (BBAN). L'IBAN est utilisé pour les transferts d'argent internationaux afin de garantir que les fonds sont envoyés au bon compte dans un autre pays.",
+        "currency": "La devise associée au compte bancaire."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Nom de la banque",
+        "bic": "BIC",
+        "rib": "Numéro de compte",
+        "iban": "IBAN",
+        "currency": "Devise",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      },
+      "emptyCells": {
+        "currency": "Aucune devise"
+      }
+    }
   }
 }

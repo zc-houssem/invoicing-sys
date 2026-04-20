@@ -14,7 +14,7 @@ export const useBankAccountCreateSheet = ({
   isCreatePending = false,
   resetBankAccount
 }: BankAccountCreateSheet) => {
-  const { t } = useTranslation('bankAccount');
+  const { t } = useTranslation('content-management');
 
   const {
     SheetFragment: createBankAccountSheet,
@@ -24,10 +24,10 @@ export const useBankAccountCreateSheet = ({
     title: (
       <div className="flex items-center gap-2">
         <BookUser />
-        {t('sheet.create.title')}
+        {t('bankAccount.sheets.create.title')}
       </div>
     ),
-    description: t('sheet.create.description'),
+    description: t('bankAccount.sheets.create.description'),
     children: (
       <CreateBankAccountForm
         createBankAccount={createBankAccount}

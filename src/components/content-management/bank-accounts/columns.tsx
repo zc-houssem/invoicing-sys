@@ -1,7 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { BANK_ACCOUNT_FILTER_ATTRIBUTES } from '@/constants/bank-account.filter-attributes';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
@@ -11,18 +10,18 @@ import { ResponseBankAccountDto } from '@/types';
 export const useBankAccountColumns = (
   context: DataTableConfig<ResponseBankAccountDto>
 ): ColumnDef<ResponseBankAccountDto>[] => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation('content-management');
   const { t: tCurrency } = useTranslation('currency');
 
   return [
     {
-      accessorKey: 'name',
+      accessorKey: t('bankAccount.table.columns.name'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.name')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.NAME}
+          title={t('bankAccount.table.columns.name')}
+          attribute={'name'}
         />
       ),
       cell: ({ row }) => <div>{row.original.name}</div>,
@@ -30,13 +29,13 @@ export const useBankAccountColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'bic',
+      accessorKey: t('bankAccount.table.columns.bic'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.bic')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.BIC}
+          title={t('bankAccount.table.columns.bic')}
+          attribute={'bic'}
         />
       ),
       cell: ({ row }) => <div>{row.original.bic}</div>,
@@ -44,13 +43,13 @@ export const useBankAccountColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'rib',
+      accessorKey: t('bankAccount.table.columns.rib'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.rib')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.RIB}
+          title={t('bankAccount.table.columns.rib')}
+          attribute={'rib'}
         />
       ),
       cell: ({ row }) => <div>{row.original.rib}</div>,
@@ -58,13 +57,13 @@ export const useBankAccountColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'iban',
+      accessorKey: t('bankAccount.table.columns.iban'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.iban')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.IBAN}
+          title={t('bankAccount.table.columns.iban')}
+          attribute={'iban'}
         />
       ),
       cell: ({ row }) => <div>{row.original.iban}</div>,
@@ -72,25 +71,25 @@ export const useBankAccountColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'currency',
+      accessorKey: t('bankAccount.table.columns.currency'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.currency')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.CURRENCY}
+          title={t('bankAccount.table.columns.currency')}
+          attribute={'currency'}
         />
       ),
-      cell: ({ row }) =>
-        row.original.currency ? (
-          <div>
-            {tCurrency(row.original?.currency?.code)} ({row.original.currency?.symbol})
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 font-bold">
-            <X className="h-5 w-5" /> <span>No Currency</span>
-          </div>
-        ),
+      cell: ({ row }) => (
+        <div>
+          {row.original.currency ? (
+            `${tCurrency(row.original?.currency?.code)} (${row.original.currency?.symbol})`
+          ) : (
+            <span className="opacity-50">{t('bankAccount.table.emptyCells.currency')}</span>
+          )}
+        </div>
+      ),
+
       enableSorting: true,
       enableHiding: true
     },
@@ -100,15 +99,17 @@ export const useBankAccountColumns = (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bank_account.attributes.isMain')}
-          attribute={BANK_ACCOUNT_FILTER_ATTRIBUTES.ISMAIN}
+          title={t('bankAccount.table.columns.isMain')}
+          attribute={'isMain'}
         />
       ),
       cell: ({ row }) => (
         <div>
           {
             <Badge variant={row.original.isMain ? 'default' : 'outline'} className="px-5">
-              {row.original.isMain ? 'Primary' : 'Secondary'}
+              {row.original.isMain
+                ? t('bankAccount.table.columns.isMainPrimary')
+                : t('bankAccount.table.columns.isMainSecondary')}
             </Badge>
           }
         </div>
