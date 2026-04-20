@@ -8,8 +8,8 @@ interface ArticleData {
 
 interface IArticleActions {
   addArticle: (article?: Partial<LineArticle>) => void;
-  updateArticle: (id: string, article: Partial<LineArticle>) => void;
-  deleteArticle: (id: string) => void;
+  updateArticle: (clientId: string, article: Partial<LineArticle>) => void;
+  deleteArticle: (clientId: string) => void;
 }
 
 export interface ArticleStore extends ArticleData, IArticleActions, BaseActions<ArticleData> {}
