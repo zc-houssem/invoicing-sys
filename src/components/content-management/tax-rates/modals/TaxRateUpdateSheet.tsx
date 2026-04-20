@@ -1,56 +1,41 @@
 import { WalletCards } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { useSheet } from '@/components/shared/Sheets';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/shared';
-import { TaxForm } from '../TaxForm';
+import { useTranslation } from 'react-i18next';
+import { UpdateTaxRateForm } from '../forms/UpdateTaxRateForm';
 
-export const useTaxUpdateSheet = (
-  updateTax?: () => void,
-  isUpdatePending?: boolean,
-  disabled?: boolean,
-  resetTax?: () => void
-) => {
-  const { t: tCommon } = useTranslation('common');
-  const { t: tSettings } = useTranslation('settings');
+interface TaxRateUpdateSheetProps {
+  updateTaxRate: () => void;
+  isUpdatePending?: boolean;
+  resetTaxRate?: () => void;
+}
+
+export const useTaxRateUpdateSheet = ({
+  updateTaxRate,
+  isUpdatePending = false,
+  resetTaxRate
+}: TaxRateUpdateSheetProps) => {
+  const { t } = useTranslation('content-management');
+
   const {
-    SheetFragment: updateTaxSheet,
-    openSheet: openUpdateTaxSheet,
-    closeSheet: closeUpdateTaxSheet
+    SheetFragment: updateTaxRateSheet,
+    openSheet: openUpdateTaxRateSheet,
+    closeSheet: closeUpdateTaxRateSheet
   } = useSheet({
     title: (
       <div className="flex items-center gap-2">
         <WalletCards />
-        {tSettings('tax.update_prompt')}
+        {t('taxRate.sheets.update.title')}
       </div>
     ),
-    description: tSettings('tax.update_dialog_description'),
-    children: (
-      <div>
-        <TaxForm className="my-4" />
-        <div className="flex gap-2 justify-end">
-          <Button
-            disabled={disabled}
-            onClick={() => {
-              updateTax?.();
-            }}>
-            {tCommon('commands.save')}
-            <Spinner show={isUpdatePending} />
-          </Button>
-          <Button
-            disabled={disabled}
-            variant={'secondary'}
-            onClick={() => {
-              closeUpdateTaxSheet();
-            }}>
-            {tCommon('commands.cancel')}
-          </Button>
-        </div>
-      </div>
-    ),
-    className: 'min-w-[25vw]',
-    onToggle: resetTax
+    description: t('taxRate.sheets.update.description'),
+    children: <UpdateTaxRateForm updateTaxRate={updateTaxRate} isUpdatePending={isUpdatePending} />,
+    className: 'min-w-[50vw] flex flex-col flex-1 overflow-hidden',
+    onToggle: resetTaxRate
   });
 
-  return { updateTaxSheet, openUpdateTaxSheet, closeUpdateTaxSheet };
+  return {
+    updateTaxRateSheet,
+    openUpdateTaxRateSheet,
+    closeUpdateTaxRateSheet
+  };
 };

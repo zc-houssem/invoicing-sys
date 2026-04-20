@@ -1,49 +1,63 @@
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/shared';
 import { useDialog } from '@/components/shared/Dialogs';
+import { Spinner } from '@/components/shared/Spinner';
+import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
-export const useTaxDeleteDialog = (
-  taxLabel?: string,
-  deleteTax?: () => void,
-  isDeletionPending?: boolean
-) => {
-  const { t: tCommon } = useTranslation('common');
-  const { t: tSettings } = useTranslation('settings');
+interface TaxRateDeleteDialogProps {
+  representation?: string;
+  deleteTaxRate?: () => void;
+  isDeletionPending?: boolean;
+  reset?: () => void;
+}
+
+export const useTaxRateDeleteDialog = ({
+  representation,
+  deleteTaxRate,
+  isDeletionPending,
+  reset
+}: TaxRateDeleteDialogProps) => {
+  const { t } = useTranslation('content-management');
+
   const {
-    DialogFragment: deleteTaxDialog,
-    openDialog: openDeleteTaxDialog,
-    closeDialog: closeDeleteTaxDialog
+    DialogFragment: deleteTaxRateDialog,
+    openDialog: openDeleteTaxRateDialog,
+    closeDialog: closeDeleteTaxRateDialog
   } = useDialog({
     title: (
       <div className="leading-normal">
-        {tSettings('tax.delete_prompt')} <span className="font-light">{taxLabel}</span> ?
+        {t('taxRate.dialogs.delete.title')} <span className="font-light">{representation}</span> ?
       </div>
     ),
-    description: tSettings('tax.delete_dialog_description'),
+    description: t('taxRate.dialogs.delete.description'),
     children: (
       <div>
         <div className="flex gap-2 justify-end">
           <Button
             onClick={() => {
-              deleteTax?.();
-              closeDeleteTaxDialog();
+              deleteTaxRate?.();
+              closeDeleteTaxRateDialog();
             }}>
-            {tCommon('commands.confirm')}
+            {t('taxRate.dialogs.delete.confirm')}
             <Spinner show={isDeletionPending} />
           </Button>
           <Button
             variant={'secondary'}
             onClick={() => {
-              closeDeleteTaxDialog();
+              reset?.();
+              closeDeleteTaxRateDialog();
             }}>
-            {tCommon('commands.cancel')}
+            {t('taxRate.dialogs.delete.cancel')}
           </Button>
         </div>
       </div>
     ),
-    className: 'w-[500px]'
+    className: 'w-[500px]',
+    onToggle: reset
   });
 
-  return { deleteTaxDialog, openDeleteTaxDialog, closeDeleteTaxDialog };
+  return {
+    deleteTaxRateDialog,
+    openDeleteTaxRateDialog,
+    closeDeleteTaxRateDialog
+  };
 };

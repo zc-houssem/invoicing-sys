@@ -153,5 +153,74 @@
     "emptyCells": {
       "currency": "No currency"
     }
+  },
+  "taxRate": {
+    "sheets": {
+      "create": {
+        "title": "Create Tax Rate",
+        "description": "Use this form to define a new tax rate."
+      },
+      "update": {
+        "title": "Update Tax Rate",
+        "description": "Use this form to update an existing tax rate."
+      }
+    },
+    "form": {
+      "label": "Label",
+      "value": "Value",
+      "type": "Type",
+      "special": "Special Tax",
+      "specificCurrency": "Specific Currency",
+      "currency": "Currency",
+      "placeholders": {
+        "label": "Ex. FODEC",
+        "value": "Ex. 10",
+        "type": "Ex. Percentage",
+        "currency": "Ex. Tunisian Dinar"
+      },
+      "descriptions": {
+        "label": "A unique name for the tax (e.g., VAT, FODEC).",
+        "value": "The value of the tax (e.g., 10 for 10%).",
+        "type": "The type of tax (percentage or fixed amount).",
+        "special": "A special tax is applied on the amount after normal taxes have already been calculated.",
+        "specificCurrency": "Set a specific currency for this tax.",
+        "currency": "The currency associated with this tax rate."
+      },
+      "options": {
+        "percentage": "Percentage (%)",
+        "fixed": "Fixed Amount"
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "label": "Label",
+        "type": "Type",
+        "value": "Value",
+        "special": "Special",
+        "currency": "Currency",
+        "rate": "Rate",
+        "fixed": "Fixed",
+        "applicable_on_all": "Applicable on all currencies",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete Tax Rate",
+        "description": "This action is irreversible and permanent. Deleting this tax rate will affect all associated products and services. Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Tax rate created successfully.",
+      "createFailure": "Failed to create tax rate.",
+      "updateSuccess": "Tax rate updated successfully.",
+      "updateFailure": "Failed to update tax rate.",
+      "deleteSuccess": "Tax rate deleted successfully.",
+      "deleteFailure": "Failed to delete tax rate."
+    }
   }
 }

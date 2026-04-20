@@ -11,15 +11,15 @@ import {
 import { TaxRateStore } from '@/hooks/stores/useTaxRateStore';
 import { useTranslation } from 'react-i18next';
 
-interface useCreateTaxRateFormStructureProps {
+interface useUpdateTaxRateFormStructureProps {
   store: TaxRateStore;
   currencies: SelectOption[];
 }
 
-export const useCreateTaxRateFormStructure = ({
+export const useUpdateTaxRateFormStructure = ({
   store,
   currencies
-}: useCreateTaxRateFormStructureProps) => {
+}: useUpdateTaxRateFormStructureProps) => {
   const { t } = useTranslation('content-management');
 
   const labelField: Field<TextFieldProps> = {
@@ -29,12 +29,12 @@ export const useCreateTaxRateFormStructure = ({
     required: true,
     variant: FieldVariant.TEXT,
     placeholder: t('taxRate.form.placeholders.label'),
-    error: store.createDtoErrors?.label?.[0],
+    error: store.updateDtoErrors?.label?.[0],
     props: {
-      value: store.createDto.label,
+      value: store?.updateDto?.label,
       onChange: (value) => {
-        store.setNested('createDto.label', value);
-        store.setNested('createDtoErrors.label', []);
+        store.setNested('updateDto.label', value);
+        store.setNested('updateDtoErrors.label', []);
       }
     }
   };
@@ -46,12 +46,12 @@ export const useCreateTaxRateFormStructure = ({
     required: true,
     variant: FieldVariant.NUMBER,
     placeholder: t('taxRate.form.placeholders.value'),
-    error: store.createDtoErrors?.value?.[0],
+    error: store.updateDtoErrors?.value?.[0],
     props: {
-      value: store.createDto.value,
+      value: store?.updateDto?.value,
       onChange: (value) => {
-        store.setNested('createDto.value', value);
-        store.setNested('createDtoErrors.value', []);
+        store.setNested('updateDto.value', value);
+        store.setNested('updateDtoErrors.value', []);
       }
     }
   };
@@ -63,16 +63,16 @@ export const useCreateTaxRateFormStructure = ({
     required: true,
     variant: FieldVariant.SELECT,
     placeholder: t('taxRate.form.placeholders.type'),
-    error: store.createDtoErrors?.type?.[0],
+    error: store.updateDtoErrors?.type?.[0],
     props: {
       options: [
         { label: t('taxRate.form.options.percentage'), value: 'rate' },
         { label: t('taxRate.form.options.fixed'), value: 'fixed' }
       ],
-      value: store.createDto.type,
+      value: store?.updateDto?.type,
       onValueChange: (value) => {
-        store.setNested('createDto.type', value);
-        store.setNested('createDtoErrors.type', []);
+        store.setNested('updateDto.type', value);
+        store.setNested('updateDtoErrors.type', []);
       }
     }
   };
@@ -83,9 +83,9 @@ export const useCreateTaxRateFormStructure = ({
     description: t('taxRate.form.descriptions.special'),
     variant: FieldVariant.SWITCH,
     props: {
-      checked: store.createDto.special,
+      checked: store?.updateDto?.special,
       onCheckedChange: (checked) => {
-        store.setNested('createDto.special', checked);
+        store.setNested('updateDto.special', checked);
       }
     }
   };
@@ -97,20 +97,20 @@ export const useCreateTaxRateFormStructure = ({
     required: false,
     variant: FieldVariant.SELECT,
     placeholder: t('taxRate.form.placeholders.currency'),
-    error: store.createDtoErrors?.currencyId?.[0],
+    error: store.updateDtoErrors?.currencyId?.[0],
     props: {
       options: currencies,
-      value: store.createDto.currencyId?.toString() || undefined,
+      value: store?.updateDto?.currencyId?.toString() || undefined,
       onValueChange: (value) => {
-        store.setNested('createDto.currencyId', Number(value));
-        store.setNested('createDtoErrors.currencyId', []);
+        store.setNested('updateDto.currencyId', Number(value));
+        store.setNested('updateDtoErrors.currencyId', []);
       }
     }
   };
 
   const structure: FormStructure = {
     title: {
-      value: t('taxRate.sheets.create.title')
+      value: t('taxRate.sheets.update.title')
     },
     orientation: 'horizontal',
     fieldsets: [

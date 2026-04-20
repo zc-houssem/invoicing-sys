@@ -1,36 +1,35 @@
 import React from 'react';
-import { api } from '@/api';
-import { ResponseTaxRateDto, Tax } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
-import { useTaxManager } from '../../../hooks/stores/useTaxRateStore';
-
-import { useTaxRateColumns } from './columns';
-import { useRouter } from 'next/router';
-import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { api } from '@/api';
 import { cn } from '@/lib/utils';
-import { useTaxDeleteDialog } from './modals/TaxRateDeleteDialog';
-import { useTaxCreateSheet } from './modals/TaxRateCreateSheet';
-import { useTaxUpdateSheet } from './modals/TaxRateUpdateSheet';
-import { TAX_FILTER_ATTRIBUTES } from '@/constants/tax.filter-attributes';
-import { createTaxSchema, updateTaxSchema } from '@/types/validations/tax.validation';
-import { DataTable } from '@/components/shared/data-table/data-table';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useRouter } from 'next/router';
 import { useIntro } from '@/context/IntroContext';
+import { useTaxRateCreateSheet } from './modals/TaxRateCreateSheet';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { useTaxRateColumns } from './columns';
 import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useTaxRateStore } from '@/hooks/stores/useTaxRateStore';
+import { useTaxRateUpdateSheet } from './modals/TaxRateUpdateSheet';
+import { ResponseTaxRateDto } from '@/types';
+import { useTaxRateDeleteDialog } from './modals/TaxRateDeleteDialog';
 
 interface TaxRatesPortalProps {
   className?: string;
 }
 
 export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
+  //next-router
   const router = useRouter();
-  const { t: tCommon } = useTranslation('common');
-  const { t: tSettings } = useTranslation('settings');
-  const { t: tCurrency } = useTranslation('currency');
 
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContentManagement } = useTranslation('content-management');
+
+  //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
@@ -49,7 +48,7 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     };
   }, [router.locale]);
 
-  const taxManger = useTaxManager();
+  const taxRateStore = useTaxRateStore();
 
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -67,13 +66,12 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
   const {
-    isPending: isFetchPending,
-    error,
     data: taxesResp,
+    isPending: isFetchPending,
     refetch: refetchTaxes
   } = useQuery({
     queryKey: [
-      'taxe-rates',
+      'tax-rates',
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -93,59 +91,92 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     return taxesResp?.data || [];
   }, [taxesResp]);
 
-  //create tax
-  const { mutate: createTax, isPending: isCreatePending } = useMutation({
-    mutationFn: (data: Tax) => api.tax.create(data),
+  //create tax rate
+  const { mutate: createTaxRate, isPending: isCreatePending } = useMutation({
+    mutationFn: () => api.core.taxRate.create(taxRateStore.createDto),
     onSuccess: () => {
-      toast.success('Taxe ajoutée avec succès');
+      toast.success(tContentManagement('taxRate.messages.createSuccess'));
       refetchTaxes();
+      taxRateStore.reset();
+      closeCreateTaxRateSheet();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('', error, 'Erreur lors de la création du taxe'));
+      const message = getErrorMessage(
+        'content-management',
+        error,
+        'taxRate.messages.createFailure'
+      );
+      toast.error(message);
     }
   });
 
-  //update tax
-  const { mutate: updateTax, isPending: isUpdatePending } = useMutation({
-    mutationFn: (data: Tax) => api.tax.update(data),
+  //update tax rate
+  const { mutate: updateTaxRate, isPending: isUpdatePending } = useMutation({
+    mutationFn: () => api.core.taxRate.update(taxRateStore?.response?.id, taxRateStore.updateDto),
     onSuccess: () => {
-      toast.success('Taxe modifiée avec succès');
+      toast.success(tContentManagement('taxRate.messages.updateSuccess'));
       refetchTaxes();
+      taxRateStore.reset();
+      closeUpdateTaxRateSheet();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('', error, 'Erreur lors de la modification du taxe'));
+      const message = getErrorMessage(
+        'content-management',
+        error,
+        'taxRate.messages.updateFailure'
+      );
+      toast.error(message);
     }
   });
 
-  //remove tax
-  const { mutate: removeTax, isPending: isDeletePending } = useMutation({
-    mutationFn: (id?: number) => api.tax.remove(id),
+  //remove tax rate
+  const { mutate: removeTaxRate, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => api.core.taxRate.remove(id),
     onSuccess: () => {
       if (taxes?.length == 1 && page > 1) setPage(page - 1);
-      toast.success('Taxe supprimée avec succès');
+      toast.success(tContentManagement('taxRate.messages.deleteSuccess'));
       refetchTaxes();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('', error, 'Erreur lors de la suppression du taxe'));
+      toast.error(getErrorMessage('content-management', error, 'taxRate.messages.deleteFailure'));
     }
   });
 
-  // const handleValidation = (result: any) => {
-  //   const errorMessage = Object.values(result.error.flatten().fieldErrors)
-  //     .flat()
-  //     .map((error) => `<li>${error}</li>`)
-  //     .join('');
-  //   toast('⛔ Validation Errors', {
-  //     description: <ul dangerouslySetInnerHTML={{ __html: errorMessage }} />
-  //   });
-  // };
+  const { createTaxRateSheet, openCreateTaxRateSheet, closeCreateTaxRateSheet } =
+    useTaxRateCreateSheet({
+      createTaxRate,
+      isCreatePending,
+      resetTaxRate: taxRateStore.reset
+    });
+
+  const { updateTaxRateSheet, openUpdateTaxRateSheet, closeUpdateTaxRateSheet } =
+    useTaxRateUpdateSheet({
+      updateTaxRate,
+      isUpdatePending,
+      resetTaxRate: taxRateStore.reset
+    });
+
+  const { deleteTaxRateDialog, openDeleteTaxRateDialog, closeDeleteTaxRateDialog } =
+    useTaxRateDeleteDialog({
+      representation: taxRateStore?.response?.label,
+      deleteTaxRate: () => removeTaxRate(taxRateStore?.response?.id || 0),
+      isDeletionPending: isDeletePending,
+      reset: taxRateStore.reset
+    });
 
   const context: DataTableConfig<ResponseTaxRateDto> = {
     singularName: 'Tax Rate',
     pluralName: 'Tax Rates',
-    createCallback: () => {},
-    updateCallback: () => {},
-    deleteCallback: () => {},
+    //dialogs
+    createCallback: () => {
+      openCreateTaxRateSheet();
+    },
+    updateCallback: () => {
+      openUpdateTaxRateSheet();
+    },
+    deleteCallback: () => {
+      openDeleteTaxRateDialog();
+    },
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
@@ -156,7 +187,17 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    targetEntity: (entity) => {
+      taxRateStore.set('response', entity);
+      taxRateStore.set('updateDto', {
+        label: entity.label,
+        value: entity.value,
+        type: entity.type,
+        special: entity.special,
+        currencyId: entity?.currency?.id
+      });
+    }
   };
 
   const columns = useTaxRateColumns(context);
@@ -171,17 +212,19 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     searching ||
     sorting;
 
-  if (error) return 'An error has occurred: ' + error.message;
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
       <DataTable
         className="flex flex-col flex-1 overflow-hidden p-1"
         containerClassName="overflow-auto"
         data={taxes}
-        context={context}
         columns={columns}
+        context={context}
         isPending={isPending}
       />
+      {createTaxRateSheet}
+      {updateTaxRateSheet}
+      {deleteTaxRateDialog}
     </div>
   );
 };

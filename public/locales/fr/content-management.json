@@ -149,5 +149,74 @@
         "currency": "Aucune devise"
       }
     }
+  },
+  "taxRate": {
+    "sheets": {
+      "create": {
+        "title": "Créer un taux de taxe",
+        "description": "Utilisez ce formulaire pour définir un nouveau taux de taxe."
+      },
+      "update": {
+        "title": "Mettre à jour un taux de taxe",
+        "description": "Utilisez ce formulaire pour mettre à jour un taux de taxe existant."
+      }
+    },
+    "form": {
+      "label": "Libellé",
+      "value": "Valeur",
+      "type": "Type",
+      "special": "Taxe spéciale",
+      "specificCurrency": "Devise spécifique",
+      "currency": "Devise",
+      "placeholders": {
+        "label": "Ex. FODEC",
+        "value": "Ex. 10",
+        "type": "Ex. Pourcentage",
+        "currency": "Ex. Dinar Tunisien"
+      },
+      "descriptions": {
+        "label": "Un nom unique pour la taxe (ex. TVA, FODEC).",
+        "value": "La valeur de la taxe (ex. 10 pour 10%).",
+        "type": "Le type de taxe (pourcentage ou montant fixe).",
+        "special": "Une taxe spéciale est appliquée sur le montant après que les taxes normales ont déjà été calculées.",
+        "specificCurrency": "Définir une devise spécifique pour cette taxe.",
+        "currency": "La devise associée à ce taux de taxe."
+      },
+      "options": {
+        "percentage": "Pourcentage (%)",
+        "fixed": "Montant fixe"
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "label": "Libellé",
+        "type": "Type",
+        "value": "Valeur",
+        "special": "Spéciale",
+        "currency": "Devise",
+        "rate": "Taux",
+        "fixed": "Fixe",
+        "applicable_on_all": "Applicable sur toutes les devises",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer le taux de taxe",
+        "description": "Cette action est irréversible et permanente. La suppression de ce taux de taxe affectera tous les produits et services associés. Veuillez procéder avec prudence.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    },
+    "messages": {
+      "createSuccess": "Taux de taxe créé avec succès.",
+      "createFailure": "Échec de la création du taux de taxe.",
+      "updateSuccess": "Taux de taxe mis à jour avec succès.",
+      "updateFailure": "Échec de la mise à jour du taux de taxe.",
+      "deleteSuccess": "Taux de taxe supprimé avec succès.",
+      "deleteFailure": "Échec de la suppression du taux de taxe."
+    }
   }
 }

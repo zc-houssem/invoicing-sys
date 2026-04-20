@@ -1,53 +1,41 @@
 import { WalletCards } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { useSheet } from '@/components/shared/Sheets';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/shared';
-import { TaxForm } from '../TaxForm';
+import { useTranslation } from 'react-i18next';
+import { CreateTaxRateForm } from '../forms/CreateTaxRateForm';
 
-export const useTaxCreateSheet = (
-  createTax?: () => void,
-  isCreatePending?: boolean,
-  resetTax?: () => void
-) => {
-  const { t: tCommon } = useTranslation('common');
-  const { t: tSettings } = useTranslation('settings');
+interface TaxRateCreateSheetProps {
+  createTaxRate: () => void;
+  isCreatePending?: boolean;
+  resetTaxRate?: () => void;
+}
+
+export const useTaxRateCreateSheet = ({
+  createTaxRate,
+  isCreatePending = false,
+  resetTaxRate
+}: TaxRateCreateSheetProps) => {
+  const { t } = useTranslation('content-management');
+
   const {
-    SheetFragment: createTaxSheet,
-    openSheet: openCreateTaxSheet,
-    closeSheet: closeCreateTaxSheet
+    SheetFragment: createTaxRateSheet,
+    openSheet: openCreateTaxRateSheet,
+    closeSheet: closeCreateTaxRateSheet
   } = useSheet({
     title: (
       <div className="flex items-center gap-2">
         <WalletCards />
-        {tSettings('tax.create_prompt')}
+        {t('taxRate.sheets.create.title')}
       </div>
     ),
-    description: tSettings('tax.create_dialog_description'),
-    children: (
-      <div>
-        <TaxForm className="my-4" />
-        <div className="flex gap-2 justify-end">
-          <Button
-            onClick={() => {
-              createTax?.();
-            }}>
-            {tCommon('commands.save')}
-            <Spinner show={isCreatePending} />
-          </Button>
-          <Button
-            variant={'secondary'}
-            onClick={() => {
-              closeCreateTaxSheet();
-            }}>
-            {tCommon('commands.cancel')}
-          </Button>
-        </div>
-      </div>
-    ),
-    className: 'min-w-[25vw]',
-    onToggle: resetTax
+    description: t('taxRate.sheets.create.description'),
+    children: <CreateTaxRateForm createTaxRate={createTaxRate} isCreatePending={isCreatePending} />,
+    className: 'min-w-[50vw] flex flex-col flex-1 overflow-hidden',
+    onToggle: resetTaxRate
   });
 
-  return { createTaxSheet, openCreateTaxSheet, closeCreateTaxSheet };
+  return {
+    createTaxRateSheet,
+    openCreateTaxRateSheet,
+    closeCreateTaxRateSheet
+  };
 };

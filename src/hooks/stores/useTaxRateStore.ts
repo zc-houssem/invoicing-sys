@@ -1,73 +1,65 @@
-import { Tax } from '@/types';
-import _ from 'lodash';
+import { CreateTaxRateDto, ResponseTaxRateDto, UpdateTaxRateDto } from '@/types';
 import { create } from 'zustand';
 
-interface TaxManagerData {
-  // Snapshot
-  snapshot?: Partial<Tax>;
-  // Data
-  id?: number;
-  label?: string;
-  value?: number;
-  isRate?: boolean;
-  isSpecial?: boolean;
-  specificCurrency?: boolean;
-  currencyId?: number | null;
-  errors?: Record<string, string>;
+interface TaxRateData {
+  response: ResponseTaxRateDto | null;
+  createDto: CreateTaxRateDto;
+  createDtoErrors: Record<string, string[]>;
+
+  updateDto?: UpdateTaxRateDto;
+  updateDtoErrors: Record<string, string[]>;
 }
 
-export interface TaxManager extends TaxManagerData {
-  set: (name: keyof TaxManagerData, value: any) => void;
+export interface TaxRateStore extends TaxRateData {
+  set: (name: keyof TaxRateData, value: any) => void;
+  setNested: <T>(path: string, value: T) => void;
   reset: () => void;
-  getTax: () => Partial<Tax>;
-  setTax: (tax: Partial<Tax>) => void;
-  isChanged: () => boolean;
 }
 
-const initialState: TaxManagerData = {
-  id: 0,
-  label: '',
-  value: 0,
-  isRate: true,
-  isSpecial: false,
-  currencyId: null,
-  specificCurrency: false,
-  errors: {}
+const initialState: TaxRateData = {
+  response: null,
+  createDto: {
+    label: '',
+    value: 0,
+    type: 'rate',
+    special: false,
+    currencyId: undefined
+  },
+  createDtoErrors: {},
+  updateDtoErrors: {}
 };
 
-const getNormalizedTax = (data: Partial<TaxManagerData>): Partial<Tax> => {
-  return {
-    id: data.id,
-    label: data.label,
-    value: data.value,
-    isRate: data.isRate,
-    isSpecial: data.isSpecial,
-    currencyId: data.currencyId
-  };
-};
-
-export const useTaxManager = create<TaxManager>((set, get) => ({
+export const useTaxRateStore = create<TaxRateStore>((set, get) => ({
   ...initialState,
+
   set: (name, value) => {
     set((state) => ({
       ...state,
       [name]: value
     }));
   },
-  reset: () => set({ ...initialState }),
-  getTax: () => {
-    const data = get();
-    return getNormalizedTax(data);
+
+  setNested: (path, value) => {
+    set((state) => {
+      const keys = path.split('.');
+      const newState = { ...state };
+
+      let current: any = newState;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (typeof current[key] !== 'object' || current[key] === null) {
+          current[key] = {};
+        } else {
+          current[key] = { ...current[key] };
+        }
+        current = current[key];
+      }
+
+      current[keys[keys.length - 1]] = value;
+
+      return newState;
+    });
   },
-  setTax: (tax) => {
-    set((state) => ({
-      ...state,
-      ...tax,
-      snapshot: getNormalizedTax(tax)
-    }));
-  },
-  isChanged: () => {
-    const state = get();
-    return !_.isEqual(getNormalizedTax(state), state.snapshot || {});
-  }
+
+  reset: () => set({ ...initialState })
 }));
