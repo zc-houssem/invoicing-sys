@@ -8,12 +8,16 @@
       "enterprise": "Enterprise",
       "interlocutor": "Interlocutor",
       "generalConditions": "General conditions",
+      "currency": "Currency",
+      "bankAccount": "Bank Account",
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",
         "object": "Enter an object",
         "enterprise": "Select an enterprise",
-        "interlocutor": "Select an interlocutor"
+        "interlocutor": "Select an interlocutor",
+        "currency": "Select a currency",
+        "bankAccount": "Select a bank account"
       },
       "descriptions": {
         "date": "Select the date of the quotation.",
@@ -21,7 +25,9 @@
         "object": "Enter the object of the quotation. This is a brief description of what the quotation is about.",
         "enterprise": "Select the enterprise for which this quotation is being created.",
         "interlocutor": "Select the interlocutor for this quotation. The options available will depend on the enterprise you have selected.",
-        "generalConditions": "Enter the general conditions for this quotation. You can use the editor to format the text as needed."
+        "generalConditions": "Enter the general conditions for this quotation. You can use the editor to format the text as needed.",
+        "currency": "Select the currency for this quotation.",
+        "bankAccount": "Select the bank account to be used for this quotation."
       }
     },
     "table": {

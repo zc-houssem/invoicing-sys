@@ -24,6 +24,7 @@ interface useQuotationUpdateFormStructureProps {
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
+  bankAccountOptions: SelectOption[];
   updateQuotation: () => void;
   isUpdatePending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
@@ -34,6 +35,7 @@ export const useQuotationUpdateFormStructure = ({
   enterprises,
   interlocutorOptions,
   currencyOptions,
+  bankAccountOptions,
   updateQuotation,
   isUpdatePending,
   selectedCurrency
@@ -315,12 +317,12 @@ export const useQuotationUpdateFormStructure = ({
 
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
-    label: 'Currency',
+    label: t('quotation.form.currency'),
     variant: FieldVariant.SELECT,
     required: true,
     error: store.updateDtoErrors.currencyId?.[0],
-    placeholder: 'Select currency',
-    description: 'Select the currency for this quotation',
+    placeholder: t('quotation.form.placeholders.currency'),
+    description: t('quotation.form.descriptions.currency'),
     pending: !store.updateDto?.currencyId,
     props: {
       disabled: isUpdatePending,
@@ -330,6 +332,25 @@ export const useQuotationUpdateFormStructure = ({
         store.setNested('updateDtoErrors.currencyId', []);
       },
       options: currencyOptions
+    }
+  };
+
+  const bankAccountField: Field<SelectFieldProps> = {
+    id: 'bankAccount',
+    label: t('quotation.form.bankAccount'),
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.updateDtoErrors.bankAccountId?.[0],
+    placeholder: t('quotation.form.placeholders.bankAccount'),
+    description: t('quotation.form.descriptions.bankAccount'),
+    props: {
+      disabled: isUpdatePending,
+      value: store.updateDto?.bankAccountId ? store.updateDto.bankAccountId.toString() : undefined,
+      onValueChange: (value) => {
+        store.setNested('updateDto.bankAccountId', Number(value));
+        store.setNested('updateDtoErrors.bankAccountId', []);
+      },
+      options: bankAccountOptions
     }
   };
 
@@ -349,6 +370,9 @@ export const useQuotationUpdateFormStructure = ({
           },
           {
             fields: [currencyField]
+          },
+          {
+            fields: [bankAccountField]
           }
         ]
       }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 
 interface useCurrenciesProps {
   enabled?: boolean;
@@ -22,7 +23,7 @@ export const useCurrencies = ({ enabled = true }: useCurrenciesProps = { enabled
 
   const currencies = React.useMemo(() => {
     if (!currenciesResp) return [];
-    return currenciesResp;
+    return currenciesResp as ResponseRefParamDto<CurrencyPayload>[];
   }, [currenciesResp]);
 
   return {

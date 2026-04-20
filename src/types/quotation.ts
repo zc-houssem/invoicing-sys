@@ -1,5 +1,5 @@
 import { Article } from './article';
-import { BankAccount } from './bank-account';
+import { BankAccount } from './core/bank-account';
 import { Cabinet } from './cabinet';
 import { Currency } from './currency';
 import { DISCOUNT_TYPE } from './enums/discount-types';

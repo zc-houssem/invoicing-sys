@@ -8,12 +8,16 @@
       "enterprise": "Entreprise",
       "interlocutor": "Interlocuteur",
       "generalConditions": "Conditions générales",
+      "currency": "Devise",
+      "bankAccount": "Compte bancaire",
       "placeholders": {
         "date": "Sélectionnez une date",
         "dueDate": "Sélectionnez une date d'échéance",
         "object": "Entrez un objet",
         "enterprise": "Sélectionnez une entreprise",
-        "interlocutor": "Sélectionnez un interlocuteur"
+        "interlocutor": "Sélectionnez un interlocuteur",
+        "currency": "Sélectionnez une devise",
+        "bankAccount": "Sélectionnez un compte bancaire"
       },
       "descriptions": {
         "date": "Sélectionnez la date du devis.",
@@ -21,7 +25,9 @@
         "object": "Entrez l'objet du devis. Il s'agit d'une brève description de ce à quoi le devis se rapporte.",
         "enterprise": "Sélectionnez l'entreprise pour laquelle ce devis est créé.",
         "interlocutor": "Sélectionnez l'interlocuteur pour ce devis. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
-        "generalConditions": "Entrez les conditions générales pour ce devis. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire."
+        "generalConditions": "Entrez les conditions générales pour ce devis. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
+        "currency": "Sélectionnez la devise pour ce devis.",
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour ce devis."
       }
     },
     "table": {
@@ -56,6 +62,7 @@
       "title": "Titre",
       "description": "Description",
       "quantity": "Quantité",
+      "unitPrice": "Prix unitaire",
       "priceExcludingTax": "Prix HT",
       "priceIncludingTax": "Prix TTC",
       "discountType": {

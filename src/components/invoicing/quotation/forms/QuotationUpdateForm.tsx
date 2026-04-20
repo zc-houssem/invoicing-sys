@@ -20,10 +20,12 @@ import { LineArticle } from '@/types/core/article';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
   CurrencyPayload,
+  ResponseBankAccountDto,
   ResponseRefParamDto,
   UpdateQuotationArticleDto,
   UpdateQuotationDto
 } from '@/types';
+import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -58,6 +60,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     [quotationStore.updateDto?.currencyId, currencies]
   );
 
+  const { bankAccounts, isBankAccountsPending } = useBankAccounts();
+
   React.useEffect(() => {
     if (quotation && enterprises) {
       quotationStore.set('response', quotation);
@@ -70,6 +74,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         enterpriseId: quotation?.enterpriseId,
         interlocutorId: quotation?.interlocutorId,
         currencyId: quotation?.currencyId,
+        bankAccountId: quotation?.bankAccountId,
         quotationArticles: []
       });
       const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
@@ -158,6 +163,12 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       valueKey: 'id',
       labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
         `${item.label} (${item.extras.symbol})`
+    }),
+    bankAccountOptions: mapToSelectOptions({
+      data: bankAccounts,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
     }),
     updateQuotation: handleSubmit,
     isUpdatePending,

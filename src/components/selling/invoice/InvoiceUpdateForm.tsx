@@ -13,7 +13,7 @@ import { Spinner } from '@/components/shared';
 import { Card, CardContent } from '@/components/ui/card';
 import useTax from '@/hooks/content/useTax';
 import useFirmChoice from '@/hooks/content/useFirmChoice';
-import useBankAccount from '@/hooks/content/useBankAccount';
+import useBankAccount from '@/hooks/content/core/useBankAccounts';
 import { toast } from 'sonner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';

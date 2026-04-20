@@ -20,10 +20,12 @@ import {
   CreateQuotationArticleDto,
   CreateQuotationDto,
   CurrencyPayload,
+  ResponseBankAccountDto,
   ResponseRefParamDto
 } from '@/types';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
+import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 
 interface QuotationCreateFormProps {
   className?: string;
@@ -60,6 +62,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       ) as ResponseRefParamDto<CurrencyPayload>,
     [quotationStore.createDto.currencyId, currencies]
   );
+
+  const { bankAccounts, isBankAccountsPending } = useBankAccounts();
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
@@ -117,12 +121,18 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
         `${tCurrency(item.label)} (${item.extras.symbol})`
     }),
+    bankAccountOptions: mapToSelectOptions({
+      data: bankAccounts,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
+    }),
     createQuotation: handleSubmit,
     isCreationPending,
     selectedCurrency: selectedCurrency
   });
 
-  if (isEnterprisesPending || isCurrenciesPending) return <Spinner />;
+  if (isEnterprisesPending || isCurrenciesPending || isBankAccountsPending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

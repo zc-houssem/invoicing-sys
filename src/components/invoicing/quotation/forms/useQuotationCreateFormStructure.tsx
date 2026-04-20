@@ -25,6 +25,7 @@ interface useQuotationCreateFormStructureProps {
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
+  bankAccountOptions: SelectOption[];
   createQuotation: () => void;
   isCreationPending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
@@ -35,6 +36,7 @@ export const useQuotationCreateFormStructure = ({
   enterprises,
   interlocutorOptions,
   currencyOptions,
+  bankAccountOptions,
   createQuotation,
   isCreationPending,
   selectedCurrency
@@ -313,12 +315,12 @@ export const useQuotationCreateFormStructure = ({
 
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
-    label: 'Currency',
+    label: t('quotation.form.currency'),
     variant: FieldVariant.SELECT,
     required: true,
     error: store.createDtoErrors.currencyId?.[0],
-    placeholder: 'Select currency',
-    description: 'Select the currency for this quotation',
+    placeholder: t('quotation.form.placeholders.currency'),
+    description: t('quotation.form.descriptions.currency'),
     props: {
       disabled: isCreationPending,
       value: store.createDto.currencyId ? store.createDto.currencyId.toString() : undefined,
@@ -327,6 +329,25 @@ export const useQuotationCreateFormStructure = ({
         store.setNested('createDtoErrors.currencyId', []);
       },
       options: currencyOptions
+    }
+  };
+
+  const bankAccountField: Field<SelectFieldProps> = {
+    id: 'bankAccount',
+    label: t('quotation.form.bankAccount'),
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.createDtoErrors.bankAccountId?.[0],
+    placeholder: t('quotation.form.placeholders.bankAccount'),
+    description: t('quotation.form.descriptions.bankAccount'),
+    props: {
+      disabled: isCreationPending,
+      value: store.createDto.bankAccountId ? store.createDto.bankAccountId.toString() : undefined,
+      onValueChange: (value) => {
+        store.setNested('createDto.bankAccountId', Number(value));
+        store.setNested('createDtoErrors.bankAccountId', []);
+      },
+      options: bankAccountOptions
     }
   };
 
@@ -346,6 +367,9 @@ export const useQuotationCreateFormStructure = ({
           },
           {
             fields: [currencyField]
+          },
+          {
+            fields: [bankAccountField]
           }
         ]
       }

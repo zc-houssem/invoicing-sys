@@ -10,10 +10,10 @@ import { getErrorMessage } from '@/utils/errors';
 import { Spinner } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import { useCabinetManager } from '@/components/settings/Cabinet/hooks/useCabinetManager';
-import useCountry from '@/hooks/content/core/useCountries';
+import { useCountries } from '@/hooks/content/core/useCountries';
 import useCabinet from '@/hooks/content/useCabinet';
-import useCurrency from '@/hooks/content/core/useCurrencies';
-import useActivities from '@/hooks/content/core/useActivities';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
+import { useActivities } from '@/hooks/content/core/useActivities';
 import { useTranslation } from 'react-i18next';
 import useInitializedState from '@/hooks/use-initialized-state';
 import { UploadedInformation } from './UploadedInformation';
@@ -41,8 +41,8 @@ const CabinetMain: React.FC<CabinetMainProps> = ({ className }) => {
 
   const { cabinet, isFetchCabinetPending, error, refetchCabinet } = useCabinet();
   const { activities, isFetchActivitiesPending } = useActivities();
-  const { currencies, isFetchCurrenciesPending } = useCurrency();
-  const { countries, isFetchCountriesPending } = useCountry();
+  const { currencies, isCurrenciesPending } = useCurrencies();
+  const { countries, isFetchCountriesPending } = useCountries();
 
   const cabinetManager = useCabinetManager();
 
@@ -59,7 +59,7 @@ const CabinetMain: React.FC<CabinetMainProps> = ({ className }) => {
 
   const loading =
     isFetchCabinetPending ||
-    isFetchCurrenciesPending ||
+    isCurrenciesPending ||
     isFetchActivitiesPending ||
     isFetchCountriesPending ||
     isUpdatePending;
