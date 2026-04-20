@@ -1,33 +1,56 @@
 {
-  "routes": {
+  "menu": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "subs": {}
+    },
     "contacts": {
-      "enterprise": {
-        "title": "Gestion des entreprises",
-        "description": "Gérez vos entreprises et leurs détails"
-      },
-      "interlocutor": {
-        "title": "Gestion des interlocuteurs",
-        "description": "Gérez vos interlocuteurs et leurs détails"
+      "title": "Contacts",
+      "subs": {
+        "enterprise": "Entreprises",
+        "interlocutor": "Interlocuteurs"
       }
     },
     "selling": {
-      "invoice": {
-        "title": "Gestion des factures",
-        "description": "Gérez vos factures et leurs détails"
-      },
-      "quotation": {
-        "title": "Gestion des devis",
-        "description": "Gérez vos devis et leurs détails"
+      "title": "Ventes",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements"
       }
     },
     "buying": {
-      "invoice": {
-        "title": "Gestion des factures",
-        "description": "Gérez vos factures et leurs détails"
-      },
-      "quotation": {
-        "title": "Gestion des devis",
-        "description": "Gérez vos devis et leurs détails"
+      "title": "Achats",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements",
+        "taxWithholding": "Retenue à la source"
+      }
+    },
+    "contentManagement": {
+      "title": "Gestion de contenu",
+      "subs": {
+        "bankAccounts": "Comptes bancaires",
+        "taxRates": "Taux de taxe",
+        "refTypes": "Types de référence",
+        "refParams": "Paramètres de référence"
+      }
+    },
+    "administrativeTools": {
+      "title": "Outils administratifs",
+      "subs": {
+        "userManagement": "Gestion des utilisateurs",
+        "logger": "Journal",
+        "system": "Système"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subs": {
+        "account": "Compte",
+        "system": "Système",
+        "pdf": "PDF"
       }
     }
   },
@@ -110,59 +133,6 @@
     "word": "Langue",
     "en": "Anglais 🇬🇧",
     "fr": "Français 🇫🇷"
-  },
-  "menu": {
-    "dashboard": {
-      "title": "Tableau de bord",
-      "subs": {}
-    },
-    "contacts": {
-      "title": "Contacts",
-      "subs": {
-        "enterprise": "Entreprises",
-        "interlocutor": "Interlocuteurs"
-      }
-    },
-    "selling": {
-      "title": "Ventes",
-      "subs": {
-        "invoice": "Factures",
-        "quotation": "Devis",
-        "payment": "Paiements"
-      }
-    },
-    "buying": {
-      "title": "Achats",
-      "subs": {
-        "invoice": "Factures",
-        "quotation": "Devis",
-        "payment": "Paiements",
-        "taxWithholding": "Retenue à la source"
-      }
-    },
-    "contentManagement": {
-      "title": "Gestion de contenu",
-      "subs": {
-        "refTypes": "Types de référence",
-        "refParams": "Paramètres de référence",
-        "bankAccounts": "Comptes bancaires"
-      }
-    },
-    "administrativeTools": {
-      "title": "Outils administratifs",
-      "subs": {
-        "userManagement": "Gestion des utilisateurs",
-        "logger": "Journal",
-        "system": "Système"
-      }
-    },
-    "settings": {
-      "title": "Paramètres",
-      "subs": {
-        "account": "Compte",
-        "system": "Système"
-      }
-    }
   },
   "order": {
     "asc": "Croissant",

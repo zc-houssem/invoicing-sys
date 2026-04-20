@@ -1,33 +1,56 @@
 {
-  "routes": {
-    "contacts": {
-      "enterprise": {
-        "title": "Enterprise Management",
-        "description": "Manage your enterprises and their details"
-      },
-      "interlocutor": {
-        "title": "Interlocutor Management",
-        "description": "Manage your interlocutors and their details"
-      }
+  "menu": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subs": {}
     },
-    "selling": {
-      "invoice": {
-        "title": "Invoice Management",
-        "description": "Manage your invoices and their details"
-      },
-      "quotation": {
-        "title": "Quotation Management",
-        "description": "Manage your quotations and their details"
+    "contacts": {
+      "title": "Contacts",
+      "subs": {
+        "enterprises": "Enterprises",
+        "interlocutors": "Interlocutors"
       }
     },
     "buying": {
-      "invoice": {
-        "title": "Invoice Management",
-        "description": "Manage your invoices and their details"
-      },
-      "quotation": {
-        "title": "Quotation Management",
-        "description": "Manage your quotations and their details"
+      "title": "Buying",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments"
+      }
+    },
+    "selling": {
+      "title": "Selling",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments",
+        "taxWithholdings": "Tax Withholdings"
+      }
+    },
+    "contentManagement": {
+      "title": "Content Management",
+      "subs": {
+        "bankAccounts": "Bank Accounts",
+        "taxRates": "Tax Rates",
+        "refTypes": "Reference Types",
+        "refParams": "Reference Parameters"
+      }
+    },
+    "administrativeTools": {
+      "title": "Administrative Tools",
+      "subs": {
+        "userManagement": "User Management",
+        "logger": "Logger",
+        "system": "System"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subs": {
+        "account": "Account",
+        "system": "System",
+        "pdf": "PDF"
       }
     }
   },
@@ -112,58 +135,6 @@
     "en": "English 🇬🇧",
     "fr": "French 🇫🇷"
   },
-  "menu": {
-    "dashboard": {
-      "title": "Dashboard",
-      "subs": {}
-    },
-    "contacts": {
-      "title": "Contacts",
-      "subs": {
-        "enterprises": "Enterprises",
-        "interlocutors": "Interlocutors"
-      }
-    },
-    "buying": {
-      "title": "Buying",
-      "subs": {
-        "invoices": "Invoices",
-        "quotations": "Quotations",
-        "payments": "Payments"
-      }
-    },
-    "selling": {
-      "title": "Selling",
-      "subs": {
-        "invoices": "Invoices",
-        "quotations": "Quotations",
-        "payments": "Payments",
-        "taxWithholdings": "Tax Withholdings"
-      }
-    },
-    "contentManagement": {
-      "title": "Content Management",
-      "subs": {
-        "refTypes": "Reference Types",
-        "refParams": "Reference Parameters"
-      }
-    },
-    "administrativeTools": {
-      "title": "Administrative Tools",
-      "subs": {
-        "userManagement": "User Management",
-        "logger": "Logger",
-        "system": "System"
-      }
-    },
-    "settings": {
-      "title": "Settings",
-      "subs": {
-        "account": "Account",
-        "system": "System"
-      }
-    }
-  },
   "order": {
     "asc": "Ascending",
     "desc": "Descending"
@@ -182,20 +153,6 @@
   "pick_date": "Pick a Date",
   "start_date": "Start Date",
   "end_date": "End Date",
-  "submenu": {
-    "account": "Account",
-    "firms": "Firms",
-    "interlocutors": "Interlocutors",
-    "invoices": "Invoices",
-    "other": "Other",
-    "quotations": "Quotations",
-    "payments": "Payments",
-    "user_management": "User Management",
-    "logger": "Logger",
-    "system": "System",
-    "withholding": "Withholding",
-    "pdf": "PDF"
-  },
   "administrative-tools": {
     "logger": {},
     "user_management": {
