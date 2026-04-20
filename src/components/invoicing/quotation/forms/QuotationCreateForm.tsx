@@ -98,7 +98,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               quantity: article.quantity,
               unitPrice: article.unitPrice,
               discountType: article.discountType,
-              discountValue: article.discountValue
+              discountValue: article.discountValue,
+              taxIds: article.taxIds
             }) satisfies CreateQuotationArticleDto
         )
       });

@@ -40,7 +40,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   const { quotation, isFetchQuotationPending } = useQuotation({
     id,
-    join: ['quotationArticles', 'quotationArticles.article']
+    join: ['quotationArticles', 'quotationArticles.article', 'quotationArticles.taxes']
   });
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
@@ -141,7 +141,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
                 quantity: article.quantity,
                 unitPrice: article.unitPrice,
                 discountType: article.discountType,
-                discountValue: article.discountValue
+                discountValue: article.discountValue,
+                taxIds: article.taxIds
               }) satisfies UpdateQuotationArticleDto
           )
         }
