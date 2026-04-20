@@ -25,7 +25,8 @@ const initialState: ArticleData = {
       unitPrice: 0,
       quantity: 1,
       discountType: undefined,
-      discountValue: 0
+      discountValue: 0,
+      taxIds: []
     }
   ]
 };
@@ -41,7 +42,8 @@ export const useArticleStore = createBaseStore<ArticleStore>(initialState, (set,
       unitPrice: article?.unitPrice || 0,
       quantity: article?.quantity || 1,
       discountType: article?.discountType || 'rate',
-      discountValue: article?.discountValue || 0
+      discountValue: article?.discountValue || 0,
+      taxIds: article?.taxIds || []
     };
     set((state) => ({
       ...state,

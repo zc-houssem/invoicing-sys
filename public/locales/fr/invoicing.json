@@ -65,6 +65,7 @@
       "unitPrice": "Prix unitaire",
       "priceExcludingTax": "Prix HT",
       "priceIncludingTax": "Prix TTC",
+      "taxRates": "Taux de taxe",
       "discountType": {
         "label": "Type de remise",
         "options": {
@@ -80,7 +81,8 @@
         "quantity": "Entrez la quantité",
         "unitPrice": "Entrez le prix unitaire",
         "discountType": "Sélectionnez le type de remise",
-        "discountValue": "Entrez la valeur de la remise"
+        "discountValue": "Entrez la valeur de la remise",
+        "taxRates": "Sélectionnez les taux de taxe applicables"
       }
     }
   },

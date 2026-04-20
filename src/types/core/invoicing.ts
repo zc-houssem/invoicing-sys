@@ -3,6 +3,7 @@ import { DatabaseEntity } from '../response/DatabaseEntity';
 import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './article';
 import { ResponseRefParamDto } from './reference-types';
 import { ResponseBankAccountDto } from './bank-account';
+import { ResponseTaxRateDto } from './tax-rate';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -53,6 +54,7 @@ export interface ResponseQuotationArticleDto extends DatabaseEntity {
 
   discountType: 'rate' | 'fixed';
   discountValue: number;
+  taxes: ResponseTaxRateDto[];
 }
 
 export interface CreateQuotationArticleDto {
@@ -61,6 +63,7 @@ export interface CreateQuotationArticleDto {
   quantity: number;
   discountType?: 'rate' | 'fixed';
   discountValue: number;
+  taxIds?: number[];
 }
 
 export interface UpdateQuotationArticleDto

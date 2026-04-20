@@ -2,8 +2,10 @@ import {
   Field,
   FieldVariant,
   FormStructure,
+  MultiSelectFieldProps,
   NumberFieldProps,
   SelectFieldProps,
+  SelectOption,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
@@ -12,11 +14,13 @@ import { useTranslation } from 'react-i18next';
 
 interface useArticleItemFormStructureProps {
   store: ArticleStore;
+  taxRateOptions: SelectOption[];
   index: number;
 }
 
 export const useArticleItemFormStructure = ({
   store,
+  taxRateOptions,
   index
 }: useArticleItemFormStructureProps): FormStructure => {
   const { t } = useTranslation('invoicing');
@@ -106,6 +110,21 @@ export const useArticleItemFormStructure = ({
     }
   };
 
+  const taxRatesField: Field<MultiSelectFieldProps> = {
+    id: `article-${index}-taxRates`,
+    label: t('article.form.taxRates'),
+    variant: FieldVariant.MULTI_SELECT,
+    placeholder: t('article.form.placeholders.taxRates'),
+    props: {
+      value: store.articles[index].taxIds?.map(String),
+      onValueChange: (value) => {
+        store.updateArticle(store.articles[index].clientId, { taxIds: value.map(Number) });
+      },
+      options: taxRateOptions,
+      hidePlaceholderWhenSelected: true
+    }
+  };
+
   return {
     title: {
       value: `article-${index}`
@@ -114,10 +133,16 @@ export const useArticleItemFormStructure = ({
       {
         rows: [
           {
-            fields: [titleField, quantityField, unitPriceField]
+            fields: [titleField]
+          },
+          {
+            fields: [quantityField, unitPriceField]
           },
           {
             fields: [discountValueField, discountTypeField]
+          },
+          {
+            fields: [taxRatesField]
           },
           {
             fields: [descriptionField]

@@ -10,6 +10,7 @@ export interface LineArticle {
   quantity: number;
   discountType?: 'rate' | 'fixed';
   discountValue: number;
+  taxIds?: number[];
 }
 
 export interface ResponseArticleFamilyDto extends DatabaseEntity {

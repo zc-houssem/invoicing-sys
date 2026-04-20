@@ -451,7 +451,7 @@ const MultipleSelector = ({
       filter={commandFilter()}>
       <div
         className={cn(
-          'group relative flex h-9 w-full flex-wrap items-center justify-between rounded-md border border-input px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          'group relative flex min-h-9 w-full flex-wrap items-center justify-between rounded-md border border-input px-3 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
           {
             'p-1': selected.length !== 0,
             'cursor-text': !disabled && selected.length !== 0
@@ -463,13 +463,13 @@ const MultipleSelector = ({
           if (disabled) return;
           inputRef?.current?.focus();
         }}>
-        <div className="flex flex-wrap gap-1 w-full">
+        <div className="flex flex-wrap gap-1 w-full items-center">
           {selected.map((option) => {
             return (
               <Badge
                 key={option.value}
                 variant="default"
-                className={cn('flex items-center gap-1 justify-between', badgeClassName)}
+                className={cn('flex items-center justify-center h-6 gap-1', badgeClassName)}
                 data-fixed={option.fixed}
                 data-disabled={disabled || undefined}>
                 {option.label}
@@ -510,7 +510,7 @@ const MultipleSelector = ({
             }}
             placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
             className={cn(
-              'flex-1 bg-transparent min-w-[120px] text-sm outline-none border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground disabled:cursor-not-allowed',
+              'flex-1 group relative flex min-h-8 bg-transparent min-w-[120px] text-sm outline-none border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground disabled:cursor-not-allowed',
               {
                 'w-full': hidePlaceholderWhenSelected,
                 'px-1 py-0.5': selected.length === 0,

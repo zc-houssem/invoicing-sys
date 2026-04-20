@@ -65,6 +65,7 @@
       "unitPrice": "Unit price",
       "priceExcludingTax": "Price excluding tax",
       "priceIncludingTax": "Price including tax",
+      "taxRates": "Tax rates",
       "discountType": {
         "label": "Discount type",
         "options": {
@@ -79,7 +80,8 @@
         "quantity": "Enter the quantity",
         "unitPrice": "Enter the unit price",
         "discountType": "Select the discount type",
-        "discountValue": "Enter the discount value"
+        "discountValue": "Enter the discount value",
+        "taxRates": "Select applicable tax rates"
       }
     }
   },

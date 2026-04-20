@@ -4,8 +4,11 @@ import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import React from 'react';
-import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { CurrencyPayload, ResponseRefParamDto, ResponseTaxRateDto } from '@/types';
 import { useTranslation } from 'react-i18next';
+import { useTaxRates } from '@/hooks/content/core/useTaxRates';
+import { Spinner } from '@/components/shared';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
 interface ArticleItemProps {
   className?: string;
@@ -16,8 +19,16 @@ interface ArticleItemProps {
 export function ArticleItem({ className, index, currency }: ArticleItemProps) {
   const { t } = useTranslation('invoicing');
   const articleStore = useArticleStore();
+  const { taxRates, isTaxRatesPending } = useTaxRates();
   const structure = useArticleItemFormStructure({
     store: articleStore,
+    taxRateOptions: mapToSelectOptions({
+      data: taxRates,
+      labelKey: 'label',
+      valueKey: 'id',
+      labelKeyTransformer: (label, item: ResponseTaxRateDto) =>
+        `${label} (${item.value}${item.type === 'rate' ? '%' : currency?.extras.symbol})`
+    }),
     index
   });
 
@@ -37,6 +48,10 @@ export function ArticleItem({ className, index, currency }: ArticleItemProps) {
     articleStore.articles[index].discountType,
     articleStore.articles[index].discountValue
   ]);
+
+  if (isTaxRatesPending) {
+    return <Spinner />;
+  }
 
   return (
     <div className={cn('flex flex-row gap-4 justify-center items-center p-2', className)}>
