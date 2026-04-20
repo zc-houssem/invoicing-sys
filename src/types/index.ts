@@ -29,3 +29,4 @@ export * from './core/address';
 export * from './core/invoicing';
 export * from './core/reference-types';
 export * from './core/bank-account';
+export * from './core/tax-rate';

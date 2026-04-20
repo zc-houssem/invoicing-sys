@@ -4,19 +4,19 @@ import {
   FormStructure,
   NumberFieldProps,
   SelectFieldProps,
+  SelectOption,
   SwitchFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { TaxManager } from './hooks/useTaxManager';
-import { Currency } from '@/types';
+import { TaxManager } from '../../../../hooks/stores/useTaxRateStore';
 import { useTranslation } from 'react-i18next';
 
 interface useTaxFormStructureProps {
   store: TaxManager;
-  currencies: Currency[];
+  currencyOptions: SelectOption[];
 }
 
-export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructureProps) => {
+export const useTaxFormStructure = ({ store, currencyOptions }: useTaxFormStructureProps) => {
   const { t: tSettings } = useTranslation('settings');
   const { t: tCommon } = useTranslation('common');
   const { t: tCurrency } = useTranslation('currency');
@@ -102,21 +102,19 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     description: 'Choose the currency of the tax',
     hidden: !store.specificCurrency,
     props: {
-      options: currencies.map((c) => ({
-        label: `${c.label} (${c.symbol})`,
-        value: c.id?.toString()
-      })),
+      options: currencyOptions,
       value: store.currencyId?.toString(),
       onValueChange: (e: string) => store.set('currencyId', Number(e))
     }
   };
 
-  const taxFormStructure: FormStructure = {
-    title: 'Tax Form',
+  const structure: FormStructure = {
+    title: {
+      value: 'Create Tax Rate'
+    },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: 'Tax',
         rows: [
           {
             fields: [labelField]
@@ -138,5 +136,5 @@ export const useTaxFormStructure = ({ store, currencies }: useTaxFormStructurePr
     ]
   };
 
-  return { taxFormStructure };
+  return { structure };
 };

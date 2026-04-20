@@ -1,6 +1,6 @@
 import React from 'react';
 import { SystemSettings } from '@/components/settings/SystemSettings';
-import TaxMain from '@/components/content-management/tax-rates/TaxMain';
+import TaxMain from '@/components/content-management/tax-rates/TaxRatesPortal';
 
 export default function Page() {
   return (

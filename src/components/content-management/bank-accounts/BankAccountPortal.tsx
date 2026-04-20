@@ -68,9 +68,8 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
   const {
-    isPending: isFetchPending,
-    error,
     data: bankAccountsResp,
+    isPending: isFetchPending,
     refetch: refetchBankAccounts
   } = useQuery({
     queryKey: [
