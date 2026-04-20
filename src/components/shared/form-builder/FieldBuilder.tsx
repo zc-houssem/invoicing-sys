@@ -22,6 +22,7 @@ import { ImageUploader } from './ImageUploader';
 import { PasswordField } from './PasswordField';
 import { Editor } from '@/components/shared/editor/blocks/editor-x/editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import MultipleSelector from '@/components/ui/multi-select';
 
 interface FieldBuilderProps {
   field?: Field<any>;
@@ -96,6 +97,23 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           </SelectContent>
         </Select>
       );
+    case 'multi_select':
+      return (
+        <MultipleSelector
+          {...field.props}
+          id={field.id}
+          className={cn('w-full', field?.className)}
+          options={field.props?.options}
+          value={field.props?.value}
+          isDisabled={field.props?.disabled}
+          onChange={(value) => field?.props?.onChange?.(value)}
+          placeholder={field?.placeholder}
+          hdePlaceholderWhenSelected={field.props?.hidePlaceholderWhenSelected}
+          creatable={field.props?.creatable}
+          emptyIndicator={<p className="text-center text-sm">{t('table.no_results')}</p>}
+        />
+      );
+
     case 'date':
       return (
         <DatePicker

@@ -122,6 +122,7 @@ export interface MultiSelectFieldProps extends BaseFieldProps {
   value?: string[];
   onValueChange?: (value: string[]) => void;
   options?: SelectOption[];
+  hidePlaceholderWhenSelected?: boolean;
 }
 
 export interface RadioFieldProps extends BaseFieldProps {
