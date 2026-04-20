@@ -18,7 +18,9 @@ import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
-import { CurrencyPayload, ResponseRefParamDto, Tax } from '@/types';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
+import { ArticleResume } from '../../articles/ArticleResume';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
@@ -214,6 +216,33 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const additionalInfoField: Field<CustomFieldProps> = {
+    id: 'additionalInfo',
+    variant: FieldVariant.CUSTOM,
+    props: {
+      children: (
+        <div className="flex flex-col 2xl:flex-row gap-6">
+          <FormBuilder
+            className="w-full 2xl:w-2/3"
+            structure={{
+              orientation: 'horizontal',
+              fieldsets: [
+                {
+                  rows: [
+                    {
+                      fields: [generalConditionsField]
+                    }
+                  ]
+                }
+              ]
+            }}
+          />
+          <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} />
+        </div>
+      )
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
       value: 'General Information'
@@ -261,7 +290,7 @@ export const useQuotationCreateFormStructure = ({
         includeHeader: true,
         rows: [
           {
-            fields: [generalConditionsField]
+            fields: [additionalInfoField]
           }
         ]
       }

@@ -1,5 +1,7 @@
 {
-  "common": {},
+  "common": {
+    "financialResume": "Résumé financier"
+  },
   "quotation": {
     "form": {
       "date": "Date",
@@ -65,6 +67,8 @@
       "unitPrice": "Prix unitaire",
       "priceExcludingTax": "Prix HT",
       "priceIncludingTax": "Prix TTC",
+      "totalTax": "Total taxe",
+      "totalDiscount": "Total remise",
       "taxRates": "Taux de taxe",
       "discountType": {
         "label": "Type de remise",

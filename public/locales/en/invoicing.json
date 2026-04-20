@@ -1,5 +1,7 @@
 {
-  "common": {},
+  "common": {
+    "financialResume": "Financial Resume"
+  },
   "quotation": {
     "form": {
       "date": "Date",
@@ -65,6 +67,8 @@
       "unitPrice": "Unit price",
       "priceExcludingTax": "Price excluding tax",
       "priceIncludingTax": "Price including tax",
+      "totalTax": "Total tax",
+      "totalDiscount": "Total discount",
       "taxRates": "Tax rates",
       "discountType": {
         "label": "Discount type",

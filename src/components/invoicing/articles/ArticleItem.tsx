@@ -41,14 +41,28 @@ export function ArticleItem({ className, index, currency }: ArticleItemProps) {
 
   const totalPriceIncludingTax = React.useMemo(() => {
     const article = articleStore.articles[index];
-    if (article.discountType === 'fixed') {
-      return totalPriceExcludingTax - article.discountValue;
-    }
-    return totalPriceExcludingTax * (1 - article.discountValue / 100);
+    let finalPrice = totalPriceExcludingTax;
+
+    // discount
+    if (article.discountType === 'fixed') finalPrice -= article.discountValue;
+    else finalPrice *= 1 - article.discountValue / 100;
+
+    // tax
+    article.taxIds?.forEach((taxId) => {
+      const tax = taxRates.find((t) => t.id === taxId);
+      if (tax) {
+        if (tax.type === 'rate') finalPrice *= 1 + tax.value / 100;
+        else finalPrice += tax.value;
+      }
+    });
+
+    return finalPrice;
   }, [
     totalPriceExcludingTax,
     articleStore.articles[index].discountType,
-    articleStore.articles[index].discountValue
+    articleStore.articles[index].discountValue,
+    articleStore.articles[index].taxIds,
+    taxRates
   ]);
 
   if (isTaxRatesPending) {
