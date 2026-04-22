@@ -129,13 +129,6 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (entity) => {
       quotationStore.set('response', entity);
-      quotationStore.set('updateDto', {
-        direction: entity.direction,
-        date: entity.date ? new Date(entity.date) : null,
-        dueDate: entity.dueDate ? new Date(entity.dueDate) : null,
-        object: entity.object,
-        generalConditions: entity.generalConditions
-      } satisfies UpdateQuotationDto);
     }
   };
 

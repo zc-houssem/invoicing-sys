@@ -26,6 +26,7 @@ import {
   UpdateQuotationDto
 } from '@/types';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
+import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -38,7 +39,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
 
-  const { quotation, isFetchQuotationPending } = useQuotation({
+  const { workflow, isWorkflowPending } = useQuotationWorkflow({
     id,
     join: ['quotationArticles', 'quotationArticles.article', 'quotationArticles.taxes']
   });
@@ -63,26 +64,26 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
 
   React.useEffect(() => {
-    if (quotation && enterprises) {
-      quotationStore.set('response', quotation);
+    if (workflow && enterprises) {
+      quotationStore.set('response', workflow.quotation);
       quotationStore.set('updateDto', {
-        date: quotation?.date ? new Date(quotation.date) : undefined,
-        dueDate: quotation?.dueDate ? new Date(quotation.dueDate) : undefined,
-        direction: quotation?.direction,
-        object: quotation?.object,
-        generalConditions: quotation?.generalConditions,
-        enterpriseId: quotation?.enterpriseId,
-        interlocutorId: quotation?.interlocutorId,
-        currencyId: quotation?.currencyId,
-        bankAccountId: quotation?.bankAccountId,
+        date: workflow?.quotation.date ? new Date(workflow.quotation.date) : undefined,
+        dueDate: workflow?.quotation.dueDate ? new Date(workflow.quotation.dueDate) : undefined,
+        direction: workflow?.quotation.direction,
+        object: workflow?.quotation.object,
+        generalConditions: workflow?.quotation.generalConditions,
+        enterpriseId: workflow?.quotation.enterpriseId,
+        interlocutorId: workflow?.quotation.interlocutorId,
+        currencyId: workflow?.quotation.currencyId,
+        bankAccountId: workflow?.quotation.bankAccountId,
         quotationArticles: []
       });
-      const enterprise = enterprises.find((e) => e.id === quotation.enterpriseId);
+      const enterprise = enterprises.find((e) => e.id === workflow.quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
 
       articleStore.set(
         'articles',
-        quotation.quotationArticles.map((qa) => {
+        workflow.quotation.quotationArticles.map((qa) => {
           return {
             clientId: qa.article.id.toString(),
             id: qa.id,
@@ -103,7 +104,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       enterpriseStore.reset();
       articleStore.reset();
     };
-  }, [quotation, enterprises]);
+  }, [workflow, enterprises]);
 
   const { mutate: updateQuotation, isPending: isUpdatePending } = useMutation({
     mutationFn: async (payload: { id: number; data: UpdateQuotationDto }) =>
@@ -177,7 +178,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     selectedCurrency
   });
 
-  if (isFetchQuotationPending || isEnterprisesPending || isCurrenciesPending) return <Spinner />;
+  if (isWorkflowPending || isEnterprisesPending || isCurrenciesPending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

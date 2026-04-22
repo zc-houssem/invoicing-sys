@@ -1,4 +1,9 @@
-import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
+import {
+  CreateQuotationDto,
+  ResponseQuotationDto,
+  ResponseQuotationWorkflowDto,
+  UpdateQuotationDto
+} from '@/types';
 import axios from '../axios';
 import { Paginated, QueryParams } from '@/types/response';
 
@@ -37,6 +42,16 @@ const findById = async (id: number, join?: string): Promise<ResponseQuotationDto
   return response.data;
 };
 
+const findWorkflowById = async (
+  id: number,
+  join?: string
+): Promise<ResponseQuotationWorkflowDto> => {
+  const response = await axios.get<ResponseQuotationWorkflowDto>(`/quotation-workflow/${id}`, {
+    params: { join }
+  });
+  return response.data;
+};
+
 const create = async (quotation: CreateQuotationDto): Promise<ResponseQuotationDto> => {
   const response = await axios.post('/_quotation', quotation);
   return response.data;
@@ -61,5 +76,8 @@ export const quotation = {
   findById,
   create,
   update,
-  remove
+  remove,
+  workflow: {
+    findById: findWorkflowById
+  }
 };

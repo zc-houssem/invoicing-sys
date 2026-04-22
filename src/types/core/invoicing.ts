@@ -4,6 +4,7 @@ import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './articl
 import { ResponseRefParamDto } from './reference-types';
 import { ResponseBankAccountDto } from './bank-account';
 import { ResponseTaxRateDto } from './tax-rate';
+import { ResponseWorkflowDto } from '../response/workflow';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -22,6 +23,10 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
   quotationArticles: ResponseQuotationArticleDto[];
+}
+
+export interface ResponseQuotationWorkflowDto extends ResponseWorkflowDto {
+  quotation: ResponseQuotationDto;
 }
 
 export interface CreateQuotationDto {
