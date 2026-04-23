@@ -30,6 +30,7 @@ interface useQuotationUpdateFormStructureProps {
   updateQuotation: () => void;
   isUpdatePending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
+  isUpdatable: boolean;
 }
 
 export const useQuotationUpdateFormStructure = ({
@@ -40,7 +41,8 @@ export const useQuotationUpdateFormStructure = ({
   bankAccountOptions,
   updateQuotation,
   isUpdatePending,
-  selectedCurrency
+  selectedCurrency,
+  isUpdatable
 }: useQuotationUpdateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
   const { t } = useTranslation('invoicing');
@@ -84,7 +86,7 @@ export const useQuotationUpdateFormStructure = ({
     placeholder: t('quotation.form.placeholders.dueDate'),
     description: t('quotation.form.descriptions.dueDate'),
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.dueDate,
       onDateChange: (date) => {
         store.setNested('updateDto.dueDate', date);
@@ -102,7 +104,7 @@ export const useQuotationUpdateFormStructure = ({
     placeholder: t('quotation.form.placeholders.object'),
     description: t('quotation.form.descriptions.object'),
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.object,
       onChange: (value) => {
         store.setNested('updateDto.object', value);
@@ -121,7 +123,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.enterprise'),
     pending: !(enterprises && store.updateDto?.enterpriseId),
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.enterpriseId ? store.updateDto.enterpriseId.toString() : undefined,
       onValueChange: (value) => {
         const numericValue = Number(value);
@@ -151,7 +153,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.interlocutor'),
     pending: !(interlocutorOptions && store.updateDto?.enterpriseId),
     props: {
-      disabled: isUpdatePending || !store.updateDto?.enterpriseId,
+      disabled: isUpdatePending || !store.updateDto?.enterpriseId || !isUpdatable,
       value: store.updateDto?.interlocutorId
         ? store.updateDto.interlocutorId.toString()
         : undefined,
@@ -173,6 +175,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.generalConditions'),
     pending: !store.updateDto?.generalConditions,
     props: {
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.generalConditions,
       onChange: (value) => {
         store.setNested('updateDto.generalConditions', value);
@@ -214,7 +217,12 @@ export const useQuotationUpdateFormStructure = ({
     id: 'articles',
     variant: FieldVariant.CUSTOM,
     props: {
-      children: <QuotationArticlesField currency={selectedCurrency} />
+      children: (
+        <QuotationArticlesField
+          currency={selectedCurrency}
+          disabled={isUpdatePending || !isUpdatable}
+        />
+      )
     }
   };
 
@@ -301,49 +309,6 @@ export const useQuotationUpdateFormStructure = ({
 
   //*************************************************************************************************************************** */
 
-  const statusField: Field<CustomFieldProps> = {
-    id: 'status',
-    label: '',
-    variant: FieldVariant.CUSTOM,
-    props: {
-      children: (
-        <div className="flex items-center justify-center gap-2">
-          <span className="font-bold">Status:</span>
-          <span className="text-muted-foreground font-semibold">New</span>
-        </div>
-      )
-    }
-  };
-
-  const buttonsField: Field<CustomFieldProps> = {
-    id: 'saveButton',
-    label: '',
-    variant: FieldVariant.CUSTOM,
-    props: {
-      children: (
-        <div className="flex flex-col gap-2 w-full">
-          <Button
-            type="button"
-            variant={'default'}
-            onClick={() => {
-              updateQuotation();
-            }}>
-            <span>Save</span>
-            <Save className="size-10" />
-          </Button>
-          <Button variant={'outline'} onClick={() => {}}>
-            <span>Validate</span>
-            <Check className="size-10" />
-          </Button>
-          <Button variant={'outline'} onClick={() => {}}>
-            <span>Send</span>
-            <Send className="size-10" />
-          </Button>
-        </div>
-      )
-    }
-  };
-
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
     label: t('quotation.form.currency'),
@@ -354,7 +319,7 @@ export const useQuotationUpdateFormStructure = ({
     description: t('quotation.form.descriptions.currency'),
     pending: !store.updateDto?.currencyId,
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.currencyId ? store.updateDto.currencyId.toString() : undefined,
       onValueChange: (value) => {
         store.setNested('updateDto.currencyId', Number(value));
@@ -373,7 +338,7 @@ export const useQuotationUpdateFormStructure = ({
     placeholder: t('quotation.form.placeholders.bankAccount'),
     description: t('quotation.form.descriptions.bankAccount'),
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.bankAccountId ? store.updateDto.bankAccountId.toString() : undefined,
       onValueChange: (value) => {
         store.setNested('updateDto.bankAccountId', Number(value));
@@ -391,12 +356,6 @@ export const useQuotationUpdateFormStructure = ({
     fieldsets: [
       {
         rows: [
-          {
-            fields: [statusField]
-          },
-          {
-            fields: [buttonsField]
-          },
           {
             fields: [currencyField]
           },

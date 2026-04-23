@@ -11,11 +11,9 @@ import {
   SingleFileFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { Button } from '@/components/ui/button';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
-import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
@@ -299,49 +297,6 @@ export const useQuotationCreateFormStructure = ({
 
   //*************************************************************************************************************************** */
 
-  const statusField: Field<CustomFieldProps> = {
-    id: 'status',
-    label: '',
-    variant: FieldVariant.CUSTOM,
-    props: {
-      children: (
-        <div className="flex items-center justify-center gap-2">
-          <span className="font-bold">Status:</span>
-          <span className="text-muted-foreground font-semibold">New</span>
-        </div>
-      )
-    }
-  };
-
-  const buttonsField: Field<CustomFieldProps> = {
-    id: 'saveButton',
-    label: '',
-    variant: FieldVariant.CUSTOM,
-    props: {
-      children: (
-        <div className="flex flex-col gap-2 w-full">
-          <Button
-            type="button"
-            variant={'outline'}
-            onClick={() => {
-              createQuotation();
-            }}>
-            <span>Save</span>
-            <Save className="size-10" />
-          </Button>
-          <Button variant={'secondary'} onClick={() => {}}>
-            <span>Validate</span>
-            <Check className="size-10" />
-          </Button>
-          <Button variant={'secondary'} onClick={() => {}}>
-            <span>Send</span>
-            <Send className="size-10" />
-          </Button>
-        </div>
-      )
-    }
-  };
-
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
     label: t('quotation.form.currency'),
@@ -388,12 +343,6 @@ export const useQuotationCreateFormStructure = ({
     fieldsets: [
       {
         rows: [
-          {
-            fields: [statusField]
-          },
-          {
-            fields: [buttonsField]
-          },
           {
             fields: [currencyField]
           },

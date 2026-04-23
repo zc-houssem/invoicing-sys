@@ -26,6 +26,11 @@ import {
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
+import { Button } from '@/components/ui/button';
+import { Check, Repeat2, Save, Send } from 'lucide-react';
+import { Status } from '../../Status';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 interface QuotationCreateFormProps {
   className?: string;
@@ -33,6 +38,7 @@ interface QuotationCreateFormProps {
 
 export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const { t: tCurrency } = useTranslation('currency');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
@@ -151,7 +157,35 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
           minSize={isMobile ? '0%' : '20%'}
           maxSize={isMobile ? '0%' : '30%'}
           className="bg-card">
-          <div className="flex h-full items-start justify-center p-6 container mx-auto">
+          <div className="flex flex-col h-full items-start p-6 container mx-auto gap-4">
+            <Status className="mx-auto" status="New" />
+            <Separator />
+            <div className="flex flex-col gap-2 w-full">
+              <Label className="text-xs font-bold">Actions</Label>
+              <Button
+                type="button"
+                size="lg"
+                className="rounded-xl"
+                variant={'outline'}
+                onClick={() => {
+                  handleSubmit();
+                }}>
+                <Save className="size-16" />
+                <span>{t('commands.save')}</span>
+              </Button>
+              <Button
+                type="button"
+                size="lg"
+                className="rounded-xl"
+                variant={'ghost'}
+                onClick={() => {
+                  handleSubmit();
+                }}>
+                <Repeat2 className="size-16" />
+                <span>{t('commands.reset')}</span>
+              </Button>
+            </div>
+            <Separator />
             <FormBuilder structure={sidebarFormStructure} />
           </div>
         </ResizablePanel>

@@ -65,6 +65,11 @@ const update = async (
   return response.data;
 };
 
+const next = async (id: number, event: string): Promise<ResponseQuotationWorkflowDto> => {
+  const response = await axios.post(`/quotation-workflow/${id}/next`, { event });
+  return response.data;
+};
+
 const remove = async (id?: number): Promise<ResponseQuotationDto> => {
   const response = await axios.delete(`/_quotation/${id}`);
   return response.data;
@@ -78,6 +83,7 @@ export const quotation = {
   update,
   remove,
   workflow: {
-    findById: findWorkflowById
+    findById: findWorkflowById,
+    next
   }
 };

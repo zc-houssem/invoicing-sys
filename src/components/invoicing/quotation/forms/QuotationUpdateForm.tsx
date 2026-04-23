@@ -13,7 +13,6 @@ import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseIn
 import { Spinner } from '@/components/shared';
 import { useQuotationUpdateFormStructure } from './useQuotationUpdateFormStructure';
 import React from 'react';
-import { useQuotation } from '@/hooks/content/core/useQuotation';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { LineArticle } from '@/types/core/article';
@@ -27,6 +26,8 @@ import {
 } from '@/types';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
+import { Status } from '../../Status';
+import { QuotationActions } from './QuotationActions';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -39,12 +40,12 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
 
-  const { workflow, isWorkflowPending } = useQuotationWorkflow({
+  const { workflow, isWorkflowPending, refetchWorkflow } = useQuotationWorkflow({
     id,
     join: ['quotationArticles', 'quotationArticles.article', 'quotationArticles.taxes']
   });
 
-  const { enterprises, isEnterprisesPending } = useEnterprises({
+  const { enterprises, isEnterprisesPending, refetchEnterprises } = useEnterprises({
     join: ['invoicingAddress', 'deliveryAddress', 'currency']
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
@@ -52,7 +53,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     enabled: !!quotationStore.updateDto?.enterpriseId
   });
 
-  const { currencies, isCurrenciesPending } = useCurrencies();
+  const { currencies, isCurrenciesPending, refetchCurrencies } = useCurrencies();
   const selectedCurrency = React.useMemo(
     () =>
       currencies.find(
@@ -61,7 +62,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     [quotationStore.updateDto?.currencyId, currencies]
   );
 
-  const { bankAccounts, isBankAccountsPending } = useBankAccounts();
+  const { bankAccounts, isBankAccountsPending, refetchBankAccounts } = useBankAccounts();
 
   React.useEffect(() => {
     if (workflow && enterprises) {
@@ -151,6 +152,13 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     }
   };
 
+  const handleReload = () => {
+    refetchWorkflow();
+    refetchEnterprises();
+    refetchCurrencies();
+    refetchBankAccounts();
+  };
+
   const { mainFormStructure, sidebarFormStructure } = useQuotationUpdateFormStructure({
     store: quotationStore,
     enterprises,
@@ -175,7 +183,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     }),
     updateQuotation: handleSubmit,
     isUpdatePending,
-    selectedCurrency
+    selectedCurrency,
+    isUpdatable: !!workflow?.isUpdatable
   });
 
   if (isWorkflowPending || isEnterprisesPending || isCurrenciesPending) return <Spinner />;
@@ -196,7 +205,15 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
           minSize={isMobile ? '0%' : '20%'}
           maxSize={isMobile ? '0%' : '30%'}
           className="bg-card">
-          <div className="flex h-full items-start justify-center p-6 container mx-auto">
+          <div className="flex flex-col h-full items-start p-6 container mx-auto">
+            <Status className="mx-auto" status={workflow?.status || '-'} />
+            <QuotationActions
+              className="my-4"
+              workflow={workflow}
+              save={handleSubmit}
+              reload={handleReload}
+              reset={handleReload}
+            />
             <FormBuilder structure={sidebarFormStructure} />
           </div>
         </ResizablePanel>
