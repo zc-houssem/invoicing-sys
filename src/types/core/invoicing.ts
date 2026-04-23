@@ -1,5 +1,5 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
-import { DatabaseEntity } from '../response/DatabaseEntity';
+import { DatabaseEntity } from '../response/database-entity';
 import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './article';
 import { ResponseRefParamDto } from './reference-types';
 import { ResponseBankAccountDto } from './bank-account';

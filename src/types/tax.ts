@@ -1,6 +1,6 @@
 import { Currency } from './currency';
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Tax extends DatabaseEntity {
   id?: number;

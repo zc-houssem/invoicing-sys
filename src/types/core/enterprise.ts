@@ -1,4 +1,4 @@
-import { DatabaseEntity } from '../response/DatabaseEntity';
+import { DatabaseEntity } from '../response/database-entity';
 import { CreateAddressDto, ResponseAddressDto } from './address';
 import { ResponseRefParamDto } from './reference-types';
 

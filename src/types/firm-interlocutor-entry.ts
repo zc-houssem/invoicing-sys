@@ -1,6 +1,6 @@
 import { Firm } from './firm';
 import { Interlocutor } from './interlocutor';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface FirmInterlocutorEntry extends DatabaseEntity {
   id?: number;

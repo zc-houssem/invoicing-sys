@@ -8,7 +8,7 @@ import { SOCIAL_TITLE } from './enums';
 import { PagedResponse } from './response';
 import { Quotation } from './quotation';
 import { Invoice } from './invoice';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Firm extends DatabaseEntity {
   id?: number;

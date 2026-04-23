@@ -1,5 +1,5 @@
 import { DateFormat } from './enums';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export enum Sequences {
   INVOICE = 'invoice',

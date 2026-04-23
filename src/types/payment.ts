@@ -2,7 +2,7 @@ import { Currency } from './currency';
 import { Firm } from './firm';
 import { Invoice } from './invoice';
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 import { Upload } from './upload';
 
 export enum PAYMENT_MODE {

@@ -1,5 +1,5 @@
 import { Permission } from './permission';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Role extends DatabaseEntity {
   id?: number;

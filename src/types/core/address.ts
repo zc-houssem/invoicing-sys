@@ -1,5 +1,5 @@
 import { ResponseRefParamDto } from './reference-types';
-import { DatabaseEntity } from '../response/DatabaseEntity';
+import { DatabaseEntity } from '../response/database-entity';
 
 export interface CountryExtras {
   alpha2Code: string;

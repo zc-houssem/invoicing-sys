@@ -1,4 +1,4 @@
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Upload extends DatabaseEntity {
   id?: number;

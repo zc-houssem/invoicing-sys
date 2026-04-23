@@ -7,7 +7,7 @@ import { Firm } from './firm';
 import { Interlocutor } from './interlocutor';
 import { Invoice } from './invoice';
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 import { Tax } from './tax';
 import { Upload } from './upload';
 

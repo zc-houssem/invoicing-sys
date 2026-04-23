@@ -1,7 +1,7 @@
 import { Activity } from './activity';
 import { Address, UpdateAddressDto } from './core/address';
 import { Currency } from './currency';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Cabinet extends DatabaseEntity {
   id?: number;

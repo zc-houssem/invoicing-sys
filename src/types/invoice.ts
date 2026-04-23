@@ -7,7 +7,7 @@ import { Interlocutor } from './interlocutor';
 import { PaymentInvoiceEntry } from './payment';
 import { Quotation } from './quotation';
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 import { Tax } from './tax';
 import { TaxWithholding } from './tax-withholding';
 import { Upload } from './upload';

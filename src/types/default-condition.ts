@@ -1,6 +1,6 @@
 import { ACTIVITY_TYPE } from './enums/activity-type';
 import { DOCUMENT_TYPE } from './enums/document-type';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface DefaultCondition extends DatabaseEntity {
   id?: number;

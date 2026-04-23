@@ -1,4 +1,4 @@
-import { DatabaseEntity } from '../response/DatabaseEntity';
+import { DatabaseEntity } from '../response/database-entity';
 import { CurrencyPayload, ResponseRefParamDto } from './reference-types';
 
 export interface ResponseTaxRateDto extends DatabaseEntity {

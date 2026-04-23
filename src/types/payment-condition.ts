@@ -1,5 +1,5 @@
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface PaymentCondition extends DatabaseEntity {
   id?: number;
