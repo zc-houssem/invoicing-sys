@@ -24,7 +24,7 @@ interface ArticleManagementProps {
   className?: string;
   title?: string;
   description?: string;
-  disabled: boolean;
+  disabled?: boolean;
   articles: LineArticle[];
   setArticles: (articles: LineArticle[]) => void;
   addArticle: () => void;

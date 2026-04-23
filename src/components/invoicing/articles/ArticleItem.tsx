@@ -12,11 +12,12 @@ import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapTo
 
 interface ArticleItemProps {
   className?: string;
-  index: number;
+  disabled?: boolean;
   currency?: ResponseRefParamDto<CurrencyPayload>;
+  index: number;
 }
 
-export function ArticleItem({ className, index, currency }: ArticleItemProps) {
+export function ArticleItem({ className, index, currency, disabled }: ArticleItemProps) {
   const { t } = useTranslation('invoicing');
   const articleStore = useArticleStore();
   const { taxRates, isTaxRatesPending } = useTaxRates({
@@ -31,7 +32,8 @@ export function ArticleItem({ className, index, currency }: ArticleItemProps) {
       labelKeyTransformer: (label, item: ResponseTaxRateDto) =>
         `${label} (${item.value}${item.type === 'rate' ? '%' : item.currency?.extras.symbol || ''})`
     }),
-    index
+    index,
+    disabled
   });
 
   const totalPriceExcludingTax = React.useMemo(() => {
@@ -70,9 +72,9 @@ export function ArticleItem({ className, index, currency }: ArticleItemProps) {
   }
 
   return (
-    <div className={cn('flex flex-row gap-4 justify-center items-center p-2', className)}>
+    <div className={cn('flex flex-row gap-4 justify-between items-center p-2', className)}>
       <FormBuilder structure={structure} />
-      <div className="flex flex-col justify-between items-baseline px-4 w-32 gap-6">
+      <div className="flex flex-col justify-between items-baseline p-4 w-56 gap-6">
         <div className="flex flex-col text-xs">
           <span className="font-bold">{t('article.form.priceExcludingTax')}: </span>
           <span className="flex gap-1 font-light">

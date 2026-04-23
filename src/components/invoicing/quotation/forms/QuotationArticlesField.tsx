@@ -6,9 +6,14 @@ import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 interface QuotationArticlesFieldProps {
   className?: string;
   currency?: ResponseRefParamDto<CurrencyPayload>;
+  disabled?: boolean;
 }
 
-export const QuotationArticlesField = ({ className, currency }: QuotationArticlesFieldProps) => {
+export const QuotationArticlesField = ({
+  className,
+  currency,
+  disabled
+}: QuotationArticlesFieldProps) => {
   const articleStore = useArticleStore();
   return (
     <div className={className}>
@@ -17,8 +22,10 @@ export const QuotationArticlesField = ({ className, currency }: QuotationArticle
         setArticles={(articles) => articleStore.set('articles', articles)}
         addArticle={() => articleStore.addArticle()}
         deleteArticle={articleStore.deleteArticle}
-        disabled={false}
-        renderArticleItem={(item, edit, index) => <ArticleItem index={index} currency={currency} />}
+        disabled={disabled}
+        renderArticleItem={(item, edit, index) => (
+          <ArticleItem index={index} currency={currency} disabled={disabled} />
+        )}
       />
     </div>
   );

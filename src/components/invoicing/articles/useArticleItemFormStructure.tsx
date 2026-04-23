@@ -14,12 +14,14 @@ import { useTranslation } from 'react-i18next';
 
 interface useArticleItemFormStructureProps {
   store: ArticleStore;
+  disabled?: boolean;
   taxRateOptions: SelectOption[];
   index: number;
 }
 
 export const useArticleItemFormStructure = ({
   store,
+  disabled,
   taxRateOptions,
   index
 }: useArticleItemFormStructureProps): FormStructure => {
@@ -31,6 +33,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.TEXT,
     placeholder: t('article.form.placeholders.title'),
     props: {
+      disabled,
       value: store.articles[index].title,
       onChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { title: value });
@@ -44,6 +47,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.NUMBER,
     placeholder: t('article.form.placeholders.quantity'),
     props: {
+      disabled,
       value: store.articles[index].quantity,
       onChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { quantity: value });
@@ -57,6 +61,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.NUMBER,
     placeholder: t('article.form.placeholders.unitPrice'),
     props: {
+      disabled,
       value: store.articles[index].unitPrice,
       onChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { unitPrice: value });
@@ -70,6 +75,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.TEXTAREA,
     placeholder: t('article.form.placeholders.description'),
     props: {
+      disabled,
       value: store.articles[index].description,
       onChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { description: value });
@@ -84,6 +90,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.SELECT,
     placeholder: t('article.form.placeholders.discountType'),
     props: {
+      disabled,
       value: store.articles[index].discountType,
       onValueChange: (value) => {
         store.updateArticle(store.articles[index].clientId, {
@@ -103,6 +110,7 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.NUMBER,
     placeholder: t('article.form.placeholders.discountValue'),
     props: {
+      disabled,
       value: store.articles[index].discountValue,
       onChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { discountValue: value });
@@ -116,9 +124,9 @@ export const useArticleItemFormStructure = ({
     variant: FieldVariant.MULTI_SELECT,
     placeholder: t('article.form.placeholders.taxRates'),
     props: {
+      disabled,
       value: store.articles[index]?.taxIds?.map(String),
       onValueChange: (value) => {
-        console.log(store.articles);
         store.updateArticle(store.articles[index].clientId, { taxIds: value.map(Number) });
       },
       options: taxRateOptions,
