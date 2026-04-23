@@ -38,6 +38,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'url':
       return (
         <Input
+          {...field.props}
           className={cn(
             field?.className,
             field.error && 'border-destructive focus-visible:ring-destructive'
@@ -53,6 +54,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'number':
       return (
         <Input
+          {...field.props}
           className={cn(
             field?.className,
             field.error && 'border-destructive focus-visible:ring-destructive'
@@ -74,6 +76,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'select':
       return (
         <Select
+          {...field.props}
           value={field?.props?.value ?? ''}
           onValueChange={field?.props?.onValueChange}
           disabled={field?.props?.disabled}>
@@ -103,6 +106,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
       );
       return (
         <MultipleSelector
+          {...field.props}
           className={cn('w-full', field?.className)}
           options={field.props?.options}
           value={selectedOptions}

@@ -473,20 +473,22 @@ const MultipleSelector = ({
                 data-fixed={option.fixed || undefined}
                 data-disabled={disabled || undefined}>
                 {option.label}
-                <button
-                  className={cn('ml-2 cursor-pointer', option.fixed && 'hidden')}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleUnselect(option);
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={() => handleUnselect(option)}
-                  disabled={option.fixed || undefined}
-                  aria-label="Remove">
-                  <X className="h-3 w-3" />
-                </button>
+                {!disabled && (
+                  <button
+                    className={cn('ml-2 cursor-pointer', option.fixed && 'hidden')}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleUnselect(option);
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={() => handleUnselect(option)}
+                    disabled={option.fixed || undefined}
+                    aria-label="Remove">
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
               </Badge>
             );
           })}

@@ -10,26 +10,28 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { nodes } from './nodes';
 import { Plugins } from './plugins';
 
-const editorConfig: InitialConfigType = {
-  namespace: 'Editor',
-  theme: editorTheme,
-  nodes,
-  onError: (error: Error) => {
-    console.error(error);
-  }
-};
-
 export function Editor({
   editorState,
   editorSerializedState,
   onChange,
-  onSerializedChange
+  onSerializedChange,
+  disabled
 }: {
   editorState?: EditorState;
   editorSerializedState?: SerializedEditorState;
   onChange?: (editorState: EditorState) => void;
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
+  disabled?: boolean;
 }) {
+  const editorConfig: InitialConfigType = {
+    namespace: 'Editor',
+    theme: editorTheme,
+    editable: !disabled,
+    nodes,
+    onError: (error: Error) => {
+      console.error(error);
+    }
+  };
   return (
     <div className="bg-background overflow-hidden rounded-lg border shadow">
       <LexicalComposer
