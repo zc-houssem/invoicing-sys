@@ -34,7 +34,8 @@
         "bankAccounts": "Bank Accounts",
         "taxRates": "Tax Rates",
         "refTypes": "Reference Types",
-        "refParams": "Reference Parameters"
+        "refParams": "Reference Parameters",
+        "templates": "Templates"
       }
     },
     "administrativeTools": {
@@ -49,8 +50,7 @@
       "title": "Settings",
       "subs": {
         "account": "Account",
-        "system": "System",
-        "pdf": "PDF"
+        "system": "System"
       }
     }
   },

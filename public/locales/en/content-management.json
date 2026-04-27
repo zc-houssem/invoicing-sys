@@ -222,5 +222,35 @@
       "deleteSuccess": "Tax rate deleted successfully.",
       "deleteFailure": "Failed to delete tax rate."
     }
+  },
+  "template": {
+    "form": {
+      "file": "Template File",
+      "name": "Template Name",
+      "type": "Template Type",
+      "description": "Description",
+      "placeholders": {
+        "file": "Upload the template file",
+        "name": "Enter the template name",
+        "type": "Select the template type",
+        "description": "Enter a description for the template"
+      },
+      "descriptions": {
+        "file": "The file associated with the template.",
+        "name": "The name of the template.",
+        "type": "The type of the template (e.g., invoice, quote).",
+        "description": "A brief description of the template."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Name",
+        "type": "Type",
+        "description": "Description",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      }
+    }
   }
 }

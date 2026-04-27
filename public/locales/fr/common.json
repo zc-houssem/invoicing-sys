@@ -34,7 +34,8 @@
         "bankAccounts": "Comptes bancaires",
         "taxRates": "Taux de taxe",
         "refTypes": "Types de référence",
-        "refParams": "Paramètres de référence"
+        "refParams": "Paramètres de référence",
+        "templates": "Modèles"
       }
     },
     "administrativeTools": {
@@ -49,8 +50,7 @@
       "title": "Paramètres",
       "subs": {
         "account": "Compte",
-        "system": "Système",
-        "pdf": "PDF"
+        "system": "Système"
       }
     }
   },

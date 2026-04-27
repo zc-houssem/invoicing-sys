@@ -1,6 +1,6 @@
 import { Expand, X } from 'lucide-react';
-import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface PDFTemplateEditorFieldActionsProps {
   className?: string;
@@ -15,7 +15,7 @@ export const PDFTemplateEditorFieldActions = ({
 }: PDFTemplateEditorFieldActionsProps) => {
   return (
     <div className={cn('flex flex-col lg:flex-row gap-2', className)}>
-      <Button type="button" variant={'ghost'} size={'lg'} className="h-12" onClick={toggle}>
+      <Button type="button" variant={'ghost'} size={'sm'} onClick={toggle}>
         {isFullscreen ? <X className="size-6" /> : <Expand className="size-6" />}
         {!isFullscreen && <span className="font-bold">Expand</span>}
       </Button>

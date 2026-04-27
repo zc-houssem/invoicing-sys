@@ -218,5 +218,35 @@
       "deleteSuccess": "Taux de taxe supprimé avec succès.",
       "deleteFailure": "Échec de la suppression du taux de taxe."
     }
+  },
+  "template": {
+    "form": {
+      "file": "Fichier du modèle",
+      "name": "Nom du modèle",
+      "description": "Description du modèle",
+      "type": "Type de modèle",
+      "placeholders": {
+        "file": "Téléchargez le fichier du modèle",
+        "name": "Entrez le nom du modèle",
+        "description": "Entrez la description du modèle",
+        "type": "Sélectionnez le type de modèle"
+      },
+      "descriptions": {
+        "file": "Le fichier associé au modèle.",
+        "name": "Le nom du modèle.",
+        "description": "Une description facultative du modèle.",
+        "type": "Le type de modèle (ex. facture, devis, etc.)."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Nom",
+        "description": "Description",
+        "type": "Type",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    }
   }
 }

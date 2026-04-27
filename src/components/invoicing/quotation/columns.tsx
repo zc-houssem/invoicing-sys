@@ -2,6 +2,7 @@ import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
+import { Badge } from '@/components/ui/badge';
 import { ResponseQuotationDto } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +39,11 @@ export const useSellingQuotationColumns = (
           attribute={'status'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.status}</div>,
+      cell: ({ row }) => (
+        <div>
+          <Badge variant={'outline'}>{row.original.status}</Badge>
+        </div>
+      ),
       enableSorting: true,
       enableHiding: true
     },

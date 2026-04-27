@@ -7,7 +7,7 @@ import { text, image, date, table } from '@pdfme/schemas';
 import { cn } from '@/lib/utils';
 import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 
 interface PDFEditorProps {
   className?: string;
@@ -106,7 +106,7 @@ export const PDFEditor = ({ className }: PDFEditorProps) => {
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 h-full transition-all duration-300 ease-in-out',
+        'flex flex-col h-full transition-all duration-300 ease-in-out',
         isFullscreen && 'fixed inset-0 z-[9999] bg-background p-4 animate-in fade-in zoom-in-95',
         className
       )}>
@@ -115,16 +115,7 @@ export const PDFEditor = ({ className }: PDFEditorProps) => {
 
       <div
         ref={containerRef}
-        className={cn(
-          'w-full rounded-xl border transition-all duration-100 ease-in-out',
-          isFullscreen ? 'h-full' : 'h-[80vh]'
-        )}
-      />
-      <Input
-        type="file"
-        onChange={(e) => {
-          setFile(e.target.files ? e.target.files[0] : null);
-        }}
+        className={cn('w-full', isFullscreen ? 'h-full' : 'flex-1 overflow-hidden')}
       />
     </div>
   );

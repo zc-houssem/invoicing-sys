@@ -4,6 +4,8 @@ import { articleFamily } from './article-family';
 import { article } from './article';
 import { bankAccount } from './bank-account';
 import { taxRate } from './tax-rate';
+import { template } from './template';
+import { storage } from './storage';
 
 export const core = {
   article,
@@ -11,5 +13,7 @@ export const core = {
   bankAccount,
   enterprise,
   interlocutor,
-  taxRate
+  taxRate,
+  template,
+  storage
 };

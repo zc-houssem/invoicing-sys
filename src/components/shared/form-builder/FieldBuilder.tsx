@@ -246,14 +246,15 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
       );
     case 'file':
       return (
-        <div className={cn('flex flex-col gap-2', field?.wrapperClassName)}>
+        <div className={cn('flex flex-col', field?.wrapperClassName)}>
           <Input
             {...field.props}
             id={field.id}
             type="file"
             accept={field.props?.accept}
+            placeholder={field.placeholder}
             className={cn(
-              'my-5 flex items-center',
+              'flex items-center',
               field?.className,
               field.error && 'border-destructive focus-visible:ring-destructive'
             )}

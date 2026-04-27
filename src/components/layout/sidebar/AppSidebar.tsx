@@ -167,6 +167,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('menu.contentManagement.subs.refParams'),
             url: '/content-management/reference-parameters',
             icon: Table
+          },
+          {
+            title: t('menu.contentManagement.subs.templates'),
+            url: '/content-management/templates',
+            icon: Printer
           }
         ]
       },
@@ -203,11 +208,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('menu.settings.subs.system'),
             url: '/settings/system/sequence',
             icon: FileCog
-          },
-          {
-            title: t('menu.settings.subs.pdf'),
-            url: '/settings/pdf/live',
-            icon: Printer
           },
           {
             title: t('menu.settings.subs.other'),
