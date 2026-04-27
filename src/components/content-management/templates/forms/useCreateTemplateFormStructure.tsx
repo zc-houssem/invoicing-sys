@@ -39,7 +39,8 @@ export const useCreateTemplateFormStructure = ({ store }: useCreateTemplateFormS
     description: t('template.form.descriptions.description'),
     props: {
       value: store.createDto.description,
-      onChange: (value) => store.setNested('createDto.description', value)
+      onChange: (value) => store.setNested('createDto.description', value),
+      rows: 4
     }
   };
 
@@ -51,7 +52,7 @@ export const useCreateTemplateFormStructure = ({ store }: useCreateTemplateFormS
     description: t('template.form.descriptions.type'),
     props: {
       value: store.createDto.templateType,
-      onValueChange: (value) => store.setNested('createDto.type', value),
+      onValueChange: (value) => store.setNested('createDto.templateType', value),
       options: Object.values(TemplateType).map((type) => ({
         label: capitalize(type),
         value: type
@@ -67,7 +68,7 @@ export const useCreateTemplateFormStructure = ({ store }: useCreateTemplateFormS
     description: t('template.form.descriptions.file'),
     props: {
       file: store.document,
-      onFileChange: (value) => store.setNested('createDto.documentId', value)
+      onFileChange: (value) => store.set('document', value)
     }
   };
 
