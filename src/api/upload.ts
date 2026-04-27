@@ -1,76 +1,120 @@
-import { Upload } from '@/types';
+import { Paginated, QueryParams, ServerResponse, Upload } from '@/types';
 import axios from './axios';
 
-const findAll = async (): Promise<Upload[]> => {
-  const response = await axios.get(`public/storage/all`);
+const findPaginated = async ({
+  page = '1',
+  limit = '5',
+  sort,
+  search = '',
+  filter = '',
+  join = ''
+}: QueryParams): Promise<Paginated<Upload>> => {
+  const params: { [key: string]: any } = {
+    page,
+    limit,
+    sort
+  };
+
+  if (search) params.search = search;
+  if (filter) params.filter = filter;
+  if (join) params.join = join;
+
+  const response = await axios.get<Paginated<Upload>>(`/storage/list`, {
+    params
+  });
+
   return response.data;
 };
 
-const findOne = async (id: number): Promise<Upload> => {
-  const response = await axios.get(`public/storage/${id}`);
-  return response.data;
-};
-
-const uploadFile = async (file: File): Promise<Upload> => {
+export const uploadFiles = async (
+  files: File[],
+  onProgress?: (percent: number) => void,
+  temporary: boolean = true
+): Promise<Upload[]> => {
   const formData = new FormData();
-  formData.append('file', file);
-  const response = await axios.post('public/storage/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+  files.forEach((file) => {
+    formData.append('files', file);
   });
+
+  const response = await axios.post<Upload[]>(
+    temporary ? '/storage/multiple/temporary' : '/storage/multiple',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: (event) => {
+        if (onProgress && event.total) {
+          const percent = Math.round((event.loaded * 100) / event.total);
+          onProgress(percent);
+        }
+      }
+    }
+  );
   return response.data;
 };
 
-const uploadFiles = async (files: File[]): Promise<number[]> => {
-  let uploadIds = [];
-  for (const file of files) {
-    const upload = await uploadFile(file);
-    upload.id && uploadIds.push(upload.id);
-  }
-  return uploadIds;
-};
-
-const fetchBlobBySlug = async (slug?: string): Promise<Blob | null> => {
+const downloadFile = async (slug: string, filename?: string) => {
   try {
-    const response = await axios.get(`public/storage/file/slug/${slug}`, {
+    const response = await axios.get(`/storage/download/slug/${slug}`, {
       responseType: 'blob'
     });
-    return response.data;
+
+    const blob = new Blob([response.data]);
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || slug;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   } catch (error) {
-    return null;
+    console.error('Download failed:', error);
   }
 };
 
-const fetchBlobById = async (id?: number): Promise<Blob | null> => {
+const openFile = async (slug: string) => {
   try {
-    const response = await axios.get(`public/storage/file/id/${id}`, {
+    const response = await axios.get(`/storage/download/slug/${slug}`, {
       responseType: 'blob'
     });
-    return response.data;
+
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   } catch (error) {
-    return null;
+    console.error('Open failed:', error);
   }
 };
 
-const downloadFile = async (slug: string): Promise<void> => {
-  const response = await axios.get(`public/storage/file/${slug}`, {
-    responseType: 'blob'
-  });
-  const url = window.URL.createObjectURL(new Blob([response.data]));
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', slug);
-  document.body.appendChild(link);
-  link.click();
+export const getUploadBySlug = async (slug: string) => {
+  const url = `/storage/view/slug/${slug}`;
+  const { data } = await axios.get(url, { responseType: 'blob' });
+  return URL.createObjectURL(data);
+};
+
+export const getUploadById = async (id: number) => {
+  const url = `/storage/view/id/${id}`;
+  const { data } = await axios.get(url, { responseType: 'blob' });
+  return URL.createObjectURL(data);
+};
+
+const deleteFile = async (slug: string): Promise<ServerResponse<Upload>> => {
+  const response = await axios.delete(`/storage/${slug}`);
+  return response.data;
 };
 
 export const upload = {
-  findAll,
-  findOne,
-  uploadFile,
+  findPaginated,
   uploadFiles,
-  fetchBlobBySlug,
-  fetchBlobById,
-  downloadFile
+  downloadFile,
+  deleteFile,
+  openFile,
+  getUploadBySlug,
+  getUploadById
 };
