@@ -27,6 +27,7 @@ export interface ResponseQuotationDto extends DatabaseEntity {
 
 export interface ResponseQuotationWorkflowDto extends ResponseWorkflowDto {
   quotation: ResponseQuotationDto;
+  isPrintable: boolean;
 }
 
 export interface CreateQuotationDto {

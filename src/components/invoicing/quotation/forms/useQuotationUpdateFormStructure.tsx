@@ -27,7 +27,6 @@ interface useQuotationUpdateFormStructureProps {
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
   bankAccountOptions: SelectOption[];
-  updateQuotation: () => void;
   isUpdatePending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
   isUpdatable: boolean;
@@ -39,7 +38,6 @@ export const useQuotationUpdateFormStructure = ({
   interlocutorOptions,
   currencyOptions,
   bankAccountOptions,
-  updateQuotation,
   isUpdatePending,
   selectedCurrency,
   isUpdatable
@@ -68,7 +66,7 @@ export const useQuotationUpdateFormStructure = ({
     placeholder: t('quotation.form.placeholders.date'),
     description: t('quotation.form.descriptions.date'),
     props: {
-      disabled: isUpdatePending,
+      disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.date,
       onDateChange: (date) => {
         store.setNested('updateDto.date', date);

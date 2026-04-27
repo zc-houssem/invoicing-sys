@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResponseQuotationWorkflowDto } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { Repeat2, Save } from 'lucide-react';
+import { Printer, Repeat2, Save } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -43,6 +43,14 @@ export const QuotationActions = ({
         onClick={save}>
         <Save />
         <span>{t('commands.save')}</span>
+      </Button>
+      <Button
+        variant={'outline'}
+        className="w-full"
+        disabled={!workflow?.isPrintable || isNextPending}
+        onClick={() => {}}>
+        <Printer />
+        <span>{t('commands.print')}</span>
       </Button>
       {workflow?.nextSteps.map((step) => (
         <Button

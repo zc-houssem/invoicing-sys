@@ -181,7 +181,6 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       valueKey: 'id',
       labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
     }),
-    updateQuotation: handleSubmit,
     isUpdatePending,
     selectedCurrency,
     isUpdatable: !!workflow?.isUpdatable
