@@ -9,6 +9,13 @@ import { cn } from '@/lib/utils';
 import { PDFEditor } from '../pdfme/PDFTemplateEditor';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { templateSchema } from '@/types/validations/template.validation';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
+import { ServerErrorResponse, Upload } from '@/types';
+import { toast } from 'sonner';
+import { useRouter } from 'next/router';
 
 const steps = [
   {
@@ -30,8 +37,8 @@ interface CreateTemplateFormProps {
 }
 
 export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
+  const router = useRouter();
   const templateStore = useTemplateStore();
-  const { formStructure } = useCreateTemplateFormStructure({ store: templateStore });
   const { setIntro, clearIntro } = useIntro();
 
   React.useEffect(() => {
@@ -42,21 +49,47 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     };
   }, []);
 
+  const { uploadFiles: uploadDocument, isUploadPending } = useUploadMutation({
+    onSuccess: (response: Upload[]) => {
+      templateStore.setNested('createDto.documentId', response[0].id);
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message || 'Failed to upload document');
+    }
+  });
+
+  const { formStructure } = useCreateTemplateFormStructure({
+    store: templateStore,
+    uploadDocument
+  });
+
+  const { mutate: createTemplate, isPending: isCreateTemplatePending } = useMutation({
+    mutationFn: async () => api.core.template.create(templateStore.createDto),
+    onSuccess() {
+      toast.success('Template created successfully');
+      templateStore.reset();
+      router.push('/content-management/templates');
+    },
+    onError(error: ServerErrorResponse) {
+      toast.error(error.response?.data?.message || 'Failed to create template');
+    }
+  });
+
   // Simple validation: require a name (customize as needed)
   const validateStep = (stepId: string) => {
     if (stepId === '1') {
-      return true;
-    }
-    if (stepId === '2') {
+      const result = templateSchema.safeParse(templateStore.createDto);
+      if (!result.success) {
+        templateStore.set('createDtoErrors', result.error.flatten().fieldErrors);
+        return false;
+      }
       return true;
     }
     return true;
   };
 
-  // Submit handler (customize as needed)
   const handleSubmit = () => {
-    // TODO: Implement actual submit logic
-    // Example: toast.success('Template created!');
+    createTemplate();
   };
 
   return (
@@ -119,7 +152,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
                   <PDFEditor
                     file={templateStore.document}
                     seVariables={(variables) =>
-                      templateStore.setNested('createDto.variables', variables)
+                      templateStore.setNested('createDto.variables', JSON.stringify(variables))
                     }
                   />
                 )}
@@ -128,13 +161,20 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
               {/* Controls */}
               <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4">
                 {!methods.isFirst && (
-                  <Button variant="outline" size="sm" onClick={methods.prev} disabled={false}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={methods.prev}
+                    disabled={isUploadPending || isCreateTemplatePending}>
                     <div className="flex items-center gap-2">
                       <ChevronLeft /> <span>Previous</span>
                     </div>
                   </Button>
                 )}
-                <Button size="sm" onClick={handleNext} disabled={false}>
+                <Button
+                  size="sm"
+                  onClick={handleNext}
+                  disabled={isUploadPending || isCreateTemplatePending}>
                   {methods.isLast ? (
                     <div className="flex items-center gap-2">
                       <span>Create</span>

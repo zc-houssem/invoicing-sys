@@ -270,7 +270,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             }}
           />
           {typeof field.props?.progress === 'number' && (
-            <div className="space-y-1">
+            <div className="mt-2">
               <Progress value={field.props.progress} />
               <span className="text-xs text-muted-foreground text-center">
                 {field.props.progress}%
