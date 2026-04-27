@@ -248,7 +248,6 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
       return (
         <div className={cn('flex flex-col', field?.wrapperClassName)}>
           <Input
-            {...field.props}
             id={field.id}
             type="file"
             accept={field.props?.accept}

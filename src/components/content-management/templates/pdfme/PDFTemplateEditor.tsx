@@ -7,17 +7,18 @@ import { text, image, date, table } from '@pdfme/schemas';
 import { cn } from '@/lib/utils';
 import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
-import { Input } from '@/components/ui/input';
 
 interface PDFEditorProps {
   className?: string;
+  file?: File | null;
+  variables?: Record<string, any>;
+  seVariables?: (variables: Record<string, any>) => void;
 }
 
-export const PDFEditor = ({ className }: PDFEditorProps) => {
+export const PDFEditor = ({ className, file, variables, seVariables }: PDFEditorProps) => {
   const [isMounted, setIsMounted] = React.useState(false);
   const initializedRef = React.useRef(false);
   const designerRef = React.useRef<Designer | null>(null);
-  const [file, setFile] = React.useState<File | null>(null);
   const [basePdf, setBasePdf] = React.useState<ArrayBuffer | string>(BLANK_PDF);
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -86,6 +87,7 @@ export const PDFEditor = ({ className }: PDFEditorProps) => {
 
       designer.onChangeTemplate((tpl) => {
         const { basePdf: _basePdf, ...rest } = tpl;
+        seVariables?.(rest as Template);
       });
     };
 
@@ -106,7 +108,7 @@ export const PDFEditor = ({ className }: PDFEditorProps) => {
   return (
     <div
       className={cn(
-        'flex flex-col h-full transition-all duration-300 ease-in-out',
+        'flex flex-col h-full gap-2 bg-background transition-all duration-300 ease-in-out',
         isFullscreen && 'fixed inset-0 z-[9999] bg-background p-4 animate-in fade-in zoom-in-95',
         className
       )}>
@@ -115,6 +117,8 @@ export const PDFEditor = ({ className }: PDFEditorProps) => {
 
       <div
         ref={containerRef}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
         className={cn('w-full', isFullscreen ? 'h-full' : 'flex-1 overflow-hidden')}
       />
     </div>

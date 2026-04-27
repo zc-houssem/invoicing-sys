@@ -59,11 +59,11 @@ export const ApplyPDFTemplateEditorStyles = () => {
           u {
             color: var(--foreground) !important;
           }
+          svg {
+                color: var(--foreground) !important;
+          }
         }
 
-        svg {
-              color: var(--foreground) !important;
-        }
 
         .ant-btn[disabled] .ant-btn-icon {
           color: var(--foreground) !important;
