@@ -11,11 +11,11 @@ import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
 interface PDFEditorProps {
   className?: string;
   file?: File | null;
-  variables?: Record<string, any>;
-  seVariables?: (variables: Record<string, any>) => void;
+  variables?: any;
+  setVariables?: (variables: Record<string, any>) => void;
 }
 
-export const PDFEditor = ({ className, file, variables, seVariables }: PDFEditorProps) => {
+export const PDFEditor = ({ className, file, variables, setVariables }: PDFEditorProps) => {
   const [isMounted, setIsMounted] = React.useState(false);
   const initializedRef = React.useRef(false);
   const designerRef = React.useRef<Designer | null>(null);
@@ -58,7 +58,15 @@ export const PDFEditor = ({ className, file, variables, seVariables }: PDFEditor
 
       if (cancelled) return;
 
-      const template: Template = { basePdf: buffer, schemas: [[]] };
+      const template: Template = variables
+        ? {
+            basePdf: buffer,
+            ...variables
+          }
+        : {
+            basePdf: buffer,
+            schemas: [[]]
+          };
 
       const plugins = {
         text,
@@ -87,7 +95,7 @@ export const PDFEditor = ({ className, file, variables, seVariables }: PDFEditor
 
       designer.onChangeTemplate((tpl) => {
         const { basePdf: _basePdf, ...rest } = tpl;
-        seVariables?.(rest as Template);
+        setVariables?.(rest as Template);
       });
     };
 

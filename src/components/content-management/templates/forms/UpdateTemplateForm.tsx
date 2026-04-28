@@ -177,7 +177,8 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
                 {methods.current.id === '2' && (
                   <PDFEditor
                     file={templateStore.document}
-                    seVariables={(variables) =>
+                    variables={templateStore.updateDto?.variables}
+                    setVariables={(variables) =>
                       templateStore.setNested('updateDto.variables', JSON.stringify(variables))
                     }
                   />
