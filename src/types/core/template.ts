@@ -14,6 +14,7 @@ export interface ResponseTemplateDto extends DatabaseEntity {
   document?: ResponseStorageDto;
   documentId?: number;
   variables?: object;
+  backupVariables?: object;
 }
 
 export interface CreateTemplateDto {
@@ -21,7 +22,8 @@ export interface CreateTemplateDto {
   description?: string;
   templateType?: TemplateType;
   documentId?: number;
-  variables?: object;
+  variables?: string;
+  backupVariables?: string;
 }
 
 export interface UpdateTemplateDto extends Partial<CreateTemplateDto> {}

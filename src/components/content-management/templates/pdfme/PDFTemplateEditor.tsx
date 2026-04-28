@@ -9,13 +9,24 @@ import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
 
 interface PDFEditorProps {
+  key: string; // to force remount when file & variables changes
   className?: string;
   file?: File | null;
   variables?: any;
-  setVariables?: (variables: Record<string, any>) => void;
+  setVariables?: (variables: any) => void;
+  exportCallback?: () => void;
+  importCallback?: () => void;
 }
 
-export const PDFEditor = ({ className, file, variables, setVariables }: PDFEditorProps) => {
+export const PDFEditor = ({
+  key,
+  className,
+  file,
+  variables,
+  setVariables,
+  exportCallback,
+  importCallback
+}: PDFEditorProps) => {
   const [isMounted, setIsMounted] = React.useState(false);
   const initializedRef = React.useRef(false);
   const designerRef = React.useRef<Designer | null>(null);
@@ -113,6 +124,15 @@ export const PDFEditor = ({ className, file, variables, setVariables }: PDFEdito
     };
   }, [isMounted, file]);
 
+  React.useEffect(() => {
+    if (designerRef.current && basePdf) {
+      designerRef.current.updateTemplate({
+        basePdf,
+        ...variables
+      });
+    }
+  }, [key]);
+
   return (
     <div
       className={cn(
@@ -121,7 +141,12 @@ export const PDFEditor = ({ className, file, variables, setVariables }: PDFEdito
         className
       )}>
       {isMounted ? <ApplyPDFTemplateEditorStyles /> : null}
-      <PDFTemplateEditorFieldActions isFullscreen={isFullscreen} toggle={toggle} />
+      <PDFTemplateEditorFieldActions
+        isFullscreen={isFullscreen}
+        toggle={toggle}
+        exportCallback={exportCallback}
+        importCallback={importCallback}
+      />
 
       <div
         ref={containerRef}

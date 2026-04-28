@@ -16,6 +16,7 @@ import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { ServerErrorResponse, Upload } from '@/types';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from 'uuid';
 
 const steps = [
   {
@@ -37,6 +38,7 @@ interface CreateTemplateFormProps {
 }
 
 export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
+  const [key, setKey] = React.useState(uuidv4());
   const router = useRouter();
   const templateStore = useTemplateStore();
   const { setIntro, clearIntro } = useIntro();
@@ -90,6 +92,21 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
 
   const handleSubmit = () => {
     createTemplate();
+  };
+
+  const exportVariables = () => {
+    templateStore.set('backupVariables', templateStore.variables);
+    toast.success('Variables exported successfully');
+  };
+
+  const importVariables = () => {
+    if (!templateStore.backupVariables) {
+      toast.error('No backup variables found to import');
+      return;
+    }
+    templateStore.set('variables', templateStore.backupVariables);
+    setKey(uuidv4());
+    toast.success('Variables imported successfully');
   };
 
   return (
@@ -150,10 +167,13 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
                 )}
                 {methods.current.id === '2' && (
                   <PDFEditor
+                    key={key}
                     file={templateStore.document}
-                    seVariables={(variables) =>
+                    setVariables={(variables) =>
                       templateStore.setNested('createDto.variables', JSON.stringify(variables))
                     }
+                    exportCallback={exportVariables}
+                    importCallback={importVariables}
                   />
                 )}
               </div>

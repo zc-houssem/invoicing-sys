@@ -3,7 +3,7 @@ import { useIntro } from '@/context/IntroContext';
 import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { cn } from '@/lib/utils';
-import { ServerErrorResponse, Upload } from '@/types';
+import { ServerErrorResponse, UpdateTemplateDto, Upload } from '@/types';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'sonner';
@@ -19,6 +19,8 @@ import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
 import { useTemplate } from '@/hooks/content/core/useTemplate';
 import { Spinner } from '@/components/shared';
 import { useUploadedFile } from '@/hooks/content/core/useUploadedFile';
+import { v4 as uuidv4 } from 'uuid';
+import { te } from 'date-fns/locale';
 
 interface UpdateTemplateFormProps {
   id: string;
@@ -41,6 +43,7 @@ const steps = [
 const { Stepper } = defineStepper(...steps);
 
 export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) => {
+  const [key, setKey] = React.useState(uuidv4());
   const router = useRouter();
   const { template, isTemplatePending } = useTemplate({ id });
   const { file, isFilePending } = useUploadedFile({
@@ -65,11 +68,12 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
         name: template.name,
         description: template.description,
         templateType: template.templateType,
-        documentId: template.documentId,
-        variables: template.variables ? template.variables : {}
+        documentId: template.documentId
       });
       templateStore.set('document', file);
       templateStore.set('progress', 100);
+      templateStore.set('variables', template.variables);
+      templateStore.set('backupVariables', template.backupVariables);
     }
   }, [template, file]);
 
@@ -88,8 +92,8 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
   });
 
   const { mutate: updateTemplate, isPending: isUpdateTemplatePending } = useMutation({
-    mutationFn: async () =>
-      api.core.template.update(templateStore?.response?.id, templateStore.updateDto),
+    mutationFn: async (updateDto: UpdateTemplateDto) =>
+      api.core.template.update(templateStore?.response?.id, updateDto),
     onSuccess() {
       toast.success('Template updated successfully');
       templateStore.reset();
@@ -114,7 +118,26 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
   };
 
   const handleSubmit = () => {
-    updateTemplate();
+    updateTemplate({
+      ...templateStore.updateDto,
+      variables: JSON.stringify(templateStore.variables),
+      backupVariables: JSON.stringify(templateStore.backupVariables)
+    });
+  };
+
+  const exportVariables = () => {
+    templateStore.set('backupVariables', templateStore?.variables);
+    toast.success('Variables exported successfully');
+  };
+
+  const importVariables = () => {
+    if (!templateStore?.backupVariables) {
+      toast.error('No backup variables found to import');
+      return;
+    }
+    templateStore.set('variables', templateStore?.backupVariables);
+    setKey(uuidv4());
+    toast.success('Variables imported successfully');
   };
 
   if (isTemplatePending || isFilePending) return <Spinner />;
@@ -176,11 +199,12 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
                 )}
                 {methods.current.id === '2' && (
                   <PDFEditor
+                    key={key}
                     file={templateStore.document}
-                    variables={templateStore.updateDto?.variables}
-                    setVariables={(variables) =>
-                      templateStore.setNested('updateDto.variables', JSON.stringify(variables))
-                    }
+                    variables={templateStore?.variables}
+                    setVariables={(variables) => templateStore.set('variables', variables)}
+                    exportCallback={exportVariables}
+                    importCallback={importVariables}
                   />
                 )}
               </div>

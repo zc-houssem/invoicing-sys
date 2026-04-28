@@ -86,7 +86,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
 
   // remove template
   const { mutate: removeTemplate, isPending: isDeletePending } = useMutation({
-    mutationFn: (id: number) => api.core.template.remove(id),
+    mutationFn: (id?: string) => api.core.template.remove(id),
     onSuccess: () => {
       if (templates?.length == 1 && page > 1) setPage(page - 1);
       toast.success(tContentManagement('template.action_remove_success'));
@@ -100,7 +100,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
   const { deleteTemplateDialog, openDeleteTemplateDialog, closeDeleteTemplateDialog } =
     useTemplateDeleteDialog({
       representation: templateStore?.response?.name,
-      deleteTemplate: () => removeTemplate(Number(templateStore?.response?.id) || 0),
+      deleteTemplate: () => removeTemplate(templateStore?.response?.id),
       isDeletionPending: isDeletePending,
       reset: templateStore.reset
     });

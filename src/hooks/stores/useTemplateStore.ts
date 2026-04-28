@@ -10,6 +10,9 @@ interface TemplateData {
 
   document?: File | null;
   progress: number;
+
+  variables?: object;
+  backupVariables?: object;
 }
 
 interface ITemplateStore extends TemplateData {}
@@ -23,7 +26,8 @@ const initialState: TemplateData = {
     description: '',
     documentId: undefined,
     templateType: undefined,
-    variables: undefined
+    variables: undefined,
+    backupVariables: undefined
   },
   createDtoErrors: {},
   updateDtoErrors: {},
