@@ -52,8 +52,10 @@ const findAll = async ({
   return response.data;
 };
 
-const findById = async (id: number): Promise<ResponseTemplateDto> => {
-  const response = await axios.get<ResponseTemplateDto>(`/template/${id}`);
+const findById = async (id: string, join?: string): Promise<ResponseTemplateDto> => {
+  const response = await axios.get<ResponseTemplateDto>(`/template/${id}`, {
+    params: { join }
+  });
   return response.data;
 };
 
@@ -62,12 +64,12 @@ const create = async (template: CreateTemplateDto): Promise<ResponseTemplateDto>
   return response.data;
 };
 
-const update = async (id?: number, template?: UpdateTemplateDto): Promise<ResponseTemplateDto> => {
+const update = async (id?: string, template?: UpdateTemplateDto): Promise<ResponseTemplateDto> => {
   const response = await axios.put(`/template/${id}`, template);
   return response.data;
 };
 
-const remove = async (id?: number): Promise<ResponseTemplateDto> => {
+const remove = async (id?: string): Promise<ResponseTemplateDto> => {
   const response = await axios.delete(`/template/${id}`);
   return response.data;
 };

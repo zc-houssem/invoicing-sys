@@ -12,6 +12,7 @@ export interface ResponseTemplateDto extends DatabaseEntity {
   templateType?: TemplateType;
   description?: string;
   document?: ResponseStorageDto;
+  documentId?: number;
   variables?: object;
 }
 

@@ -113,9 +113,6 @@ export const useCreateTemplateFormStructure = ({
       {
         rows: [
           {
-            fields: [fileField]
-          },
-          {
             fields: [nameField]
           },
           {
@@ -123,6 +120,9 @@ export const useCreateTemplateFormStructure = ({
           },
           {
             fields: [descriptionField]
+          },
+          {
+            fields: [fileField]
           }
         ]
       }
