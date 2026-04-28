@@ -26,7 +26,7 @@ const findPaginated = async ({
   return response.data;
 };
 
-export const uploadFiles = async (
+const uploadFiles = async (
   files: File[],
   onProgress?: (percent: number) => void,
   temporary: boolean = true
@@ -92,16 +92,26 @@ const openFile = async (slug: string) => {
   }
 };
 
-export const getUploadBySlug = async (slug: string) => {
+const getUploadBySlug = async (slug: string) => {
   const url = `/storage/view/slug/${slug}`;
   const { data } = await axios.get(url, { responseType: 'blob' });
   return URL.createObjectURL(data);
 };
 
-export const getUploadById = async (id: number) => {
+const getUploadById = async (id: number) => {
   const url = `/storage/view/id/${id}`;
   const { data } = await axios.get(url, { responseType: 'blob' });
   return URL.createObjectURL(data);
+};
+
+const getFileById = async (id: number): Promise<File> => {
+  const metadata = await axios.get<Upload>(`/storage/${id}`);
+  const { data } = await axios.get(`/storage/view/id/${id}`, { responseType: 'blob' });
+  const file = new File([data], metadata.data.filename || 'unknown', {
+    type: metadata.data.mimetype || 'application/octet-stream'
+  });
+  // console.log('Fetched file:', file);
+  return file;
 };
 
 const deleteFile = async (slug: string): Promise<ServerResponse<Upload>> => {
@@ -116,5 +126,6 @@ export const storage = {
   deleteFile,
   openFile,
   getUploadBySlug,
-  getUploadById
+  getUploadById,
+  getFileById
 };
