@@ -12,6 +12,7 @@ export interface FormStructure {
   orientation?: 'vertical' | 'horizontal';
   includeHeader?: boolean;
   fieldsets: Fieldset[];
+  toggleableFieldsets?: boolean;
 }
 
 export interface Fieldset {

@@ -3,7 +3,14 @@ import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { FieldBuilder } from './FieldBuilder';
-import { FieldVariant, FormStructure } from './types';
+import { FieldVariant, FormStructure, Fieldset } from './types';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { FieldsetBuilder } from './FieldsetBuilder';
 
 interface FormBuilderProps {
   className?: string;
@@ -23,6 +30,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
               )}>
               {structure.title?.value}
             </h1>
+
             {structure.description && (
               <p className={cn('text-muted-foreground', structure.description.className)}>
                 {structure.description.value}
@@ -32,96 +40,42 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
           <Separator className="mt-2 mb-4 lg:mb-6" />
         </div>
       )}
+
       <div
         className={cn(
           'flex gap-4 xl:gap-10',
           structure?.orientation === 'vertical' ? 'flex-col xl:flex-row' : 'flex-col'
         )}>
-        {structure?.fieldsets?.map((fieldset, index) => (
-          <div
-            key={index}
-            className={cn(
-              'flex  w-full',
-              structure.orientation === 'vertical'
-                ? 'flex-row xl:flex-col gap-10'
-                : 'flex-col gap-5'
-            )}>
-            {fieldset.includeHeader && (
-              <>
-                <div className="flex flex-row gap-2 justify-between">
-                  <div className="flex flex-col gap-2">
-                    <h2 className={cn('text-lg font-semibold', fieldset.title?.className)}>
-                      {fieldset.title?.value}
-                    </h2>
+        {structure.toggleableFieldsets ? (
+          <Accordion
+            type="multiple"
+            defaultValue={structure.fieldsets.map((_, index) => `fieldset-${index}`)}
+            className="w-full">
+            {structure.fieldsets.map((fieldset, index) => (
+              <AccordionItem key={index} value={`fieldset-${index}`} className="border-0">
+                <AccordionTrigger>
+                  <div className="flex flex-col text-left">
+                    <span className="font-semibold">{fieldset.title?.value}</span>
+
                     {fieldset.description && (
-                      <p
-                        className={cn(
-                          'text-sm text-muted-foreground',
-                          fieldset.description?.className
-                        )}>
+                      <span className="text-xs text-muted-foreground">
                         {fieldset.description.value}
-                      </p>
+                      </span>
                     )}
                   </div>
-                  {fieldset.component && <div>{fieldset.component}</div>}
-                </div>
-                <Separator />
-              </>
-            )}
+                </AccordionTrigger>
 
-            {fieldset?.rows?.map((row, index) => {
-              const fieldCount = row.fields.length;
-
-              return (
-                <div
-                  key={index}
-                  className={cn(
-                    'grid gap-6 w-full',
-                    structure.orientation === 'vertical' || fieldCount === 1
-                      ? 'grid-cols-1'
-                      : fieldCount === 2
-                        ? 'grid-cols-1 lg:grid-cols-2'
-                        : fieldCount === 3
-                          ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
-                          : fieldCount === 4
-                            ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
-                            : 'w-full'
-                  )}>
-                  {row.fields.map((field) => {
-                    if (!field.hidden)
-                      return (
-                        <div
-                          key={field.id}
-                          className={cn('flex flex-col gap-1 w-full', field.wrapperClassName)}>
-                          <Label className={cn('text-xs font-bold')} htmlFor={field.id}>
-                            <span>{field.label}</span>
-                            {field.required && <span className="text-destructive mx-1">*</span>}
-                          </Label>
-                          {!field.pending && <FieldBuilder field={field} />}
-
-                          <div className="flex justify-between items-center gap-2 mt-1">
-                            {![FieldVariant.SWITCH, FieldVariant.CHECKBOX].includes(
-                              field.variant
-                            ) &&
-                              !field.error && (
-                                <span className="font-medium text-xs opacity-70 leading-5">
-                                  {field.description}
-                                </span>
-                              )}
-                            {field?.error && (
-                              <span className="font-bold text-xs text-destructive leading-3">
-                                {field?.error}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                <AccordionContent>
+                  <FieldsetBuilder fieldset={fieldset} structure={structure} />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        ) : (
+          structure.fieldsets.map((fieldset, index) => (
+            <FieldsetBuilder key={index} fieldset={fieldset} structure={structure} />
+          ))
+        )}
       </div>
     </div>
   );
