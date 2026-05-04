@@ -1,11 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { X } from 'lucide-react';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { ResponseBankAccountDto } from '@/types';
+import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 
 export const useBankAccountColumns = (
   context: DataTableConfig<ResponseBankAccountDto>
@@ -93,29 +93,63 @@ export const useBankAccountColumns = (
       enableSorting: true,
       enableHiding: true
     },
+    // {
+    //   accessorKey: 'isMain',
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader
+    //       column={column}
+    //       context={context}
+    //       title={t('bankAccount.table.columns.isMain')}
+    //       attribute={'isMain'}
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div>
+    //       {
+    //         <Badge variant={row.original.isMain ? 'default' : 'outline'} className="px-5">
+    //           {row.original.isMain
+    //             ? t('bankAccount.table.columns.isMainPrimary')
+    //             : t('bankAccount.table.columns.isMainSecondary')}
+    //         </Badge>
+    //       }
+    //     </div>
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false
+    // },
     {
-      accessorKey: 'isMain',
+      accessorKey: t('bankAccount.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('bankAccount.table.columns.isMain')}
-          attribute={'isMain'}
+          title={t('bankAccount.table.columns.createdAt')}
+          attribute={'createdAt'}
         />
       ),
-      cell: ({ row }) => (
-        <div>
-          {
-            <Badge variant={row.original.isMain ? 'default' : 'outline'} className="px-5">
-              {row.original.isMain
-                ? t('bankAccount.table.columns.isMainPrimary')
-                : t('bankAccount.table.columns.isMainSecondary')}
-            </Badge>
-          }
-        </div>
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.createdAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('bankAccount.table.columns.updatedAt'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('bankAccount.table.columns.updatedAt')}
+          attribute={'updatedAt'}
+        />
       ),
-      enableSorting: false,
-      enableHiding: false
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.updatedAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
+      enableSorting: true,
+      enableHiding: true
     },
     {
       id: 'actions',
