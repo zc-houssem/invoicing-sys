@@ -82,8 +82,8 @@ export const useBankAccountColumns = (
       ),
       cell: ({ row }) => (
         <div>
-          {row.original.currency ? (
-            `${tCurrency(row.original?.currency?.code)} (${row.original.currency?.symbol})`
+          {row.original.currencyId ? (
+            `${tCurrency(row.original?.currency?.extras?.code)} (${row.original.currency?.extras?.symbol})`
           ) : (
             <span className="opacity-50">{t('bankAccount.table.emptyCells.currency')}</span>
           )}

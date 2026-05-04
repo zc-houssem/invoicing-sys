@@ -1,5 +1,5 @@
-import { ResponseCurrencyDto } from '../currency';
 import { DatabaseEntity } from '../response/database-entity';
+import { CurrencyPayload, ResponseRefParamDto } from './reference-types';
 
 export interface ResponseBankAccountDto extends DatabaseEntity {
   id: number;
@@ -8,7 +8,7 @@ export interface ResponseBankAccountDto extends DatabaseEntity {
   rib: string;
   iban: string;
   currencyId: number;
-  currency: ResponseCurrencyDto;
+  currency: ResponseRefParamDto<CurrencyPayload>;
   isMain: boolean;
 }
 
