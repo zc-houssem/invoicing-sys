@@ -197,6 +197,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: UserCog
           },
           {
+            title: t('menu.administrativeTools.subs.configuration'),
+            url: '/administrative-tools/configuration',
+            icon: Settings
+          },
+          {
             title: t('menu.administrativeTools.subs.logger'),
             url: '/administrative-tools/logger',
             icon: Cpu
