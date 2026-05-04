@@ -41,7 +41,9 @@
     "administrativeTools": {
       "title": "Administrative Tools",
       "subs": {
-        "userManagement": "User Management",
+        "users": "Users",
+        "roles": "Roles",
+        "permissions": "Permissions",
         "logger": "Logger",
         "system": "System"
       }

@@ -182,9 +182,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Shield,
         items: [
           {
-            title: t('menu.administrativeTools.subs.userManagement'),
+            title: t('menu.administrativeTools.subs.users'),
             url: '/administrative-tools/user-management/users',
             icon: Users
+          },
+          {
+            title: t('menu.administrativeTools.subs.roles'),
+            url: '/administrative-tools/user-management/roles',
+            icon: UserCog
+          },
+          {
+            title: t('menu.administrativeTools.subs.permissions'),
+            url: '/administrative-tools/user-management/permissions',
+            icon: UserCog
           },
           {
             title: t('menu.administrativeTools.subs.logger'),
