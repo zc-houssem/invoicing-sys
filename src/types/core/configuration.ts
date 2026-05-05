@@ -1,4 +1,4 @@
-import { ResponseUserDto } from "../user";
+import { ResponseUserDto } from '../user';
 
 export interface ResponseConfigurationParamDto {
   id: number;
@@ -27,6 +27,7 @@ export interface UpdateConfigurationParameterDto {
 
 export enum ParamVariant {
   STRING = 'string',
+  TEXT = 'text',
   NUMBER = 'number',
   BOOLEAN = 'boolean',
   SELECT = 'select'

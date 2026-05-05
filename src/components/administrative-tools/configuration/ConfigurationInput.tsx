@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useConfigStore } from '@/hooks/stores/userConfigStore';
 import { cn } from '@/lib/utils';
 import { ParamVariant, ResponseConfigurationParamDto } from '@/types';
@@ -73,6 +74,18 @@ export const ConfigurationInput = ({ className, configurationParam }: Configurat
             ))}
           </SelectContent>
         </Select>
+      );
+
+    case ParamVariant.TEXT:
+      return (
+        <Textarea
+          className={cn('w-full', className)}
+          value={currentValue}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder={t('configuration.inputs.enter', {
+            name: configurationParam.name
+          })}
+        />
       );
 
     default:
