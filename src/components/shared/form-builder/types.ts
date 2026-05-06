@@ -52,6 +52,7 @@ export enum FieldVariant {
   IMAGE = 'image',
   IMAGE_GALLERY = 'image_gallery',
   FILE = 'file',
+  FILES = 'files',
   EMPTY = 'empty',
   CUSTOM = 'custom'
 }
@@ -176,18 +177,34 @@ export interface SingleFileFieldProps extends BaseFieldProps {
   onUpload?: (file: File, onProgress: (percent: number) => void) => void;
 }
 
-export interface ImageGalleryFieldProps extends BaseFieldProps {
-  images: ImageFile[];
-  onFilesChange?: (e: ImageFile[]) => void;
-  onUpload?: (file: File, onProgress: (percent: number) => void) => void;
+export interface MultipleFilesFieldProps extends BaseFieldProps {
+  files?: ManipulatedFile[];
+  accept?: string;
+  progress?: Record<string, number>;
+  onFilesChange?: (e: ManipulatedFile[]) => void;
+  onUpload?: (
+    files: File[],
+    options: {
+      onProgress: (file: File, progress: number) => void;
+      onSuccess: (file: File) => void;
+      onError: (file: File, error: Error) => void;
+    }
+  ) => Promise<void> | void;
 }
 
-export interface ImageFile {
+export interface ImageGalleryFieldProps extends BaseFieldProps {
+  images: ManipulatedFile[];
+  onFilesChange?: (e: ManipulatedFile[]) => void;
+  onUpload?: (file: ManipulatedFile, onProgress: (percent: number) => void) => void;
+}
+
+export interface ManipulatedFile {
   id: string;
-  image?: File | null;
+  file?: File | null;
   url?: string;
   name: string;
   progress: number;
+  serverId: string;
 }
 
 export interface CustomFieldProps extends BaseFieldProps {

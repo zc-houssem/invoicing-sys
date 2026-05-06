@@ -23,6 +23,7 @@ import { PasswordField } from './PasswordField';
 import { Editor } from '@/components/shared/editor/blocks/editor-x/editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import MultipleSelector from '@/components/ui/multi-select';
+import { MultipleFilesUploader } from './MultipleFilesUploader';
 
 interface FieldBuilderProps {
   field?: Field<any>;
@@ -279,6 +280,8 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           )}
         </div>
       );
+    case 'files':
+      return <MultipleFilesUploader {...field.props} className={cn(field?.className)} />;
     case 'image':
       return (
         <ImageUploader

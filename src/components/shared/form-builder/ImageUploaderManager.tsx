@@ -4,13 +4,13 @@ import { X, GripVertical, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Separator } from '../../ui/separator';
-import { ImageFile } from './types';
+import { ManipulatedFile } from './types';
 
 interface ImageUploadManagerProps {
   className?: string;
   wrapperClassName?: string;
-  images: ImageFile[];
-  onFilesChange?: (e: ImageFile[]) => void;
+  images: ManipulatedFile[];
+  onFilesChange?: (e: ManipulatedFile[]) => void;
   onUpload?: (file: File, onProgress: (percent: number) => void) => void;
 }
 
@@ -29,14 +29,15 @@ export function ImageUploaderManager({
   const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
 
-    const newImages: ImageFile[] = Array.from(files)
+    const newImages: ManipulatedFile[] = Array.from(files)
       .filter((file) => file.type.startsWith('image/'))
       .map((file) => ({
         id: Math.random().toString(36).substr(2, 9),
-        image: file,
+        file,
         url: URL.createObjectURL(file),
         name: file.name,
-        progress: 0
+        progress: 0,
+        serverId: ''
       }));
 
     const allImages = [...images, ...newImages];
@@ -44,8 +45,8 @@ export function ImageUploaderManager({
 
     if (onUpload) {
       newImages.forEach((img) => {
-        if (!img.image) return;
-        onUpload(img.image, (currentProgress: number) => {
+        if (!img.file) return;
+        onUpload(img.file, (currentProgress: number) => {
           img.progress = currentProgress;
         });
       });
