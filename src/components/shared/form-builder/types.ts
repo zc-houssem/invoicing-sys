@@ -79,6 +79,7 @@ export interface BaseFieldProps {
 export interface TextFieldProps extends BaseFieldProps {
   value?: string | null;
   onChange?: (e: string) => void;
+  maxLength?: number;
 }
 
 export interface EmailFieldProps extends BaseFieldProps {
@@ -152,11 +153,13 @@ export interface TextareaFieldProps extends BaseFieldProps {
   cols?: number;
   rows?: number;
   resizable?: boolean;
+  maxLength?: number;
 }
 
 export interface EditorFieldProps extends BaseFieldProps {
   value?: string;
   onChange?: (e: string) => void;
+  maxLength?: number;
 }
 
 export interface ImageFieldProps extends BaseFieldProps {

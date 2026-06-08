@@ -105,9 +105,8 @@ import { TWEET } from '@/components/shared/editor/transformers/markdown-tweet-tr
 import { Separator } from '@/components/ui/separator';
 
 const placeholder = 'Press / for commands...';
-const maxLength = 500;
 
-export function Plugins({}) {
+export function Plugins({ maxLength }: { maxLength?: number }) {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
@@ -268,8 +267,12 @@ export function Plugins({}) {
       <ActionsPlugin>
         <div className="clear-both flex items-center justify-between gap-2 overflow-auto border-t p-1">
           <div className="flex flex-1 justify-start">
-            <MaxLengthPlugin maxLength={maxLength} />
-            <CharacterLimitPlugin maxLength={maxLength} charset="UTF-16" />
+            {maxLength !== undefined && maxLength > 0 && (
+              <>
+                <MaxLengthPlugin maxLength={maxLength} />
+                <CharacterLimitPlugin maxLength={maxLength} charset="UTF-16" />
+              </>
+            )}
           </div>
           <div>
             <CounterCharacterPlugin charset="UTF-16" />

@@ -33,13 +33,15 @@ export function Editor({
   editorSerializedState,
   onChange,
   onSerializedChange,
-  disabled
+  disabled,
+  maxLength
 }: {
   editorState?: EditorState;
   editorSerializedState?: SerializedEditorState;
   onChange?: (editorState: EditorState) => void;
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
   disabled?: boolean;
+  maxLength?: number;
 }) {
   const validSerializedState = isValidSerializedState(editorSerializedState)
     ? editorSerializedState
@@ -68,7 +70,7 @@ export function Editor({
             editorSerializedState={validSerializedState}
             onSerializedChange={onSerializedChange}
           />
-          <Plugins />
+          <Plugins maxLength={maxLength} />
 
           <OnChangePlugin
             ignoreSelectionChange={true}
