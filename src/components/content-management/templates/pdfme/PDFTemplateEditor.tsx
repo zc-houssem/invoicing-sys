@@ -7,15 +7,17 @@ import { text, image, date, table } from '@pdfme/schemas';
 import { cn } from '@/lib/utils';
 import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
+import { ResponseTemplateTypeDto } from '@/types';
 
 interface PDFEditorProps {
-  key: string; // to force remount when file & variables changes
+  key: string;
   className?: string;
   file?: File | null;
   variables?: any;
   setVariables?: (variables: any) => void;
   exportCallback?: () => void;
   importCallback?: () => void;
+  templateType?: ResponseTemplateTypeDto;
 }
 
 export const PDFEditor = ({
@@ -25,7 +27,8 @@ export const PDFEditor = ({
   variables,
   setVariables,
   exportCallback,
-  importCallback
+  importCallback,
+  templateType
 }: PDFEditorProps) => {
   const [isMounted, setIsMounted] = React.useState(false);
   const initializedRef = React.useRef(false);
@@ -133,11 +136,81 @@ export const PDFEditor = ({
     }
   }, [key]);
 
+  const handleInsertVariables = (variableKeys: string[]) => {
+    if (!designerRef.current) return;
+
+    const currentTemplate = designerRef.current.getTemplate();
+    const newSchemas = [...currentTemplate.schemas];
+    if (newSchemas.length === 0) newSchemas.push([]);
+
+    variableKeys.forEach((variableKey, index) => {
+      if (variableKey === 'items') {
+        newSchemas[0].push({
+          type: 'table',
+          position: { x: 10, y: 10 + index * 10 },
+          width: 150,
+          height: 50,
+          name: variableKey,
+          showHead: true,
+          head: ['Description', 'Qty', 'Price', 'Total'],
+          headWidthPercentages: [40, 20, 20, 20],
+          tableStyles: { borderColor: '#000000', borderWidth: 0.1 },
+          headStyles: {
+            fontName: undefined,
+            alignment: 'left',
+            verticalAlignment: 'middle',
+            fontSize: 13,
+            lineHeight: 1,
+            characterSpacing: 0,
+            fontColor: '#000000',
+            backgroundColor: '#e5e5e5',
+            borderColor: '#888888',
+            borderWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 },
+            padding: { top: 5, right: 5, bottom: 5, left: 5 }
+          },
+          bodyStyles: {
+            fontName: undefined,
+            alignment: 'left',
+            verticalAlignment: 'middle',
+            fontSize: 13,
+            lineHeight: 1,
+            characterSpacing: 0,
+            fontColor: '#000000',
+            backgroundColor: '',
+            alternateBackgroundColor: '#f5f5f5',
+            borderColor: '#888888',
+            borderWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 },
+            padding: { top: 5, right: 5, bottom: 5, left: 5 }
+          },
+          columnStyles: {
+            alignment: {
+              0: 'left',
+              1: 'center',
+              2: 'right',
+              3: 'right'
+            }
+          }
+        } as any);
+      } else {
+        newSchemas[0].push({
+          type: 'text',
+          position: { x: 10, y: 10 + index * 10 },
+          width: 50,
+          height: 10,
+          name: variableKey,
+          content: `{${variableKey}}`
+        } as any);
+      }
+    });
+
+    designerRef.current.updateTemplate({ ...currentTemplate, schemas: newSchemas });
+  };
+
   return (
     <div
       className={cn(
         'flex flex-col h-full gap-2 bg-background transition-all duration-300 ease-in-out',
-        isFullscreen && 'fixed inset-0 z-[9999] bg-background p-4 animate-in fade-in zoom-in-95',
+        isFullscreen && 'fixed inset-0 z-10 bg-background p-4 animate-in fade-in zoom-in-95',
         className
       )}>
       {isMounted ? <ApplyPDFTemplateEditorStyles /> : null}
@@ -146,6 +219,8 @@ export const PDFEditor = ({
         toggle={toggle}
         exportCallback={exportCallback}
         importCallback={importCallback}
+        templateType={templateType}
+        onInsertVariables={handleInsertVariables}
       />
 
       <div

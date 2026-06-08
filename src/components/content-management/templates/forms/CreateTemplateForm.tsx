@@ -3,7 +3,6 @@ import { useCreateTemplateFormStructure } from './useCreateTemplateFormStructure
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useIntro } from '@/context/IntroContext';
 import { defineStepper } from '@/components/ui/stepper';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { PDFEditor } from '../pdfme/PDFTemplateEditor';
@@ -17,6 +16,9 @@ import { ServerErrorResponse, Upload } from '@/types';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
 import { v4 as uuidv4 } from 'uuid';
+import { Separator } from '@/components/ui/separator';
+import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
+import { Spinner } from '@/components/shared';
 
 const steps = [
   {
@@ -42,6 +44,11 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
   const router = useRouter();
   const templateStore = useTemplateStore();
   const { setIntro, clearIntro } = useIntro();
+  const { templateTypes, isTemplateTypePending } = useTemplateTypes();
+
+  const selectedTemplateType = React.useMemo(() => {
+    return templateTypes?.find((type) => type.id === templateStore.createDto.templateTypeId);
+  }, [templateTypes, templateStore.createDto.templateTypeId]);
 
   React.useEffect(() => {
     setIntro?.('Create Template', 'Fill out the form below to create a new document template.');
@@ -62,6 +69,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
 
   const { formStructure } = useCreateTemplateFormStructure({
     store: templateStore,
+    templateTypes,
     uploadDocument
   });
 
@@ -109,6 +117,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     toast.success('Variables imported successfully');
   };
 
+  if (isTemplateTypePending) return <Spinner />;
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden pb-4', className)}>
       <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
@@ -154,15 +163,14 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
               <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
                 {methods.current.id === '1' && (
                   <div className="flex flex-col flex-1 overflow-auto p-2">
-                    <Card className="flex flex-col flex-1">
-                      <CardHeader>
-                        <CardTitle>{methods.current.title}</CardTitle>
-                        <CardDescription>{methods.current.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="flex flex-col flex-1 overflow-hidden">
-                        <FormBuilder structure={formStructure} />
-                      </CardContent>
-                    </Card>
+                    <div className="space-y-1 mb-4">
+                      <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                      <p className="text-xs">{methods.current.description}</p>
+                      <Separator className="mt-2" />
+                    </div>
+                    <div className="my-auto">
+                      <FormBuilder structure={formStructure} />
+                    </div>
                   </div>
                 )}
                 {methods.current.id === '2' && (
@@ -175,6 +183,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
                     }
                     exportCallback={exportVariables}
                     importCallback={importVariables}
+                    templateType={selectedTemplateType}
                   />
                 )}
               </div>

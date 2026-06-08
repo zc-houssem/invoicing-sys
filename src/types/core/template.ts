@@ -1,15 +1,11 @@
 import { DatabaseEntity } from '../response/database-entity';
 import { ResponseStorageDto } from './storage';
 
-export enum TemplateType {
-  QUOTATION = 'quotation',
-  INVOICE = 'invoice'
-}
-
 export interface ResponseTemplateDto extends DatabaseEntity {
   id: string;
   name: string;
-  templateType?: TemplateType;
+  templateType?: ResponseTemplateTypeDto;
+  templateTypeId?: string;
   description?: string;
   document?: ResponseStorageDto;
   documentId?: number;
@@ -20,10 +16,25 @@ export interface ResponseTemplateDto extends DatabaseEntity {
 export interface CreateTemplateDto {
   name: string;
   description?: string;
-  templateType?: TemplateType;
+  templateTypeId?: string;
   documentId?: number;
   variables?: string;
   backupVariables?: string;
 }
 
 export interface UpdateTemplateDto extends Partial<CreateTemplateDto> {}
+
+export interface ResponseTemplateTypeDto extends DatabaseEntity {
+  id: string;
+  code: string;
+  name: string;
+  variables?: any;
+}
+
+export interface CreateTemplateTypeDto {
+  code: string;
+  name: string;
+  variables?: string;
+}
+
+export interface UpdateTemplateTypeDto extends Partial<CreateTemplateTypeDto> {}

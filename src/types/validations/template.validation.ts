@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TemplateType } from '../core/template';
 
 export const templateSchema = z.object({
   name: z
@@ -7,7 +6,7 @@ export const templateSchema = z.object({
     .min(3, { message: 'Name must be at least 3 characters' }),
 
   description: z.string().optional(),
-  templateType: z.nativeEnum(TemplateType, {
+  templateTypeId: z.string({
     required_error: 'Template type is required'
   }),
   documentId: z.number({

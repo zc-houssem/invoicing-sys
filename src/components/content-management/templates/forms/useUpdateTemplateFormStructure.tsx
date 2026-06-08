@@ -3,23 +3,24 @@ import {
   FieldVariant,
   FormStructure,
   SelectFieldProps,
+  SelectOption,
   SingleFileFieldProps,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
-import { TemplateType } from '@/types/core/template';
-import { capitalize } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 interface useUpdateTemplateFormStructureProps {
   store: TemplateStore;
+  templateTypes: SelectOption[];
   uploadDocument: ReturnType<typeof useUploadMutation>['uploadFiles'];
 }
 
 export const useUpdateTemplateFormStructure = ({
   store,
+  templateTypes,
   uploadDocument
 }: useUpdateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
@@ -63,17 +64,14 @@ export const useUpdateTemplateFormStructure = ({
     variant: FieldVariant.SELECT,
     placeholder: t('template.form.placeholders.type'),
     description: t('template.form.descriptions.type'),
-    error: store.updateDtoErrors?.templateType?.[0],
+    error: store.updateDtoErrors?.templateTypeId?.[0],
     props: {
-      value: store.updateDto?.templateType,
+      value: store.updateDto?.templateTypeId,
       onValueChange: (value) => {
-        store.setNested('updateDto.templateType', value);
-        store.setNested('updateDtoErrors.templateType', []);
+        store.setNested('updateDto.templateTypeId', value);
+        store.setNested('updateDtoErrors.templateTypeId', []);
       },
-      options: Object.values(TemplateType).map((type) => ({
-        label: capitalize(type),
-        value: type
-      }))
+      options: templateTypes
     }
   };
 

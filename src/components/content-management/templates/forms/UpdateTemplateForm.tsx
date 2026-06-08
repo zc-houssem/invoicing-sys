@@ -11,16 +11,16 @@ import { useUpdateTemplateFormStructure } from './useUpdateTemplateFormStructure
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { templateSchema } from '@/types/validations/template.validation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { PDFEditor } from '../pdfme/PDFTemplateEditor';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
 import { useTemplate } from '@/hooks/content/core/useTemplate';
+import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
 import { Spinner } from '@/components/shared';
 import { useUploadedFile } from '@/hooks/content/core/useUploadedFile';
 import { v4 as uuidv4 } from 'uuid';
-import { te } from 'date-fns/locale';
+import { Separator } from '@/components/ui/separator';
+import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
 
 interface UpdateTemplateFormProps {
   id: string;
@@ -52,6 +52,11 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
   });
   const templateStore = useTemplateStore();
   const { setIntro, clearIntro } = useIntro();
+  const { templateTypes, isTemplateTypePending } = useTemplateTypes();
+
+  const selectedTemplateType = React.useMemo(() => {
+    return templateTypes?.find((type) => type.id === templateStore.updateDto?.templateTypeId);
+  }, [templateTypes, templateStore.updateDto?.templateTypeId]);
 
   React.useEffect(() => {
     setIntro?.('Update Template', 'Fill out the form below to update the document template.');
@@ -67,7 +72,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
       templateStore.set('updateDto', {
         name: template.name,
         description: template.description,
-        templateType: template.templateType,
+        templateTypeId: template.templateTypeId || template.templateType?.id,
         documentId: template.documentId
       });
       templateStore.set('document', file);
@@ -88,6 +93,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
 
   const { formStructure } = useUpdateTemplateFormStructure({
     store: templateStore,
+    templateTypes,
     uploadDocument
   });
 
@@ -186,15 +192,14 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
               <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
                 {methods.current.id === '1' && (
                   <div className="flex flex-col flex-1 overflow-auto p-2">
-                    <Card className="flex flex-col flex-1">
-                      <CardHeader>
-                        <CardTitle>{methods.current.title}</CardTitle>
-                        <CardDescription>{methods.current.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="flex flex-col flex-1 overflow-hidden">
-                        <FormBuilder structure={formStructure} />
-                      </CardContent>
-                    </Card>
+                    <div className="space-y-1 mb-4">
+                      <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                      <p className="text-xs">{methods.current.description}</p>
+                      <Separator className="mt-2" />
+                    </div>
+                    <div className="my-auto">
+                      <FormBuilder structure={formStructure} />
+                    </div>
                   </div>
                 )}
                 {methods.current.id === '2' && (
@@ -206,6 +211,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
                     setVariables={(variables) => templateStore.set('variables', variables)}
                     exportCallback={exportVariables}
                     importCallback={importVariables}
+                    templateType={selectedTemplateType}
                   />
                 )}
               </div>

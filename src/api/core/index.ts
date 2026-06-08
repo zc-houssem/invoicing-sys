@@ -6,6 +6,7 @@ import { bankAccount } from './bank-account';
 import { taxRate } from './tax-rate';
 import { template } from './template';
 import { storage } from './storage';
+import { templateType } from './template-type';
 
 export const core = {
   article,
@@ -15,5 +16,6 @@ export const core = {
   interlocutor,
   taxRate,
   template,
+  templateType,
   storage
 };

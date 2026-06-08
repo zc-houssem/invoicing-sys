@@ -25,7 +25,7 @@ const initialState: TemplateData = {
     name: '',
     description: '',
     documentId: undefined,
-    templateType: undefined,
+    templateTypeId: undefined,
     variables: undefined,
     backupVariables: undefined
   },
