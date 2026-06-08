@@ -62,7 +62,7 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
               return (
                 <div
                   key={field.id}
-                  className={cn('flex flex-col gap-1 w-full', field.wrapperClassName)}>
+                  className={cn('flex flex-col gap-1 w-full px-0.5', field.wrapperClassName)}>
                   {/* LABEL */}
                   <Label className="text-xs font-bold" htmlFor={field.id}>
                     <span>{field.label}</span>
