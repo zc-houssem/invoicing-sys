@@ -98,7 +98,10 @@ export const useTaxRateColumns = (
       ),
       cell: ({ row }) =>
         row.original.currency ? (
-          <div className="font-bold">{tCurrency(row.original.currency?.extras?.code)}</div>
+          <div>
+            {tCurrency(row.original.currency?.extras?.code)} (
+            {row.original.currency?.extras?.symbol})
+          </div>
         ) : (
           <div className="flex items-center gap-2 font-thin">
             {t('taxRate.table.columns.applicable_on_all')}
