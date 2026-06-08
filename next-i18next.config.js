@@ -21,6 +21,7 @@ const nextI18NextConfig = {
     ns: [
       'common',
       'contacts',
+      'content-management',
       'country',
       'currency',
       'invoicing',

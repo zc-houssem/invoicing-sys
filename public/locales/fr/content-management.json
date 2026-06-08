@@ -248,5 +248,38 @@
         "updatedAt": "Mis à jour le"
       }
     }
+  },
+  "configuration": {
+    "page": {
+      "title": "Configuration",
+      "description": "Gérez et configurez les propriétés de l'application de manière structurée"
+    },
+    "breadcrumbs": {
+      "contentManagement": "Gestion de contenu",
+      "configuration": "Configuration"
+    },
+    "actions": {
+      "saveChanges": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "resetAll": "Réinitialiser tout"
+    },
+    "messages": {
+      "updateSuccess": "La configuration a été mise à jour avec succès",
+      "updateError": "Échec de la mise à jour de la configuration",
+      "resetSuccess": "La configuration a été réinitialisée aux valeurs d'origine",
+      "noSearchResults": "Aucun paramètre de configuration ne correspond à votre recherche",
+      "noParams": "Aucun paramètre de configuration trouvé"
+    },
+    "searchPlaceholder": "Rechercher des paramètres...",
+    "loading": {
+      "configurations": "Chargement de la configuration..."
+    },
+    "inputs": {
+      "enter": "Saisir {{name}}",
+      "select": "Sélectionner {{name}}"
+    },
+    "groups": {
+      "count": "({{count}})"
+    }
   }
 }
