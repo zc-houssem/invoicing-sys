@@ -173,13 +173,8 @@ export const useEnterpriseUpdateFormStructure = ({
   };
 
   const enterpriseInformation: FormStructure = {
-    title: {
-      value: 'Enterprise information'
-    },
-    orientation: 'horizontal',
     fieldsets: [
       {
-        includeHeader: true,
         rows: [
           {
             fields: [nameField]
@@ -297,9 +292,6 @@ export const useEnterpriseUpdateFormStructure = ({
   };
 
   const interlocutorInformation: FormStructure = {
-    title: {
-      value: 'Interlocutor information'
-    },
     fieldsets: [
       {
         rows: [

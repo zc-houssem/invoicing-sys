@@ -18,7 +18,7 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { defineStepper } from '@/components/ui/stepper';
 import { useEnterpriseUpdateFormStructure } from './useEnterpriseUpdateFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
@@ -97,7 +97,13 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
         website: enterprise.website || '',
         particular: enterprise.particular,
         taxId: enterprise.taxId || '',
-        notes: enterprise.notes || '',
+        notes: (() => {
+          try {
+            return enterprise.notes ? JSON.parse(enterprise.notes) : '';
+          } catch {
+            return enterprise.notes || '';
+          }
+        })(),
         system: enterprise.system,
         activityId: enterprise.activityId,
         currencyId: enterprise.currencyId,
@@ -116,17 +122,18 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
           zipcode: enterprise.invoicingAddress?.zipcode,
           countryId: enterprise.invoicingAddress?.countryId
         },
-        interlocutors: (enterprise as any).interlocutors?.map((ei: any) => ({
-          interlocutor: {
-            title: ei.interlocutor?.title || '',
-            firstName: ei.interlocutor?.firstName || '',
-            lastName: ei.interlocutor?.lastName || '',
-            email: ei.interlocutor?.email || '',
-            phone: ei.interlocutor?.phone || ''
-          },
-          main: ei.main ?? false,
-          position: ei.position || ''
-        })) || []
+        interlocutors:
+          (enterprise as any).interlocutors?.map((ei: any) => ({
+            interlocutor: {
+              title: ei.interlocutor?.title || '',
+              firstName: ei.interlocutor?.firstName || '',
+              lastName: ei.interlocutor?.lastName || '',
+              email: ei.interlocutor?.email || '',
+              phone: ei.interlocutor?.phone || ''
+            },
+            main: ei.main ?? false,
+            position: ei.position || ''
+          })) || []
       });
     }
     return () => {
@@ -219,7 +226,8 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
   //update handler
   const handleSubmit = () => {
     updateEnterprise({
-      ...enterpriseStore.updateDto
+      ...enterpriseStore.updateDto,
+      notes: JSON.stringify(enterpriseStore.updateDto?.notes)
     });
   };
 
@@ -280,33 +288,33 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
                 ) : (
                   <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
                     <div className="flex flex-col flex-1 overflow-auto p-2">
-                      <Card className="flex flex-col flex-1">
-                        <CardHeader>
-                          <CardTitle>{methods.current.title}</CardTitle>
-                          <CardDescription>{methods.current.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          {methods.current.id === '1' && (
-                            <FormBuilder structure={enterpriseInformation} />
-                          )}
-                          {methods.current.id === '2' && (
-                            <div>
-                              <FormBuilder structure={interlocutorInformation} />
-                            </div>
-                          )}
-                          {methods.current.id === '3' && (
-                            <div>
-                              <FormBuilder structure={addressInformation} />
-                            </div>
-                          )}
-                          {methods.current.id === '4' && (
-                            <div>
-                              <FormBuilder structure={additionalInformation} />
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                      <div className="space-y-1 mb-4">
+                        <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                        <p className="text-xs">{methods.current.description}</p>
+                        <Separator className="mt-2" />
+                      </div>
+                      <div className="my-auto">
+                        {methods.current.id === '1' && (
+                          <FormBuilder structure={enterpriseInformation} />
+                        )}
+                        {methods.current.id === '2' && (
+                          <div>
+                            <FormBuilder structure={interlocutorInformation} />
+                          </div>
+                        )}
+                        {methods.current.id === '3' && (
+                          <div>
+                            <FormBuilder structure={addressInformation} />
+                          </div>
+                        )}
+                        {methods.current.id === '4' && (
+                          <div>
+                            <FormBuilder structure={additionalInformation} />
+                          </div>
+                        )}
+                      </div>
                     </div>
+                    <Separator className="mt-2" />
                   </div>
                 )}
 

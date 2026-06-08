@@ -18,11 +18,11 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { defineStepper } from '@/components/ui/stepper';
 import { useEnterpriseCreateFormStructure } from './useEnterpriseCreateFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { CreateEnterpriseDto } from '@/types/core/enterprise';
+import { Separator } from '@/components/ui/separator';
 
 const steps = [
   {
@@ -214,33 +214,33 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
                 ) : (
                   <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
                     <div className="flex flex-col flex-1 overflow-auto p-2">
-                      <Card className="flex flex-col flex-1">
-                        <CardHeader>
-                          <CardTitle>{methods.current.title}</CardTitle>
-                          <CardDescription>{methods.current.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          {methods.current.id === '1' && (
-                            <FormBuilder structure={enterpriseInformation} />
-                          )}
-                          {methods.current.id === '2' && (
-                            <div>
-                              <FormBuilder structure={interlocutorInformation} />
-                            </div>
-                          )}
-                          {methods.current.id === '3' && (
-                            <div>
-                              <FormBuilder structure={addressInformation} />
-                            </div>
-                          )}
-                          {methods.current.id === '4' && (
-                            <div>
-                              <FormBuilder structure={additionalInformation} />
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                      <div className="space-y-1 mb-4">
+                        <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                        <p className="text-xs">{methods.current.description}</p>
+                        <Separator className="mt-2" />
+                      </div>
+                      <div className="my-auto">
+                        {methods.current.id === '1' && (
+                          <FormBuilder structure={enterpriseInformation} />
+                        )}
+                        {methods.current.id === '2' && (
+                          <div>
+                            <FormBuilder structure={interlocutorInformation} />
+                          </div>
+                        )}
+                        {methods.current.id === '3' && (
+                          <div>
+                            <FormBuilder structure={addressInformation} />
+                          </div>
+                        )}
+                        {methods.current.id === '4' && (
+                          <div>
+                            <FormBuilder structure={additionalInformation} />
+                          </div>
+                        )}
+                      </div>
                     </div>
+                    <Separator className="mt-2" />
                   </div>
                 )}
 
