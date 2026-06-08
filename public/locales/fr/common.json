@@ -7,8 +7,8 @@
     "contacts": {
       "title": "Contacts",
       "subs": {
-        "enterprise": "Entreprises",
-        "interlocutor": "Interlocuteurs"
+        "enterprises": "Entreprises",
+        "interlocutors": "Interlocuteurs"
       }
     },
     "selling": {

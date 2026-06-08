@@ -80,12 +80,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Users,
         items: [
           {
-            title: t('menu.contacts.subs.enterprise'),
+            title: t('menu.contacts.subs.enterprises'),
             url: '/contacts/enterprises',
             icon: Building
           },
           {
-            title: t('menu.contacts.subs.interlocutor'),
+            title: t('menu.contacts.subs.interlocutors'),
             url: '/contacts/interlocutors',
             icon: BookUser
           }
