@@ -47,8 +47,10 @@ const findAll = async ({
   return response.data;
 };
 
-const findById = async (id: number): Promise<ResponseEnterpriseDto> => {
-  const response = await axios.get<ResponseEnterpriseDto>(`/enterprise/${id}`);
+const findById = async (id: number, join?: string): Promise<ResponseEnterpriseDto> => {
+  const response = await axios.get<ResponseEnterpriseDto>(`/enterprise/${id}`, {
+    params: { join }
+  });
   return response.data;
 };
 

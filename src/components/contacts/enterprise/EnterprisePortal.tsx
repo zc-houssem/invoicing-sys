@@ -110,7 +110,9 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     createCallback: () => {
       router.push('/contacts/new-enterprise');
     },
-    updateCallback: () => {},
+    updateCallback: (entity: ResponseEnterpriseDto) => {
+      router.push(`/contacts/modify-enterprise/${entity.id}`);
+    },
     deleteCallback: () => {
       setDeleteDialog(true);
     },

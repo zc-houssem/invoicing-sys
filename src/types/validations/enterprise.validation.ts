@@ -28,3 +28,16 @@ export const createEnterpriseValidationSchema = baseEnterpriseInformationValidat
     path: ['taxId']
   }
 );
+
+export const updateEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(
+  (data) => {
+    if (data.particular) {
+      return true;
+    }
+    return data.taxId && data.taxId.trim() !== '';
+  },
+  {
+    message: 'Tax ID Number is required for non-particular enterprises',
+    path: ['taxId']
+  }
+);
