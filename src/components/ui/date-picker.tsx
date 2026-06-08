@@ -97,6 +97,7 @@ export function DatePicker({
           <Button
             type="button"
             variant={'outline'}
+            data-empty={!date}
             className={cn(
               'flex gap-2 justify-center items-center py-4',
               !value && 'text-muted-foreground',
@@ -116,8 +117,9 @@ export function DatePicker({
             </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className={cn('w-auto p-2 flex flex-col', containerClassName)}>
-          <div className="flex justify-between p-2">
+        <PopoverContent
+          className={cn('w-auto p-2 flex flex-col bg-background', containerClassName)}>
+          <div className="flex gap-2 justify-between p-2">
             <Select onValueChange={handleMonthChange} value={months[getMonth(date || new Date())]}>
               <SelectTrigger className="w-[110px]">
                 <SelectValue placeholder="Month" />
@@ -145,10 +147,10 @@ export function DatePicker({
           </div>
 
           <Calendar
+            className="w-full"
             mode="single"
             selected={date}
             onSelect={handleSelect}
-            initialFocus
             month={date}
             onMonthChange={onChange}
           />
