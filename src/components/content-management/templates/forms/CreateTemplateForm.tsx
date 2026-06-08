@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Separator } from '@/components/ui/separator';
 import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
 import { Spinner } from '@/components/shared';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
 const steps = [
   {
@@ -69,7 +70,11 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
 
   const { formStructure } = useCreateTemplateFormStructure({
     store: templateStore,
-    templateTypes,
+    templateTypes: mapToSelectOptions({
+      data: templateTypes || [],
+      valueKey: 'id',
+      labelKey: 'name'
+    }),
     uploadDocument
   });
 

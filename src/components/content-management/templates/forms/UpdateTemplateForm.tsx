@@ -21,6 +21,7 @@ import { useUploadedFile } from '@/hooks/content/core/useUploadedFile';
 import { v4 as uuidv4 } from 'uuid';
 import { Separator } from '@/components/ui/separator';
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
 interface UpdateTemplateFormProps {
   id: string;
@@ -93,7 +94,11 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
 
   const { formStructure } = useUpdateTemplateFormStructure({
     store: templateStore,
-    templateTypes,
+    templateTypes: mapToSelectOptions({
+      data: templateTypes || [],
+      valueKey: 'id',
+      labelKey: 'name'
+    }),
     uploadDocument
   });
 

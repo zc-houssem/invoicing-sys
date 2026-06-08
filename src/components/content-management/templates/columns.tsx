@@ -58,7 +58,7 @@ export const useTemplateColumns = (
       ),
       cell: ({ row }) => (
         <div>
-          {row.original.templateType || (
+          {row.original.templateType?.name || (
             <span className="opacity-50">{t('template.table.emptyCells.type')}</span>
           )}
         </div>
