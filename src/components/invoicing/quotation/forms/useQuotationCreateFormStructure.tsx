@@ -6,6 +6,7 @@ import {
   Field,
   FieldVariant,
   FormStructure,
+  MultipleFilesFieldProps,
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
@@ -19,6 +20,8 @@ import { QuotationArticlesField } from './QuotationArticlesField';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
+import { Button } from '@/components/ui/button';
+import { BrushCleaning, Newspaper } from 'lucide-react';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
@@ -26,9 +29,16 @@ interface useQuotationCreateFormStructureProps {
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
   bankAccountOptions: SelectOption[];
-  createQuotation: () => void;
   isCreationPending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
+  onAttachmentsUpload?: (
+    files: File[],
+    options: {
+      onProgress: (file: File, progress: number) => void;
+      onSuccess: (file: File) => void;
+      onError: (file: File, error: Error) => void;
+    }
+  ) => Promise<void>;
 }
 
 export const useQuotationCreateFormStructure = ({
@@ -37,9 +47,9 @@ export const useQuotationCreateFormStructure = ({
   interlocutorOptions,
   currencyOptions,
   bankAccountOptions,
-  createQuotation,
   isCreationPending,
-  selectedCurrency
+  selectedCurrency,
+  onAttachmentsUpload
 }: useQuotationCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
 
@@ -177,6 +187,28 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
+    id: 'defaultGeneralConditionsActions',
+    variant: FieldVariant.CUSTOM,
+    props: {
+      children: (
+        <div className="flex gap-2">
+          <Button size="sm">
+            <Newspaper className="mr-2" />
+            <span>Insert Default General Conditions</span>
+          </Button>
+          <Button
+            size="sm"
+            variant={'outline'}
+            onClick={() => store.setNested('createDto.generalConditions', '{}')}>
+            <BrushCleaning className="mr-2" />
+            <span>Clear General Conditions</span>
+          </Button>
+        </div>
+      )
+    }
+  };
+
   const invoicingAddressPseudoField: Field<CustomFieldProps> = {
     id: 'invoicing-address',
     variant: FieldVariant.CUSTOM,
@@ -214,6 +246,30 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const attachmentsField: Field<MultipleFilesFieldProps> = {
+    id: 'attachments',
+    variant: FieldVariant.FILES,
+    props: {
+      files: store.files,
+      onFilesChange: (files) => {
+        store.set('files', files);
+      },
+      onUpload: onAttachmentsUpload
+    }
+  };
+
+  const notesField: Field<EditorFieldProps> = {
+    id: 'notes',
+    variant: FieldVariant.EDITOR,
+    props: {
+      value: store.createDto.notes,
+      onChange: (value) => {
+        store.setNested('createDto.notes', value);
+        store.setNested('createDtoErrors.notes', []);
+      }
+    }
+  };
+
   const additionalInfoField: Field<CustomFieldProps> = {
     id: 'additionalInfo',
     variant: FieldVariant.CUSTOM,
@@ -229,6 +285,9 @@ export const useQuotationCreateFormStructure = ({
                   rows: [
                     {
                       fields: [generalConditionsField]
+                    },
+                    {
+                      fields: [defaultGeneralConditionsActionsField]
                     }
                   ]
                 }
@@ -245,6 +304,7 @@ export const useQuotationCreateFormStructure = ({
     title: {
       value: 'General Information'
     },
+    toggleableFieldsets: true,
     orientation: 'horizontal',
     fieldsets: [
       {
@@ -278,6 +338,28 @@ export const useQuotationCreateFormStructure = ({
         rows: [
           {
             fields: [articlesField]
+          }
+        ]
+      },
+      {
+        title: {
+          value: 'Attachments'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [attachmentsField]
+          }
+        ]
+      },
+      {
+        title: {
+          value: 'Notes'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [notesField]
           }
         ]
       },

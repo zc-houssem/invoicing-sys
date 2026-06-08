@@ -1,5 +1,6 @@
 import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
 import { BaseActions, createBaseStore } from './useBaseStore';
+import { ManipulatedFile } from '@/components/shared/form-builder/types';
 
 interface QuotationData {
   response: ResponseQuotationDto | null;
@@ -8,6 +9,8 @@ interface QuotationData {
 
   updateDto?: UpdateQuotationDto;
   updateDtoErrors: Record<string, string[]>;
+
+  files: ManipulatedFile[];
 }
 
 interface IQuotationStore extends QuotationData {}
@@ -26,10 +29,12 @@ const initialState: QuotationData = {
     interlocutorId: undefined,
     currencyId: undefined,
     bankAccountId: undefined,
-    quotationArticles: []
+    quotationArticles: [],
+    uploads: []
   },
   createDtoErrors: {},
-  updateDtoErrors: {}
+  updateDtoErrors: {},
+  files: []
 };
 
 export const useQuotationStore = createBaseStore<IQuotationStore>({

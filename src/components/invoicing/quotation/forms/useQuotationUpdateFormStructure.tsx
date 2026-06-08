@@ -6,20 +6,20 @@ import {
   Field,
   FieldVariant,
   FormStructure,
+  MultipleFilesFieldProps,
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { Button } from '@/components/ui/button';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
 import { CurrencyPayload, ResponseEnterpriseDto, ResponseRefParamDto } from '@/types';
-import { Check, Save, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotationArticlesField } from './QuotationArticlesField';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
+import { api } from '@/api';
 
 interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
@@ -30,6 +30,14 @@ interface useQuotationUpdateFormStructureProps {
   isUpdatePending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
   isUpdatable: boolean;
+  onAttachmentsUpload?: (
+    files: File[],
+    options: {
+      onProgress: (file: File, progress: number) => void;
+      onSuccess: (file: File) => void;
+      onError: (file: File, error: Error) => void;
+    }
+  ) => Promise<void>;
 }
 
 export const useQuotationUpdateFormStructure = ({
@@ -40,7 +48,8 @@ export const useQuotationUpdateFormStructure = ({
   bankAccountOptions,
   isUpdatePending,
   selectedCurrency,
-  isUpdatable
+  isUpdatable,
+  onAttachmentsUpload
 }: useQuotationUpdateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
   const { t } = useTranslation('invoicing');
@@ -224,6 +233,36 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
+  const attachmentsField: Field<MultipleFilesFieldProps> = {
+    id: 'attachments',
+    variant: FieldVariant.FILES,
+    props: {
+      files: store.files,
+      onFilesChange: (files) => {
+        store.set('files', files);
+      },
+      onUpload: onAttachmentsUpload,
+      onFileOpen: (file) => {
+        api.core.storage.openFileById(file.serverId as number, '*/*');
+      },
+      onFileDownload: (file) => {
+        api.core.storage.downloadFileById(file.serverId as number, file.name);
+      }
+    }
+  };
+
+  const notesField: Field<EditorFieldProps> = {
+    id: 'notes',
+    variant: FieldVariant.EDITOR,
+    props: {
+      value: store.updateDto?.notes,
+      onChange: (value) => {
+        store.setNested('updateDto.notes', value);
+        store.setNested('updateDtoErrors.notes', []);
+      }
+    }
+  };
+
   const additionalInfoField: Field<CustomFieldProps> = {
     id: 'additionalInfo',
     variant: FieldVariant.CUSTOM,
@@ -255,6 +294,7 @@ export const useQuotationUpdateFormStructure = ({
     title: {
       value: 'General Information'
     },
+    toggleableFieldsets: true,
     orientation: 'horizontal',
     fieldsets: [
       {
@@ -288,6 +328,28 @@ export const useQuotationUpdateFormStructure = ({
         rows: [
           {
             fields: [articlesField]
+          }
+        ]
+      },
+      {
+        title: {
+          value: 'Attachments'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [attachmentsField]
+          }
+        ]
+      },
+      {
+        title: {
+          value: 'Notes'
+        },
+        includeHeader: true,
+        rows: [
+          {
+            fields: [notesField]
           }
         ]
       },

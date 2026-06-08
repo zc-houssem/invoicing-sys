@@ -6,6 +6,7 @@ export interface LineArticle {
   articleId?: number;
   title?: string;
   description?: string;
+  order?: number;
   unitPrice: number;
   quantity: number;
   discountType?: 'rate' | 'fixed';
@@ -44,4 +45,6 @@ export interface CreateArticleDto {
   articleFamilyId?: number;
 }
 
-export interface UpdateArticleDto extends Partial<CreateArticleDto> {}
+export interface UpdateArticleDto extends Partial<CreateArticleDto> {
+  id: number;
+}

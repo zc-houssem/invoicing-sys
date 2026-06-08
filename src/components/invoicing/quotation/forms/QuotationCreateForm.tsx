@@ -27,7 +27,7 @@ import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { Button } from '@/components/ui/button';
-import { Check, Repeat2, Save, Send } from 'lucide-react';
+import { Repeat2, Save } from 'lucide-react';
 import { Status } from '../../Status';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -51,6 +51,46 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       enterpriseStore.reset();
     };
   }, []);
+
+  const handleAttachmentsUpload = React.useCallback(
+    async (
+      files: File[],
+      {
+        onProgress,
+        onSuccess,
+        onError
+      }: {
+        onProgress: (file: File, progress: number) => void;
+        onSuccess: (file: File) => void;
+        onError: (file: File, error: Error) => void;
+      }
+    ) => {
+      await Promise.all(
+        files.map(async (file) => {
+          try {
+            const results = await api.upload.uploadFiles([file], (percent) => {
+              onProgress(file, percent);
+            });
+            const uploaded = results[0];
+            const currentFiles = quotationStore.files;
+            quotationStore.set(
+              'files',
+              currentFiles.map((mf) =>
+                mf.file === file
+                  ? { ...mf, serverId: String(uploaded.id ?? ''), progress: 100 }
+                  : mf
+              )
+            );
+            onSuccess(file);
+          } catch (err) {
+            const error = err instanceof Error ? err : new Error('Upload failed');
+            onError(file, error);
+          }
+        })
+      );
+    },
+    []
+  );
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
     join: ['invoicingAddress', 'deliveryAddress']
@@ -95,19 +135,23 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       createQuotation({
         ...quotationStore.createDto,
         quotationArticles: articleStore.articles.map(
-          (article) =>
+          (article, order) =>
             ({
               article: {
                 title: article.title,
                 description: article.description
               },
+              order,
               quantity: article.quantity,
               unitPrice: article.unitPrice,
               discountType: article.discountType,
               discountValue: article.discountValue,
               taxIds: article.taxIds
             }) satisfies CreateQuotationArticleDto
-        )
+        ),
+        uploads: quotationStore.files
+          .filter((mf) => mf.serverId)
+          .map((mf, order) => ({ uploadId: Number(mf.serverId), order }))
       });
     }
   };
@@ -134,9 +178,9 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       valueKey: 'id',
       labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
     }),
-    createQuotation: handleSubmit,
     isCreationPending,
-    selectedCurrency: selectedCurrency
+    selectedCurrency: selectedCurrency,
+    onAttachmentsUpload: handleAttachmentsUpload
   });
 
   if (isEnterprisesPending || isCurrenciesPending || isBankAccountsPending) return <Spinner />;

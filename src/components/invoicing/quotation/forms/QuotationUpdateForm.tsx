@@ -40,9 +40,55 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
 
+  const handleAttachmentsUpload = React.useCallback(
+    async (
+      files: File[],
+      {
+        onProgress,
+        onSuccess,
+        onError
+      }: {
+        onProgress: (file: File, progress: number) => void;
+        onSuccess: (file: File) => void;
+        onError: (file: File, error: Error) => void;
+      }
+    ) => {
+      await Promise.all(
+        files.map(async (file) => {
+          try {
+            const results = await api.upload.uploadFiles([file], (percent) => {
+              onProgress(file, percent);
+            });
+            const uploaded = results[0];
+            const currentFiles = quotationStore.files;
+            quotationStore.set(
+              'files',
+              currentFiles.map((mf) =>
+                mf.file === file
+                  ? { ...mf, serverId: String(uploaded.id ?? ''), progress: 100 }
+                  : mf
+              )
+            );
+            onSuccess(file);
+          } catch (err) {
+            const error = err instanceof Error ? err : new Error('Upload failed');
+            onError(file, error);
+          }
+        })
+      );
+    },
+    []
+  );
+
   const { workflow, isWorkflowPending, refetchWorkflow } = useQuotationWorkflow({
     id,
-    join: ['quotationArticles', 'quotationArticles.article', 'quotationArticles.taxes']
+    join: [
+      'quotationArticles',
+      'quotationArticles.article',
+      'quotationArticles.taxes',
+      'uploads',
+      'uploads.upload'
+    ]
   });
 
   const { enterprises, isEnterprisesPending, refetchEnterprises } = useEnterprises({
@@ -66,6 +112,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
 
   React.useEffect(() => {
     if (workflow && enterprises) {
+      console.log(workflow.quotation);
       quotationStore.set('response', workflow.quotation);
       quotationStore.set('updateDto', {
         date: workflow?.quotation.date ? new Date(workflow.quotation.date) : undefined,
@@ -77,27 +124,43 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         interlocutorId: workflow?.quotation.interlocutorId,
         currencyId: workflow?.quotation.currencyId,
         bankAccountId: workflow?.quotation.bankAccountId,
-        quotationArticles: []
+        quotationArticles: [],
+        uploads: []
       });
       const enterprise = enterprises.find((e) => e.id === workflow.quotation.enterpriseId);
       enterpriseStore.set('response', enterprise);
 
       articleStore.set(
         'articles',
-        workflow.quotation.quotationArticles.map((qa) => {
-          return {
-            clientId: qa.article.id.toString(),
-            id: qa.id,
-            articleId: qa.article.id,
-            title: qa.article.title,
-            description: qa.article.description,
-            unitPrice: qa.unitPrice,
-            quantity: qa.quantity,
-            discountType: qa.discountType,
-            discountValue: qa.discountValue,
-            taxIds: qa.taxes?.map((t) => t.id) || []
-          } satisfies LineArticle;
-        })
+        workflow.quotation.quotationArticles
+          .sort((a, b) => a.order - b.order)
+          .map((qa, order) => {
+            return {
+              clientId: qa.article.id.toString(),
+              id: qa.id,
+              articleId: qa.articleId,
+              order,
+              title: qa.article.title,
+              description: qa.article.description,
+              unitPrice: qa.unitPrice,
+              quantity: qa.quantity,
+              discountType: qa.discountType,
+              discountValue: qa.discountValue,
+              taxIds: qa.taxes?.map((t) => t.id) || []
+            } satisfies LineArticle;
+          })
+      );
+
+      quotationStore.set(
+        'files',
+        (workflow.quotation.uploads ?? [])
+          .sort((a, b) => a.order - b.order)
+          .map((qu) => ({
+            id: String(qu.id),
+            name: qu.upload.filename,
+            progress: 100,
+            serverId: String(qu.uploadId)
+          }))
       );
     }
     return () => {
@@ -111,6 +174,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     mutationFn: async (payload: { id: number; data: UpdateQuotationDto }) =>
       api.invoicing.quotation.update(payload.id, payload.data),
     onSuccess: (data) => {
+      handleReload();
       toast.success('Quotation updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
@@ -132,21 +196,26 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         data: {
           ...quotationStore.updateDto,
           quotationArticles: articleStore.articles.map(
-            (article) =>
+            (article, order) =>
               ({
-                id: article.id!,
+                id: article.id as number,
                 article: {
+                  id: article.articleId as number,
                   title: article.title,
                   description: article.description
                 },
-                articleId: article.articleId!,
+                order,
+                articleId: article.articleId,
                 quantity: article.quantity,
                 unitPrice: article.unitPrice,
                 discountType: article.discountType,
                 discountValue: article.discountValue,
                 taxIds: article.taxIds
               }) satisfies UpdateQuotationArticleDto
-          )
+          ),
+          uploads: quotationStore.files
+            .filter((mf) => mf.serverId)
+            .map((mf, order) => ({ id: Number(mf.id) || 0, uploadId: Number(mf.serverId), order }))
         }
       });
     }
@@ -183,10 +252,12 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     }),
     isUpdatePending,
     selectedCurrency,
-    isUpdatable: !!workflow?.isUpdatable
+    isUpdatable: !!workflow?.isUpdatable,
+    onAttachmentsUpload: handleAttachmentsUpload
   });
 
-  if (isWorkflowPending || isEnterprisesPending || isCurrenciesPending) return <Spinner />;
+  if (isWorkflowPending || isEnterprisesPending || isCurrenciesPending || isBankAccountsPending)
+    return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>

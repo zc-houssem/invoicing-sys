@@ -10,9 +10,10 @@ import { useTranslation } from 'react-i18next';
 interface ArticleResumeProps {
   className?: string;
   currency?: ResponseRefParamDto<CurrencyPayload>;
+  includeHeader?: boolean;
 }
 
-export function ArticleResume({ className, currency }: ArticleResumeProps) {
+export function ArticleResume({ className, currency, includeHeader }: ArticleResumeProps) {
   const articleStore = useArticleStore();
   const { t } = useTranslation('invoicing');
 
@@ -119,13 +120,13 @@ export function ArticleResume({ className, currency }: ArticleResumeProps) {
 
   if (isTaxRatesPending) return <Spinner />;
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
-      <span className="font-bold text-xl">{t('common.financialResume')}</span>
+    <div className={cn('flex flex-col mt-auto gap-2', className)}>
+      {includeHeader && <span className="font-bold text-xl">{t('common.financialResume')}</span>}
       <table className="w-full mt-2">
         {data.map((item, index) => (
           <tr key={index}>
             <td className="text-start">
-              <Label className="text-sm font-semibold">{item.label}</Label>
+              <Label className="text-sm font-thin">{item.label}</Label>
             </td>
             <td className="text-muted-foreground text-end">{item.value}</td>
           </tr>

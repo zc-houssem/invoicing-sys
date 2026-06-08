@@ -1,7 +1,6 @@
 'use client';
 
-import { FileIcon, Upload, X } from 'lucide-react';
-import { useCallback, useMemo, useRef } from 'react';
+import { Download, ExternalLink, FileIcon, Upload, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +16,7 @@ import {
 } from '@/components/ui/file-upload';
 import { cn } from '@/lib/utils';
 import { ManipulatedFile } from './types';
+import React from 'react';
 
 interface MultipleFilesUploaderProps {
   className?: string;
@@ -33,6 +33,8 @@ interface MultipleFilesUploaderProps {
       onError: (file: File, error: Error) => void;
     }
   ) => Promise<void> | void;
+  onFileOpen?: (file: ManipulatedFile) => void;
+  onFileDownload?: (file: ManipulatedFile) => void;
 }
 
 export const MultipleFilesUploader = ({
@@ -42,21 +44,23 @@ export const MultipleFilesUploader = ({
   maxSize,
   files = [],
   onFilesChange: setFiles,
-  onUpload
+  onUpload,
+  onFileOpen,
+  onFileDownload
 }: MultipleFilesUploaderProps) => {
-  const filesRef = useRef(files);
+  const filesRef = React.useRef(files);
   filesRef.current = files;
 
   // Native File objects for FileUpload (new / in-progress uploads)
-  const nativeFiles = useMemo(
+  const nativeFiles = React.useMemo(
     () => files.filter((f) => f.file != null).map((f) => f.file as File),
     [files]
   );
 
   // Already-uploaded entries that have only a URL (no native File)
-  const uploadedFiles = useMemo(() => files.filter((f) => !f.file && f.url), [files]);
+  const uploadedFiles = React.useMemo(() => files.filter((f) => !f.file && f.serverId), [files]);
 
-  const handleValueChange = useCallback(
+  const handleValueChange = React.useCallback(
     (newNativeFiles: File[]) => {
       if (!setFiles) return;
       const current = filesRef.current;
@@ -91,7 +95,20 @@ export const MultipleFilesUploader = ({
     [setFiles]
   );
 
-  const handleRemoveUploaded = useCallback(
+  const handleOpen = React.useCallback((url: string) => {
+    window.open(url, '_blank');
+  }, []);
+
+  const handleDownload = React.useCallback((url: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, []);
+
+  const handleRemoveUploaded = React.useCallback(
     (id: string) => {
       if (!setFiles) return;
       setFiles(filesRef.current.filter((f) => f.id !== id));
@@ -160,6 +177,28 @@ export const MultipleFilesUploader = ({
                   </a>
                 )}
               </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-7 shrink-0"
+                onClick={() => {
+                  if (onFileOpen) onFileOpen(mf);
+                  else if (mf.url) handleOpen?.(mf.url);
+                }}>
+                <ExternalLink className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-7 shrink-0"
+                onClick={() => {
+                  if (onFileDownload) onFileDownload(mf);
+                  else if (mf.url) handleDownload?.(mf.url);
+                }}>
+                <Download className="size-4" />
+              </Button>
               <Button
                 type="button"
                 variant="ghost"

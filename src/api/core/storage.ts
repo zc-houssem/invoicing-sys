@@ -76,13 +76,51 @@ const downloadFile = async (slug: string, filename?: string) => {
   }
 };
 
-const openFile = async (slug: string) => {
+const downloadFileById = async (id: number, filename?: string) => {
+  try {
+    const response = await axios.get(`/storage/download/id/${id}`, {
+      responseType: 'blob'
+    });
+
+    const blob = new Blob([response.data]);
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || `file_${id}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Download failed:', error);
+  }
+};
+
+const openFile = async (slug: string, mimeType: string = 'application/pdf') => {
   try {
     const response = await axios.get(`/storage/download/slug/${slug}`, {
       responseType: 'blob'
     });
 
-    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const blob = new Blob([response.data], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  } catch (error) {
+    console.error('Open failed:', error);
+  }
+};
+
+const openFileById = async (id: number, mimeType: string = 'application/pdf') => {
+  try {
+    const response = await axios.get(`/storage/download/id/${id}`, {
+      responseType: 'blob'
+    });
+
+    const blob = new Blob([response.data], { type: mimeType });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
 
@@ -123,8 +161,10 @@ export const storage = {
   findPaginated,
   uploadFiles,
   downloadFile,
+  downloadFileById,
   deleteFile,
   openFile,
+  openFileById,
   getUploadBySlug,
   getUploadById,
   getFileById

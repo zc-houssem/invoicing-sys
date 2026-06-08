@@ -5,6 +5,7 @@ import { ResponseRefParamDto } from './reference-types';
 import { ResponseBankAccountDto } from './bank-account';
 import { ResponseTaxRateDto } from './tax-rate';
 import { ResponseWorkflowDto } from '../response/workflow';
+import { ResponseStorageDto } from './storage';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -22,7 +23,9 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   currencyId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
+  notes?: string;
   quotationArticles: ResponseQuotationArticleDto[];
+  uploads: ResponseQuotationUploadDto[];
 }
 
 export interface ResponseQuotationWorkflowDto extends ResponseWorkflowDto {
@@ -40,11 +43,15 @@ export interface CreateQuotationDto {
   interlocutorId?: number;
   currencyId?: number;
   bankAccountId?: number;
+  notes?: string;
   quotationArticles: CreateQuotationArticleDto[];
+  uploads: CreateQuotationUploadDto[];
 }
 
-export interface UpdateQuotationDto extends Partial<Omit<CreateQuotationDto, 'quotationArticles'>> {
+export interface UpdateQuotationDto
+  extends Partial<Omit<CreateQuotationDto, 'quotationArticles' | 'uploads'>> {
   quotationArticles: UpdateQuotationArticleDto[];
+  uploads: UpdateQuotationUploadDto[];
 }
 
 export interface ResponseQuotationArticleDto extends DatabaseEntity {
@@ -54,6 +61,8 @@ export interface ResponseQuotationArticleDto extends DatabaseEntity {
 
   article: ResponseArticleDto;
   articleId: number;
+
+  order: number;
 
   unitPrice: number;
   quantity: number;
@@ -67,6 +76,18 @@ export interface CreateQuotationArticleDto {
   article?: CreateArticleDto;
   unitPrice: number;
   quantity: number;
+  order: number;
+  discountType?: 'rate' | 'fixed';
+  discountValue: number;
+  taxIds?: number[];
+}
+
+export interface UpdateQuotationArticleDto
+  extends Partial<Omit<CreateQuotationArticleDto, 'article'>> {
+  id: number;
+  articleId?: number;
+  order?: number;
+  article?: UpdateArticleDto;
   discountType?: 'rate' | 'fixed';
   discountValue: number;
   taxIds?: number[];
@@ -77,4 +98,27 @@ export interface UpdateQuotationArticleDto
   id: number;
   articleId?: number;
   article?: UpdateArticleDto;
+}
+
+export interface ResponseQuotationUploadDto extends DatabaseEntity {
+  id: number;
+  quotation: ResponseQuotationDto;
+  quotationId: number;
+
+  upload: ResponseStorageDto;
+  uploadId: number;
+
+  order: number;
+}
+
+export interface CreateQuotationUploadDto {
+  uploadId?: number;
+  order: number;
+}
+
+export interface UpdateQuotationUploadDto
+  extends Partial<Omit<CreateQuotationUploadDto, 'upload'>> {
+  id: number;
+  uploadId?: number;
+  order?: number;
 }

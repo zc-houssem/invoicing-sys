@@ -190,6 +190,8 @@ export interface MultipleFilesFieldProps extends BaseFieldProps {
       onError: (file: File, error: Error) => void;
     }
   ) => Promise<void> | void;
+  onFileOpen?: (file: ManipulatedFile) => void;
+  onFileDownload?: (file: ManipulatedFile) => void;
 }
 
 export interface ImageGalleryFieldProps extends BaseFieldProps {
@@ -204,7 +206,7 @@ export interface ManipulatedFile {
   url?: string;
   name: string;
   progress: number;
-  serverId: string;
+  serverId: string | number;
 }
 
 export interface CustomFieldProps extends BaseFieldProps {

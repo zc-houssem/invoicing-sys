@@ -281,7 +281,19 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         </div>
       );
     case 'files':
-      return <MultipleFilesUploader {...field.props} className={cn(field?.className)} />;
+      return (
+        <MultipleFilesUploader
+          {...field.props}
+          className={cn(field?.className)}
+          files={field.props.files}
+          accept={field.props?.accept}
+          progress={field.props?.progress}
+          onFilesChange={(files: any) => field?.props?.onFilesChange?.(files)}
+          onUpload={(files, options) => field?.props?.onUpload?.(files, options)}
+          onFileOpen={field?.props?.onFileOpen}
+          onFileDownload={field?.props?.onFileDownload}
+        />
+      );
     case 'image':
       return (
         <ImageUploader
