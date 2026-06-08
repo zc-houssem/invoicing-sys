@@ -1,6 +1,5 @@
-import React from 'react';
 import { useRouter } from 'next/router';
-import { FirmDetails } from '@/components/contacts/enterprise/FirmDetails';
+import { EnterpriseDetails } from '@/components/contacts/enterprise/EnterpriseDetails';
 import { ComingSoon } from '@/components/shared';
 
 export default function Page() {
@@ -8,8 +7,8 @@ export default function Page() {
   const id = router.query.id as string;
 
   return (
-    <FirmDetails firmId={id}>
+    <EnterpriseDetails enterpriseId={Number(id)}>
       <ComingSoon />
-    </FirmDetails>
+    </EnterpriseDetails>
   );
 }

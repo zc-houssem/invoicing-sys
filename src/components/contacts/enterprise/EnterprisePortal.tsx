@@ -29,13 +29,10 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
   const { setRoutes, clearRoutes } = useBreadcrumb();
 
   React.useEffect(() => {
-    setIntro?.(
-      tCommon('routes.contacts.enterprise.title'),
-      tCommon('routes.contacts.enterprise.description')
-    );
+    setIntro?.(tCommon('menu.contacts.title'), tCommon('menu.contacts.description'));
     setRoutes?.([
-      { title: tCommon('menu.contacts'), href: '/contacts' },
-      { title: tCommon('submenu.enterprises') }
+      { title: tCommon('menu.contacts.title'), href: '/contacts' },
+      { title: tCommon('menu.contacts.subs.enterprises') }
     ]);
     return () => {
       clearIntro?.();
