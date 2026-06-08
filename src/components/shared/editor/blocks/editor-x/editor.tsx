@@ -12,6 +12,22 @@ import { nodes } from './nodes';
 import { Plugins } from './plugins';
 import React from 'react';
 
+/**
+ * Validates that a serialized editor state has the required structure
+ * for Lexical to initialize without errors.
+ */
+function isValidSerializedState(
+  state: SerializedEditorState | undefined | null
+): state is SerializedEditorState {
+  return (
+    !!state &&
+    typeof state === 'object' &&
+    !!state.root &&
+    typeof state.root.type === 'string' &&
+    Array.isArray(state.root.children)
+  );
+}
+
 export function Editor({
   editorState,
   editorSerializedState,
@@ -25,6 +41,10 @@ export function Editor({
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
   disabled?: boolean;
 }) {
+  const validSerializedState = isValidSerializedState(editorSerializedState)
+    ? editorSerializedState
+    : undefined;
+
   const editorConfig: InitialConfigType = {
     namespace: 'Editor',
     theme: editorTheme,
@@ -41,11 +61,11 @@ export function Editor({
         initialConfig={{
           ...editorConfig,
           ...(editorState ? { editorState } : {}),
-          ...(editorSerializedState ? { editorState: JSON.stringify(editorSerializedState) } : {})
+          ...(validSerializedState ? { editorState: JSON.stringify(validSerializedState) } : {})
         }}>
         <TooltipProvider>
           <EditorUpdateHandler
-            editorSerializedState={editorSerializedState}
+            editorSerializedState={validSerializedState}
             onSerializedChange={onSerializedChange}
           />
           <Plugins />
@@ -73,11 +93,15 @@ function EditorUpdateHandler({
   const [editor] = useLexicalComposerContext();
 
   React.useEffect(() => {
-    if (editorSerializedState) {
-      editor.update(() => {
+    if (isValidSerializedState(editorSerializedState)) {
+      try {
         const state = editor.parseEditorState(JSON.stringify(editorSerializedState));
-        editor.setEditorState(state);
-      });
+        if (state && !state.isEmpty()) {
+          editor.setEditorState(state);
+        }
+      } catch (error) {
+        console.error('Failed to parse editor state:', error);
+      }
     }
   }, [editor]);
 

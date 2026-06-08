@@ -221,14 +221,26 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           }
         />
       );
-    case 'editor':
+    case 'editor': {
+      let parsedEditorState: any = undefined;
+      if (field?.props?.value) {
+        try {
+          parsedEditorState = JSON.parse(field.props.value);
+          while (typeof parsedEditorState === 'string') {
+            parsedEditorState = JSON.parse(parsedEditorState);
+          }
+        } catch {
+          parsedEditorState = undefined;
+        }
+      }
       return (
         <Editor
           {...field.props}
-          editorSerializedState={field?.props?.value ? JSON.parse(field.props.value) : undefined}
+          editorSerializedState={parsedEditorState}
           onSerializedChange={(value) => field?.props?.onChange?.(JSON.stringify(value))}
         />
       );
+    }
     case 'checkbox':
       return (
         <div className="flex flex-col gap-2 my-1">
