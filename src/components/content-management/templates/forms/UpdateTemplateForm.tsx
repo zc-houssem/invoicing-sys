@@ -200,6 +200,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
                 {methods.current.id === '2' && (
                   <PDFEditor
                     key={key}
+                    className="border rounded-lg"
                     file={templateStore.document}
                     variables={templateStore?.variables}
                     setVariables={(variables) => templateStore.set('variables', variables)}

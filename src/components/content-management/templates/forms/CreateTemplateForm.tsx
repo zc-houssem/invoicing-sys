@@ -168,6 +168,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
                 {methods.current.id === '2' && (
                   <PDFEditor
                     key={key}
+                    className="border rounded-lg"
                     file={templateStore.document}
                     setVariables={(variables) =>
                       templateStore.setNested('createDto.variables', JSON.stringify(variables))

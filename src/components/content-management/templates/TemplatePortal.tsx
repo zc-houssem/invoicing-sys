@@ -133,7 +133,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
         name: entity.name,
         description: entity.description,
         documentId: entity.document?.id,
-        variables: entity.variables
+        variables: JSON.stringify(entity.variables)
       });
     }
   };
