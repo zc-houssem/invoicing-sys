@@ -1,5 +1,7 @@
 import { admin } from './admin';
 export * from './admin';
+import { agent } from './agent';
+export * from './agent';
 import { auth } from './auth';
 export * from './auth';
 
@@ -38,6 +40,7 @@ import { invoicing } from './invoicing';
 
 export const api = {
   admin,
+  agent,
   auth,
   appConfig,
   cabinet,
