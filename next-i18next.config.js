@@ -28,7 +28,9 @@ const nextI18NextConfig = {
       'logger',
       'permissions',
       'settings',
-      'social-title'
+      'social-title',
+      'user-management',
+      'role',
     ]
   },
   reloadOnPrerender: process.env.NODE_ENV === 'development',

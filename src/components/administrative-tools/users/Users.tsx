@@ -1,0 +1,396 @@
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { api } from '@/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { useUserColumns } from './columns';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { useUserCreateSheet } from './modals/UserCreateSheet';
+import { useUserUpdateSheet } from './modals/UserUpdateSheet';
+import { useUserDeleteDialog } from './modals/UserDeleteDialog';
+import { useActivateUserDialog } from './modals/UserActivateDialog';
+import { useDeactivateUserDialog } from './modals/UserDeactivateDialog';
+import {
+  CreateUserDto,
+  Gender,
+  ResponseUserDto,
+  ServerErrorResponse,
+  UpdateUserDto
+} from '@/types';
+import { updateUserSchema } from '@/types/validations/user.validation';
+import { ArrowDown, ArrowUp, BellPlus } from 'lucide-react';
+import { useApproveUserDialog } from './modals/UserApproveDialog';
+import { useDisapproveUserDialog } from './modals/UserDisapproveDialog';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
+import { DataTableConfig } from '@/components/shared/data-table/types';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useIntro } from '@/context/IntroContext';
+import { useUserStore } from '@/hooks/stores/useUserStore';
+import { useDebounce } from '@/hooks/other/useDebounce';
+import { useUploads } from '@/hooks/content/useUploads';
+import { useUpload } from '@/hooks/content/useUpload';
+
+interface UsersProps {
+  className?: string;
+}
+
+export const Users = ({ className }: UsersProps) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { setIntro, clearIntro } = useIntro();
+  const { t, ready } = useTranslation('user-management');
+  React.useEffect(() => {
+    setRoutes?.([
+      { title: t('userManagement.page.title') },
+      {
+        title: t('userManagement.page.users'),
+        href: '/users-management/users'
+      }
+    ]);
+    setIntro?.(t('userManagement.page.users'), t('userManagement.page.description'));
+    return () => {
+      clearRoutes?.();
+      clearIntro?.();
+    };
+  }, [ready, t]);
+
+  const userStore = useUserStore();
+
+  const [page, setPage] = React.useState(1);
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+
+  const [size, setSize] = React.useState(10);
+  const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
+
+  const [sortDetails, setSortDetails] = React.useState({
+    order: true,
+    sortKey: 'id'
+  });
+  const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
+    sortDetails,
+    500
+  );
+
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
+
+  const {
+    data: usersResponse,
+    isFetching: isUsersPending,
+    refetch: refetchUsers
+  } = useQuery({
+    queryKey: [
+      'users',
+      debouncedPage,
+      debouncedSize,
+      debouncedSortDetails.order,
+      debouncedSortDetails.sortKey,
+      debouncedSearchTerm
+    ],
+    queryFn: () =>
+      api.admin.user.findPaginated({
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
+        sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+        search: debouncedSearchTerm
+      })
+  });
+
+  const users = React.useMemo(() => {
+    if (!usersResponse) return [];
+    return usersResponse.data;
+  }, [usersResponse]);
+
+  const { mutate: createUser, isPending: isCreatePending } = useMutation({
+    mutationFn: (user: CreateUserDto) => api.admin.user.create(user),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userCreatedSuccess'));
+      closeCreateUserSheet();
+      userStore.reset();
+      refetchUsers();
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message);
+    }
+  });
+
+  const { mutate: updateUser, isPending: isUpdatePending } = useMutation({
+    mutationFn: (data: { id?: string; user: UpdateUserDto }) =>
+      api.admin.user.update(data.id, data.user),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['user', userStore.response?.email]
+      });
+      toast(t('userManagement.messages.userUpdatedSuccess'));
+      refetchUsers();
+      userStore.reset();
+      closeUpdateUserSheet();
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message);
+    }
+  });
+
+  const { mutate: deleteUser, isPending: isDeletionPending } = useMutation({
+    mutationFn: (id?: string) => api.admin.user.remove(id),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userDeletedSuccess'));
+      refetchUsers();
+    },
+    onError: (error) => toast(error.message)
+  });
+
+  const { mutate: activateUser, isPending: isActivationPending } = useMutation({
+    mutationFn: (id?: string) => api.admin.user.activate(id),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userActivatedSuccess'));
+      refetchUsers();
+    },
+    onError: (error) => toast(error.message)
+  });
+
+  const { mutate: deactivateUser, isPending: isDeactivationPending } = useMutation({
+    mutationFn: (id?: string) => api.admin.user.deactivate(id),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userDeactivatedSuccess'));
+      refetchUsers();
+    },
+    onError: (error) => toast(error.message)
+  });
+
+  const { mutate: approveUser, isPending: isApprovalPending } = useMutation({
+    mutationFn: (id?: string) => api.admin.user.approve(id),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userApprovedSuccess'));
+      refetchUsers();
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message);
+    }
+  });
+
+  const { mutate: disapproveUser, isPending: isDisapprovalPending } = useMutation({
+    mutationFn: (id?: string) => api.admin.user.disapprove(id),
+    onSuccess: () => {
+      toast(t('userManagement.messages.userDisapprovedSuccess'));
+      refetchUsers();
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message);
+    }
+  });
+
+  const handleUpdateSubmit = () => {
+    const data = userStore.updateDto;
+    const result = updateUserSchema(userStore.setManualPassword).safeParse({
+      ...data,
+      confirmPassword: userStore.confirmPassword
+    });
+    if (!result.success) {
+      userStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
+    } else {
+      updateUser({ id: userStore.response?.id, user: data });
+    }
+  };
+
+  const handleReset = () => {
+    userStore.reset();
+  };
+
+  const { createUserSheet, openCreateUserSheet, closeCreateUserSheet } = useUserCreateSheet({
+    createUser,
+    isCreatePending,
+    resetUser: handleReset
+  });
+
+  const { updateUserSheet, openUpdateUserSheet, closeUpdateUserSheet } = useUserUpdateSheet({
+    updateUser: handleUpdateSubmit,
+    isUpdatePending,
+    resetUser: handleReset
+  });
+
+  const { deleteUserDialog, openDeleteUserDialog } = useUserDeleteDialog({
+    userFullname: `${userStore.response?.firstName} - ${userStore.response?.lastName}`,
+    deleteUser: () => deleteUser(userStore.response?.id),
+    isDeletePending: isDeletionPending
+  });
+
+  const { activateUserDialog, openActivateUserDialog } = useActivateUserDialog({
+    userFullname: `${userStore.response?.firstName} - ${userStore.response?.lastName}`,
+    activateUser: () => activateUser(userStore.response?.id),
+    isActivationPending,
+    resetUser: handleReset
+  });
+
+  const { deactivateUserDialog, openDeactivateUserDialog } = useDeactivateUserDialog({
+    userFullname: `${userStore.response?.firstName} - ${userStore.response?.lastName}`,
+    deactivateUser: () => deactivateUser(userStore.response?.id),
+    isDeactivationPending,
+    resetUser: () => userStore.reset()
+  });
+
+  const { approveUserDialog, openApproveUserDialog } = useApproveUserDialog({
+    representation: `${userStore.response?.firstName} - ${userStore.response?.lastName}`,
+    approveUser: () => approveUser(userStore.response?.id),
+    isApprovalPending,
+    resetUser: () => userStore.reset()
+  });
+
+  const { disapproveUserDialog, openDisapproveUserDialog } = useDisapproveUserDialog({
+    representation: `${userStore.response?.firstName} - ${userStore.response?.lastName}`,
+    disapproveUser: () => disapproveUser(userStore.response?.id),
+    isDisapprovalPending,
+    resetUser: () => userStore.reset()
+  });
+
+  //fetch user images
+  const uploadIds = Array.isArray(userStore.updateDto?.uploads)
+    ? userStore.updateDto.uploads.map((u) => u.uploadId)
+    : [];
+
+  const { uploads: images, isPending: isImagesPending } = useUploads(uploadIds);
+
+  React.useEffect(() => {
+    if (images.length > 0 && !userStore.hasInitializedImages && userStore.images.length === 0) {
+      userStore.set('images', images);
+      userStore.set('hasInitializedImages', true);
+    }
+  }, [images, userStore.hasInitializedImages]);
+
+  const { upload: profilePicture, isUploadPending: isProfilePicturePending } = useUpload({
+    id: userStore.updateDto?.pictureId,
+    enabled: Boolean(userStore.updateDto?.pictureId)
+  });
+  React.useEffect(() => {
+    if (profilePicture) {
+      userStore.set('picture', profilePicture);
+    }
+  }, [profilePicture]);
+
+  const { upload: officialDocument, isUploadPending: isOfficialDocPending } = useUpload({
+    id: userStore.updateDto?.officialDocumentId,
+    enabled: Boolean(userStore.updateDto?.officialDocumentId)
+  });
+
+  React.useEffect(() => {
+    if (officialDocument) {
+      userStore.set('officialDocument', officialDocument);
+    }
+  }, [officialDocument]);
+
+  const { upload: driverLicenseDocument, isUploadPending: isDriverDocPending } = useUpload({
+    id: userStore.updateDto?.driverLicenseDocumentId,
+    enabled: Boolean(userStore.updateDto?.driverLicenseDocumentId)
+  });
+
+  React.useEffect(() => {
+    if (driverLicenseDocument) {
+      userStore.set('driverLicenseDocument', driverLicenseDocument);
+    }
+  }, [driverLicenseDocument]);
+
+  const context: DataTableConfig<ResponseUserDto> = {
+    singularName: `${t('userManagement.page.user')}`,
+    pluralName: `${t('userManagement.page.users')}`,
+    inspectCallback: (entity: ResponseUserDto) =>
+      router.push(`/user-management/users/${entity.id}`),
+    createCallback: openCreateUserSheet,
+    updateCallback: openUpdateUserSheet,
+    deleteCallback: openDeleteUserDialog,
+    additionalActions: {
+      1: [
+        {
+          actionCallback: openActivateUserDialog,
+          actionLabel: t('userManagement.page.activate'),
+          actionIcon: <ArrowUp />,
+          isActionVisible: (user: ResponseUserDto) => !user.isActive
+        },
+        {
+          actionCallback: openDeactivateUserDialog,
+          actionLabel: t('userManagement.page.deactivate'),
+          actionIcon: <ArrowDown />,
+          isActionVisible: (user: ResponseUserDto) => !!user.isActive
+        },
+        {
+          actionCallback: openApproveUserDialog,
+          actionLabel: t('userManagement.page.approve'),
+          actionIcon: <ArrowUp />,
+          isActionVisible: (user: ResponseUserDto) => !user.isApproved
+        },
+        {
+          actionCallback: openDisapproveUserDialog,
+          actionLabel: t('userManagement.page.disapprove'),
+          actionIcon: <ArrowDown />,
+          isActionVisible: (user: ResponseUserDto) => !!user.isApproved
+        }
+      ]
+    },
+    //search, filtering, sorting & paging
+    searchTerm,
+    setSearchTerm,
+    page,
+    totalPageCount: usersResponse?.meta.pageCount || 0,
+    setPage,
+    size,
+    setSize,
+    order: sortDetails.order,
+    sortKey: sortDetails.sortKey,
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    targetEntity: (user: ResponseUserDto) => {
+      const uploads = user?.uploads?.sort((a, b) => a.order - b.order);
+      userStore.set('response', user);
+      userStore.set<UpdateUserDto>('updateDto', {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        dateOfBirth: user.dateOfBirth,
+        isActive: user.isActive,
+        isApproved: user.isApproved,
+        username: user.username,
+        email: user.email,
+        password: '',
+        roleId: user.roleId,
+        phone: user?.phone,
+        pictureId: user?.pictureId,
+        cin: user?.cin,
+        bio: user?.bio,
+        gender: user?.gender as Gender,
+        isPrivate: user?.isPrivate,
+        officialDocumentId: user?.officialDocumentId,
+        driverLicenseDocumentId: user?.driverLicenseDocumentId,
+        uploads: uploads.map((upload) => ({
+          id: upload.id,
+          uploadId: upload.uploadId
+        }))
+      });
+      userStore.set('picture', profilePicture);
+      userStore.set('officialDocument', officialDocument);
+      userStore.set('driverLicenseDocument', driverLicenseDocument);
+    }
+  };
+
+  const columns = useUserColumns(context, t);
+
+  const isPending = isUsersPending || paging || resizing || searching || sorting;
+
+  return (
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <DataTable
+        className="flex flex-col flex-1 overflow-auto p-1"
+        containerClassName="overflow-auto"
+        columns={columns}
+        data={users}
+        context={context}
+        isPending={isPending}
+      />
+      {createUserSheet}
+      {updateUserSheet}
+      {deleteUserDialog}
+      {activateUserDialog}
+      {deactivateUserDialog}
+      {approveUserDialog}
+      {disapproveUserDialog}
+    </div>
+  );
+};

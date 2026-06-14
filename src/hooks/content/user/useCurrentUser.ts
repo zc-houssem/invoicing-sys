@@ -1,27 +1,9 @@
-import React from 'react';
-import { api } from '@/api';
-import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useEmailUser } from './useEmailUser';
 
-interface useCurrentUserProps {
-  enabled?: boolean;
-}
-
-export const useCurrentUser = ({ enabled }: useCurrentUserProps = { enabled: true }) => {
-  const {
-    data: userResp,
-    isFetching: isFetchUserPending,
-    refetch: refetchUser
-  } = useQuery({
-    queryKey: ['current-user'],
-    queryFn: () => api.user.findCurrent(),
-    enabled
-  });
-
-  const user = React.useMemo(() => {
-    if (!userResp) return null;
-    return userResp;
-  }, [userResp]);
-
+export const useCurrentUser = (join?: string) => {
+  const { data: session } = useSession();
+  const { user, isFetchUserPending, refetchUser } = useEmailUser(session?.user.email || '', join);
   return {
     user,
     isFetchUserPending,

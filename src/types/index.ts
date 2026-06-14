@@ -15,13 +15,11 @@ export * from './payment-condition';
 export * from './permission';
 // export * from './quotation';
 export * from './sequence';
-export * from './role';
 export * from './tax';
 export * from './tax-withholding';
 export * from './toast-validation';
 export * from './upload';
 export * from './utils';
-export * from './user';
 
 export * from './response';
 export * from './core/address';
@@ -33,3 +31,4 @@ export * from './core/reference-types';
 export * from './core/tax-rate';
 export * from './core/template';
 export * from './core/storage';
+export * from './core/user-management';

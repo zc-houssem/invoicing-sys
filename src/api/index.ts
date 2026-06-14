@@ -20,16 +20,14 @@ export * from './payment';
 import { permission } from './permission';
 export * from './permission';
 
-import { role } from './role';
-export * from './role';
 import { sequence } from './sequence';
 export * from './sequence';
 import { tax } from './tax';
 export * from './tax';
 import { upload } from './upload';
 export * from './upload';
-import { user } from './user';
-export * from './user';
+import { user } from './admin/users';
+export * from './admin/users';
 
 export * from '../types/response';
 export * from '../types/enums';
@@ -48,7 +46,6 @@ export const api = {
   invoice,
   payment,
   permission,
-  role,
   sequence,
   tax,
   upload,
