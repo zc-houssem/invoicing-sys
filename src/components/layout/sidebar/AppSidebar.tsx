@@ -192,11 +192,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: UserCog
           },
           {
-            title: t('menu.administrativeTools.subs.permissions'),
-            url: '/administrative-tools/user-management/permissions',
-            icon: UserCog
-          },
-          {
             title: t('menu.administrativeTools.subs.configuration'),
             url: '/administrative-tools/configuration',
             icon: Settings
