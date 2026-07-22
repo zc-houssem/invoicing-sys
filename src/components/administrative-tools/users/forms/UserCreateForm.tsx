@@ -5,28 +5,21 @@ import { useRoles } from '@/hooks/content/useRoles';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { Button } from '@/components/ui/button';
-import { defineStepper } from '@/components/ui/stepper';
 import { useCreateUserFormStructure } from './useCreateUserFormStructure';
-import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import { createUserSchema, profileSchema } from '@/types/validations/user.validation';
+import { Save } from 'lucide-react';
+import { createUserSchema } from '@/types/validations/user.validation';
 import { Spinner } from '@/components/shared/Spinner';
 import { CreateUserDto, ServerErrorResponse, Upload } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useUploadMutation } from '@/hooks/useUploadMutation';
+import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { Separator } from '@/components/ui/separator';
 
-const steps = [
-  {
-    id: 'user-information',
-    title: 'userManagement.forms.step1Title'
-  },
-  {
-    id: 'profile-information',
-    title: 'userManagement.forms.step2Title'
-  }
-];
 
-const { Stepper } = defineStepper(...steps);
 
 interface UserCreateFormProps {
   className?: string;
@@ -39,10 +32,25 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({
   createUser,
   isCreatePending
 }) => {
+  const router = useRouter();
   const { t: tCommon } = useTranslation('common');
   const { t: tUser } = useTranslation('user-management');
   const userStore = useUserStore();
   const { roles, isFetchRolesPending } = useRoles();
+  const { setRoutes } = useBreadcrumb();
+
+  React.useEffect(() => {
+    setRoutes?.([
+      { title: tCommon('menu.administrativeTools') || 'Administrative Tools' },
+      { title: tUser('userManagement.page.title') },
+      { title: tUser('userManagement.page.users'), href: '/administrative-tools/user-management/users' },
+      { title: tUser('userManagement.sheet.createUserTitle') }
+    ]);
+    return () => {
+      setRoutes?.([]);
+      userStore.reset();
+    };
+  }, [router.locale]);
 
   const { uploadFiles: uploadProfilePicture, isUploadPending: isProfilePictureUploadPending } =
     useUploadMutation({
@@ -85,133 +93,83 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({
     }
   });
 
-  const { userCreateFormStructure, profileCreateFormStructure, step3FormStructure } =
-    useCreateUserFormStructure({
-      userStore,
-      roles: mapToSelectOptions({
-        data: isFetchRolesPending ? [] : roles,
-        labelKey: 'label',
-        valueKey: 'id'
-      }),
-      uploadProfilePicture,
-      isProfilePictureUploadPending,
+  const { userCreateFormStructure } = useCreateUserFormStructure({
+    userStore,
+    roles: mapToSelectOptions({
+      data: isFetchRolesPending ? [] : roles,
+      labelKey: 'label',
+      valueKey: 'id'
+    }),
+    uploadProfilePicture,
+    isProfilePictureUploadPending,
 
-      uploadOfficialDocument,
-      isOfficialDocumentUploadPending,
+    uploadOfficialDocument,
+    isOfficialDocumentUploadPending,
 
-      uploadDriverLicenseDocument,
-      isDriverLicenseDocumentPending,
+    uploadDriverLicenseDocument,
+    isDriverLicenseDocumentPending,
 
-      uploadPhotos
-    });
+    uploadPhotos,
+    isPhotosUploadPending
+  });
 
-  const validateStep = React.useCallback(
-    (stepId: string) => {
-      if (stepId === 'user-information') {
-        const userResult = createUserSchema.safeParse({
-          ...userStore.createDto,
-          confirmPassword: userStore.confirmPassword
-        });
-        if (!userResult.success) {
-          userStore.set('createDtoErrors', userResult.error.flatten().fieldErrors);
-          return false;
-        }
-      }
-
-      if (stepId === 'profile-information') {
-        const profileResult = profileSchema.safeParse(userStore.createDto);
-        if (!profileResult.success) {
-          userStore.set('createDtoErrors', profileResult.error.flatten().fieldErrors);
-          return false;
-        }
-      }
-      return true;
+  const { mutate: createMutation, isPending: isMutationPending } = useMutation({
+    mutationFn: (user: CreateUserDto) => api.admin.user.create(user),
+    onSuccess: () => {
+      toast.success(tUser('userManagement.messages.userCreatedSuccess'));
+      userStore.reset();
+      router.push('/administrative-tools/user-management/users');
     },
-    [userStore]
-  );
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message || tUser('userManagement.errors.generalError'));
+    }
+  });
+
+  const isPending = isCreatePending ?? isMutationPending;
 
   const handleSubmit = () => {
-    createUser?.(userStore.createDto);
+    const userResult = createUserSchema.safeParse({
+      ...userStore.createDto,
+      confirmPassword: userStore.confirmPassword
+    });
+    if (!userResult.success) {
+      userStore.set('createDtoErrors', userResult.error.flatten().fieldErrors);
+      return;
+    }
+    userStore.set('createDtoErrors', {});
+
+    if (createUser) {
+      createUser(userStore.createDto);
+    } else {
+      createMutation(userStore.createDto);
+    }
   };
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2', className)}>
-      <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
-        {({ methods }) => {
-          const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
+    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2 m-5 lg:mx-10', className)}>
+      {isFetchRolesPending ? (
+        <Spinner />
+      ) : (
+        <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
+          <div className="flex flex-col flex-1 overflow-auto p-2">
+            <div className="space-y-1 mb-4">
+              <h1 className="text-lg font-bold">{tUser('userManagement.forms.step1Title')}</h1>
+              <p className="text-xs text-muted-foreground">{tUser('userManagement.forms.step1Description')}</p>
+              <Separator className="mt-2" />
+            </div>
+            <div className="my-auto">
+              <FormBuilder structure={userCreateFormStructure} />
+            </div>
+          </div>
+        </div>
+      )}
 
-          const handleNext = () => {
-            const valid = validateStep(methods.current.id);
-            if (!valid) return;
-
-            if (methods.isLast) {
-              handleSubmit();
-            } else {
-              methods.next();
-            }
-          };
-
-          return (
-            <>
-              {/* Navigation */}
-              <Stepper.Navigation className="flex-shrink-0">
-                {methods.all.map((step, index) => (
-                  <Stepper.Step
-                    key={step.id}
-                    of={step.id}
-                    onClick={() => {
-                      if (index > activeIndex) {
-                        let valid = true;
-                        for (let i = 0; i <= activeIndex; i++) {
-                          valid = valid && validateStep(steps[i].id);
-                        }
-                        if (!valid) return;
-                      }
-                      methods.goTo(step.id);
-                    }}
-                    disabled={isCreatePending}>
-                    <Stepper.Title>{tUser(step.title)}</Stepper.Title>
-                  </Stepper.Step>
-                ))}
-              </Stepper.Navigation>
-
-              {/* Content */}
-              {isFetchRolesPending ? (
-                <Spinner />
-              ) : (
-                <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
-                  {methods.current.id === 'user-information' && (
-                    <FormBuilder structure={userCreateFormStructure} />
-                  )}
-                  {methods.current.id === 'profile-information' && (
-                    <FormBuilder structure={profileCreateFormStructure} />
-                  )}
-                </div>
-              )}
-
-              {/* Controls */}
-              <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
-                {!methods.isFirst && (
-                  <Button variant="outline" onClick={methods.prev} disabled={isCreatePending}>
-                    <ArrowLeft /> {tCommon('common.buttons.previous')}
-                  </Button>
-                )}
-                <Button onClick={handleNext} disabled={isCreatePending}>
-                  {methods.isLast ? (
-                    <React.Fragment>
-                      <Save /> {tCommon('common.buttons.save')}
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      {tCommon('common.buttons.next')} <ArrowRight />
-                    </React.Fragment>
-                  )}
-                </Button>
-              </Stepper.Controls>
-            </>
-          );
-        }}
-      </Stepper.Provider>
+      {/* Controls */}
+      <div className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
+        <Button onClick={handleSubmit} disabled={isPending}>
+          <Save /> {tCommon('common.buttons.save')}
+        </Button>
+      </div>
     </div>
   );
 };

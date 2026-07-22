@@ -6,43 +6,135 @@ import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { Button } from '@/components/ui/button';
 import { useUpdateUserFormStructure } from './useUpdateUserFormStructure';
-import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import { defineStepper } from '@/components/ui/stepper';
+import { Save } from 'lucide-react';
 import { ServerErrorResponse, UpdateUserDto, Upload } from '@/types';
-import { profileSchema, updateUserSchema } from '@/types/validations/user.validation';
+import { updateUserSchema } from '@/types/validations/user.validation';
 import { Spinner } from '@/components/shared/Spinner';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useUploadMutation } from '@/hooks/useUploadMutation';
+import { useRouter } from 'next/router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/api';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { Separator } from '@/components/ui/separator';
+import { useIdentifiedUser } from '@/hooks/content/user/useIdentifiedUser';
+import { useUploads } from '@/hooks/content/useUploads';
+import { useUpload } from '@/hooks/content/useUpload';
+import { Gender } from '@/types';
 
-const steps = [
-  {
-    id: 'user-information',
-    title: 'userManagement.forms.step1Title'
-  },
-  {
-    id: 'profile-information',
-    title: 'userManagement.forms.step2Title'
-  }
-];
 
-const { Stepper } = defineStepper(...steps);
 
 interface UserUpdateFormProps {
+  userId?: string;
   className?: string;
   updateUser?: (user: UpdateUserDto) => void;
   isUpdatePending?: boolean;
 }
 
 export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
+  userId,
   className,
   updateUser,
   isUpdatePending
 }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { t: tCommon } = useTranslation('common');
   const { t: tUser } = useTranslation('user-management');
   const userStore = useUserStore();
   const { roles, isFetchRolesPending } = useRoles();
+  const { setRoutes } = useBreadcrumb();
+
+  React.useEffect(() => {
+    setRoutes?.([
+      { title: tCommon('menu.administrativeTools') || 'Administrative Tools' },
+      { title: tUser('userManagement.page.title') },
+      { title: tUser('userManagement.page.users'), href: '/administrative-tools/user-management/users' },
+      { title: tUser('userManagement.sheet.updateUserTitle') }
+    ]);
+    return () => {
+      setRoutes?.([]);
+      userStore.reset();
+    };
+  }, [router.locale]);
+
+  const { user: fetchedUser, isFetchUserPending } = useIdentifiedUser(userId, undefined, Boolean(userId));
+
+  React.useEffect(() => {
+    if (fetchedUser) {
+      const uploads = fetchedUser?.uploads?.sort((a, b) => a.order - b.order) || [];
+      userStore.set('response', fetchedUser);
+      userStore.set<UpdateUserDto>('updateDto', {
+        firstName: fetchedUser.firstName,
+        lastName: fetchedUser.lastName,
+        dateOfBirth: fetchedUser.dateOfBirth,
+        isActive: fetchedUser.isActive,
+        isApproved: fetchedUser.isApproved,
+        username: fetchedUser.username,
+        email: fetchedUser.email,
+        password: '',
+        roleId: fetchedUser.roleId,
+        phone: fetchedUser?.phone,
+        pictureId: fetchedUser?.pictureId,
+        cin: fetchedUser?.cin,
+        bio: fetchedUser?.bio,
+        gender: fetchedUser?.gender as Gender,
+        isPrivate: fetchedUser?.isPrivate,
+        officialDocumentId: fetchedUser?.officialDocumentId,
+        driverLicenseDocumentId: fetchedUser?.driverLicenseDocumentId,
+        uploads: uploads.map((upload) => ({
+          id: upload.id,
+          uploadId: upload.uploadId
+        }))
+      });
+    }
+  }, [fetchedUser]);
+
+  const uploadIds = React.useMemo(() => {
+    return Array.isArray(userStore.updateDto?.uploads)
+      ? userStore.updateDto.uploads.map((u) => u.uploadId)
+      : [];
+  }, [userStore.updateDto?.uploads]);
+
+  const { uploads: images } = useUploads(uploadIds);
+
+  React.useEffect(() => {
+    if (images.length > 0 && !userStore.hasInitializedImages && userStore.images.length === 0) {
+      userStore.set('images', images);
+      userStore.set('hasInitializedImages', true);
+    }
+  }, [images, userStore.hasInitializedImages]);
+
+  const { upload: profilePicture } = useUpload({
+    id: userStore.updateDto?.pictureId,
+    enabled: Boolean(userStore.updateDto?.pictureId)
+  });
+  React.useEffect(() => {
+    if (profilePicture) {
+      userStore.set('picture', profilePicture);
+    }
+  }, [profilePicture]);
+
+  const { upload: officialDocument } = useUpload({
+    id: userStore.updateDto?.officialDocumentId,
+    enabled: Boolean(userStore.updateDto?.officialDocumentId)
+  });
+  React.useEffect(() => {
+    if (officialDocument) {
+      userStore.set('officialDocument', officialDocument);
+    }
+  }, [officialDocument]);
+
+  const { upload: driverLicenseDocument } = useUpload({
+    id: userStore.updateDto?.driverLicenseDocumentId,
+    enabled: Boolean(userStore.updateDto?.driverLicenseDocumentId)
+  });
+  React.useEffect(() => {
+    if (driverLicenseDocument) {
+      userStore.set('driverLicenseDocument', driverLicenseDocument);
+    }
+  }, [driverLicenseDocument]);
 
   const { uploadFiles: uploadProfilePicture, isUploadPending: isProfilePictureUploadPending } =
     useUploadMutation({
@@ -85,7 +177,7 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
     }
   });
 
-  const { userUpdateFormStructure, profileUpdateFormStructure } = useUpdateUserFormStructure({
+  const { userUpdateFormStructure } = useUpdateUserFormStructure({
     userStore,
     roles: mapToSelectOptions({
       data: isFetchRolesPending ? [] : roles,
@@ -105,118 +197,68 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
     isPhotosUploadPending
   });
 
-  const validateStep = React.useCallback(
-    (stepId: string) => {
-      if (stepId === 'user-information') {
-        const userResult = updateUserSchema(userStore.setManualPassword).safeParse({
-          ...userStore.updateDto,
-          confirmPassword: userStore.confirmPassword
-        });
-
-        if (!userResult.success) {
-          userStore.set('updateDtoErrors', userResult.error.flatten().fieldErrors);
-          return false;
-        }
-        return true;
-      }
-
-      if (stepId === 'profile-information') {
-        const profileResult = profileSchema.safeParse({
-          ...userStore.updateDto,
-          confirmPassword: userStore.confirmPassword
-        });
-        if (!profileResult.success) {
-          userStore.set('updateDtoErrors', profileResult.error.flatten().fieldErrors);
-          return false;
-        }
-      }
-      return true;
+  const { mutate: updateMutation, isPending: isMutationPending } = useMutation({
+    mutationFn: (data: { id?: string; user: UpdateUserDto }) =>
+      api.admin.user.update(data.id, data.user),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['users']
+      });
+      toast.success(tUser('userManagement.messages.userUpdatedSuccess'));
+      userStore.reset();
+      router.push('/administrative-tools/user-management/users');
     },
-    [userStore]
-  );
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data?.message || tUser('userManagement.errors.generalError'));
+    }
+  });
+
+  const isPending = isUpdatePending ?? isMutationPending;
 
   const handleSubmit = () => {
-    updateUser?.(userStore.updateDto);
+    const userResult = updateUserSchema(userStore.setManualPassword).safeParse({
+      ...userStore.updateDto,
+      confirmPassword: userStore.confirmPassword
+    });
+
+    if (!userResult.success) {
+      userStore.set('updateDtoErrors', userResult.error.flatten().fieldErrors);
+      return;
+    }
+    userStore.set('updateDtoErrors', {});
+
+    if (updateUser) {
+      updateUser(userStore.updateDto);
+    } else {
+      updateMutation({ id: userId || userStore.response?.id, user: userStore.updateDto });
+    }
   };
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2', className)}>
-      <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
-        {({ methods }) => {
-          const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
+    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2 m-5 lg:mx-10', className)}>
+      {isFetchRolesPending || isFetchUserPending ? (
+        <Spinner />
+      ) : (
+        <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
+          <div className="flex flex-col flex-1 overflow-auto p-2">
+            <div className="space-y-1 mb-4">
+              <h1 className="text-lg font-bold">{tUser('userManagement.forms.step1Title')}</h1>
+              <p className="text-xs text-muted-foreground">{tUser('userManagement.forms.step1Description')}</p>
+              <Separator className="mt-2" />
+            </div>
+            <div className="my-auto">
+              <FormBuilder structure={userUpdateFormStructure} />
+            </div>
+          </div>
+        </div>
+      )}
 
-          const handleNext = () => {
-            const valid = validateStep(methods.current.id);
-            if (!valid) return;
-
-            if (methods.isLast) {
-              handleSubmit();
-            } else {
-              methods.next();
-            }
-          };
-
-          return (
-            <>
-              {/* Navigation */}
-              <Stepper.Navigation className="flex-shrink-0">
-                {methods.all.map((step, index) => (
-                  <Stepper.Step
-                    key={step.id}
-                    of={step.id}
-                    onClick={() => {
-                      if (index > activeIndex) {
-                        let valid = true;
-                        for (let i = 0; i <= activeIndex; i++) {
-                          valid = valid && validateStep(steps[i].id);
-                        }
-                        if (!valid) return;
-                      }
-                      methods.goTo(step.id);
-                    }}
-                    disabled={isUpdatePending}>
-                    <Stepper.Title>{tUser(step.title)}</Stepper.Title>
-                  </Stepper.Step>
-                ))}
-              </Stepper.Navigation>
-
-              {/* Content */}
-              {isFetchRolesPending ? (
-                <Spinner />
-              ) : (
-                <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
-                  {methods.current.id === 'user-information' && (
-                    <FormBuilder structure={userUpdateFormStructure} />
-                  )}
-                  {methods.current.id === 'profile-information' && (
-                    <FormBuilder structure={profileUpdateFormStructure} />
-                  )}
-                </div>
-              )}
-
-              {/* Controls */}
-              <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
-                {!methods.isFirst && (
-                  <Button variant="outline" onClick={methods.prev} disabled={isUpdatePending}>
-                    <ArrowLeft /> {tCommon('common.buttons.previous')}
-                  </Button>
-                )}
-                <Button onClick={handleNext} disabled={isUpdatePending}>
-                  {methods.isLast ? (
-                    <React.Fragment>
-                      <Save /> {tCommon('common.buttons.update')}
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      {tCommon('common.buttons.next')} <ArrowRight />
-                    </React.Fragment>
-                  )}
-                </Button>
-              </Stepper.Controls>
-            </>
-          );
-        }}
-      </Stepper.Provider>
+      {/* Controls */}
+      <div className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
+        <Button onClick={handleSubmit} disabled={isPending}>
+          <Save /> {tCommon('common.buttons.update')}
+        </Button>
+      </div>
     </div>
   );
 };

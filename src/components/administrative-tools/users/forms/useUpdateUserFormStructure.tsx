@@ -5,6 +5,8 @@ import {
   FieldVariant,
   FormStructure,
   ImageFieldProps,
+  ImageGalleryFieldProps,
+  ManipulatedFile,
   NumberFieldProps,
   PasswordFieldProps,
   SelectFieldProps,
@@ -47,7 +49,10 @@ export const useUpdateUserFormStructure = ({
   isOfficialDocumentUploadPending,
 
   uploadDriverLicenseDocument,
-  isDriverLicenseDocumentPending
+  isDriverLicenseDocumentPending,
+
+  uploadPhotos,
+  isPhotosUploadPending
 }: useUpdateUserFormStructureProps) => {
   const { t } = useTranslation('user-management');
 
@@ -180,7 +185,7 @@ export const useUpdateUserFormStructure = ({
   const checkPasswordField: Field<CheckboxFieldProps> = {
     id: 'checkpassword',
     label: `${t('userManagement.forms.requirePasswordCheckTitle')}`,
-    variant: FieldVariant.CHECK,
+    variant: FieldVariant.CHECKBOX,
     required: true,
     description: `${t('userManagement.forms.requirePasswordCheckDescription')}`,
     props: {
@@ -249,13 +254,10 @@ export const useUpdateUserFormStructure = ({
   };
 
   const userUpdateFormStructure: FormStructure = {
-    title: '',
-    description: '',
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: `${t('userManagement.forms.step1FieldTitle')}`,
-        description: '',
+        title: { value: `${t('userManagement.forms.step1FieldTitle')}` },
         includeHeader: true,
         rows: [
           { fields: [photoField] },
@@ -268,8 +270,7 @@ export const useUpdateUserFormStructure = ({
         ]
       },
       {
-        title: `${t('userManagement.forms.step1Title')}`,
-        description: '',
+        title: { value: `${t('userManagement.forms.step1Title')}` },
         includeHeader: true,
         rows: [
           {
@@ -379,13 +380,12 @@ export const useUpdateUserFormStructure = ({
   });
 
   const profileUpdateFormStructure: FormStructure = {
-    title: `${t('userManagement.forms.step2Title')}`,
-    description: `${t('userManagement.forms.step2Description')}`,
+    title: { value: `${t('userManagement.forms.step2Title')}` },
+    description: { value: `${t('userManagement.forms.step2Description')}` },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: `${t('userManagement.forms.step2FieldTitle')}`,
-        description: '',
+        title: { value: `${t('userManagement.forms.step2FieldTitle')}` },
         includeHeader: true,
         rows: [
           {
@@ -414,7 +414,7 @@ export const useUpdateUserFormStructure = ({
     wrapperClassName: 'flex flex-col gap-2',
     required: true,
     description: t('userManagement.forms.officialDocumentDescription'),
-    error: t(userStore.createDtoErrors?.officialDocument?.[0]),
+    error: t(userStore.updateDtoErrors?.officialDocument?.[0]),
     props: {
       image: userStore.officialDocument,
       progress: userStore.progress,
@@ -445,7 +445,7 @@ export const useUpdateUserFormStructure = ({
     wrapperClassName: 'flex flex-col gap-2',
     required: true,
     description: t('userManagement.forms.driverLicenseDocumentDescription'),
-    error: t(userStore.createDtoErrors?.driverLicenseDocument?.[0]),
+    error: t(userStore.updateDtoErrors?.driverLicenseDocument?.[0]),
     props: {
       image: userStore.driverLicenseDocument,
       progress: userStore.progress,
@@ -469,13 +469,51 @@ export const useUpdateUserFormStructure = ({
   };
 
   const step3FormStructure: FormStructure = {
-    title: '',
-    description: '',
+    title: { value: t('userManagement.forms.step3Title') },
+    description: { value: t('userManagement.forms.step3Description') },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: t('userManagement.forms.step3Title'),
+        title: { value: t('userManagement.forms.step3FieldTitle') },
         rows: [{ fields: [officialDocumentField] }, { fields: [driverLicenseDocumentField] }]
+      }
+    ]
+  };
+
+  // Step 4 *************************************************************************************
+
+  const uploadsField: Field<ImageGalleryFieldProps> = {
+    id: 'uploads',
+    label: `${t('userManagement.forms.uploadsLabel')}`,
+    description: `${t('userManagement.forms.uploadsDescription')}`,
+    variant: FieldVariant.IMAGE_GALLERY,
+    props: {
+      images: userStore.images,
+      disabled: isPhotosUploadPending,
+      onFilesChange: (e: ManipulatedFile[]) => {
+        userStore.updateImages('update', e);
+      },
+      onUpload: (file: ManipulatedFile, onProgress: (percent: number) => void) => {
+        const fileObj = file.file || (file as unknown as File);
+        uploadPhotos({
+          files: [fileObj],
+          onProgress: (progress: number) => {
+            userStore.setImageProgress(file, progress);
+            onProgress(progress);
+          }
+        });
+      }
+    }
+  };
+
+  const uploadsFormStructure: FormStructure = {
+    title: { value: t('userManagement.forms.step4Title') },
+    description: { value: t('userManagement.forms.step4Description') },
+    orientation: 'horizontal',
+    fieldsets: [
+      {
+        title: { value: t('userManagement.forms.step4FieldTitle') },
+        rows: [{ fields: [uploadsField] }]
       }
     ]
   };
@@ -483,6 +521,7 @@ export const useUpdateUserFormStructure = ({
   return {
     userUpdateFormStructure,
     profileUpdateFormStructure,
-    step3FormStructure
+    step3FormStructure,
+    uploadsFormStructure
   };
 };

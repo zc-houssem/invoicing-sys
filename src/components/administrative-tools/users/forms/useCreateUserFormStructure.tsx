@@ -4,8 +4,8 @@ import {
   FieldVariant,
   FormStructure,
   ImageFieldProps,
-  ImageFile,
   ImageGalleryFieldProps,
+  ManipulatedFile,
   NumberFieldProps,
   PasswordFieldProps,
   SelectFieldProps,
@@ -236,13 +236,10 @@ export const useCreateUserFormStructure = ({
   };
 
   const userCreateFormStructure: FormStructure = {
-    title: '',
-    description: '',
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: t('userManagement.forms.step1Title'),
-        description: '',
+        title: { value: t('userManagement.forms.step1Title') },
         includeHeader: true,
         rows: [
           { fields: [photoField] },
@@ -255,8 +252,7 @@ export const useCreateUserFormStructure = ({
         ]
       },
       {
-        title: t('userManagement.forms.step2Title'),
-        description: '',
+        title: { value: t('userManagement.forms.step2Title') },
         includeHeader: true,
         rows: [
           {
@@ -362,13 +358,12 @@ export const useCreateUserFormStructure = ({
   };
 
   const profileCreateFormStructure: FormStructure = {
-    title: 'Profile Information',
-    description: 'Please fill out your profile details',
+    title: { value: t('userManagement.forms.step2Title') },
+    description: { value: t('userManagement.forms.step2Description') },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: 'Profile Details',
-        description: '',
+        title: { value: t('userManagement.forms.step2FieldTitle') },
         includeHeader: true,
         rows: [
           {
@@ -452,12 +447,12 @@ export const useCreateUserFormStructure = ({
   };
 
   const step3FormStructure: FormStructure = {
-    title: '',
-    description: '',
+    title: { value: t('userManagement.forms.step3Title') },
+    description: { value: t('userManagement.forms.step3Description') },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: t('userManagement.forms.step3Title'),
+        title: { value: t('userManagement.forms.step3FieldTitle') },
         rows: [{ fields: [officialDocumentField] }, { fields: [driverLicenseDocumentField] }]
       }
     ]
@@ -473,12 +468,13 @@ export const useCreateUserFormStructure = ({
     props: {
       images: userStore.images,
       disabled: isPhotosUploadPending,
-      onFilesChange: (e: ImageFile[]) => {
+      onFilesChange: (e: ManipulatedFile[]) => {
         userStore.updateImages('create', e);
       },
-      onUpload: (file, onProgress) => {
+      onUpload: (file: ManipulatedFile, onProgress: (percent: number) => void) => {
+        const fileObj = file.file || (file as unknown as File);
         uploadPhotos({
-          files: [file],
+          files: [fileObj],
           onProgress: (progress: number) => {
             userStore.setImageProgress(file, progress);
             onProgress(progress);
@@ -489,12 +485,12 @@ export const useCreateUserFormStructure = ({
   };
 
   const uploadsFormStructure: FormStructure = {
-    title: '',
-    description: '',
+    title: { value: t('userManagement.forms.step4Title') },
+    description: { value: t('userManagement.forms.step4Description') },
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: t('userManagement.forms.step3Title'),
+        title: { value: t('userManagement.forms.step4FieldTitle') },
         rows: [{ fields: [uploadsField] }]
       }
     ]

@@ -1,6 +1,6 @@
 import { Log, PagedLogs } from '@/types';
 import axios from '../axios';
-import { QueryParams } from '@/types/response/QueryParams';
+import { QueryParams } from '@/types';
 
 const findPaginated = async (
   page: number = 1,

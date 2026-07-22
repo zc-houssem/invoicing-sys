@@ -102,7 +102,7 @@ export interface UserStore extends UserStoreData {
   setNested: <T>(path: string, value: T) => void;
   reset: () => void;
 
-  setImageProgress: (file: File, progress: number) => void;
+  setImageProgress: (file: File | ManipulatedFile, progress: number) => void;
   appendUploadId: (dto: 'create' | 'update', upload: { id?: number; uploadId: number }) => void;
   updateImages: (dto: 'create' | 'update', newImages: ManipulatedFile[]) => void;
 }
@@ -134,7 +134,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   setImageProgress: (file, progress) => {
     set((state) => ({
       ...state,
-      images: state.images.map((image) => (image.file === file ? { ...image, progress } : image))
+      images: state.images.map((image) => (image.file === file || image === file ? { ...image, progress } : image))
     }));
   },
 
