@@ -2,11 +2,11 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Header } from './Header';
 import { BreadcrumbContext, BreadcrumbRoute } from '../../context/BreadcrumbContext';
-import { SidebarInset, SidebarProvider } from '../ui/sidebar';
+import { SidebarProvider } from '../ui/sidebar';
 import { AppSidebar } from './sidebar/AppSidebar';
-import { AppVersion } from './AppVersion';
 import { IntroContext } from '@/context/IntroContext';
 import { FooterContext } from '@/context/FooterContext';
+import { UIContext } from '@/context/UIContext';
 import { PageHeader } from './PageHeader';
 import { useMediaQuery } from '@/hooks/other/useMediaQuery';
 import { Footer } from './Footer';
@@ -58,6 +58,15 @@ export const Layout = ({ children, className }: LayoutProps) => {
 
   const isMobile = useMediaQuery('(max-width: 425px)');
 
+  const [enableMainOverflow, setEnableMainOverflow] = React.useState<boolean>(false);
+  const uiContext = {
+    enableMainOverflow,
+    setEnableMainOverflow,
+    clearEnableMainOverflow: () => {
+      setEnableMainOverflow?.(false);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -68,26 +77,29 @@ export const Layout = ({ children, className }: LayoutProps) => {
         <BreadcrumbContext.Provider value={breadcrumbContext}>
           <IntroContext.Provider value={introContext}>
             <FooterContext.Provider value={footerContext}>
-              <div className="flex flex-row flex-1 overflow-hidden">
-                {/* Sidebar */}
-                <AppSidebar />
-                {/* Header , Main & Footer */}
-                <div className="flex flex-col flex-1 overflow-hidden bg-background">
-                  <Header />
-                  {(title || description) && (
-                    <PageHeader className={cn('py-5', isMobile ? 'px-4' : 'px-10')} />
-                  )}
-                  <main
-                    className={cn(
-                      'flex flex-col flex-1 overflow-hidden',
-                      isMobile ? 'px-4' : 'px-10',
-                      className
-                    )}>
-                    {children}
-                  </main>
-                  {content && <Footer />}
+              <UIContext.Provider value={uiContext}>
+                <div className="flex flex-row flex-1 overflow-hidden">
+                  {/* Sidebar */}
+                  <AppSidebar />
+                  {/* Header , Main & Footer */}
+                  <div className="flex flex-col flex-1 overflow-hidden bg-background">
+                    <Header />
+                    {(title || description) && (
+                      <PageHeader className={cn('py-5', isMobile ? 'px-4' : 'px-10')} />
+                    )}
+                    <main
+                      className={cn(
+                        'flex flex-col flex-1',
+                        enableMainOverflow ? 'overflow-auto' : 'overflow-hidden',
+                        isMobile ? 'px-1' : 'px-2',
+                        className
+                      )}>
+                      {children}
+                    </main>
+                    {content && <Footer />}
+                  </div>
                 </div>
-              </div>
+              </UIContext.Provider>
             </FooterContext.Provider>
           </IntroContext.Provider>
         </BreadcrumbContext.Provider>
