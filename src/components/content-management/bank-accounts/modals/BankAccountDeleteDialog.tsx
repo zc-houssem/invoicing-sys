@@ -16,7 +16,7 @@ export const useBankAccountDeleteDialog = ({
   isDeletionPending,
   reset
 }: BankAccountDeleteDialogProps) => {
-  const { t } = useTranslation('bankAccount');
+  const { t } = useTranslation('content-management');
 
   const {
     DialogFragment: deleteBankAccountDialog,
@@ -25,10 +25,10 @@ export const useBankAccountDeleteDialog = ({
   } = useDialog({
     title: (
       <div className="leading-normal">
-        {t('dialogs.delete.title')} <span className="font-light">{representation}</span> ?
+        {t('bankAccount.dialogs.delete.title')} <span className="font-light">{representation}</span> ?
       </div>
     ),
-    description: t('dialogs.delete.description'),
+    description: t('bankAccount.dialogs.delete.description'),
     children: (
       <div>
         <div className="flex gap-2 justify-end">
@@ -37,7 +37,7 @@ export const useBankAccountDeleteDialog = ({
               deleteBankAccount?.();
               closeDeleteBankAccountDialog();
             }}>
-            {t('dialogs.delete.confirm')}
+            {t('bankAccount.dialogs.delete.confirm')}
             <Spinner show={isDeletionPending} />
           </Button>
           <Button
@@ -46,7 +46,7 @@ export const useBankAccountDeleteDialog = ({
               reset?.();
               closeDeleteBankAccountDialog();
             }}>
-            {t('dialogs.delete.cancel')}
+            {t('bankAccount.dialogs.delete.cancel')}
           </Button>
         </div>
       </div>

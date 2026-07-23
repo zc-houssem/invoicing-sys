@@ -107,6 +107,18 @@
     }
   },
   "bankAccount": {
+    "page": {
+      "title": "Bank Accounts",
+      "description": "Here you can manage your bank accounts, which will be used for payments and invoicing."
+    },
+    "entity": {
+      "singular": "Bank Account",
+      "plural": "Bank Accounts"
+    },
+    "actions": {
+      "promote": "Promote",
+      "demote": "Demote"
+    },
     "sheets": {
       "create": {
         "title": "Create Bank Account",
@@ -123,6 +135,7 @@
       "rib": "Account Number",
       "iban": "IBAN",
       "currency": "Currency",
+      "main": "Main Account",
       "placeholders": {
         "name": "Enter the bank name",
         "bic": "Enter the BIC code",
@@ -135,7 +148,8 @@
         "bic": "The BIC code of the bank.",
         "rib": "The account number of the bank account.",
         "iban": "The IBAN code of the bank account.",
-        "currency": "The currency of the bank account."
+        "currency": "The currency of the bank account.",
+        "main": "Mark this account as the primary bank account used by default."
       }
     },
     "table": {
@@ -148,10 +162,26 @@
         "currency": "Currency",
         "createdAt": "Created At",
         "updatedAt": "Updated At"
+      },
+      "emptyCells": {
+        "currency": "No currency"
       }
     },
-    "emptyCells": {
-      "currency": "No currency"
+    "dialogs": {
+      "delete": {
+        "title": "Delete Bank Account",
+        "description": "This action is irreversible and permanent. Deleting this bank account may affect existing quotations and invoices. Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Bank account created successfully.",
+      "createFailure": "Failed to create bank account.",
+      "updateSuccess": "Bank account updated successfully.",
+      "updateFailure": "Failed to update bank account.",
+      "deleteSuccess": "Bank account deleted successfully.",
+      "deleteFailure": "Failed to delete bank account."
     }
   },
   "taxRate": {

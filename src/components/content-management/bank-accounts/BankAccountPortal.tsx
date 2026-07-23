@@ -28,21 +28,19 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
   const router = useRouter();
 
   const { t: tCommon } = useTranslation('common');
-  const { t: tSettings } = useTranslation('settings');
-  const { t: tCurrency } = useTranslation('currency');
+  const { t: tContentManagement } = useTranslation('content-management');
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
     setIntro?.(
-      'Bank Accounts',
-      'Here you can manage your bank accounts, which will be used for payments and invoicing.'
+      tContentManagement('bankAccount.page.title'),
+      tContentManagement('bankAccount.page.description')
     );
     setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: tCommon('submenu.account') },
-      { title: tCommon('settings.account.bank_accounts') }
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.bankAccounts') }
     ]);
     return () => {
       clearIntro?.();
@@ -55,7 +53,7 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
   const [page, setPage] = React.useState(1);
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
 
-  const [size, setSize] = React.useState(5);
+  const [size, setSize] = React.useState(10);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
   const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
@@ -98,13 +96,17 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
   const { mutate: createBankAccount, isPending: isCreatePending } = useMutation({
     mutationFn: () => api.core.bankAccount.create(bankAccountStore.createDto),
     onSuccess: () => {
-      toast.success(tSettings('bank_account.action_add_success'));
+      toast.success(tContentManagement('bankAccount.messages.createSuccess'));
       refetchBankAccounts();
       bankAccountStore.reset();
       closeCreateBankAccountSheet();
     },
     onError: (error) => {
-      const message = getErrorMessage('settings', error, 'bank_account.action_add_failure');
+      const message = getErrorMessage(
+        'content-management',
+        error,
+        'bankAccount.messages.createFailure'
+      );
       toast.error(message);
     }
   });
@@ -114,13 +116,17 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     mutationFn: () =>
       api.core.bankAccount.update(bankAccountStore?.response?.id, bankAccountStore.updateDto),
     onSuccess: () => {
-      toast.success(tSettings('bank_account.action_add_success'));
+      toast.success(tContentManagement('bankAccount.messages.updateSuccess'));
       refetchBankAccounts();
       bankAccountStore.reset();
       closeUpdateBankAccountSheet();
     },
     onError: (error) => {
-      const message = getErrorMessage('settings', error, 'bank_account.action_add_failure');
+      const message = getErrorMessage(
+        'content-management',
+        error,
+        'bankAccount.messages.updateFailure'
+      );
       toast.error(message);
     }
   });
@@ -130,11 +136,13 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     mutationFn: (id: number) => api.core.bankAccount.remove(id),
     onSuccess: () => {
       if (bankAccounts?.length == 1 && page > 1) setPage(page - 1);
-      toast.success(tSettings('bank_account.action_remove_success'));
+      toast.success(tContentManagement('bankAccount.messages.deleteSuccess'));
       refetchBankAccounts();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('settings', error, 'bank_account.action_remove_failure'));
+      toast.error(
+        getErrorMessage('content-management', error, 'bankAccount.messages.deleteFailure')
+      );
     }
   });
 
@@ -161,8 +169,8 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     });
 
   const context: DataTableConfig<ResponseBankAccountDto> = {
-    singularName: 'Bank Account',
-    pluralName: 'Bank Accounts',
+    singularName: tContentManagement('bankAccount.entity.singular'),
+    pluralName: tContentManagement('bankAccount.entity.plural'),
     //dialogs
     createCallback: () => {
       openCreateBankAccountSheet();
@@ -176,13 +184,13 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     additionalActions: {
       1: [
         {
-          actionLabel: 'Promote',
+          actionLabel: tContentManagement('bankAccount.actions.promote'),
           actionIcon: <ArrowUp />,
           actionCallback: (entity) => {},
           isActionVisible: (entity) => !entity.isMain
         },
         {
-          actionLabel: 'Demote',
+          actionLabel: tContentManagement('bankAccount.actions.demote'),
           actionIcon: <ArrowDown />,
           actionCallback: (entity) => {},
           isActionVisible: (entity) => entity.isMain

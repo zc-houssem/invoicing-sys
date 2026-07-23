@@ -7,6 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { updateBankAccountSchema } from '@/types/validations/bank-account.validation';
 import { useUpdateBankAccountFormStructure } from './useUpdateBankAccountFormStructure';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { Repeat2, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface UpdateBankAccountFormProps {
   className?: string;
@@ -19,6 +21,7 @@ export const UpdateBankAccountForm = ({
   updateBankAccount,
   isUpdatePending
 }: UpdateBankAccountFormProps) => {
+  const { t: tCommon } = useTranslation('common');
   const bankAccountStore = useBankAccountStore();
 
   const { currencies, isCurrenciesPending } = useCurrencies();
@@ -48,11 +51,11 @@ export const UpdateBankAccountForm = ({
       <FormBuilder className="flex flex-col flex-1 overflow-auto p-2" structure={structure} />
       <Separator className="mb-4 mt-2" />
       <div className="flex flex-row justify-end gap-2">
-        <Button onClick={handleSubmit} disabled={isUpdatePending}>
-          Save
+        <Button variant="secondary" onClick={() => bankAccountStore.reset()} disabled={isUpdatePending}>
+          <Repeat2 /> {tCommon('commands.reset')}
         </Button>
-        <Button variant={'outline'} onClick={() => bankAccountStore.reset()}>
-          Reset
+        <Button onClick={handleSubmit} disabled={isUpdatePending}>
+          <Save /> {tCommon('commands.save')}
         </Button>
       </div>
     </div>
