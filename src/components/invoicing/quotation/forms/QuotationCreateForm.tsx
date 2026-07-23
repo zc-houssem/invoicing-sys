@@ -1,7 +1,7 @@
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
-import { cn } from '@/lib/utils';
 import { useQuotationCreateFormStructure } from './useQuotationCreateFormStructure';
+import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
+import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
+import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
 import { api, ServerErrorResponse } from '@/api';
@@ -183,57 +183,53 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     onAttachmentsUpload: handleAttachmentsUpload
   });
 
-  if (isEnterprisesPending || isCurrenciesPending || isBankAccountsPending) return <Spinner />;
+  const isFormReady = !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
+
+  useInvoicingFormScroll(isFormReady);
+
+  if (!isFormReady) {
+    return <Spinner className="items-start justify-start pt-8" />;
+  }
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>
-      <ResizablePanelGroup
-        orientation={isMobile ? 'vertical' : 'horizontal'}
-        className=" rounded-lg border">
-        <ResizablePanel defaultSize={isMobile ? '100%' : '75%'}>
-          <div className="flex items-center justify-center p-6 container mx-auto">
-            <FormBuilder structure={mainFormStructure} />
+    <InvoicingFormLayout
+      className={className}
+      isMobile={isMobile}
+      sidebarTitle={t('commands.actions')}
+      main={<FormBuilder structure={mainFormStructure} />}
+      sidebar={
+        <>
+          <Status className="mx-auto" status="New" />
+          <Separator />
+          <div className="flex flex-col gap-2 w-full">
+            <Label className="text-xs font-bold">Actions</Label>
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-xl"
+              variant={'outline'}
+              onClick={() => {
+                handleSubmit();
+              }}>
+              <Save className="size-16" />
+              <span>{t('commands.save')}</span>
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-xl"
+              variant={'ghost'}
+              onClick={() => {
+                handleSubmit();
+              }}>
+              <Repeat2 className="size-16" />
+              <span>{t('commands.reset')}</span>
+            </Button>
           </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel
-          defaultSize={isMobile ? '0%' : '25%'}
-          minSize={isMobile ? '0%' : '20%'}
-          maxSize={isMobile ? '0%' : '30%'}
-          className="bg-card">
-          <div className="flex flex-col h-full items-start p-6 container mx-auto gap-4">
-            <Status className="mx-auto" status="New" />
-            <Separator />
-            <div className="flex flex-col gap-2 w-full">
-              <Label className="text-xs font-bold">Actions</Label>
-              <Button
-                type="button"
-                size="lg"
-                className="rounded-xl"
-                variant={'outline'}
-                onClick={() => {
-                  handleSubmit();
-                }}>
-                <Save className="size-16" />
-                <span>{t('commands.save')}</span>
-              </Button>
-              <Button
-                type="button"
-                size="lg"
-                className="rounded-xl"
-                variant={'ghost'}
-                onClick={() => {
-                  handleSubmit();
-                }}>
-                <Repeat2 className="size-16" />
-                <span>{t('commands.reset')}</span>
-              </Button>
-            </div>
-            <Separator />
-            <FormBuilder structure={sidebarFormStructure} />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
+          <Separator />
+          <FormBuilder structure={sidebarFormStructure} />
+        </>
+      }
+    />
   );
 };

@@ -1,6 +1,6 @@
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
+import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
-import { cn } from '@/lib/utils';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
 import { api, ServerErrorResponse } from '@/api';
@@ -28,6 +28,7 @@ import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
 import { Status } from '../../Status';
 import { QuotationActions } from './QuotationActions';
+import { useTranslation } from 'react-i18next';
 
 interface QuotationUpdateFormProps {
   id: number;
@@ -36,6 +37,7 @@ interface QuotationUpdateFormProps {
 
 export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const { t } = useTranslation('common');
   const quotationStore = useQuotationStore();
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
@@ -256,38 +258,34 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     onAttachmentsUpload: handleAttachmentsUpload
   });
 
-  if (isWorkflowPending || isEnterprisesPending || isCurrenciesPending || isBankAccountsPending)
-    return <Spinner />;
+  const isFormReady =
+    !isWorkflowPending && !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
+
+  useInvoicingFormScroll(isFormReady);
+
+  if (!isFormReady) {
+    return <Spinner className="items-start justify-start pt-8" />;
+  }
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden py-4', className)}>
-      <ResizablePanelGroup
-        orientation={isMobile ? 'vertical' : 'horizontal'}
-        className=" rounded-lg border">
-        <ResizablePanel defaultSize={isMobile ? '100%' : '75%'}>
-          <div className="flex items-center justify-center p-6 container mx-auto">
-            <FormBuilder structure={mainFormStructure} />
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel
-          defaultSize={isMobile ? '0%' : '25%'}
-          minSize={isMobile ? '0%' : '20%'}
-          maxSize={isMobile ? '0%' : '30%'}
-          className="bg-card">
-          <div className="flex flex-col h-full items-start p-6 container mx-auto">
-            <Status className="mx-auto" status={workflow?.status || '-'} />
-            <QuotationActions
-              className="my-4"
-              workflow={workflow}
-              save={handleSubmit}
-              reload={handleReload}
-              reset={handleReload}
-            />
-            <FormBuilder structure={sidebarFormStructure} />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
+    <InvoicingFormLayout
+      className={className}
+      isMobile={isMobile}
+      sidebarTitle={t('commands.actions')}
+      main={<FormBuilder structure={mainFormStructure} />}
+      sidebar={
+        <>
+          <Status className="mx-auto" status={workflow?.status || '-'} />
+          <QuotationActions
+            className="my-4"
+            workflow={workflow}
+            save={handleSubmit}
+            reload={handleReload}
+            reset={handleReload}
+          />
+          <FormBuilder structure={sidebarFormStructure} />
+        </>
+      }
+    />
   );
 };

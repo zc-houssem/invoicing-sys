@@ -8,7 +8,10 @@ function ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupPr
   return (
     <ResizablePrimitive.Group
       data-slot="resizable-panel-group"
-      className={cn('flex h-full w-full aria-[orientation=vertical]:flex-col', className)}
+      className={cn(
+        'flex h-full min-h-0 w-full aria-[orientation=vertical]:flex-col',
+        className
+      )}
       {...props}
     />
   );

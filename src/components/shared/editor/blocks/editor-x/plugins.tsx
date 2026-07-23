@@ -106,7 +106,13 @@ import { Separator } from '@/components/ui/separator';
 
 const placeholder = 'Press / for commands...';
 
-export function Plugins({ maxLength }: { maxLength?: number }) {
+export function Plugins({
+  maxLength,
+  autoFocus = false
+}: {
+  maxLength?: number;
+  autoFocus?: boolean;
+}) {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
@@ -164,7 +170,7 @@ export function Plugins({ maxLength }: { maxLength?: number }) {
         )}
       </ToolbarPlugin>
       <div className="relative">
-        <AutoFocusPlugin />
+        {autoFocus && <AutoFocusPlugin />}
         <RichTextPlugin
           contentEditable={
             <div className="">
