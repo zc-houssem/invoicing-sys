@@ -6,7 +6,7 @@ import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { Button } from '@/components/ui/button';
 import { useUpdateUserFormStructure } from './useUpdateUserFormStructure';
-import { Save } from 'lucide-react';
+import { Repeat2, Save } from 'lucide-react';
 import { ServerErrorResponse, UpdateUserDto, Upload } from '@/types';
 import { updateUserSchema } from '@/types/validations/user.validation';
 import { Spinner } from '@/components/shared/Spinner';
@@ -17,27 +17,19 @@ import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { Separator } from '@/components/ui/separator';
+import { useFooter } from '@/context/FooterContext';
+import { useIntro } from '@/context/IntroContext';
+import { useUI } from '@/context/UIContext';
 import { useIdentifiedUser } from '@/hooks/content/user/useIdentifiedUser';
-import { useUploads } from '@/hooks/content/useUploads';
 import { useUpload } from '@/hooks/content/useUpload';
-import { Gender } from '@/types';
-
-
 
 interface UserUpdateFormProps {
   userId?: string;
   className?: string;
-  updateUser?: (user: UpdateUserDto) => void;
-  isUpdatePending?: boolean;
+  onSuccess?: () => void;
 }
 
-export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
-  userId,
-  className,
-  updateUser,
-  isUpdatePending
-}) => {
+export const UserUpdateForm = ({ userId, className, onSuccess }: UserUpdateFormProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t: tCommon } = useTranslation('common');
@@ -45,25 +37,41 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
   const userStore = useUserStore();
   const { roles, isFetchRolesPending } = useRoles();
   const { setRoutes } = useBreadcrumb();
+  const { setContent } = useFooter();
+  const { setIntro, clearIntro } = useIntro();
+  const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
 
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.administrativeTools') || 'Administrative Tools' },
+      { title: tCommon('menu.administrativeTools.title') || 'Administrative Tools' },
       { title: tUser('userManagement.page.title') },
-      { title: tUser('userManagement.page.users'), href: '/administrative-tools/user-management/users' },
+      {
+        title: tUser('userManagement.page.users'),
+        href: '/administrative-tools/user-management/users'
+      },
       { title: tUser('userManagement.sheet.updateUserTitle') }
     ]);
+    setIntro?.(
+      tUser('userManagement.sheet.updateUserTitle'),
+      tUser('userManagement.sheet.updateUserDescription')
+    );
+    setEnableMainOverflow?.(true);
     return () => {
       setRoutes?.([]);
+      clearIntro?.();
+      clearEnableMainOverflow?.();
       userStore.reset();
     };
-  }, [router.locale]);
+  }, [router.locale, tCommon, tUser]);
 
-  const { user: fetchedUser, isFetchUserPending } = useIdentifiedUser(userId, undefined, Boolean(userId));
+  const { user: fetchedUser, isFetchUserPending } = useIdentifiedUser(
+    userId,
+    undefined,
+    Boolean(userId)
+  );
 
   React.useEffect(() => {
     if (fetchedUser) {
-      const uploads = fetchedUser?.uploads?.sort((a, b) => a.order - b.order) || [];
       userStore.set('response', fetchedUser);
       userStore.set<UpdateUserDto>('updateDto', {
         firstName: fetchedUser.firstName,
@@ -75,36 +83,10 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
         email: fetchedUser.email,
         password: '',
         roleId: fetchedUser.roleId,
-        phone: fetchedUser?.phone,
-        pictureId: fetchedUser?.pictureId,
-        cin: fetchedUser?.cin,
-        bio: fetchedUser?.bio,
-        gender: fetchedUser?.gender as Gender,
-        isPrivate: fetchedUser?.isPrivate,
-        officialDocumentId: fetchedUser?.officialDocumentId,
-        driverLicenseDocumentId: fetchedUser?.driverLicenseDocumentId,
-        uploads: uploads.map((upload) => ({
-          id: upload.id,
-          uploadId: upload.uploadId
-        }))
+        pictureId: fetchedUser?.pictureId
       });
     }
   }, [fetchedUser]);
-
-  const uploadIds = React.useMemo(() => {
-    return Array.isArray(userStore.updateDto?.uploads)
-      ? userStore.updateDto.uploads.map((u) => u.uploadId)
-      : [];
-  }, [userStore.updateDto?.uploads]);
-
-  const { uploads: images } = useUploads(uploadIds);
-
-  React.useEffect(() => {
-    if (images.length > 0 && !userStore.hasInitializedImages && userStore.images.length === 0) {
-      userStore.set('images', images);
-      userStore.set('hasInitializedImages', true);
-    }
-  }, [images, userStore.hasInitializedImages]);
 
   const { upload: profilePicture } = useUpload({
     id: userStore.updateDto?.pictureId,
@@ -116,26 +98,6 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
     }
   }, [profilePicture]);
 
-  const { upload: officialDocument } = useUpload({
-    id: userStore.updateDto?.officialDocumentId,
-    enabled: Boolean(userStore.updateDto?.officialDocumentId)
-  });
-  React.useEffect(() => {
-    if (officialDocument) {
-      userStore.set('officialDocument', officialDocument);
-    }
-  }, [officialDocument]);
-
-  const { upload: driverLicenseDocument } = useUpload({
-    id: userStore.updateDto?.driverLicenseDocumentId,
-    enabled: Boolean(userStore.updateDto?.driverLicenseDocumentId)
-  });
-  React.useEffect(() => {
-    if (driverLicenseDocument) {
-      userStore.set('driverLicenseDocument', driverLicenseDocument);
-    }
-  }, [driverLicenseDocument]);
-
   const { uploadFiles: uploadProfilePicture, isUploadPending: isProfilePictureUploadPending } =
     useUploadMutation({
       onSuccess: (response: Upload[]) => {
@@ -146,37 +108,6 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
       }
     });
 
-  const { uploadFiles: uploadOfficialDocument, isUploadPending: isOfficialDocumentUploadPending } =
-    useUploadMutation({
-      onSuccess: (response: Upload[]) => {
-        userStore.setNested('updateDto.officialDocumentId', response?.[0]?.id);
-      },
-      onError: (error: ServerErrorResponse) => {
-        toast.error(error.response?.data?.message);
-      }
-    });
-
-  const {
-    uploadFiles: uploadDriverLicenseDocument,
-    isUploadPending: isDriverLicenseDocumentPending
-  } = useUploadMutation({
-    onSuccess: (response: Upload[]) => {
-      userStore.setNested('updateDto.driverLicenseDocumentId', response?.[0]?.id);
-    },
-    onError: (error: ServerErrorResponse) => {
-      toast.error(error.response?.data?.message);
-    }
-  });
-
-  const { uploadFiles: uploadPhotos, isUploadPending: isPhotosUploadPending } = useUploadMutation({
-    onSuccess: (response: Upload[]) => {
-      userStore.appendUploadId('update', { uploadId: response?.[0]?.id as number });
-    },
-    onError: (error: ServerErrorResponse) => {
-      toast.error(error.response?.data?.message);
-    }
-  });
-
   const { userUpdateFormStructure } = useUpdateUserFormStructure({
     userStore,
     roles: mapToSelectOptions({
@@ -185,19 +116,10 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
       valueKey: 'id'
     }),
     uploadProfilePicture,
-    isProfilePictureUploadPending,
-
-    uploadOfficialDocument,
-    isOfficialDocumentUploadPending,
-
-    uploadDriverLicenseDocument,
-    isDriverLicenseDocumentPending,
-
-    uploadPhotos,
-    isPhotosUploadPending
+    isProfilePictureUploadPending
   });
 
-  const { mutate: updateMutation, isPending: isMutationPending } = useMutation({
+  const { mutate: updateMutation, isPending } = useMutation({
     mutationFn: (data: { id?: string; user: UpdateUserDto }) =>
       api.admin.user.update(data.id, data.user),
     onSuccess: () => {
@@ -206,16 +128,41 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
       });
       toast.success(tUser('userManagement.messages.userUpdatedSuccess'));
       userStore.reset();
-      router.push('/administrative-tools/user-management/users');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push('/administrative-tools/user-management/users');
+      }
     },
     onError: (error: ServerErrorResponse) => {
       toast.error(error.response?.data?.message || tUser('userManagement.errors.generalError'));
     }
   });
 
-  const isPending = isUpdatePending ?? isMutationPending;
+  const handleReset = React.useCallback(() => {
+    if (fetchedUser) {
+      userStore.set('updateDtoErrors', {});
+      userStore.set('confirmPassword', '');
+      userStore.set('setManualPassword', false);
+      userStore.set('response', fetchedUser);
+      userStore.set<UpdateUserDto>('updateDto', {
+        firstName: fetchedUser.firstName,
+        lastName: fetchedUser.lastName,
+        dateOfBirth: fetchedUser.dateOfBirth,
+        isActive: fetchedUser.isActive,
+        isApproved: fetchedUser.isApproved,
+        username: fetchedUser.username,
+        email: fetchedUser.email,
+        password: '',
+        roleId: fetchedUser.roleId,
+        pictureId: fetchedUser?.pictureId
+      });
+    } else {
+      userStore.reset();
+    }
+  }, [fetchedUser, userStore]);
 
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
     const userResult = updateUserSchema(userStore.setManualPassword).safeParse({
       ...userStore.updateDto,
       confirmPassword: userStore.confirmPassword
@@ -223,42 +170,40 @@ export const UserUpdateForm: React.FC<UserUpdateFormProps> = ({
 
     if (!userResult.success) {
       userStore.set('updateDtoErrors', userResult.error.flatten().fieldErrors);
+      console.log('Validation failed', userResult.error.flatten().fieldErrors);
+      toast.error('Validation failed: ' + Object.keys(userResult.error.flatten().fieldErrors).join(', '));
       return;
     }
     userStore.set('updateDtoErrors', {});
 
-    if (updateUser) {
-      updateUser(userStore.updateDto);
-    } else {
-      updateMutation({ id: userId || userStore.response?.id, user: userStore.updateDto });
-    }
-  };
+    updateMutation({ id: userId || userStore.response?.id, user: userStore.updateDto });
+  }, [userStore, updateMutation, userId]);
+
+  React.useEffect(() => {
+    setContent?.(
+      <div className="flex items-center justify-end gap-2 px-4 py-1">
+        <Button variant="secondary" onClick={handleReset} disabled={isPending}>
+          <Repeat2 /> {tCommon('commands.reset')}
+        </Button>
+        <Button onClick={handleSubmit} disabled={isPending}>
+          <Save /> {tCommon('commands.save')}
+        </Button>
+      </div>
+    );
+    return () => {
+      setContent?.(null);
+    };
+  }, [setContent, handleReset, handleSubmit, isPending, tCommon]);
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2 m-5 lg:mx-10', className)}>
+    <div className={cn('flex flex-col flex-1 gap-2', className)}>
       {isFetchRolesPending || isFetchUserPending ? (
         <Spinner />
       ) : (
-        <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
-          <div className="flex flex-col flex-1 overflow-auto p-2">
-            <div className="space-y-1 mb-4">
-              <h1 className="text-lg font-bold">{tUser('userManagement.forms.step1Title')}</h1>
-              <p className="text-xs text-muted-foreground">{tUser('userManagement.forms.step1Description')}</p>
-              <Separator className="mt-2" />
-            </div>
-            <div className="my-auto">
-              <FormBuilder structure={userUpdateFormStructure} />
-            </div>
-          </div>
+        <div className="flex flex-col flex-1 my-4">
+          <FormBuilder structure={userUpdateFormStructure} />
         </div>
       )}
-
-      {/* Controls */}
-      <div className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
-        <Button onClick={handleSubmit} disabled={isPending}>
-          <Save /> {tCommon('common.buttons.update')}
-        </Button>
-      </div>
     </div>
   );
 };

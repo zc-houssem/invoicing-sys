@@ -3,17 +3,17 @@ import { useSheet } from "@/components/shared/Sheets";
 import { UserUpdateForm } from "../forms/UserUpdateForm";
 import { useTranslation } from "react-i18next";
 
-interface UserUpdateSheet {
-  updateUser?: () => void;
-  isUpdatePending?: boolean;
+interface UserUpdateSheetProps {
+  userId?: string;
+  onSuccess?: () => void;
   resetUser?: () => void;
 }
 
 export const useUserUpdateSheet = ({
-  updateUser,
-  isUpdatePending,
+  userId,
+  onSuccess,
   resetUser,
-}: UserUpdateSheet) => {
+}: UserUpdateSheetProps = {}) => {
   const { t } = useTranslation("user-management");
   const {
     SheetFragment: updateUserSheet,
@@ -29,9 +29,12 @@ export const useUserUpdateSheet = ({
     description: t("userManagement.sheet.updateUserDescription"),
     children: (
       <UserUpdateForm
+        userId={userId}
         className="mx-4"
-        updateUser={updateUser}
-        isUpdatePending={isUpdatePending}
+        onSuccess={() => {
+          closeUpdateUserSheet();
+          onSuccess?.();
+        }}
       />
     ),
     className: "min-w-[50vw] flex flex-col flex-1 overflow-hidden",

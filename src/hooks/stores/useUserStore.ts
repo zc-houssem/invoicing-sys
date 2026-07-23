@@ -7,8 +7,6 @@ import {
   UpdateUserDto
 } from '@/types';
 import { setDeepValue } from '@/lib/object';
-import { ManipulatedFile } from '@/components/shared/form-builder/types';
-
 interface UserStoreData {
   response?: ResponseUserDto;
   responseFollowCountsDto: ResponseFollowCountsDto;
@@ -19,13 +17,7 @@ interface UserStoreData {
   setManualPassword: boolean;
   confirmPassword?: string;
   picture?: File;
-  cover?: File;
-  officialDocument?: File;
-  driverLicenseDocument?: File;
-  pictureUrl?: string;
   progress?: number;
-  images: ManipulatedFile[];
-  hasInitializedImages: boolean;
 
   followers: ResponseFollowDto[];
   followings: ResponseFollowDto[];
@@ -50,16 +42,7 @@ const initialState: UserStoreData = {
     username: '',
     email: '',
     roleId: '',
-    phone: '',
-    cin: '',
-    bio: '',
-    gender: undefined,
-    isPrivate: false,
-    pictureId: undefined,
-    coverId: undefined,
-    officialDocumentId: undefined,
-    driverLicenseDocumentId: undefined,
-    uploads: []
+    pictureId: undefined
   },
   updateDto: {
     firstName: '',
@@ -71,28 +54,15 @@ const initialState: UserStoreData = {
     username: '',
     email: '',
     roleId: '',
-    phone: '',
-    cin: '',
-    bio: '',
-    gender: undefined,
-    isPrivate: false,
-    pictureId: undefined,
-    coverId: undefined,
-    officialDocumentId: undefined,
-    driverLicenseDocumentId: undefined,
-    uploads: []
+    pictureId: undefined
   },
 
   setManualPassword: false,
   confirmPassword: '',
   picture: undefined,
-  officialDocument: undefined,
-  driverLicenseDocument: undefined,
   progress: 0,
   followers: [],
   followings: [],
-  images: [],
-  hasInitializedImages: false,
   createDtoErrors: {},
   updateDtoErrors: {}
 };
@@ -101,13 +71,9 @@ export interface UserStore extends UserStoreData {
   set: <T>(name: keyof UserStoreData, value: T) => void;
   setNested: <T>(path: string, value: T) => void;
   reset: () => void;
-
-  setImageProgress: (file: File | ManipulatedFile, progress: number) => void;
-  appendUploadId: (dto: 'create' | 'update', upload: { id?: number; uploadId: number }) => void;
-  updateImages: (dto: 'create' | 'update', newImages: ManipulatedFile[]) => void;
 }
 
-export const useUserStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set) => ({
   ...initialState,
   set: (name, value) => {
     set((state) => ({
@@ -130,56 +96,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
       };
     });
   },
-
-  setImageProgress: (file, progress) => {
-    set((state) => ({
-      ...state,
-      images: state.images.map((image) => (image.file === file || image === file ? { ...image, progress } : image))
-    }));
-  },
-
-  appendUploadId: (dto, upload) => {
-    set((state) => ({
-      ...state,
-      [`${dto}Dto`]: {
-        ...state[`${dto}Dto`],
-        uploads: [...(state[`${dto}Dto`]?.uploads ?? []), upload]
-      }
-    }));
-  },
-
-  updateImages: (dto: 'create' | 'update', newImages: ManipulatedFile[]) => {
-    set((state) => {
-      const oldImages = state.images;
-      const oldUploads = state[`${dto}Dto`]?.uploads ?? [];
-
-      const uploadMap = new Map<string, { id?: number; uploadId: number }>();
-      oldImages.forEach((img, idx) => {
-        const upload = oldUploads[idx];
-        if (upload?.uploadId) uploadMap.set(img.id, upload);
-      });
-
-      const newUploads = newImages
-        .map((img) => {
-          const existingUpload = uploadMap.get(img.id);
-          if (existingUpload) {
-            return existingUpload;
-          }
-          return undefined;
-        })
-        .filter(Boolean) as { id?: number; uploadId: number }[];
-
-      return {
-        ...state,
-        images: newImages,
-        [`${dto}Dto`]: {
-          ...state[`${dto}Dto`],
-          uploads: newUploads
-        }
-      };
-    });
-  },
-
   reset: () => {
     set({ ...initialState });
   }

@@ -49,9 +49,9 @@ export const LoggerMain = ({ className }: LoggerMainProps) => {
 
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setRoutes([
+    setRoutes?.([
       {
-        title: tCommon('menu.administrative_tools'),
+        title: tCommon('menu.administrativeTools.title') || 'Administrative Tools',
         href: '/administrative-tools/user-management/users'
       },
       { title: tCommon('submenu.logger') }

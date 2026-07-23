@@ -36,39 +36,15 @@ export interface UpdateAbstractUserDto extends Partial<CreateAbstractUserDto> {}
 // user dtos ************************************************************************************
 
 export interface ResponseUserDto extends ResponseAbstractUserDto {
-  phone?: string;
-  cin?: string;
-  bio?: string;
-  gender?: Gender;
-  isPrivate?: boolean;
   pictureId?: number;
-  coverId?: number;
   picture?: Upload;
-  officialDocumentId?: number;
-  officialDocument?: Upload;
-  driverLicenseDocumentId?: number;
-  driverLicenseDocument?: Upload;
-  uploads: ResponseUserUploadDto[];
-  industries: ResponseRefParamDto[];
-  objectives: ResponseRefParamDto[];
 }
 
 export interface CreateUserDto extends CreateAbstractUserDto {
-  phone?: string;
-  cin?: string;
-  bio?: string;
-  gender?: Gender;
-  isPrivate?: boolean;
   pictureId?: number;
-  coverId?: number;
-  officialDocumentId?: number;
-  driverLicenseDocumentId?: number;
-  uploads?: { uploadId: number }[];
 }
 
-export interface UpdateUserDto extends Partial<CreateUserDto> {
-  uploads?: { id: number; uploadId: number }[];
-}
+export interface UpdateUserDto extends Partial<CreateUserDto> {}
 
 export interface ResponseUserUploadDto extends DatabaseEntity {
   id: number;

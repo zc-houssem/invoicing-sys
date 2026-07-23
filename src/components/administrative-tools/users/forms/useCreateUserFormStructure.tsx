@@ -4,20 +4,14 @@ import {
   FieldVariant,
   FormStructure,
   ImageFieldProps,
-  ImageGalleryFieldProps,
-  ManipulatedFile,
-  NumberFieldProps,
   PasswordFieldProps,
   SelectFieldProps,
   SelectOption,
-  SwitchFieldProps,
-  TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { UserStore } from '@/hooks/stores/useUserStore';
 import { useUploadMutation } from '@/hooks/useUploadMutation';
 import { identifyUserAvatar } from '@/lib/user';
-import { Gender } from '@/types';
 import { useTranslation } from 'react-i18next';
 
 interface useCreateUserFormStructureProps {
@@ -26,35 +20,17 @@ interface useCreateUserFormStructureProps {
 
   uploadProfilePicture: ReturnType<typeof useUploadMutation>['uploadFiles'];
   isProfilePictureUploadPending?: boolean;
-
-  uploadOfficialDocument: ReturnType<typeof useUploadMutation>['uploadFiles'];
-  isOfficialDocumentUploadPending?: boolean;
-
-  uploadDriverLicenseDocument: ReturnType<typeof useUploadMutation>['uploadFiles'];
-  isDriverLicenseDocumentPending?: boolean;
-
-  uploadPhotos: ReturnType<typeof useUploadMutation>['uploadFiles'];
-  isPhotosUploadPending?: boolean;
 }
 
 export const useCreateUserFormStructure = ({
   userStore,
   roles,
   uploadProfilePicture,
-  isProfilePictureUploadPending,
-
-  uploadOfficialDocument,
-  isOfficialDocumentUploadPending,
-
-  uploadDriverLicenseDocument,
-  isDriverLicenseDocumentPending,
-
-  uploadPhotos,
-  isPhotosUploadPending
+  isProfilePictureUploadPending
 }: useCreateUserFormStructureProps) => {
   const { t } = useTranslation('user-management');
 
-  // Step 1 *************************************************************************************
+  const getError = (err?: string[]) => (err?.[0] ? t(err[0] as any) : undefined);
 
   //photo
   const photoField: Field<ImageFieldProps> = {
@@ -63,9 +39,9 @@ export const useCreateUserFormStructure = ({
     variant: FieldVariant.IMAGE,
     className: 'bg-muted border-2 w-40 h-40 my-2 rounded-full',
     wrapperClassName: 'flex flex-col gap-2 items-center',
-    required: true,
+    required: false,
     description: t('userManagement.forms.photoDescription'),
-    error: t(userStore.createDtoErrors?.photo?.[0]),
+    error: getError(userStore.createDtoErrors?.photo),
     props: {
       image: userStore.picture,
       progress: userStore.progress,
@@ -94,10 +70,10 @@ export const useCreateUserFormStructure = ({
     id: 'firstname',
     label: t('userManagement.forms.firstName'),
     variant: FieldVariant.TEXT,
-    required: true,
+    required: false,
     placeholder: 'John',
     description: t('userManagement.forms.firstNameDescription'),
-    error: t(userStore.createDtoErrors?.firstName?.[0]),
+    error: getError(userStore.createDtoErrors?.firstName),
     props: {
       value: userStore.createDto.firstName || undefined,
       onChange: (value) => {
@@ -112,10 +88,10 @@ export const useCreateUserFormStructure = ({
     id: 'lastname',
     label: t('userManagement.forms.lastName'),
     variant: FieldVariant.TEXT,
-    required: true,
+    required: false,
     placeholder: 'Doe',
     description: t('userManagement.forms.lastNameDescription'),
-    error: t(userStore.createDtoErrors?.lastName?.[0]),
+    error: getError(userStore.createDtoErrors?.lastName),
     props: {
       value: userStore.createDto.lastName || undefined,
       onChange: (value) => {
@@ -133,7 +109,7 @@ export const useCreateUserFormStructure = ({
     required: true,
     placeholder: 'john@doe.com',
     description: t('userManagement.forms.emailDescription'),
-    error: t(userStore.createDtoErrors?.email?.[0]),
+    error: getError(userStore.createDtoErrors?.email),
     props: {
       value: userStore.createDto.email || undefined,
       onChange: (value) => {
@@ -151,7 +127,7 @@ export const useCreateUserFormStructure = ({
     required: false,
     placeholder: 'YYYY-MM-DD',
     description: t('userManagement.forms.dateOfBirthDescription'),
-    error: t(userStore.createDtoErrors?.dateOfBirth?.[0]),
+    error: getError(userStore.createDtoErrors?.dateOfBirth),
     props: {
       value: userStore.createDto.dateOfBirth || undefined,
       onDateChange: (value: Date | null) => {
@@ -170,7 +146,7 @@ export const useCreateUserFormStructure = ({
     required: true,
     placeholder: t('userManagement.forms.usernamePlaceholder'),
     description: t('userManagement.forms.usernameDescription'),
-    error: t(userStore.createDtoErrors?.username?.[0]),
+    error: getError(userStore.createDtoErrors?.username),
     props: {
       value: userStore.createDto.username || undefined,
       onChange: (value) => {
@@ -188,7 +164,7 @@ export const useCreateUserFormStructure = ({
     required: true,
     placeholder: t('userManagement.forms.passwordPlaceholder'),
     description: t('userManagement.forms.passwordDescription'),
-    error: t(userStore.createDtoErrors?.password?.[0]),
+    error: getError(userStore.createDtoErrors?.password),
     props: {
       value: userStore.createDto.password || undefined,
       onChange: (value) => {
@@ -206,7 +182,7 @@ export const useCreateUserFormStructure = ({
     required: true,
     placeholder: t('userManagement.forms.confirmPasswordPlaceholder'),
     description: t('userManagement.forms.confirmPasswordDescription'),
-    error: t(userStore.createDtoErrors?.confirmPassword?.[0]),
+    error: getError(userStore.createDtoErrors?.confirmPassword),
     props: {
       value: userStore.confirmPassword || undefined,
       onChange: (value) => {
@@ -224,7 +200,7 @@ export const useCreateUserFormStructure = ({
     required: true,
     description: t('userManagement.forms.roleDescription'),
     placeholder: t('userManagement.forms.rolePlaceholder'),
-    error: t(userStore.createDtoErrors?.roleId?.[0]),
+    error: getError(userStore.createDtoErrors?.roleId),
     props: {
       options: roles,
       value: userStore.createDto.roleId,
@@ -265,241 +241,8 @@ export const useCreateUserFormStructure = ({
       }
     ]
   };
-  // Step 2 *************************************************************************************
-
-  const phoneField: Field<NumberFieldProps> = {
-    id: 'phone',
-    label: `${t('userManagement.forms.phone')}`,
-    variant: FieldVariant.NUMBER,
-    required: false,
-    placeholder: '+216 21 21 21 21',
-    description: `${t('userManagement.forms.phoneDescription')}`,
-    error: t(userStore.createDtoErrors?.phone?.[0]),
-    props: {
-      value: Number(userStore.createDto?.phone) || undefined,
-      onChange: (value: number) => {
-        userStore.setNested('createDto.phone', value.toString());
-        userStore.setNested('createDtoErrors.phone', []);
-      }
-    }
-  };
-
-  const cinField: Field<NumberFieldProps> = {
-    id: 'cin',
-    label: `${t('userManagement.forms.CIN')}`,
-    variant: FieldVariant.NUMBER,
-    required: true,
-    placeholder: `${t('userManagement.forms.CINPlaceholder')}`,
-    description: `${t('userManagement.forms.CINDescription')}`,
-    error: t(userStore.createDtoErrors?.cin?.[0]),
-    props: {
-      value: Number(userStore.createDto?.cin) || undefined,
-      onChange: (value: number) => {
-        userStore.setNested('createDto.cin', value.toString());
-        userStore.setNested('createDtoErrors.cin', []);
-      }
-    }
-  };
-
-  const bioField: Field<TextareaFieldProps> = {
-    id: 'bio',
-    label: `${t('userManagement.forms.bio')}`,
-    variant: FieldVariant.TEXTAREA,
-    required: false,
-    placeholder: `${t('userManagement.forms.bioPlaceholder')}`,
-    description: `${t('userManagement.forms.bioDescription')}`,
-    error: t(userStore.createDtoErrors?.bio?.[0]),
-    props: {
-      value: userStore.createDto?.bio,
-      onChange: (value) => {
-        userStore.setNested('createDto.bio', value);
-        userStore.setNested('createDtoErrors.bio', []);
-      },
-      rows: 5
-    }
-  };
-
-  const genderField: Field<SelectFieldProps> = {
-    id: 'gender',
-    label: `${t('userManagement.forms.gender')}`,
-    variant: FieldVariant.SELECT,
-    required: false,
-    placeholder: `${t('userManagement.forms.genderPlaceholder')}`,
-    description: `${t('userManagement.forms.genderDescription')}`,
-    error: t(userStore.createDtoErrors?.gender?.[0]),
-    props: {
-      options: Object.entries(Gender).map(([value, label]) => ({
-        value,
-        label
-      })),
-      value: userStore.createDto?.gender,
-      onValueChange: (value) => {
-        userStore.setNested('createDto.gender', value);
-        userStore.setNested('createDtoErrors.gender', []);
-      }
-    }
-  };
-
-  const isPrivateField: Field<SwitchFieldProps> = {
-    id: 'isPrivate',
-    label: `${t('userManagement.forms.isPrivate')}`,
-    variant: FieldVariant.SWITCH,
-    required: true,
-    placeholder: `${t('userManagement.forms.isPrivatePlaceholder')}`,
-    description: `${t('userManagement.forms.isPrivateDescription')}`,
-    error: t(userStore.createDtoErrors?.isPrivate?.[0]),
-    props: {
-      checked: userStore.createDto?.isPrivate,
-      onCheckedChange: (value) => {
-        userStore.setNested('createDto.isPrivate', value);
-        userStore.setNested('createDtoErrors.isPrivate', []);
-      }
-    }
-  };
-
-  const profileCreateFormStructure: FormStructure = {
-    title: { value: t('userManagement.forms.step2Title') },
-    description: { value: t('userManagement.forms.step2Description') },
-    orientation: 'horizontal',
-    fieldsets: [
-      {
-        title: { value: t('userManagement.forms.step2FieldTitle') },
-        includeHeader: true,
-        rows: [
-          {
-            fields: [phoneField, cinField]
-          },
-          {
-            fields: [genderField]
-          },
-          {
-            fields: [bioField]
-          },
-          {
-            fields: [isPrivateField]
-          }
-        ]
-      }
-    ]
-  };
-  // Step 3 *************************************************************************************
-
-  const officialDocumentField: Field<ImageFieldProps> = {
-    id: 'official-document',
-    label: t('userManagement.forms.officialDocument'),
-    variant: FieldVariant.IMAGE,
-    className: 'bg-muted container w-[700px] h-[400px] my-2 rounded-lg',
-    wrapperClassName: 'flex flex-col gap-2',
-    required: true,
-    description: t('userManagement.forms.officialDocumentDescription'),
-    error: t(userStore.createDtoErrors?.officialDocument?.[0]),
-    props: {
-      image: userStore.officialDocument,
-      progress: userStore.progress,
-      disabled: isOfficialDocumentUploadPending,
-      fallback: identifyUserAvatar(userStore.response),
-      onFileChange: (value) => {
-        userStore.set('officialDocument', value);
-        userStore.setNested('createDtoErrors.officialDocumentId', []);
-      },
-      onUpload: (file, onProgress) => {
-        userStore.set('progress', 0);
-        uploadOfficialDocument({
-          files: [file],
-          onProgress: (progress: number) => {
-            userStore.set('progress', progress);
-            onProgress(progress);
-          }
-        });
-      }
-    }
-  };
-
-  const driverLicenseDocumentField: Field<ImageFieldProps> = {
-    id: 'driver-license-document',
-    label: `${t('userManagement.forms.driverLicenseDocument')}`,
-    variant: FieldVariant.IMAGE,
-    className: 'bg-muted container w-[700px] h-[400px] my-2 rounded-lg',
-    wrapperClassName: 'flex flex-col gap-2',
-    required: true,
-    description: t('userManagement.forms.driverLicenseDocumentDescription'),
-    error: t(userStore.createDtoErrors?.driverLicenseDocument?.[0]),
-    props: {
-      image: userStore.driverLicenseDocument,
-      progress: userStore.progress,
-      disabled: isDriverLicenseDocumentPending,
-      fallback: identifyUserAvatar(userStore.response),
-      onFileChange: (value) => {
-        userStore.set('driverLicenseDocument', value);
-        userStore.setNested('createDtoErrors.driverLicenseDocumentId', []);
-      },
-      onUpload: (file, onProgress) => {
-        userStore.set('progress', 0);
-        uploadDriverLicenseDocument({
-          files: [file],
-          onProgress: (progress: number) => {
-            userStore.set('progress', progress);
-            onProgress(progress);
-          }
-        });
-      }
-    }
-  };
-
-  const step3FormStructure: FormStructure = {
-    title: { value: t('userManagement.forms.step3Title') },
-    description: { value: t('userManagement.forms.step3Description') },
-    orientation: 'horizontal',
-    fieldsets: [
-      {
-        title: { value: t('userManagement.forms.step3FieldTitle') },
-        rows: [{ fields: [officialDocumentField] }, { fields: [driverLicenseDocumentField] }]
-      }
-    ]
-  };
-
-  // Step 4 *************************************************************************************
-
-  const uploadsField: Field<ImageGalleryFieldProps> = {
-    id: 'uploads',
-    label: `${t('userManagement.forms.uploadsLabel')}`,
-    description: `${t('userManagement.forms.uploadsDescription')}`,
-    variant: FieldVariant.IMAGE_GALLERY,
-    props: {
-      images: userStore.images,
-      disabled: isPhotosUploadPending,
-      onFilesChange: (e: ManipulatedFile[]) => {
-        userStore.updateImages('create', e);
-      },
-      onUpload: (file: ManipulatedFile, onProgress: (percent: number) => void) => {
-        const fileObj = file.file || (file as unknown as File);
-        uploadPhotos({
-          files: [fileObj],
-          onProgress: (progress: number) => {
-            userStore.setImageProgress(file, progress);
-            onProgress(progress);
-          }
-        });
-      }
-    }
-  };
-
-  const uploadsFormStructure: FormStructure = {
-    title: { value: t('userManagement.forms.step4Title') },
-    description: { value: t('userManagement.forms.step4Description') },
-    orientation: 'horizontal',
-    fieldsets: [
-      {
-        title: { value: t('userManagement.forms.step4FieldTitle') },
-        rows: [{ fields: [uploadsField] }]
-      }
-    ]
-  };
 
   return {
-    userCreateFormStructure,
-    profileCreateFormStructure,
-    step3FormStructure,
-    uploadsFormStructure
+    userCreateFormStructure
   };
 };

@@ -19,24 +19,31 @@ const baseUserSchema = z.object({
     .min(3, {
       message: 'userManagement.validation.invalidFirstNameLength'
     })
-    .max(25, {
+    .max(50, {
       message: 'userManagement.validation.firstNameTooLong'
     })
     .regex(/^[a-zA-Z\s]+$/, {
       message: 'userManagement.validation.invalidFirstNameFormat'
-    }),
+    })
+    .nullable()
+    .optional()
+    .or(z.literal('')),
   lastName: z
     .string()
     .min(3, {
       message: 'userManagement.validation.invalidLastNameLength'
     })
-    .max(25, { message: 'userManagement.validation.lastNameTooLong' })
+    .max(50, { message: 'userManagement.validation.lastNameTooLong' })
     .regex(/^[a-zA-Z\s]+$/, {
       message: 'userManagement.validation.invalidLastNameFormat'
-    }),
+    })
+    .nullable()
+    .optional()
+    .or(z.literal('')),
   dateOfBirth: z
     .preprocess(
-      (value) => (value === null || value === '' ? null : new Date(value as string)),
+      (value) =>
+        value === null || value === '' || value === undefined ? null : new Date(value as string),
       z.union([z.date(), z.null()]).refine(
         (birthDate) => {
           if (!birthDate) return true;
@@ -52,7 +59,10 @@ const baseUserSchema = z.object({
         { message: 'userManagement.validation.invalidAge' }
       )
     )
-    .optional()
+    .optional(),
+  pictureId: z.number().nullable().optional(),
+  isActive: z.boolean().optional(),
+  isApproved: z.boolean().optional()
 });
 
 const createUserSchema = baseUserSchema
@@ -61,9 +71,13 @@ const createUserSchema = baseUserSchema
       message: 'userManagement.validation.invalidPasswordLength'
     }),
     confirmPassword: z.string().optional(),
-    roleId: z.string({
-      message: 'userManagement.validation.roleRequired'
-    })
+    roleId: z
+      .string({
+        message: 'userManagement.validation.roleRequired'
+      })
+      .min(1, {
+        message: 'userManagement.validation.roleRequired'
+      })
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'userManagement.validation.passwordMismatch',
@@ -82,9 +96,13 @@ function updateUserSchema(requirePasswordUpdate: boolean) {
             .optional()
         : z.string().optional(),
       confirmPassword: z.string().optional(),
-      roleId: z.string({
-        message: 'userManagement.validation.roleRequired'
-      })
+      roleId: z
+        .string({
+          message: 'userManagement.validation.roleRequired'
+        })
+        .min(1, {
+          message: 'userManagement.validation.roleRequired'
+        })
     })
     .superRefine((data, ctx) => {
       if (requirePasswordUpdate) {
@@ -107,33 +125,4 @@ function updateUserSchema(requirePasswordUpdate: boolean) {
     });
 }
 
-const profileSchema = z.object({
-  phone: z
-    .string()
-    .optional()
-    .refine(
-      (value) => {
-        if (!value) return true;
-        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-        return phoneRegex.test(value);
-      },
-      {
-        message: 'userManagement.validation.invalidPhoneFormat'
-      }
-    ),
-  cin: z
-    .string({
-      message: 'userManagement.validation.cinRequired'
-    })
-    .length(8, {})
-    .optional(),
-  bio: z
-    .string()
-    .max(255, {
-      message: 'userManagement.validation.bioTooLong'
-    })
-    .optional(),
-  isPrivate: z.boolean().optional()
-});
-
-export { baseUserSchema, createUserSchema, updateUserSchema, profileSchema };
+export { baseUserSchema, createUserSchema, updateUserSchema };

@@ -2,10 +2,14 @@ import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
 
-export const useRoles = (enabled: boolean = true) => {
+interface useRolesProps {
+  enabled?: boolean;
+}
+
+export const useRoles = ({ enabled = true }: useRolesProps = {}) => {
   const { isFetching: isFetchRolesPending, data: rolesResp } = useQuery({
     queryKey: ['roles'],
-    queryFn: () => api.role.findAll(),
+    queryFn: () => api.admin.role.findAll(),
     enabled
   });
 

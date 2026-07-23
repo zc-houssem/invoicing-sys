@@ -6,7 +6,7 @@ import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { Button } from '@/components/ui/button';
 import { useCreateUserFormStructure } from './useCreateUserFormStructure';
-import { Save } from 'lucide-react';
+import { Repeat2, Save } from 'lucide-react';
 import { createUserSchema } from '@/types/validations/user.validation';
 import { Spinner } from '@/components/shared/Spinner';
 import { CreateUserDto, ServerErrorResponse, Upload } from '@/types';
@@ -17,40 +17,48 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { Separator } from '@/components/ui/separator';
-
-
+import { useFooter } from '@/context/FooterContext';
+import { useIntro } from '@/context/IntroContext';
+import { useUI } from '@/context/UIContext';
 
 interface UserCreateFormProps {
   className?: string;
-  createUser?: (user: CreateUserDto) => void;
-  isCreatePending?: boolean;
+  onSuccess?: () => void;
 }
 
-export const UserCreateForm: React.FC<UserCreateFormProps> = ({
-  className,
-  createUser,
-  isCreatePending
-}) => {
+export const UserCreateForm = ({ className, onSuccess }: UserCreateFormProps) => {
   const router = useRouter();
   const { t: tCommon } = useTranslation('common');
   const { t: tUser } = useTranslation('user-management');
   const userStore = useUserStore();
   const { roles, isFetchRolesPending } = useRoles();
   const { setRoutes } = useBreadcrumb();
+  const { setContent } = useFooter();
+  const { setIntro, clearIntro } = useIntro();
+  const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
 
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.administrativeTools') || 'Administrative Tools' },
+      { title: tCommon('menu.administrativeTools.title') || 'Administrative Tools' },
       { title: tUser('userManagement.page.title') },
-      { title: tUser('userManagement.page.users'), href: '/administrative-tools/user-management/users' },
+      {
+        title: tUser('userManagement.page.users'),
+        href: '/administrative-tools/user-management/users'
+      },
       { title: tUser('userManagement.sheet.createUserTitle') }
     ]);
+    setIntro?.(
+      tUser('userManagement.sheet.createUserTitle'),
+      tUser('userManagement.sheet.createUserDescription')
+    );
+    setEnableMainOverflow?.(true);
     return () => {
       setRoutes?.([]);
+      clearIntro?.();
+      clearEnableMainOverflow?.();
       userStore.reset();
     };
-  }, [router.locale]);
+  }, [router.locale, tCommon, tUser]);
 
   const { uploadFiles: uploadProfilePicture, isUploadPending: isProfilePictureUploadPending } =
     useUploadMutation({
@@ -62,37 +70,6 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({
       }
     });
 
-  const { uploadFiles: uploadOfficialDocument, isUploadPending: isOfficialDocumentUploadPending } =
-    useUploadMutation({
-      onSuccess: (response: Upload[]) => {
-        userStore.setNested('createDto.officialDocumentId', response?.[0]?.id);
-      },
-      onError: (error: ServerErrorResponse) => {
-        toast.error(error.response?.data?.message);
-      }
-    });
-
-  const {
-    uploadFiles: uploadDriverLicenseDocument,
-    isUploadPending: isDriverLicenseDocumentPending
-  } = useUploadMutation({
-    onSuccess: (response: Upload[]) => {
-      userStore.setNested('createDto.driverLicenseDocumentId', response?.[0]?.id);
-    },
-    onError: (error: ServerErrorResponse) => {
-      toast.error(error.response?.data?.message);
-    }
-  });
-
-  const { uploadFiles: uploadPhotos, isUploadPending: isPhotosUploadPending } = useUploadMutation({
-    onSuccess: (response: Upload[]) => {
-      userStore.appendUploadId('create', { uploadId: response?.[0]?.id as number });
-    },
-    onError: (error: ServerErrorResponse) => {
-      toast.error(error.response?.data?.message);
-    }
-  });
-
   const { userCreateFormStructure } = useCreateUserFormStructure({
     userStore,
     roles: mapToSelectOptions({
@@ -101,33 +78,30 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({
       valueKey: 'id'
     }),
     uploadProfilePicture,
-    isProfilePictureUploadPending,
-
-    uploadOfficialDocument,
-    isOfficialDocumentUploadPending,
-
-    uploadDriverLicenseDocument,
-    isDriverLicenseDocumentPending,
-
-    uploadPhotos,
-    isPhotosUploadPending
+    isProfilePictureUploadPending
   });
 
-  const { mutate: createMutation, isPending: isMutationPending } = useMutation({
+  const { mutate: createMutation, isPending } = useMutation({
     mutationFn: (user: CreateUserDto) => api.admin.user.create(user),
     onSuccess: () => {
       toast.success(tUser('userManagement.messages.userCreatedSuccess'));
       userStore.reset();
-      router.push('/administrative-tools/user-management/users');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push('/administrative-tools/user-management/users');
+      }
     },
     onError: (error: ServerErrorResponse) => {
       toast.error(error.response?.data?.message || tUser('userManagement.errors.generalError'));
     }
   });
 
-  const isPending = isCreatePending ?? isMutationPending;
+  const handleReset = React.useCallback(() => {
+    userStore.reset();
+  }, [userStore]);
 
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
     const userResult = createUserSchema.safeParse({
       ...userStore.createDto,
       confirmPassword: userStore.confirmPassword
@@ -138,38 +112,34 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({
     }
     userStore.set('createDtoErrors', {});
 
-    if (createUser) {
-      createUser(userStore.createDto);
-    } else {
-      createMutation(userStore.createDto);
-    }
-  };
+    createMutation(userStore.createDto);
+  }, [userStore, createMutation]);
+
+  React.useEffect(() => {
+    setContent?.(
+      <div className="flex items-center justify-end gap-2 px-4 py-1">
+        <Button variant="secondary" onClick={handleReset} disabled={isPending}>
+          <Repeat2 /> {tCommon('commands.reset')}
+        </Button>
+        <Button onClick={handleSubmit} disabled={isPending}>
+          <Save /> {tCommon('commands.save')}
+        </Button>
+      </div>
+    );
+    return () => {
+      setContent?.(null);
+    };
+  }, [setContent, handleReset, handleSubmit, isPending, tCommon]);
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden gap-2 m-5 lg:mx-10', className)}>
+    <div className={cn('flex flex-col flex-1 gap-2', className)}>
       {isFetchRolesPending ? (
         <Spinner />
       ) : (
-        <div className="flex flex-col flex-1 h-full overflow-y-auto overflow-x-hidden my-4">
-          <div className="flex flex-col flex-1 overflow-auto p-2">
-            <div className="space-y-1 mb-4">
-              <h1 className="text-lg font-bold">{tUser('userManagement.forms.step1Title')}</h1>
-              <p className="text-xs text-muted-foreground">{tUser('userManagement.forms.step1Description')}</p>
-              <Separator className="mt-2" />
-            </div>
-            <div className="my-auto">
-              <FormBuilder structure={userCreateFormStructure} />
-            </div>
-          </div>
+        <div className="flex flex-col flex-1 my-4">
+          <FormBuilder structure={userCreateFormStructure} />
         </div>
       )}
-
-      {/* Controls */}
-      <div className="shrink-0 flex items-center justify-end gap-2 px-4 py-3 border-t">
-        <Button onClick={handleSubmit} disabled={isPending}>
-          <Save /> {tCommon('common.buttons.save')}
-        </Button>
-      </div>
     </div>
   );
 };

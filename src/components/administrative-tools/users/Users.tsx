@@ -8,7 +8,7 @@ import { DataTable } from '@/components/shared/data-table/data-table';
 import { useUserDeleteDialog } from './modals/UserDeleteDialog';
 import { useActivateUserDialog } from './modals/UserActivateDialog';
 import { useDeactivateUserDialog } from './modals/UserDeactivateDialog';
-import { Gender, ResponseUserDto, ServerErrorResponse, UpdateUserDto } from '@/types';
+import { ResponseUserDto, ServerErrorResponse, UpdateUserDto } from '@/types';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useApproveUserDialog } from './modals/UserApproveDialog';
 import { useDisapproveUserDialog } from './modals/UserDisapproveDialog';
@@ -19,8 +19,6 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
 import { useUserStore } from '@/hooks/stores/useUserStore';
 import { useDebounce } from '@/hooks/other/useDebounce';
-import { useUploads } from '@/hooks/content/useUploads';
-import { useUpload } from '@/hooks/content/useUpload';
 
 interface UsersProps {
   className?: string;
@@ -181,52 +179,6 @@ export const Users = ({ className }: UsersProps) => {
     resetUser: () => userStore.reset()
   });
 
-  //fetch user images
-  const uploadIds = Array.isArray(userStore.updateDto?.uploads)
-    ? userStore.updateDto.uploads.map((u) => u.uploadId)
-    : [];
-
-  const { uploads: images, isPending: isImagesPending } = useUploads(uploadIds);
-
-  React.useEffect(() => {
-    if (images.length > 0 && !userStore.hasInitializedImages && userStore.images.length === 0) {
-      userStore.set('images', images);
-      userStore.set('hasInitializedImages', true);
-    }
-  }, [images, userStore.hasInitializedImages]);
-
-  const { upload: profilePicture, isUploadPending: isProfilePicturePending } = useUpload({
-    id: userStore.updateDto?.pictureId,
-    enabled: Boolean(userStore.updateDto?.pictureId)
-  });
-  React.useEffect(() => {
-    if (profilePicture) {
-      userStore.set('picture', profilePicture);
-    }
-  }, [profilePicture]);
-
-  const { upload: officialDocument, isUploadPending: isOfficialDocPending } = useUpload({
-    id: userStore.updateDto?.officialDocumentId,
-    enabled: Boolean(userStore.updateDto?.officialDocumentId)
-  });
-
-  React.useEffect(() => {
-    if (officialDocument) {
-      userStore.set('officialDocument', officialDocument);
-    }
-  }, [officialDocument]);
-
-  const { upload: driverLicenseDocument, isUploadPending: isDriverDocPending } = useUpload({
-    id: userStore.updateDto?.driverLicenseDocumentId,
-    enabled: Boolean(userStore.updateDto?.driverLicenseDocumentId)
-  });
-
-  React.useEffect(() => {
-    if (driverLicenseDocument) {
-      userStore.set('driverLicenseDocument', driverLicenseDocument);
-    }
-  }, [driverLicenseDocument]);
-
   const context: DataTableConfig<ResponseUserDto> = {
     singularName: `${t('userManagement.page.user')}`,
     pluralName: `${t('userManagement.page.users')}`,
@@ -276,7 +228,6 @@ export const Users = ({ className }: UsersProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (user: ResponseUserDto) => {
-      const uploads = user?.uploads?.sort((a, b) => a.order - b.order);
       userStore.set('response', user);
       userStore.set<UpdateUserDto>('updateDto', {
         firstName: user.firstName,
@@ -288,22 +239,8 @@ export const Users = ({ className }: UsersProps) => {
         email: user.email,
         password: '',
         roleId: user.roleId,
-        phone: user?.phone,
-        pictureId: user?.pictureId,
-        cin: user?.cin,
-        bio: user?.bio,
-        gender: user?.gender as Gender,
-        isPrivate: user?.isPrivate,
-        officialDocumentId: user?.officialDocumentId,
-        driverLicenseDocumentId: user?.driverLicenseDocumentId,
-        uploads: uploads.map((upload) => ({
-          id: upload.id,
-          uploadId: upload.uploadId
-        }))
+        pictureId: user?.pictureId
       });
-      userStore.set('picture', profilePicture);
-      userStore.set('officialDocument', officialDocument);
-      userStore.set('driverLicenseDocument', driverLicenseDocument);
     }
   };
 
