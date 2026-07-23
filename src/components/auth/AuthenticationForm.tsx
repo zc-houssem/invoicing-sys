@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordField } from '@/components/shared/form-builder/PasswordField';
 import { signIn } from 'next-auth/react';
 import React from 'react';
 import { useRouter } from 'next/router';
@@ -41,7 +42,7 @@ export function AuthenticationForm({ className }: AuthenticationFormProps) {
       toast.success('Welcome back!');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message);
+      toast.error(error.message || 'An error occurred during sign in');
     }
   });
 
@@ -91,9 +92,8 @@ export function AuthenticationForm({ className }: AuthenticationFormProps) {
               Forgot your password?
             </a>
           </div>
-          <Input
+          <PasswordField
             id="password"
-            type="password"
             placeholder="•••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

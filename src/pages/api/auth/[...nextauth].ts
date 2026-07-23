@@ -32,7 +32,8 @@ export const authOptions: NextAuthOptions = {
             refresh_token: data.refresh_token
           } satisfies User;
         } catch (err: any) {
-          throw new Error(err.response.data.message);
+          const message = err.response?.data?.message || err.message || 'Authentication failed';
+          throw new Error(Array.isArray(message) ? message[0] : message);
         }
       }
     })
