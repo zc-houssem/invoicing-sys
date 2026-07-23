@@ -17,8 +17,6 @@ import { invoice } from './invoice';
 export * from './invoice';
 import { payment } from './payment';
 export * from './payment';
-import { permission } from './permission';
-export * from './permission';
 
 import { sequence } from './sequence';
 export * from './sequence';
@@ -45,7 +43,6 @@ export const api = {
   defaultCondition,
   invoice,
   payment,
-  permission,
   sequence,
   tax,
   upload,

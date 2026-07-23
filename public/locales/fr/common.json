@@ -57,10 +57,15 @@
     }
   },
   "404": {
-    "go_back": "Retour au tableau de bord",
-    "note1": "Il manque quelque chose...",
-    "note2": "Désolé, nous ne pouvons pas trouver cette page. Vous trouverez beaucoup de choses à explorer sur la page d'accueil."
+    "go_back": "Retourner au tableau de bord",
+    "note1": "Quelque chose manque...",
+    "note2": "Désolé, nous ne trouvons pas cette page. Vous trouverez plein de choses à explorer sur la page d'accueil."
   },
+  "general": {
+    "more": "plus",
+    "unknown": "inconnu"
+  },
+  "add_joints": "Ajouter des pièces jointes",
   "coming_soon": {
     "coming_soon": "Bientôt disponible",
     "go_back": "Retour au tableau de bord",

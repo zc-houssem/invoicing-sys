@@ -1,6 +1,6 @@
-import { ResponsePermissionDto } from "@/types";
+import { Permission } from "@/types/permission";
 
-export const groupedPermissions = (permissions: ResponsePermissionDto[]) =>
+export const groupedPermissions = (permissions: Permission[]) =>
   permissions?.reduce((groups, permission) => {
     const [_, ...rest] = permission?.label?.split("_") || [];
     const entity = rest.join("_");
@@ -9,14 +9,14 @@ export const groupedPermissions = (permissions: ResponsePermissionDto[]) =>
     }
     groups[entity].push(permission);
     return groups;
-  }, {} as Record<string, ResponsePermissionDto[]>);
+  }, {} as Record<string, Permission[]>);
 
 export const sortedGroupedPermissions = (
-  permissions: ResponsePermissionDto[]
+  permissions: Permission[]
 ) =>
   Object.entries(groupedPermissions(permissions) || {})
     .sort(([entityA], [entityB]) => entityA.localeCompare(entityB))
     .reduce((sortedGroups, [entity, permissions]) => {
       sortedGroups[entity] = permissions;
       return sortedGroups;
-    }, {} as Record<string, ResponsePermissionDto[]>);
+    }, {} as Record<string, Permission[]>);

@@ -7,23 +7,27 @@ import {
 } from "@/components/shared/form-builder/types";
 import { RoleStore } from "@/hooks/stores/useRoleStore";
 import { PermissionAccordions } from "../PermissionAccordions";
-import { ResponsePermissionDto } from "@/types";
+import { Permission } from "@/types/permission";
+import { useTranslation } from "react-i18next";
 
 interface RoleUpdateFormStructureProps {
   roleStore: RoleStore;
-  permissions?: ResponsePermissionDto[];
+  permissions?: Permission[];
 }
 export const useUpdateRoleFormStructure = ({
   roleStore,
   permissions,
 }: RoleUpdateFormStructureProps) => {
+  const { t } = useTranslation("role");
+  const { t: tCommon } = useTranslation("common");
+
   const labelField: Field<TextFieldProps> = {
     id: "label",
-    label: "Label",
+    label: t("forms.update.fields.label.label"),
     variant: FieldVariant.TEXT,
     required: true,
-    placeholder: "Ex. Awesome Administrator",
-    description: "Role's label.",
+    placeholder: t("forms.update.fields.label.placeholder"),
+    description: t("forms.update.fields.label.description"),
     error: roleStore.updateDtoErrors?.label?.[0],
     props: {
       value: roleStore.updateDto.label || undefined,
@@ -36,11 +40,11 @@ export const useUpdateRoleFormStructure = ({
 
   const descriptionField: Field<TextFieldProps> = {
     id: "description",
-    label: "Description",
+    label: t("forms.update.fields.description.label"),
     variant: FieldVariant.TEXTAREA,
     required: true,
-    placeholder: "This is awesome!",
-    description: "Role's description.",
+    placeholder: t("forms.update.fields.description.placeholder"),
+    description: t("forms.update.fields.description.description"),
     error: roleStore.updateDtoErrors?.description?.[0],
     props: {
       value: roleStore.updateDto.description || undefined,
@@ -53,10 +57,10 @@ export const useUpdateRoleFormStructure = ({
 
   const permissionsField: Field<CustomFieldProps> = {
     id: "permissions",
-    label: "Permissions",
+    label: t("forms.update.fields.permissions.label"),
     variant: FieldVariant.CUSTOM,
     required: true,
-    description: "Select the permissions for this role.",
+    description: t("forms.update.fields.permissions.description"),
     error: roleStore.updateDtoErrors?.permissions?.[0],
     props: {
       children: (
@@ -66,12 +70,12 @@ export const useUpdateRoleFormStructure = ({
   };
 
   const roleUpdateFormStructure: FormStructure = {
-    title: "",
-    description: "",
+    title: { value: "" },
+    description: { value: "" },
     fieldsets: [
       {
-        title: "Update Role",
-        description: "Update a new role with the specified permissions.",
+        title: { value: t("forms.update.title") },
+        description: { value: t("forms.update.description") },
         rows: [
           {
             fields: [labelField],

@@ -1,4 +1,5 @@
-import { CreateRoleDto, ResponsePermissionDto, ResponseRoleDto, UpdateRoleDto } from '@/types';
+import { CreateRoleDto, ResponseRoleDto, UpdateRoleDto } from '@/types';
+import { Permission } from '@/types/permission';
 import { create } from 'zustand';
 
 interface RoleStoreData {
@@ -12,7 +13,7 @@ interface RoleStoreData {
 export interface RoleStore extends RoleStoreData {
   set: <T>(name: keyof RoleStoreData, value: T) => void;
   setNested: <T>(path: string, value: T) => void;
-  addPermission: (permission: ResponsePermissionDto, dto: 'create' | 'update') => void;
+  addPermission: (permission: Permission, dto: 'create' | 'update') => void;
   removePermission: (permissionId: string, dto: 'create' | 'update') => void;
   isPermissionSelected: (permissionId: string, dto: 'create' | 'update') => boolean;
   reset: () => void;
@@ -70,12 +71,13 @@ export const useRoleStore = create<RoleStore>((set, get) => ({
     set((state) => {
       const dtoKey = dto === 'create' ? 'createDto' : 'updateDto';
       const permissions = state[dtoKey].permissions || [];
-      if (!permissions.find((p) => p.permissionId === permission.id)) {
+      const permissionIdStr = permission.id?.toString() || '';
+      if (!permissions.find((p) => p.permissionId?.toString() === permissionIdStr)) {
         return {
           ...state,
           [dtoKey]: {
             ...state[dtoKey],
-            permissions: [...permissions, { permissionId: permission.id }]
+            permissions: [...permissions, { permissionId: permissionIdStr }]
           }
         };
       }
@@ -91,7 +93,7 @@ export const useRoleStore = create<RoleStore>((set, get) => ({
         ...state,
         [dtoKey]: {
           ...state[dtoKey],
-          permissions: permissions.filter((p) => p.permissionId !== permissionId)
+          permissions: permissions.filter((p) => p.permissionId?.toString() !== permissionId)
         }
       };
     });
@@ -100,7 +102,7 @@ export const useRoleStore = create<RoleStore>((set, get) => ({
   isPermissionSelected: (permissionId, dto) => {
     const dtoKey = dto === 'create' ? 'createDto' : 'updateDto';
     const permissions = get()[dtoKey].permissions || [];
-    return permissions.some((p) => p.permissionId === permissionId);
+    return permissions.some((p) => p.permissionId?.toString() === permissionId);
   },
 
   reset: () => {

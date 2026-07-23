@@ -7,23 +7,27 @@ import {
 } from "@/components/shared/form-builder/types";
 import { RoleStore } from "@/hooks/stores/useRoleStore";
 import { PermissionAccordions } from "../PermissionAccordions";
-import { ResponsePermissionDto } from "@/types";
+import { Permission } from "@/types/permission";
+import { useTranslation } from "react-i18next";
 
 interface RoleCreateFormStructureProps {
   roleStore: RoleStore;
-  permissions?: ResponsePermissionDto[];
+  permissions?: Permission[];
 }
 export const useCreateRoleFormStructure = ({
   roleStore,
   permissions,
 }: RoleCreateFormStructureProps) => {
+  const { t } = useTranslation("role");
+  const { t: tCommon } = useTranslation("common");
+
   const labelField: Field<TextFieldProps> = {
     id: "label",
-    label: "Label",
+    label: t("forms.create.fields.label.label"),
     variant: FieldVariant.TEXT,
     required: true,
-    placeholder: "Ex. Awesome Administrator",
-    description: "Role's label.",
+    placeholder: t("forms.create.fields.label.placeholder"),
+    description: t("forms.create.fields.label.description"),
     error: roleStore.createDtoErrors?.label?.[0],
     props: {
       value: roleStore.createDto.label || undefined,
@@ -36,11 +40,11 @@ export const useCreateRoleFormStructure = ({
 
   const descriptionField: Field<TextFieldProps> = {
     id: "description",
-    label: "Description",
+    label: t("forms.create.fields.description.label"),
     variant: FieldVariant.TEXTAREA,
     required: true,
-    placeholder: "This is awesome!",
-    description: "Role's description.",
+    placeholder: t("forms.create.fields.description.placeholder"),
+    description: t("forms.create.fields.description.description"),
     error: roleStore.createDtoErrors?.description?.[0],
     props: {
       value: roleStore.createDto.description || undefined,
@@ -53,10 +57,10 @@ export const useCreateRoleFormStructure = ({
 
   const permissionsField: Field<CustomFieldProps> = {
     id: "permissions",
-    label: "Permissions",
+    label: t("forms.create.fields.permissions.label"),
     variant: FieldVariant.CUSTOM,
     required: true,
-    description: "Select the permissions for this role.",
+    description: t("forms.create.fields.permissions.description"),
     error: roleStore.createDtoErrors?.permissions?.[0],
     props: {
       children: (
@@ -66,12 +70,12 @@ export const useCreateRoleFormStructure = ({
   };
 
   const roleCreateFormStructure: FormStructure = {
-    title: "",
-    description: "",
+    title: { value: "" },
+    description: { value: "" },
     fieldsets: [
       {
-        title: "Create Role",
-        description: "Create a new role with the specified permissions.",
+        title: { value: t("forms.create.title") },
+        description: { value: t("forms.create.description") },
         rows: [
           {
             fields: [labelField],

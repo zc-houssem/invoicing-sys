@@ -61,6 +61,10 @@
     "note1": "Something is missing...",
     "note2": "Sorry, we can't find this page. You'll find plenty of things to explore on the homepage."
   },
+  "general": {
+    "more": "more",
+    "unknown": "unknown"
+  },
   "add_joints": "Add Attachments",
   "answer": {
     "yes": "Yes",

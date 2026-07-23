@@ -1,59 +1,59 @@
-import { ResponsePermissionDto } from "@/types";
-import { sortedGroupedPermissions } from "./grouped-permissions";
+import { sortedGroupedPermissions } from './grouped-permissions';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Label } from "@/components/ui/label";
-import { Toggle } from "@/components/ui/toggle";
-import { useRoleStore } from "@/hooks/stores/useRoleStore";
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { Toggle } from '@/components/ui/toggle';
+import { useRoleStore } from '@/hooks/stores/useRoleStore';
+import { useTranslation } from 'react-i18next';
+import { formatPermissionLabel } from './utils';
+import { ResponsePermissionDto } from '@/types';
 
 interface PermissionAccordionsProps {
   permissions?: ResponsePermissionDto[];
-  type: "create" | "update";
+  type: 'create' | 'update';
 }
-export const PermissionAccordions = ({
-  permissions,
-  type,
-}: PermissionAccordionsProps) => {
+export const PermissionAccordions = ({ permissions, type }: PermissionAccordionsProps) => {
   const roleStore = useRoleStore();
+  const { t } = useTranslation('role');
 
-  if (!permissions) return [];
-  return Object.entries(sortedGroupedPermissions(permissions)).map(
-    ([entity, permissions]) => (
-      <Accordion type="multiple" key={entity} className="mt-0">
-        <AccordionItem value={entity}>
-          <AccordionTrigger className="text-sm font-extrabold">
-            {entity}
+  if (!permissions) return null;
+  return (
+    <Accordion type="multiple" className="w-full mt-0">
+      {Object.entries(sortedGroupedPermissions(permissions)).map(([entity, permissions]) => (
+        <AccordionItem key={entity} value={entity}>
+          <AccordionTrigger className="text-sm font-extrabold py-2">
+            {t(`role.permissions.entities.${entity}`, {
+              defaultValue: formatPermissionLabel(entity)
+            })}
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="pb-2">
             <div key={entity}>
-              {/* Entity Label */}
-              <Label className="mb-1"></Label>
               {/* Toggles for Permissions */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 mt-2">
                 {permissions.map((permission) => {
                   const isSelected = roleStore.isPermissionSelected(
-                    permission?.id,
+                    permission?.id?.toString() || '',
                     type
                   );
                   return (
                     <Toggle
                       key={permission.id}
-                      defaultPressed={isSelected}
+                      pressed={isSelected}
                       value={permission?.id?.toString()}
-                      onClick={() => {
-                        if (isSelected) {
-                          roleStore.removePermission(permission?.id, type);
+                      onPressedChange={(pressed) => {
+                        if (!pressed) {
+                          roleStore.removePermission(permission?.id?.toString() || '', type);
                         } else {
-                          roleStore.addPermission(permission, type);
+                          roleStore.addPermission(permission as any, type);
                         }
                       }}
-                      className="border"
-                    >
-                      {permission?.label}
+                      className="border">
+                      {t(`role.permissions.labels.${permission?.label}`, {
+                        defaultValue: formatPermissionLabel(permission?.label)
+                      })}
                     </Toggle>
                   );
                 })}
@@ -61,7 +61,7 @@ export const PermissionAccordions = ({
             </div>
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
-    )
+      ))}
+    </Accordion>
   );
 };

@@ -4,6 +4,7 @@ import { refType } from './ref-type';
 import { configuration } from './configuration';
 import { user } from './users';
 import { role } from './roles';
+import { permission } from './permission';
 
 export const admin = {
   refType,
@@ -11,5 +12,6 @@ export const admin = {
   logger,
   configuration,
   user,
-  role
+  role,
+  permission
 };
