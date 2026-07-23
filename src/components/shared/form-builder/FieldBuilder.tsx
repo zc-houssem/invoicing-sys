@@ -135,7 +135,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             undefined
           }
           placeholder={field.placeholder}
-          onChange={(value: Date | null) => field?.props?.onDateChange?.(value)}
+          onDateChange={(value: Date | null) => field?.props?.onDateChange?.(value)}
           nullable={field?.props?.nullable}
           disabled={field?.props?.disabled}
         />
