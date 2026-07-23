@@ -84,16 +84,14 @@ export const Layout = ({ children, className }: LayoutProps) => {
                   {/* Header , Main & Footer */}
                   <div className="flex flex-col flex-1 overflow-hidden bg-background">
                     <Header />
-                    {(title || description) && (
-                      <PageHeader className={cn('py-5', isMobile ? 'px-4' : 'px-10')} />
-                    )}
                     <main
                       className={cn(
                         'flex flex-col flex-1',
                         enableMainOverflow ? 'overflow-auto' : 'overflow-hidden',
-                        isMobile ? 'px-1' : 'px-2',
+                        isMobile ? 'px-4' : 'px-6',
                         className
                       )}>
+                      {(title || description) && <PageHeader className="py-4" />}
                       {children}
                     </main>
                     {content && <Footer />}
