@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -402,34 +401,32 @@ export const QuotationControlSection = ({
                   <div>
                     <h1 className="font-bold">{tInvoicing('controls.bank_details')}</h1>
                     <div className="my-5">
-                      <SelectShimmer isPending={loading}>
-                        <Select
-                          key={quotationManager.bankAccount?.id || 'bankAccount'}
-                          onValueChange={(e) =>
-                            quotationManager.set(
-                              'bankAccount',
-                              bankAccounts.find((account) => account.id == parseInt(e))
-                            )
-                          }
-                          defaultValue={quotationManager?.bankAccount?.id?.toString() || ''}>
-                          <SelectTrigger className="mty1 w-full">
-                            <SelectValue
-                              placeholder={tInvoicing('controls.bank_select_placeholder')}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {bankAccounts?.map((account: BankAccount) => {
-                              return (
-                                <SelectItem key={account.id} value={account?.id?.toString() || ''}>
-                                  <span className="font-bold">{account?.name}</span> - (
-                                  {account?.currency?.code && tCurrency(account?.currency?.code)}(
-                                  {account?.currency?.symbol})
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </SelectShimmer>
+                      <Select
+                        key={quotationManager.bankAccount?.id || 'bankAccount'}
+                        onValueChange={(e) =>
+                          quotationManager.set(
+                            'bankAccount',
+                            bankAccounts.find((account) => account.id == parseInt(e))
+                          )
+                        }
+                        defaultValue={quotationManager?.bankAccount?.id?.toString() || ''}>
+                        <SelectTrigger className="mty1 w-full">
+                          <SelectValue
+                            placeholder={tInvoicing('controls.bank_select_placeholder')}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {bankAccounts?.map((account: BankAccount) => {
+                            return (
+                              <SelectItem key={account.id} value={account?.id?.toString() || ''}>
+                                <span className="font-bold">{account?.name}</span> - (
+                                {account?.currency?.code && tCurrency(account?.currency?.code)}(
+                                {account?.currency?.symbol})
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 )}
@@ -441,32 +438,30 @@ export const QuotationControlSection = ({
               <div>
                 {currencies.length != 0 && (
                   <div className="my-5">
-                    <SelectShimmer isPending={loading}>
-                      <Select
-                        key={quotationManager.currency?.id || 'currency'}
-                        onValueChange={(e) => {
-                          quotationManager.set(
-                            'currency',
-                            currencies.find((currency) => currency.id == parseInt(e))
+                    <Select
+                      key={quotationManager.currency?.id || 'currency'}
+                      onValueChange={(e) => {
+                        quotationManager.set(
+                          'currency',
+                          currencies.find((currency) => currency.id == parseInt(e))
+                        );
+                      }}
+                      defaultValue={quotationManager?.currency?.id?.toString() || ''}>
+                      <SelectTrigger className="mty1 w-full">
+                        <SelectValue
+                          placeholder={tInvoicing('controls.currency_select_placeholder')}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currencies?.map((currency: Currency) => {
+                          return (
+                            <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
+                              {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
+                            </SelectItem>
                           );
-                        }}
-                        defaultValue={quotationManager?.currency?.id?.toString() || ''}>
-                        <SelectTrigger className="mty1 w-full">
-                          <SelectValue
-                            placeholder={tInvoicing('controls.currency_select_placeholder')}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currencies?.map((currency: Currency) => {
-                            return (
-                              <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
-                                {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </SelectShimmer>
+                        })}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
               </div>

@@ -5,7 +5,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -115,29 +114,24 @@ export const QuotationGeneralInformation = ({
             <div>
               <Label>{tInvoicing('quotation.attributes.firm')} (*)</Label>
               {edit ? (
-                <SelectShimmer isPending={loading}>
-                  <Select
-                    onValueChange={(e) => {
-                      const firm = firms?.find((firm) => firm.id === parseInt(e));
-                      quotationManager.setFirm(firm);
-                      quotationManager.set('currency', firm?.currency);
-                    }}
-                    value={quotationManager.firm?.id?.toString()}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder={tInvoicing('quotation.associate_firm')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {firms?.map((firm: Partial<Firm>) => (
-                        <SelectItem
-                          key={firm.id}
-                          value={firm.id?.toString() || ''}
-                          className="mx-1">
-                          {firm.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </SelectShimmer>
+                <Select
+                  onValueChange={(e) => {
+                    const firm = firms?.find((firm) => firm.id === parseInt(e));
+                    quotationManager.setFirm(firm);
+                    quotationManager.set('currency', firm?.currency);
+                  }}
+                  value={quotationManager.firm?.id?.toString()}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder={tInvoicing('quotation.associate_firm')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {firms?.map((firm: Partial<Firm>) => (
+                      <SelectItem key={firm.id} value={firm.id?.toString() || ''} className="mx-1">
+                        {firm.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : (
                 <Input value={quotationManager?.firm?.name} />
               )}
@@ -155,31 +149,29 @@ export const QuotationGeneralInformation = ({
           <div className="w-1/2">
             <Label>{tInvoicing('quotation.attributes.interlocutor')} (*)</Label>
             {edit ? (
-              <SelectShimmer isPending={loading}>
-                <Select
-                  disabled={!quotationManager?.firm?.id}
-                  onValueChange={(e) => {
-                    quotationManager.setInterlocutor({ id: parseInt(e) } as Interlocutor);
-                  }}
-                  value={quotationManager.interlocutor?.id?.toString()}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder={tInvoicing('quotation.associate_interlocutor')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {quotationManager.firm?.interlocutorsToFirm?.map((entry: any) => (
-                      <SelectItem
-                        key={entry.interlocutor?.id || 'interlocutor'}
-                        value={entry.interlocutor?.id?.toString()}
-                        className="mx-1">
-                        {entry.interlocutor?.name} {entry.interlocutor?.surname}{' '}
-                        {entry.isMain && (
-                          <span className="font-bold">({tCommon('words.main_m')})</span>
-                        )}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                disabled={!quotationManager?.firm?.id}
+                onValueChange={(e) => {
+                  quotationManager.setInterlocutor({ id: parseInt(e) } as Interlocutor);
+                }}
+                value={quotationManager.interlocutor?.id?.toString()}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder={tInvoicing('quotation.associate_interlocutor')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {quotationManager.firm?.interlocutorsToFirm?.map((entry: any) => (
+                    <SelectItem
+                      key={entry.interlocutor?.id || 'interlocutor'}
+                      value={entry.interlocutor?.id?.toString()}
+                      className="mx-1">
+                      {entry.interlocutor?.name} {entry.interlocutor?.surname}{' '}
+                      {entry.isMain && (
+                        <span className="font-bold">({tCommon('words.main_m')})</span>
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             ) : null}
           </div>
         </div>

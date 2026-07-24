@@ -1,12 +1,8 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -16,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
 
 interface InterlocutorContactInformationProps {
   className?: string;
@@ -36,31 +33,28 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
       <div>
         <Label>{tCommon('interlocutor.attributes.title')} (*)</Label>
         <div>
-          <SelectShimmer isPending={loading || false}>
-            <Select
-              onValueChange={(e) => {
-                interlocutorStore.set('title', e);
-              }}
-              value={interlocutorStore.title}>
-              <SelectTrigger>
-                <SelectValue placeholder="Titre" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(SOCIAL_TITLE).map((title) => (
-                  <SelectItem key={title} value={title}>
-                    {tSocial(title)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </SelectShimmer>
+          <Select
+            onValueChange={(e) => {
+              interlocutorStore.set('title', e);
+            }}
+            value={interlocutorStore.title}>
+            <SelectTrigger>
+              <SelectValue placeholder="Titre" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(SOCIAL_TITLE).map((title) => (
+                <SelectItem key={title} value={title}>
+                  {tSocial(title)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       {/* name */}
       <div>
         <Label>{tCommon('interlocutor.attributes.name')} (*)</Label>
         <Input
-          isPending={loading || false}
           className="mt-1"
           placeholder="Ex. John"
           value={interlocutorStore.name}
@@ -71,8 +65,6 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
       <div>
         <Label>{tCommon('interlocutor.attributes.surname')} (*)</Label>
         <Input
-          isPending={loading || false}
-          className="mt-1"
           placeholder="Ex. Doe"
           value={interlocutorStore.surname}
           onChange={(e) => interlocutorStore.set('surname', e.target.value)}
@@ -83,7 +75,6 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
         <div className="mx-1 w-full">
           <Label>{tCommon('interlocutor.attributes.email')}</Label>
           <Input
-            isPending={loading || false}
             type="email"
             className="mt-1"
             placeholder="Ex. johndoe@zedneycreative.com"
@@ -112,7 +103,6 @@ export const InterlocutorContactInformation: React.FC<InterlocutorContactInforma
         <div className="mx-1 w-full">
           <Label>{tCommon('interlocutor.attributes.position')}</Label>
           <Input
-            isPending={loading || false}
             className="mt-1"
             placeholder="Ex. CEO"
             value={interlocutorStore && interlocutorStore.position}

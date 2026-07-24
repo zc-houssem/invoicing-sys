@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -51,7 +50,6 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                 <Input
                   className="mt-2"
                   placeholder="Ex. Zedney Creative"
-                  isPending={isPending}
                   value={cabinetManager.enterpriseName}
                   onChange={(e) => cabinetManager.set('enterpriseName', e.target.value)}
                 />
@@ -75,7 +73,6 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                   <Input
                     className="mt-2"
                     placeholder="Ex. johndoe@zedneycreative.com"
-                    isPending={isPending}
                     value={cabinetManager.email}
                     onChange={(e) => cabinetManager.set('email', e.target.value)}
                   />
@@ -88,7 +85,6 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                 <Input
                   className="mt-2"
                   placeholder="Ex. 188 Avenue 14 Janvier"
-                  isPending={isPending}
                   value={cabinetManager?.address?.address}
                   onChange={(e) =>
                     cabinetManager.set('address', {
@@ -105,7 +101,6 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                   <Input
                     className="mt-2"
                     placeholder="Ex. Bizerte"
-                    isPending={isPending}
                     value={cabinetManager?.address?.region}
                     onChange={(e) =>
                       cabinetManager.set('address', {
@@ -121,7 +116,6 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                   <Input
                     className="mt-2"
                     placeholder="Ex. 7000"
-                    isPending={isPending}
                     value={cabinetManager?.address?.zipcode}
                     onChange={(e) =>
                       cabinetManager.set('address', {
@@ -135,28 +129,26 @@ export const GeneralInformation: React.FC<GeneralInformationProps> = ({
                 <div className="mt-2 w-full">
                   <Label>{tContacts('common.address.country')}(*)</Label>
                   <div className="mt-2">
-                    <SelectShimmer isPending={isPending}>
-                      <Select
-                        key={cabinetManager?.address?.countryId?.toString() || 'countryId'}
-                        onValueChange={(e) =>
-                          cabinetManager.set('address', {
-                            ...cabinetManager.address,
-                            countryId: e
-                          })
-                        }
-                        value={cabinetManager?.address?.countryId?.toString()}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pays" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {countries?.map((country) => (
-                            <SelectItem key={country.id} value={country?.id?.toString() || ''}>
-                              {country?.alpha2Code && tCountry(country?.alpha2Code)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </SelectShimmer>
+                    <Select
+                      key={cabinetManager?.address?.countryId?.toString() || 'countryId'}
+                      onValueChange={(e) =>
+                        cabinetManager.set('address', {
+                          ...cabinetManager.address,
+                          countryId: e
+                        })
+                      }
+                      value={cabinetManager?.address?.countryId?.toString()}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pays" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries?.map((country) => (
+                          <SelectItem key={country.id} value={country?.id?.toString() || ''}>
+                            {country?.alpha2Code && tCountry(country?.alpha2Code)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>

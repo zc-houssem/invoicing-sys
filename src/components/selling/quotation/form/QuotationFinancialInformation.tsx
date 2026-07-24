@@ -7,7 +7,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -76,24 +75,22 @@ export const QuotationFinancialInformation = ({
                 onChange={(e) => quotationManager.set('discount', parseFloat(e.target.value))}
                 isPending={loading || false}
               />
-              <SelectShimmer isPending={loading || false} className="-mt-0.5 w-1/5">
-                <Select
-                  onValueChange={(value: string) => {
-                    quotationManager.set(
-                      'discountType',
-                      value === 'PERCENTAGE' ? DISCOUNT_TYPE.PERCENTAGE : DISCOUNT_TYPE.AMOUNT
-                    );
-                  }}
-                  value={discountType}>
-                  <SelectTrigger className="w-fit">
-                    <SelectValue placeholder="%" />
-                  </SelectTrigger>
-                  <SelectContent align="start">
-                    <SelectItem value="PERCENTAGE">%</SelectItem>
-                    <SelectItem value="AMOUNT">{currencySymbol} </SelectItem>
-                  </SelectContent>
-                </Select>
-              </SelectShimmer>
+              <Select
+                onValueChange={(value: string) => {
+                  quotationManager.set(
+                    'discountType',
+                    value === 'PERCENTAGE' ? DISCOUNT_TYPE.PERCENTAGE : DISCOUNT_TYPE.AMOUNT
+                  );
+                }}
+                value={discountType}>
+                <SelectTrigger className="w-fit">
+                  <SelectValue placeholder="%" />
+                </SelectTrigger>
+                <SelectContent align="start">
+                  <SelectItem value="PERCENTAGE">%</SelectItem>
+                  <SelectItem value="AMOUNT">{currencySymbol} </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         )}

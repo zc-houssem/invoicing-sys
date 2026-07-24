@@ -6,7 +6,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectShimmer,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
@@ -62,77 +61,73 @@ export const PaymentGeneralInformation = ({
         {/* Firm */}
         <div className="flex flex-col gap-2 w-1/2">
           <Label>{tCommon('submenu.firms')} (*)</Label>
-          <SelectShimmer isPending={loading}>
-            <Select
-              onValueChange={(e) => {
-                const firm = firms?.find((firm) => firm.id === parseInt(e));
-                paymentManager.set('firmId', firm?.id);
-                paymentManager.set('firm', firm);
-                paymentManager.set('currencyId', firm?.currency?.id);
-                paymentManager.set('currency', firm?.currency);
-                invoiceManager.reset();
-                firm?.invoices?.forEach((invoice) => {
-                  if (
-                    invoice?.status &&
-                    [
-                      INVOICE_STATUS.PartiallyPaid,
-                      INVOICE_STATUS.Sent,
-                      INVOICE_STATUS.Unpaid
-                    ].includes(invoice?.status)
-                  )
-                    invoiceManager.add({
-                      amount: 0,
-                      invoiceId: invoice.id,
-                      invoice: invoice
-                    });
-                });
-              }}
-              value={paymentManager.firmId?.toString()}>
-              <SelectTrigger>
-                <SelectValue placeholder={tInvoicing('invoice.associate_firm')} />
-              </SelectTrigger>
-              <SelectContent>
-                {firms?.map((firm: Partial<Firm>) => (
-                  <SelectItem key={firm.id} value={firm.id?.toString() || ''} className="mx-1">
-                    {firm.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </SelectShimmer>
+          <Select
+            onValueChange={(e) => {
+              const firm = firms?.find((firm) => firm.id === parseInt(e));
+              paymentManager.set('firmId', firm?.id);
+              paymentManager.set('firm', firm);
+              paymentManager.set('currencyId', firm?.currency?.id);
+              paymentManager.set('currency', firm?.currency);
+              invoiceManager.reset();
+              firm?.invoices?.forEach((invoice) => {
+                if (
+                  invoice?.status &&
+                  [
+                    INVOICE_STATUS.PartiallyPaid,
+                    INVOICE_STATUS.Sent,
+                    INVOICE_STATUS.Unpaid
+                  ].includes(invoice?.status)
+                )
+                  invoiceManager.add({
+                    amount: 0,
+                    invoiceId: invoice.id,
+                    invoice: invoice
+                  });
+              });
+            }}
+            value={paymentManager.firmId?.toString()}>
+            <SelectTrigger>
+              <SelectValue placeholder={tInvoicing('invoice.associate_firm')} />
+            </SelectTrigger>
+            <SelectContent>
+              {firms?.map((firm: Partial<Firm>) => (
+                <SelectItem key={firm.id} value={firm.id?.toString() || ''} className="mx-1">
+                  {firm.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="flex flex-row gap-2">
         {/* Currency */}
         <div className="flex flex-col gap-2 w-1/3">
           <Label>{tInvoicing('payment.attributes.currency')}</Label>
-          <SelectShimmer isPending={loading}>
-            <Select
-              key={paymentManager.currencyId || 'currency'}
-              onValueChange={(e) => {
-                const currency = currencies.find((currency) => currency.id == parseInt(e));
-                paymentManager.set('currencyId', currency?.id);
-                paymentManager.set('currency', currency);
-                invoiceManager.init();
-              }}
-              disabled={currencies.length == 1}
-              defaultValue={
-                paymentManager?.currencyId ? paymentManager?.currencyId?.toString() : undefined
-              }>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={tInvoicing('controls.currency_select_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies?.map((currency: Currency) => {
-                  return (
-                    <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
-                      {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </SelectShimmer>
+          <Select
+            key={paymentManager.currencyId || 'currency'}
+            onValueChange={(e) => {
+              const currency = currencies.find((currency) => currency.id == parseInt(e));
+              paymentManager.set('currencyId', currency?.id);
+              paymentManager.set('currency', currency);
+              invoiceManager.init();
+            }}
+            disabled={currencies.length == 1}
+            defaultValue={
+              paymentManager?.currencyId ? paymentManager?.currencyId?.toString() : undefined
+            }>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={tInvoicing('controls.currency_select_placeholder')} />
+            </SelectTrigger>
+            <SelectContent>
+              {currencies?.map((currency: Currency) => {
+                return (
+                  <SelectItem key={currency.id} value={currency?.id?.toString() || ''}>
+                    {currency?.code && tCurrency(currency?.code)} ({currency.symbol})
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
         </div>
         {/* Convertion Rate */}
         <div className="flex flex-col gap-2 w-1/3">
@@ -149,24 +144,22 @@ export const PaymentGeneralInformation = ({
         {/* Mode */}
         <div className="flex flex-col gap-2 w-1/3">
           <Label>{tInvoicing('payment.attributes.mode')} (*)</Label>
-          <SelectShimmer isPending={loading || false}>
-            <Select
-              onValueChange={(e) => {
-                paymentManager.set('mode', e);
-              }}
-              value={paymentManager?.mode || ''}>
-              <SelectTrigger>
-                <SelectValue placeholder={tInvoicing('payment.attributes.mode')} />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(PAYMENT_MODE).map((title) => (
-                  <SelectItem key={title} value={title}>
-                    {tInvoicing(title)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </SelectShimmer>
+          <Select
+            onValueChange={(e) => {
+              paymentManager.set('mode', e);
+            }}
+            value={paymentManager?.mode || ''}>
+            <SelectTrigger>
+              <SelectValue placeholder={tInvoicing('payment.attributes.mode')} />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(PAYMENT_MODE).map((title) => (
+                <SelectItem key={title} value={title}>
+                  {tInvoicing(title)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="flex flex-row gap-2 ">
