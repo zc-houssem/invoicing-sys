@@ -47,6 +47,11 @@ const findAll = async ({
   return response.data;
 };
 
+const findAllSystemEnterprises = async (): Promise<ResponseEnterpriseDto[]> => {
+  const response = await axios.get<ResponseEnterpriseDto[]>(`/enterprise/system`);
+  return response.data;
+};
+
 const findById = async (id: number, join?: string): Promise<ResponseEnterpriseDto> => {
   const response = await axios.get<ResponseEnterpriseDto>(`/enterprise/${id}`, {
     params: { join }
@@ -56,6 +61,11 @@ const findById = async (id: number, join?: string): Promise<ResponseEnterpriseDt
 
 const create = async (enterprise: CreateEnterpriseDto): Promise<ResponseEnterpriseDto> => {
   const response = await axios.post('/enterprise', enterprise);
+  return response.data;
+};
+
+const createSystem = async (enterprise: CreateEnterpriseDto): Promise<ResponseEnterpriseDto> => {
+  const response = await axios.post('/enterprise/system', enterprise);
   return response.data;
 };
 
@@ -75,8 +85,10 @@ const remove = async (id?: number): Promise<ResponseEnterpriseDto> => {
 export const enterprise = {
   findPaginated,
   findAll,
+  findAllSystemEnterprises,
   findById,
   create,
+  createSystem,
   update,
   remove
 };

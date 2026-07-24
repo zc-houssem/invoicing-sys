@@ -173,7 +173,7 @@
       "singular": "Account",
       "plural": "Accounts",
       "my_profile": "My Profile",
-      "my_cabinet": "My Cabinet",
+      "my_enterprise": "My Enterprise",
       "bank_accounts": "Bank Accounts"
     },
     "system": {
@@ -199,6 +199,12 @@
     "main_m": "Main",
     "main_f": "Main",
     "or": "or"
+  },
+  "company": {
+    "main_company": "Main Company",
+    "system_company": "System company",
+    "workspace": "Workspace",
+    "active_company": "Active company"
   },
   "datatable": {
     "paginationPhrase": "Showing Page {{page}} of {{total}}",

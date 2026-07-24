@@ -1,11 +1,11 @@
 import React from 'react';
 import { InformationalSettings } from '@/components/settings/InformationalSettings';
-import CabinetMain from '@/components/settings/Cabinet/CabinetMain';
+import { ActiveEnterpriseEditForm } from '@/components/administrative-tools/configuration/enterprises/ActiveEnterpriseEditForm';
 
 export default function Page() {
   return (
     <InformationalSettings>
-      <CabinetMain />
+      <ActiveEnterpriseEditForm />
     </InformationalSettings>
   );
 }

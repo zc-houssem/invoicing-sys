@@ -78,7 +78,8 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
         page: debouncedPage.toString(),
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
-        search: debouncedSearchTerm
+        search: debouncedSearchTerm,
+        filter: 'system||$eq||false'
       })
   });
 

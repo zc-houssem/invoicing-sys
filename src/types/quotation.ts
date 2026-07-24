@@ -121,6 +121,7 @@ export interface CreateQuotationDto
     | 'sequential'
     | 'bankAccount'
     | 'invoices'
+    | 'articleQuotationEntries'
   > {
   articleQuotationEntries?: CreateArticleQuotationEntry[];
   files?: File[];

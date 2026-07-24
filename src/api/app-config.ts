@@ -13,12 +13,12 @@ const findOne = async (id: number): Promise<AppConfig> => {
 };
 
 const create = async (createAppConfigDto: CreateAppConfigDto): Promise<AppConfig> => {
-  const response = await axios.post<CreateAppConfigDto>('public/app-config', createAppConfigDto);
+  const response = await axios.post<AppConfig>('public/app-config', createAppConfigDto);
   return response.data;
 };
 
 const update = async (updateAppConfigDto: UpdateAppConfigDto): Promise<AppConfig> => {
-  const response = await axios.put<UpdateAppConfigDto>(
+  const response = await axios.put<AppConfig>(
     `public/app-config/${updateAppConfigDto.id}`,
     updateAppConfigDto
   );

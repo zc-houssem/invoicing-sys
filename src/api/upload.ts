@@ -104,6 +104,18 @@ export const getUploadById = async (id: number) => {
   return URL.createObjectURL(data);
 };
 
+export const fetchBlobById = async (id: number) => {
+  const url = `/storage/view/id/${id}`;
+  const { data } = await axios.get(url, { responseType: 'blob' });
+  return data;
+};
+
+export const fetchBlobBySlug = async (slug: string) => {
+  const url = `/storage/view/slug/${slug}`;
+  const { data } = await axios.get(url, { responseType: 'blob' });
+  return data;
+};
+
 const deleteFile = async (slug: string): Promise<ServerResponse<Upload>> => {
   const response = await axios.delete(`/storage/${slug}`);
   return response.data;
@@ -116,5 +128,7 @@ export const upload = {
   deleteFile,
   openFile,
   getUploadBySlug,
-  getUploadById
+  getUploadById,
+  fetchBlobById,
+  fetchBlobBySlug
 };

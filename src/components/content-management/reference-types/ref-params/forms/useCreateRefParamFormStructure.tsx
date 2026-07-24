@@ -92,12 +92,12 @@ export const useCreateRefParamFormStructure = ({
   };
 
   const refParamCreateFormStructure: FormStructure = {
-    title: '',
-    description: '',
+    title: { value: '' },
+    description: { value: '' },
     fieldsets: [
       {
-        title: 'Create Reference Type',
-        description: 'Create a new reference type.',
+        title: { value: 'Create Reference Type' },
+        description: { value: 'Create a new reference type.' },
         rows: [
           {
             fields: [labelField, refTypeField]

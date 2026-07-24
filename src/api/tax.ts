@@ -1,6 +1,5 @@
 import axios from './axios';
-import { CreateTaxDto, PagedTax, Tax, ToastValidation, UpdateTaxDto } from '@/types';
-import { QueryParams } from '@/types/response/QueryParams';
+import { CreateTaxDto, PagedTax, Tax, ToastValidation, UpdateTaxDto, QueryParams } from '@/types';
 
 const findPaginated = async ({
   page,

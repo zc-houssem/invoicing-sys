@@ -2,7 +2,6 @@ import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { useArticleItemFormStructure } from './useArticleItemFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
 import React from 'react';
 import { CurrencyPayload, ResponseRefParamDto, ResponseTaxRateDto } from '@/types';
 import { useTranslation } from 'react-i18next';

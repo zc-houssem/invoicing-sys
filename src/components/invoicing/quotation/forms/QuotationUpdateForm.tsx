@@ -94,7 +94,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
   });
 
   const { enterprises, isEnterprisesPending, refetchEnterprises } = useEnterprises({
-    join: ['invoicingAddress', 'deliveryAddress', 'currency']
+    join: ['invoicingAddress', 'deliveryAddress', 'currency'],
+    excludeSystem: true
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
     enterpriseId: quotationStore.updateDto?.enterpriseId,

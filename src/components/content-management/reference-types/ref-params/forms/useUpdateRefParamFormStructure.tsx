@@ -103,12 +103,12 @@ export const useUpdateRefParamFormStructure = ({
   };
 
   const refParamUpdateFormStructure: FormStructure = {
-    title: "",
-    description: "",
+    title: { value: "" },
+    description: { value: "" },
     fieldsets: [
       {
-        title: "Update Reference Type",
-        description: "Update a new reference type.",
+        title: { value: "Update Reference Type" },
+        description: { value: "Update a new reference type." },
         rows: [
           {
             fields: [labelField, refTypeField],

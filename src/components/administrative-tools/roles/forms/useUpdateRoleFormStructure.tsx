@@ -7,12 +7,12 @@ import {
 } from "@/components/shared/form-builder/types";
 import { RoleStore } from "@/hooks/stores/useRoleStore";
 import { PermissionAccordions } from "../PermissionAccordions";
-import { Permission } from "@/types/permission";
+import { ResponsePermissionDto } from "@/types";
 import { useTranslation } from "react-i18next";
 
 interface RoleUpdateFormStructureProps {
   roleStore: RoleStore;
-  permissions?: Permission[];
+  permissions?: ResponsePermissionDto[];
 }
 export const useUpdateRoleFormStructure = ({
   roleStore,

@@ -9,6 +9,7 @@ import { ResponseStorageDto } from './storage';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
+  sequential?: string;
   status: string;
   direction: 'incoming' | 'outgoing';
   date: Date;

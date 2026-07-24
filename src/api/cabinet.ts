@@ -28,9 +28,9 @@ const findOne = async (
 };
 
 const update = async (cabinet: UpdateCabinetDto): Promise<Cabinet> => {
-  const logoId = cabinet.logo ? (await upload.uploadFile(cabinet.logo)).id : undefined;
+  const logoId = cabinet.logo ? (await upload.uploadFiles([cabinet.logo]))[0].id : undefined;
   const signatureId = cabinet.signature
-    ? (await upload.uploadFile(cabinet.signature)).id
+    ? (await upload.uploadFiles([cabinet.signature]))[0].id
     : undefined;
   const { logo, signature, ...payload } = cabinet;
   const response = await axios.put<Cabinet>(`public/cabinet/${cabinet.id}`, {
@@ -41,4 +41,22 @@ const update = async (cabinet: UpdateCabinetDto): Promise<Cabinet> => {
   return response.data;
 };
 
-export const cabinet = { findOne, update };
+export const cabinet = {
+  findOne,
+  update,
+  validate: (data: Partial<Cabinet>): ToastValidation => {
+    if (!data.enterpriseName?.trim()) {
+      return { message: 'Company name is required' };
+    }
+    if (!data.phone?.trim()) {
+      return { message: 'Phone is required' };
+    }
+    if (!data.taxIdNumber?.trim()) {
+      return { message: 'Tax ID is required' };
+    }
+    if (!data.email?.trim() || !isEmail(data.email)) {
+      return { message: 'A valid email is required' };
+    }
+    return { message: '' };
+  }
+};

@@ -131,6 +131,7 @@ export interface CreateInvoiceDto
     | 'interlocutor'
     | 'sequential'
     | 'bankAccount'
+    | 'articleInvoiceEntries'
   > {
   articleInvoiceEntries?: CreateArticleInvoiceEntry[];
   files?: File[];

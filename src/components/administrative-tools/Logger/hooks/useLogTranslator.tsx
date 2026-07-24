@@ -2,7 +2,8 @@ import { Log } from '@/types';
 import useUser from '../../../../hooks/content/useUser';
 import { EVENT_TYPE } from '@/types/enums/event-types';
 import useInterlocutor from '../../../../hooks/content/useInterlocutor';
-import useQuotation from '../../../../hooks/content/core/useQuotation';
+import { useQuotation } from '../../../../hooks/content/core/useQuotation';
+import useFirm from '../../../../hooks/content/useFirm';
 import useInvoice from '../../../../hooks/content/useInvoice';
 import useRole from '../../../../hooks/content/useRole';
 import { Trans } from '@/components/Trans';
@@ -84,14 +85,14 @@ export const useLogTranslator = (log: Log) => {
   const {
     quotation: QuotationCrQuotation,
     isFetchQuotationPending: isFetchQuotationPendingCrQuotation
-  } = useQuotation(log.logInfo?.id, crQuotation);
+  } = useQuotation({ id: log.logInfo?.id, enabled: crQuotation });
 
   //Invoiced
   const crQuotationInvoiced = [EVENT_TYPE.SELLING_QUOTATION_INVOICED].includes(log.event!);
   const {
     quotation: quotationCrQuotationInvoice,
     isFetchQuotationPending: isFetchQuotationPendingCrQuotationInvoiced
-  } = useQuotation(log.logInfo?.quotationId, crQuotationInvoiced && !!log.logInfo?.quotationId);
+  } = useQuotation({ id: log.logInfo?.quotationId, enabled: crQuotationInvoiced && !!log.logInfo?.quotationId });
   const {
     invoice: invoiceCrQuotationInvoice,
     isFetchInvoicePending: isFetchInvoicePendingCrInvoiceInvoiced
@@ -102,11 +103,11 @@ export const useLogTranslator = (log: Log) => {
   const {
     quotation: originalCrQuotationDuplicated,
     isFetchQuotationPending: isFetchQuotationPendingOriginalCrQuotationDuplicated
-  } = useQuotation(log.logInfo?.id, crQuotationDuplicated && !!log.logInfo?.id);
+  } = useQuotation({ id: log.logInfo?.id, enabled: crQuotationDuplicated && !!log.logInfo?.id });
   const {
     quotation: duplicateCrQuotationDuplicated,
     isFetchQuotationPending: isFetchQuotationPendingDuplicateCrQuotationDuplicated
-  } = useQuotation(log.logInfo?.duplicateId, crQuotationDuplicated && !!log.logInfo?.duplicateId);
+  } = useQuotation({ id: log.logInfo?.duplicateId, enabled: crQuotationDuplicated && !!log.logInfo?.duplicateId });
 
   //invoice ----------------------------------------------------------------------------------------
   const crInvoice = [

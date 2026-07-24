@@ -6,9 +6,8 @@ import { Spinner } from '@/components/shared';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InterlocutorContactInformation } from '../form/InterlocutorContactInformation';
 import { InterlocutorAssociation } from '../form/InterlocutorAssociation';
-import useInterlocutors from '@/hooks/content/core/useEnterpriseInterlocutors';
+import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseInterlocutors';
 import React from 'react';
-import { firm } from '@/api';
 
 export const useInterlocutorCreateOrAssociateSheet = (
   firmId?: number,
@@ -26,11 +25,11 @@ export const useInterlocutorCreateOrAssociateSheet = (
     resetInterlocutor?.();
   };
 
-  const { interlocutors, isFetchInterlocutorsPending, refetchInterloctors } = useInterlocutors();
+  const { interlocutors, isFetchInterlocutorsPending, refetchInterlocutors } = useEnterpriseInterlocutors();
 
   React.useEffect(() => {
-    if (firmId) refetchInterloctors();
-  }, [firmId, refetchInterloctors]);
+    if (firmId) refetchInterlocutors();
+  }, [firmId, refetchInterlocutors]);
 
   const {
     SheetFragment: createInterlocutorSheet,
@@ -72,7 +71,7 @@ export const useInterlocutorCreateOrAssociateSheet = (
               if (activeTab === 'new') createInterlocutor?.();
               else {
                 associateInterlocutor?.();
-                refetchInterloctors();
+                refetchInterlocutors();
               }
             }}>
             {tCommon('commands.save')}

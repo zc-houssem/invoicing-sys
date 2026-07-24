@@ -165,7 +165,7 @@
       "singular": "Compte",
       "plural": "Comptes",
       "my_profile": "Mon Profil",
-      "my_cabinet": "Mon Cabinet",
+      "my_enterprise": "Mon Entreprise",
       "bank_accounts": "Comptes Bancaires"
     },
     "system": {
@@ -196,6 +196,12 @@
     "main_m": "Principal",
     "main_f": "Principale",
     "or": "ou"
+  },
+  "company": {
+    "main_company": "Entreprise principale",
+    "system_company": "Entreprise système",
+    "workspace": "Espace de travail",
+    "active_company": "Entreprise active"
   },
   "datatable": {
     "paginationPhrase": "Affichage de la page {{page}} sur {{total}}",

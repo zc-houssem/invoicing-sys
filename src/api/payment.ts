@@ -58,12 +58,12 @@ const findPaginated = async (
 };
 
 const uploadPaymentFiles = async (files: File[]): Promise<number[]> => {
-  return files && files?.length > 0 ? await upload.uploadFiles(files) : [];
+  return files && files?.length > 0 ? (await upload.uploadFiles(files)).map((u) => u.id as number) : [];
 };
 
 const create = async (payment: CreatePaymentDto, files: File[] = []): Promise<Payment> => {
   const uploadIds = await uploadPaymentFiles(files);
-  const response = await axios.post<CreatePaymentDto>('public/payment', {
+  const response = await axios.post<Payment>('public/payment', {
     ...payment,
     uploads: uploadIds.map((id) => {
       return { uploadId: id };

@@ -4,21 +4,27 @@ import React from 'react';
 
 interface useEnterprisesProps {
   enabled?: boolean;
-  join: string[];
+  join?: string[];
+  excludeSystem?: boolean;
 }
 
 export const useEnterprises = (
-  { enabled, join }: useEnterprisesProps = { enabled: true, join: [] }
+  { enabled, join = [], excludeSystem = false }: useEnterprisesProps = {
+    enabled: true,
+    join: [],
+    excludeSystem: false
+  }
 ) => {
   const {
     data: enterpriseResp,
     isPending: isEnterprisesPending,
     refetch: refetchEnterprises
   } = useQuery({
-    queryKey: ['enterprises'],
+    queryKey: ['enterprises', join.join(','), excludeSystem],
     queryFn: async () =>
       api.core.enterprise.findAll({
-        join: join.join(',')
+        join: join.join(','),
+        filter: excludeSystem ? 'system||$eq||false' : undefined
       }),
     enabled
   });

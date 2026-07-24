@@ -1,5 +1,5 @@
 import { QueryParams } from '@/types';
-import { ResponseTemplateTypeDto } from '@/types/core/template-type';
+import { ResponseTemplateTypeDto } from '@/types/core/template';
 import axios from '../axios';
 
 const findAll = async ({

@@ -7,9 +7,11 @@ import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Combobox } from '@/components/ui/combo-box';
 
+import { ResponseInterlocutorDto } from '@/types';
+
 interface InterlocutorAssociationProps {
   className?: string;
-  interlocutors?: Interlocutor[];
+  interlocutors?: ResponseInterlocutorDto[];
   loading?: boolean;
 }
 
@@ -40,8 +42,8 @@ export const InterlocutorAssociation: React.FC<InterlocutorAssociationProps> = (
             interlocutorStore.set('surname', surname);
           }}
           data={interlocutors?.map((i) => ({
-            label: `${i.name} ${i.surname} (${i.email})`,
-            value: `${i.name}|${i.surname}|${i.id}`
+            label: `${i.firstName} ${i.lastName} (${i.email})`,
+            value: `${i.firstName}|${i.lastName}|${i.id}`
           }))}
           className={'my-4'}
           containerClassName="max-h-52"

@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   BookUser,
   Building,
+  Building2,
   Cpu,
   File,
   FileCog,
@@ -30,19 +31,14 @@ import {
   SidebarRail,
   useSidebar
 } from '@/components/ui/sidebar';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
 import { MainNav } from './MainNav';
 import { TeamSwitcher } from './TeamSwitcher';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import logoLight from 'src/assets/logo.png';
-import logoDark from 'src/assets/logo-light.png';
 import { useTranslation } from 'react-i18next';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = useRouter();
-  const { theme } = useTheme();
   const { t } = useTranslation('common');
+  const { systemEnterprises } = useSystemEnterprises();
 
   const data = {
     user: {
@@ -50,21 +46,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       email: 'm@example.com',
       avatar: '/avatars/shadcn.jpg'
     },
-    teams: [
-      {
-        name: 'Zedney Creative',
-        logo: React.useMemo(() => {
-          return (
-            <Image
-              src={theme == 'light' ? logoLight : logoDark}
-              alt="logo"
-              onClick={() => router.push('/dashboard')}
-            />
-          );
-        }, [theme, router]),
-        plan: 'Free'
-      }
-    ],
+    teams: systemEnterprises.map((enterprise) => ({
+      id: enterprise.id,
+      name: enterprise.name,
+      logo: Building2,
+      plan: enterprise.system ? t('company.system_company') : t('company.workspace')
+    })),
     navMain: [
       {
         id: 1,

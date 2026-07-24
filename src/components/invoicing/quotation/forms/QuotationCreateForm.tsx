@@ -93,7 +93,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
   );
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
-    join: ['invoicingAddress', 'deliveryAddress']
+    join: ['invoicingAddress', 'deliveryAddress'],
+    excludeSystem: true
   });
   const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
     enterpriseId: quotationStore.createDto.enterpriseId,

@@ -13,9 +13,9 @@ import {
   PagedInvoice,
   ResponseInvoiceRangeDto,
   ToastValidation,
-  UpdateInvoiceDto,
-  UpdateInvoiceSequentialNumber
+  UpdateInvoiceDto
 } from '@/types';
+import { UpdateSequentialDto } from '@/types/sequence';
 import { INVOICE_FILTER_ATTRIBUTES } from '@/constants/invoice.filter-attributes';
 
 const factory = (): CreateInvoiceDto => {
@@ -40,7 +40,7 @@ const factory = (): CreateInvoiceDto => {
       hasGeneralConditions: true,
       showArticleDescription: true,
       taxSummary: []
-    },
+    } as unknown as any,
     files: []
   };
 };
@@ -112,7 +112,7 @@ const findByRange = async (id?: number): Promise<ResponseInvoiceRangeDto> => {
 };
 
 const uploadInvoiceFiles = async (files: File[]): Promise<number[]> => {
-  return files && files?.length > 0 ? await upload.uploadFiles(files) : [];
+  return files && files?.length > 0 ? (await upload.uploadFiles(files)).map((u) => u.id as number) : [];
 };
 
 const create = async (invoice: CreateInvoiceDto, files: File[]): Promise<Invoice> => {
@@ -216,7 +216,7 @@ const validate = (invoice: Partial<Invoice>, dateRange?: DateRange): ToastValida
   return { message: '' };
 };
 
-const updateInvoicesSequentials = async (updatedSequenceDto: UpdateInvoiceSequentialNumber) => {
+const updateInvoicesSequentials = async (updatedSequenceDto: UpdateSequentialDto) => {
   const response = await axios.put<Invoice>(
     `/public/invoice/update-invoice-sequences`,
     updatedSequenceDto

@@ -1,5 +1,5 @@
 import { api } from '@/api';
-import { CreateInterlocutorDto, Interlocutor, UpdateInterlocutorDto } from '@/types';
+import { CreateInterlocutorDto, Interlocutor, UpdateInterlocutorDto, ResponseInterlocutorDto } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useRouter } from 'next/router';
@@ -98,10 +98,10 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     return interlocutorsResp?.data || [];
   }, [interlocutorsResp]);
 
-  const context: DataTableConfig<Interlocutor> = {
+  const context: DataTableConfig<ResponseInterlocutorDto> = {
     singularName: tContacts('interlocutor.singular'),
     pluralName: tContacts('interlocutor.plural'),
-    inspectCallback: (entity: Interlocutor) => {
+    inspectCallback: (entity: ResponseInterlocutorDto) => {
       router.push(`/contacts/interlocutor/${entity.id}`);
     },
     createCallback: () => {},
@@ -116,8 +116,8 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
-    targetEntity: (interlocutor: Interlocutor) => {
-      interlocutorStore.setInterlocutor(interlocutor, firmId);
+    targetEntity: (interlocutor: ResponseInterlocutorDto) => {
+      interlocutorStore.setInterlocutor(interlocutor as any, firmId);
     }
   };
 

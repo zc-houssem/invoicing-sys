@@ -14,12 +14,22 @@ export * from './payment';
 export * from './payment-condition';
 export * from './permission';
 // export * from './quotation';
+export type { Interlocutor, PagedInterlocutor } from './interlocutor';
+export type { Firm, PagedFirm } from './firm';
+export * from './firm-interlocutor-entry';
 export * from './sequence';
 export * from './tax';
 export * from './tax-withholding';
 export * from './toast-validation';
 export * from './upload';
 export * from './utils';
+
+// Aliases for legacy types that were renamed to Response*Dto
+export type { ResponseCurrencyDto as Currency } from './currency';
+export type { ResponseAddressDto as Address } from './core/address';
+export type { ResponseBankAccountDto as BankAccount } from './core/bank-account';
+export type { ResponseUserDto as User } from './core/user-management';
+export type { ResponseSequenceDto as Sequential } from './sequence';
 
 export * from './response';
 export * from './core/address';
