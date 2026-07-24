@@ -55,32 +55,32 @@ export const EnterpriseDetails = ({
 
   const sidebarNavItems = [
     {
-      title: tContacts('firm.detailmenu.overview'),
+      title: tContacts('enterprise.detailmenu.overview'),
       icon: <Info size={18} />,
       href: `/contacts/enterprise/${enterpriseId}`
     },
     {
-      title: tContacts('firm.detailmenu.interlocutors'),
+      title: tContacts('enterprise.detailmenu.interlocutors'),
       icon: <Users size={18} />,
       href: `/contacts/enterprise/${enterpriseId}/interlocutors`
     },
     {
-      title: tContacts('firm.detailmenu.quotations'),
+      title: tContacts('enterprise.detailmenu.quotations'),
       icon: <File size={18} />,
       href: `/contacts/enterprise/${enterpriseId}/quotations`
     },
     {
-      title: tContacts('firm.detailmenu.invoices'),
+      title: tContacts('enterprise.detailmenu.invoices'),
       icon: <FileText size={18} />,
       href: `/contacts/enterprise/${enterpriseId}/invoices`
     },
     {
-      title: tContacts('firm.detailmenu.payments'),
+      title: tContacts('enterprise.detailmenu.payments'),
       icon: <Wallet size={18} />,
       href: `/contacts/enterprise/${enterpriseId}/payments`
     },
     {
-      title: tContacts('firm.detailmenu.chronological'),
+      title: tContacts('enterprise.detailmenu.chronological'),
       icon: <Hourglass size={18} />,
       href: `/contacts/enterprise/${enterpriseId}/chronological`
     }
