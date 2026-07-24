@@ -1,49 +1,49 @@
 import { api } from '@/api';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ResponseQuotationWorkflowDto } from '@/types';
+import { ResponseInvoiceWorkflowDto } from '@/types/core/invoicing/invoice';
 import { useMutation } from '@tanstack/react-query';
 import { Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-interface QuotationActionsProps {
+interface InvoiceActionsProps {
   className?: string;
-  workflow: ResponseQuotationWorkflowDto | null;
+  workflow: ResponseInvoiceWorkflowDto | null;
   save: () => void;
   reload: () => void;
   reset: () => void;
 }
 
-export const QuotationActions = ({
+export const InvoiceActions = ({
   className,
   workflow,
   save,
   reload,
   reset
-}: QuotationActionsProps) => {
+}: InvoiceActionsProps) => {
   const { t } = useTranslation('common');
 
   const { mutate: next, isPending: isNextPending } = useMutation({
     mutationFn: async (event: string) =>
-      api.invoicing.quotation.workflow.next(workflow?.quotation?.id!, event),
+      api.invoicing.invoice.workflow.next(workflow?.invoice?.id!, event),
     onSuccess: () => {
       reload();
-      toast.success('Quotation status updated successfully');
+      toast.success('Invoice status updated successfully');
     }
   });
 
-  const { mutate: printQuotation, isPending: isPrintPending } = useMutation({
+  const { mutate: printInvoice, isPending: isPrintPending } = useMutation({
     mutationFn: async () => {
       const templates = await api.core.template.findAll({
-        filter: 'templateType.code||$eq||quotation'
+        filter: 'templateType.code||$eq||invoice'
       });
       if (!templates || templates.length === 0) {
-        throw new Error('No quotation template found. Please create one in Content Management.');
+        throw new Error('No invoice template found. Please create one in Content Management.');
       }
       const template = templates[0];
       if (!template.documentId) {
-        throw new Error('The quotation template does not have a PDF document attached.');
+        throw new Error('The invoice template does not have a PDF document attached.');
       }
 
       const { generate } = await import('@pdfme/generator');
@@ -64,7 +64,7 @@ export const QuotationActions = ({
             schemas: [[]]
           };
 
-      const q = workflow?.quotation;
+      const q = workflow?.invoice;
       const inputMapping: Record<string, string> = {
         object: q?.object || '',
         date: q?.date ? new Date(q.date).toLocaleDateString() : '',
@@ -89,7 +89,7 @@ export const QuotationActions = ({
           pageSchemas.forEach((field: any) => {
             if (field.name) {
               if (field.type === 'table') {
-                const articles = q?.quotationArticles || [];
+                const articles = q?.invoiceArticles || [];
                 const tableData = articles.map((a) => [
                   a.article?.title || '',
                   a.quantity?.toString() || '0',
@@ -119,10 +119,10 @@ export const QuotationActions = ({
       setTimeout(() => URL.revokeObjectURL(url), 30000);
     },
     onSuccess: () => {
-      toast.success('Quotation PDF generated successfully');
+      toast.success('Invoice PDF generated successfully');
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to generate quotation PDF');
+      toast.error(error.message || 'Failed to generate invoice PDF');
     }
   });
 
@@ -140,7 +140,7 @@ export const QuotationActions = ({
         variant={'outline'}
         className="w-full"
         disabled={!workflow?.isPrintable || isNextPending || isPrintPending}
-        onClick={() => printQuotation()}>
+        onClick={() => printInvoice()}>
         <Printer />
         <span>
           {isPrintPending ? t('commands.printing') || 'Printing...' : t('commands.print')}

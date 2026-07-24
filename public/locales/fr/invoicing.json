@@ -54,7 +54,58 @@
       }
     }
   },
-  "invoice": {},
+  "invoice": {
+    "form": {
+      "date": "Date",
+      "dueDate": "Échéance",
+      "object": "Objet",
+      "enterprise": "Entreprise",
+      "interlocutor": "Interlocuteur",
+      "generalConditions": "Conditions générales",
+      "currency": "Devise",
+      "bankAccount": "Compte bancaire",
+      "placeholders": {
+        "date": "Sélectionnez une date",
+        "dueDate": "Sélectionnez une date d'échéance",
+        "object": "Entrez un objet",
+        "enterprise": "Sélectionnez une entreprise",
+        "interlocutor": "Sélectionnez un interlocuteur",
+        "currency": "Sélectionnez une facturee",
+        "bankAccount": "Sélectionnez un compte bancaire"
+      },
+      "descriptions": {
+        "date": "Sélectionnez la date de la facture.",
+        "dueDate": "Sélectionnez la date d'échéance pour cette facture.",
+        "object": "Entrez l'objet de la facture. Il s'agit d'une brève description de ce à quoi la facture se rapporte.",
+        "enterprise": "Sélectionnez l'entreprise pour laquelle cette facture est créé.",
+        "interlocutor": "Sélectionnez l'interlocuteur pour cette facture. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
+        "generalConditions": "Entrez les conditions générales pour cette facture. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
+        "currency": "Sélectionnez la facturee pour cette facture.",
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour cette facture."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "object": "Objet",
+        "date": "Date",
+        "status": "Statut",
+        "dueDate": "Échéance",
+        "enterprise": "Entreprise",
+        "interlocutor": "Interlocuteur",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Êtes-vous sûr de vouloir supprimer cette facture",
+        "description": "Cette action est irréversible. Cela supprimera définitivement la facture de notre base de données.",
+        "confirm": "Oui, supprimez-le",
+        "cancel": "Non, conservez-le"
+      }
+    }
+  },
   "article": {
     "buttons": {
       "addArticle": "Ajouter un article",
