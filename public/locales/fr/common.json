@@ -45,6 +45,7 @@
         "roles": "Rôles",
         "permissions": "Permissions",
         "logger": "Journal",
+        "devLogger": "Journal Technique",
         "system": "Système"
       }
     },

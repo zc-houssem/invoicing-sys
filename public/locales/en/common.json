@@ -45,6 +45,7 @@
         "roles": "Roles",
         "permissions": "Permissions",
         "logger": "Logger",
+        "devLogger": "Technical Logger",
         "system": "System"
       }
     },

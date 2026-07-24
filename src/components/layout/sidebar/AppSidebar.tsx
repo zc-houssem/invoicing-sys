@@ -187,6 +187,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('menu.administrativeTools.subs.logger'),
             url: '/administrative-tools/logger',
             icon: Cpu
+          },
+          {
+            title: t('menu.administrativeTools.subs.devLogger'),
+            url: '/administrative-tools/dev-logger',
+            icon: Cpu
           }
         ]
       },
