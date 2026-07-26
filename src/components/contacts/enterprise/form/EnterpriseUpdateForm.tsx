@@ -32,16 +32,11 @@ const steps = [
   },
   {
     id: '2',
-    title: 'Interlocutor information',
-    description: 'Information about the main contact person for the enterprise.'
-  },
-  {
-    id: '3',
     title: 'Address information',
     description: 'Invoicing and shipping addresses for the enterprise.'
   },
   {
-    id: '4',
+    id: '3',
     title: 'Additional information',
     description: 'Additional information about the enterprise.'
   }
@@ -299,15 +294,10 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
                         )}
                         {methods.current.id === '2' && (
                           <div>
-                            <FormBuilder structure={interlocutorInformation} />
-                          </div>
-                        )}
-                        {methods.current.id === '3' && (
-                          <div>
                             <FormBuilder structure={addressInformation} />
                           </div>
                         )}
-                        {methods.current.id === '4' && (
+                        {methods.current.id === '3' && (
                           <div>
                             <FormBuilder structure={additionalInformation} />
                           </div>

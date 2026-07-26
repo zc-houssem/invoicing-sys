@@ -46,13 +46,6 @@ const initialState: EnterpriseData = {
     },
     interlocutors: [
       {
-        interlocutor: {
-          title: SocialTitles.MR,
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: ''
-        },
         main: true,
         position: ''
       }

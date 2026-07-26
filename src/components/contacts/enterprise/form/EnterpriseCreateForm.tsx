@@ -1,6 +1,7 @@
 import React from 'react';
 import { useActivities } from '@/hooks/content/core/useActivities';
 import { useCountries } from '@/hooks/content/core/useCountries';
+import { useInterlocutors } from '@/hooks/content/core/useInterlocutors';
 import { Button } from '../../../ui/button';
 import { Spinner } from '@/components/shared';
 import { usePaymentCondition } from '@/hooks/content/core/usePaymentConditions';
@@ -70,6 +71,7 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   const { currencies, isCurrenciesPending } = useCurrencies();
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
+  const { interlocutors, isInterlocutorsPending } = useInterlocutors();
 
   const {
     enterpriseInformation,
@@ -100,6 +102,12 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
       labelKey: 'label',
       valueKey: 'id',
       labelKeyTransformer: (label) => tCountry(label)
+    }),
+    interlocutorOptions: mapToSelectOptions({
+      data: interlocutors,
+      labelKey: 'firstName',
+      valueKey: 'id',
+      labelKeyTransformer: (firstName, entity) => `${firstName} ${entity.lastName}`
     })
   });
 
@@ -162,7 +170,8 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
     isFetchActivitiesPending ||
     isCurrenciesPending ||
     isFetchCountriesPending ||
-    isFetchPaymentConditionsPending;
+    isFetchPaymentConditionsPending ||
+    isInterlocutorsPending;
 
   //component representation
   if (loading) return <Spinner className="h-screen" show={loading} />;

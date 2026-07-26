@@ -60,36 +60,34 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
 
-  const {
-    enterpriseInformation,
-    addressInformation,
-    additionalInformation
-  } = useEnterpriseCreateFormStructure({
-    store: enterpriseStore,
-    activityOptions: mapToSelectOptions({
-      data: activities,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
-        `${tCommon(label)} ${entity?.extras?.symbol}`
-    }),
-    paymentConditionOptions: mapToSelectOptions({
-      data: paymentConditions,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    countryOptions: mapToSelectOptions({
-      data: countries,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label) => tCountry(label)
-    })
-  });
+  const { enterpriseInformation, addressInformation, additionalInformation } =
+    useEnterpriseCreateFormStructure({
+      store: enterpriseStore,
+      activityOptions: mapToSelectOptions({
+        data: activities,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
+          `${tCommon(label)} ${entity?.extras?.symbol}`
+      }),
+      paymentConditionOptions: mapToSelectOptions({
+        data: paymentConditions,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      }),
+      interlocutorOptions: []
+    });
 
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
@@ -191,9 +189,19 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
                       <Separator className="mt-2" />
                     </div>
                     <div className="my-auto">
-                      {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
-                      {methods.current.id === '2' && <div><FormBuilder structure={addressInformation} /></div>}
-                      {methods.current.id === '3' && <div><FormBuilder structure={additionalInformation} /></div>}
+                      {methods.current.id === '1' && (
+                        <FormBuilder structure={enterpriseInformation} />
+                      )}
+                      {methods.current.id === '2' && (
+                        <div>
+                          <FormBuilder structure={addressInformation} />
+                        </div>
+                      )}
+                      {methods.current.id === '3' && (
+                        <div>
+                          <FormBuilder structure={additionalInformation} />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <Separator className="mt-2" />
@@ -201,7 +209,11 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
 
                 <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4">
                   {!methods.isFirst && (
-                    <Button variant="outline" size="sm" onClick={methods.prev} disabled={isCreatePending}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={methods.prev}
+                      disabled={isCreatePending}>
                       <div className="flex items-center gap-2">
                         <ChevronLeft /> <span>Previous</span>
                       </div>

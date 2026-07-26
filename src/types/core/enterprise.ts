@@ -85,7 +85,8 @@ export interface ResponseEnterpriseInterlocutorDto extends DatabaseEntity {
 }
 
 export interface CreateEnterpriseInterlocutorDto {
-  interlocutor: CreateInterlocutorDto;
+  interlocutor?: CreateInterlocutorDto;
+  interlocutorId?: number;
   main: boolean;
   position: string;
 }

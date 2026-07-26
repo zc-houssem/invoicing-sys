@@ -8,7 +8,8 @@ import {
   SelectFieldProps,
   SelectOption,
   TelFieldProps,
-  TextFieldProps
+  TextFieldProps,
+  CheckboxFieldProps
 } from '@/components/shared/form-builder/types';
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,7 @@ interface useEnterpriseCreateFormStructureProps {
   currencyOptions: SelectOption[];
   paymentConditionOptions: SelectOption[];
   countryOptions: SelectOption[];
+  interlocutorOptions: SelectOption[];
 }
 
 export const useEnterpriseCreateFormStructure = ({
@@ -30,7 +32,8 @@ export const useEnterpriseCreateFormStructure = ({
   activityOptions,
   currencyOptions,
   paymentConditionOptions,
-  countryOptions
+  countryOptions,
+  interlocutorOptions
 }: useEnterpriseCreateFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
   // enterprise information ****************************************************************************
@@ -196,7 +199,47 @@ export const useEnterpriseCreateFormStructure = ({
     ]
   };
 
-  // interlocutor information ****************************************************************************
+  const isNewInterlocutorField: Field<CheckboxFieldProps> = {
+    id: 'is-new-interlocutor',
+    label: 'Create a new interlocutor',
+    variant: FieldVariant.CHECKBOX,
+    description: 'Check this to create a new interlocutor. Uncheck to select an existing one.',
+    props: {
+      checked: store.createDto.interlocutors?.[0]?.interlocutor !== undefined,
+      onCheckedChange: (checked: any) => {
+        const isNew = checked === true;
+        if (isNew) {
+          store.setNested('createDto.interlocutors.0.interlocutorId', undefined);
+          store.setNested('createDto.interlocutors.0.interlocutor', {
+            title: SocialTitles.MR,
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+          });
+        } else {
+          store.setNested('createDto.interlocutors.0.interlocutorId', undefined);
+          store.setNested('createDto.interlocutors.0.interlocutor', undefined);
+        }
+      }
+    }
+  };
+
+  const existingInterlocutorField: Field<SelectFieldProps> = {
+    id: 'existing-interlocutor',
+    label: 'Select Existing Interlocutor',
+    variant: FieldVariant.SELECT,
+    description: 'Select an existing interlocutor.',
+    placeholder: 'Select interlocutor',
+    props: {
+      value: store.createDto.interlocutors?.[0]?.interlocutorId?.toString() || '',
+      onValueChange: (value) => {
+        store.setNested('createDto.interlocutors.0.interlocutorId', Number(value));
+      },
+      options: interlocutorOptions
+    }
+  };
+
   const socialTitleField: Field<SelectFieldProps> = {
     id: 'interlocutor-title',
     label: tContact('interlocutor.form.socialTitle'),
@@ -204,7 +247,7 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.socialTitle'),
     placeholder: tContact('interlocutor.form.placeholders.socialTitle'),
     props: {
-      value: store.createDto.interlocutors?.[0].interlocutor.title,
+      value: store.createDto.interlocutors?.[0]?.interlocutor?.title,
       onValueChange: (value) => {
         store.setNested('createDto.interlocutors.0.interlocutor.title', value);
         store.setNested('errors.interlocutors.0.interlocutor.title', []);
@@ -223,11 +266,10 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.firstName'),
     placeholder: tContact('interlocutor.form.placeholders.firstName'),
     props: {
-      value: store.createDto.interlocutors?.[0].interlocutor.firstName,
+      value: store.createDto.interlocutors?.[0]?.interlocutor?.firstName,
       onChange: (value) => {
         store.setNested('createDto.interlocutors.0.interlocutor.firstName', value);
         store.setNested('errors.interlocutors.0.interlocutor.firstName', []);
-        console.log(store.createDto);
       }
     }
   };
@@ -239,7 +281,7 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.lastName'),
     placeholder: tContact('interlocutor.form.placeholders.lastName'),
     props: {
-      value: store.createDto.interlocutors?.[0].interlocutor.lastName,
+      value: store.createDto.interlocutors?.[0]?.interlocutor?.lastName,
       onChange: (value) => {
         store.setNested('createDto.interlocutors.0.interlocutor.lastName', value);
         store.setNested('errors.interlocutors.0.interlocutor.lastName', []);
@@ -254,7 +296,7 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.email'),
     placeholder: tContact('interlocutor.form.placeholders.email'),
     props: {
-      value: store.createDto.interlocutors?.[0].interlocutor.email,
+      value: store.createDto.interlocutors?.[0]?.interlocutor?.email,
       onChange: (value) => {
         store.setNested('createDto.interlocutors.0.interlocutor.email', value);
         store.setNested('errors.interlocutors.0.interlocutor.email', []);
@@ -269,7 +311,7 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.phone'),
     placeholder: tContact('interlocutor.form.placeholders.phone'),
     props: {
-      value: store.createDto.interlocutors?.[0].interlocutor.phone,
+      value: store.createDto.interlocutors?.[0]?.interlocutor?.phone,
       onChange: (value) => {
         store.setNested('createDto.interlocutors.0.interlocutor.phone', value);
         store.setNested('errors.interlocutors.0.interlocutor.phone', []);
@@ -284,7 +326,7 @@ export const useEnterpriseCreateFormStructure = ({
     description: tContact('interlocutor.form.descriptions.position'),
     placeholder: tContact('interlocutor.form.placeholders.position'),
     props: {
-      value: store.createDto.interlocutors?.[0].position,
+      value: store.createDto.interlocutors?.[0]?.position,
       onChange: (value) => {
         store.setNested('createDto.interlocutors.0.position', value);
         store.setNested('errors.interlocutors.0.position', []);
@@ -292,16 +334,29 @@ export const useEnterpriseCreateFormStructure = ({
     }
   };
 
+  const isNew = store.createDto.interlocutors?.[0]?.interlocutor !== undefined;
+
   const interlocutorInformation: FormStructure = {
     fieldsets: [
       {
         rows: [
           {
-            fields: [socialTitleField, firstNameField, lastNameField]
+            fields: [isNewInterlocutorField]
           },
-          {
-            fields: [emailField, phoneFieldInterlocutor]
-          },
+          ...(isNew
+            ? [
+                {
+                  fields: [socialTitleField, firstNameField, lastNameField]
+                },
+                {
+                  fields: [emailField, phoneFieldInterlocutor]
+                }
+              ]
+            : [
+                {
+                  fields: [existingInterlocutorField]
+                }
+              ]),
           {
             fields: [positionField]
           }
