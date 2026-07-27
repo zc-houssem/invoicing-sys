@@ -8,6 +8,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
+import { LoginSchema } from '@/types/validations/auth.validation';
 
 interface AuthenticationFormProps {
   className?: string;
@@ -17,6 +18,8 @@ export function AuthenticationForm({ className }: AuthenticationFormProps) {
   const [usernameOrEmail, setUsernameOrEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const router = useRouter();
+
+  const { success: isFormValid } = LoginSchema.safeParse({ usernameOrEmail, password });
 
   const { mutate: signInMutator, isPending: isSignInPending } = useMutation({
     mutationFn: async (data: {
@@ -51,14 +54,14 @@ export function AuthenticationForm({ className }: AuthenticationFormProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isSignInPending) {
+    if (e.key === 'Enter' && !isSignInPending && isFormValid) {
       handleSignIn();
     }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isSignInPending) {
+    if (!isSignInPending && isFormValid) {
       handleSignIn();
     }
   };
@@ -102,7 +105,7 @@ export function AuthenticationForm({ className }: AuthenticationFormProps) {
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSignInPending}>
+        <Button type="submit" className="w-full" disabled={isSignInPending || !isFormValid}>
           Login
         </Button>
 
