@@ -22,6 +22,8 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   interlocutorId: number;
   currency: ResponseRefParamDto;
   currencyId: number;
+  taxWithholding: ResponseRefParamDto;
+  taxWithholdingId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
   notes?: string;
@@ -43,6 +45,7 @@ export interface CreateInvoiceDto {
   enterpriseId?: number;
   interlocutorId?: number;
   currencyId?: number;
+  taxWithholdingId?: number;
   bankAccountId?: number;
   notes?: string;
   invoiceArticles: CreateInvoiceArticleDto[];

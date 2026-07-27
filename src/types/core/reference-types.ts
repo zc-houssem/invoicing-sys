@@ -45,3 +45,7 @@ export interface CurrencyPayload {
   code: string;
   digitsAfterComma: number;
 }
+
+export interface TaxWithholdingPayload {
+  rate: number;
+}

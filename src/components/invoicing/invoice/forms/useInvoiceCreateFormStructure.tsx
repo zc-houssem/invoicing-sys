@@ -28,6 +28,7 @@ interface useInvoiceCreateFormStructureProps {
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
+  taxWithholdingOptions: SelectOption[];
   bankAccountOptions: SelectOption[];
   isCreationPending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
@@ -46,6 +47,7 @@ export const useInvoiceCreateFormStructure = ({
   enterprises,
   interlocutorOptions,
   currencyOptions,
+  taxWithholdingOptions,
   bankAccountOptions,
   isCreationPending,
   selectedCurrency,
@@ -61,8 +63,7 @@ export const useInvoiceCreateFormStructure = ({
     label: 'Document',
     variant: FieldVariant.FILE,
     hidden: store.createDto.direction === 'outgoing',
-    props: {
-    }
+    props: {}
   };
 
   const dateField: Field<DateFieldProps> = {
@@ -414,6 +415,27 @@ export const useInvoiceCreateFormStructure = ({
     }
   };
 
+  const taxWithholdingField: Field<SelectFieldProps> = {
+    id: 'taxWithholding',
+    label: t('invoice.form.taxWithholding'),
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.createDtoErrors.taxWithholdingId?.[0],
+    placeholder: t('invoice.form.placeholders.taxWithholding'),
+    description: t('invoice.form.descriptions.taxWithholding'),
+    props: {
+      disabled: isCreationPending,
+      value: store.createDto.taxWithholdingId
+        ? store.createDto.taxWithholdingId.toString()
+        : undefined,
+      onValueChange: (value) => {
+        store.setNested('createDto.taxWithholdingId', Number(value));
+        store.setNested('createDtoErrors.taxWithholdingId', []);
+      },
+      options: taxWithholdingOptions
+    }
+  };
+
   const sidebarFormStructure: FormStructure = {
     title: {
       value: 'Sidebar'
@@ -427,6 +449,9 @@ export const useInvoiceCreateFormStructure = ({
           },
           {
             fields: [bankAccountField]
+          },
+          {
+            fields: [taxWithholdingField]
           }
         ]
       }

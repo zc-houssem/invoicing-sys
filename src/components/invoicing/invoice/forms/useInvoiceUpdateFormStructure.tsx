@@ -26,6 +26,7 @@ interface useInvoiceUpdateFormStructureProps {
   enterprises: ResponseEnterpriseDto[];
   interlocutorOptions: SelectOption[];
   currencyOptions: SelectOption[];
+  taxWithholdingOptions: SelectOption[];
   bankAccountOptions: SelectOption[];
   isUpdatePending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
@@ -45,6 +46,7 @@ export const useInvoiceUpdateFormStructure = ({
   enterprises,
   interlocutorOptions,
   currencyOptions,
+  taxWithholdingOptions,
   bankAccountOptions,
   isUpdatePending,
   selectedCurrency,
@@ -60,8 +62,7 @@ export const useInvoiceUpdateFormStructure = ({
     label: 'Document',
     variant: FieldVariant.FILE,
     hidden: store.updateDto?.direction === 'outgoing',
-    props: {
-    }
+    props: {}
   };
 
   const dateField: Field<DateFieldProps> = {
@@ -406,6 +407,27 @@ export const useInvoiceUpdateFormStructure = ({
     }
   };
 
+  const taxWithholdingField: Field<SelectFieldProps> = {
+    id: 'taxWithholding',
+    label: t('invoice.form.taxWithholding'),
+    variant: FieldVariant.SELECT,
+    required: true,
+    error: store.updateDtoErrors.taxWithholdingId?.[0],
+    placeholder: t('invoice.form.placeholders.taxWithholding'),
+    description: t('invoice.form.descriptions.taxWithholding'),
+    props: {
+      disabled: isUpdatePending || !isUpdatable,
+      value: store.updateDto?.taxWithholdingId
+        ? store.updateDto.taxWithholdingId.toString()
+        : undefined,
+      onValueChange: (value) => {
+        store.setNested('updateDto.taxWithholdingId', Number(value));
+        store.setNested('updateDtoErrors.taxWithholdingId', []);
+      },
+      options: taxWithholdingOptions
+    }
+  };
+
   const sidebarFormStructure: FormStructure = {
     title: {
       value: 'Sidebar'
@@ -419,6 +441,9 @@ export const useInvoiceUpdateFormStructure = ({
           },
           {
             fields: [bankAccountField]
+          },
+          {
+            fields: [taxWithholdingField]
           }
         ]
       }

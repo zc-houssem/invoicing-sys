@@ -64,14 +64,16 @@
       "generalConditions": "Conditions générales",
       "currency": "Devise",
       "bankAccount": "Compte bancaire",
+      "taxWithholding": "Retenue à la source",
       "placeholders": {
         "date": "Sélectionnez une date",
         "dueDate": "Sélectionnez une date d'échéance",
         "object": "Entrez un objet",
         "enterprise": "Sélectionnez une entreprise",
         "interlocutor": "Sélectionnez un interlocuteur",
-        "currency": "Sélectionnez une facturee",
-        "bankAccount": "Sélectionnez un compte bancaire"
+        "currency": "Sélectionnez une devise",
+        "bankAccount": "Sélectionnez un compte bancaire",
+        "taxWithholding": "Sélectionnez une retenue à la source"
       },
       "descriptions": {
         "date": "Sélectionnez la date de la facture.",
@@ -80,8 +82,9 @@
         "enterprise": "Sélectionnez l'entreprise pour laquelle cette facture est créé.",
         "interlocutor": "Sélectionnez l'interlocuteur pour cette facture. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
         "generalConditions": "Entrez les conditions générales pour cette facture. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
-        "currency": "Sélectionnez la facturee pour cette facture.",
-        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour cette facture."
+        "currency": "Sélectionnez la devise pour cette facture.",
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour cette facture.",
+        "taxWithholding": "Sélectionnez la retenue à la source à appliquer à cette facture."
       }
     },
     "table": {

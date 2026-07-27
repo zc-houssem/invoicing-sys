@@ -20,7 +20,8 @@ import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
   CurrencyPayload,
   ResponseBankAccountDto,
-  ResponseRefParamDto
+  ResponseRefParamDto,
+  TaxWithholdingPayload
 } from '@/types';
 import { UpdateInvoiceArticleDto, UpdateInvoiceDto } from '@/types/core/invoicing/invoice';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
@@ -28,6 +29,7 @@ import { useInvoiceWorkflow } from '@/hooks/content/core/useInvoiceWorkflow';
 import { Status } from '../../Status';
 import { InvoiceActions } from './InvoiceActions';
 import { useTranslation } from 'react-i18next';
+import { useTaxWithholdings } from '@/hooks/content/core/useTaxWithhodlings';
 
 interface InvoiceUpdateFormProps {
   id: number;
@@ -109,10 +111,12 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       ) as ResponseRefParamDto<CurrencyPayload>,
     [invoiceStore.updateDto?.currencyId, currencies]
   );
+  const { taxWithholdings, isTaxWithholdingsPending } = useTaxWithholdings();
 
   const { bankAccounts, isBankAccountsPending, refetchBankAccounts } = useBankAccounts();
 
   React.useEffect(() => {
+    console.log(workflow?.invoice.taxWithholdingId);
     if (workflow && enterprises) {
       console.log(workflow.invoice);
       invoiceStore.set('response', workflow.invoice);
@@ -125,6 +129,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         enterpriseId: workflow?.invoice.enterpriseId,
         interlocutorId: workflow?.invoice.interlocutorId,
         currencyId: workflow?.invoice.currencyId,
+        taxWithholdingId: workflow?.invoice.taxWithholdingId,
         bankAccountId: workflow?.invoice.bankAccountId,
         invoiceArticles: [],
         uploads: []
@@ -180,9 +185,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       toast.success('Invoice updated successfully!');
     },
     onError: (error: ServerErrorResponse) => {
-      toast.error(
-        error.response?.data.message || 'An error occurred while updating the invoice.'
-      );
+      toast.error(error.response?.data.message || 'An error occurred while updating the invoice.');
     }
   });
 
@@ -246,6 +249,13 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
         `${item.label} (${item.extras.symbol})`
     }),
+    taxWithholdingOptions: mapToSelectOptions({
+      data: taxWithholdings,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<TaxWithholdingPayload>) =>
+        `${item.label} (${item.extras.rate}%)`
+    }),
     bankAccountOptions: mapToSelectOptions({
       data: bankAccounts,
       labelKey: '',
@@ -259,7 +269,11 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
   });
 
   const isFormReady =
-    !isWorkflowPending && !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
+    !isWorkflowPending &&
+    !isEnterprisesPending &&
+    !isCurrenciesPending &&
+    !isBankAccountsPending &&
+    !isTaxWithholdingsPending;
 
   useInvoicingFormScroll(isFormReady);
 

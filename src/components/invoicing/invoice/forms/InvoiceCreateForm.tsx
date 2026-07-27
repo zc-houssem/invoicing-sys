@@ -19,7 +19,8 @@ import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
   CurrencyPayload,
   ResponseBankAccountDto,
-  ResponseRefParamDto
+  ResponseRefParamDto,
+  TaxWithholdingPayload
 } from '@/types';
 import { CreateInvoiceArticleDto, CreateInvoiceDto } from '@/types/core/invoicing/invoice';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
@@ -30,6 +31,7 @@ import { Repeat2, Save } from 'lucide-react';
 import { Status } from '../../Status';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { useTaxWithholdings } from '@/hooks/content/core/useTaxWithhodlings';
 
 interface InvoiceCreateFormProps {
   className?: string;
@@ -101,6 +103,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
   });
 
   const { currencies, isCurrenciesPending } = useCurrencies();
+  const { taxWithholdings, isTaxWithholdingsPending } = useTaxWithholdings();
+
   const selectedCurrency = React.useMemo(
     () =>
       currencies.find(
@@ -119,9 +123,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       toast.success('Invoice created successfully!');
     },
     onError: (error: ServerErrorResponse) => {
-      toast.error(
-        error.response?.data.message || 'An error occurred while creating the invoice.'
-      );
+      toast.error(error.response?.data.message || 'An error occurred while creating the invoice.');
     }
   });
 
@@ -172,6 +174,13 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
         `${tCurrency(item.label)} (${item.extras.symbol})`
     }),
+    taxWithholdingOptions: mapToSelectOptions({
+      data: taxWithholdings,
+      labelKey: '',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<TaxWithholdingPayload>) =>
+        `${item.label} (${item.extras.rate}%)`
+    }),
     bankAccountOptions: mapToSelectOptions({
       data: bankAccounts,
       labelKey: '',
@@ -183,7 +192,11 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     onAttachmentsUpload: handleAttachmentsUpload
   });
 
-  const isFormReady = !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
+  const isFormReady =
+    !isEnterprisesPending &&
+    !isCurrenciesPending &&
+    !isBankAccountsPending &&
+    !isTaxWithholdingsPending;
 
   useInvoicingFormScroll(isFormReady);
 

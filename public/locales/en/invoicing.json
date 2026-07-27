@@ -64,6 +64,7 @@
       "generalConditions": "General conditions",
       "currency": "Currency",
       "bankAccount": "Bank Account",
+      "taxWithholding": "Tax Withholding",
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",
@@ -71,7 +72,8 @@
         "enterprise": "Select an enterprise",
         "interlocutor": "Select an interlocutor",
         "currency": "Select a currency",
-        "bankAccount": "Select a bank account"
+        "bankAccount": "Select a bank account",
+        "taxWithholding": "Select a tax withholding"
       },
       "descriptions": {
         "date": "Select the date of the invoice.",
@@ -81,7 +83,8 @@
         "interlocutor": "Select the interlocutor for this invoice. The options available will depend on the enterprise you have selected.",
         "generalConditions": "Enter the general conditions for this invoice. You can use the editor to format the text as needed.",
         "currency": "Select the currency for this invoice.",
-        "bankAccount": "Select the bank account to be used for this invoice."
+        "bankAccount": "Select the bank account to be used for this invoice.",
+        "taxWithholding": "Select the tax withholding to be applied to this invoice."
       }
     },
     "table": {
