@@ -11,10 +11,10 @@ import {
   CommandItem,
   CommandList
 } from '@/components/ui/command';
-import { Input, InputProps } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from './scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from './skeleton';
 
@@ -37,7 +37,6 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
           flagComponent={FlagComponent}
           countrySelectComponent={CountrySelect}
           inputComponent={InputComponent}
-          //@ts-ignore
           onChange={(value) => onChange?.(value)}
           {...props}
         />
@@ -49,7 +48,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
 });
 PhoneInput.displayName = 'PhoneInput';
 
-const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
+const InputComponent = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
   ({ className, ...props }, ref) => (
     <Input className={cn('rounded-e-lg rounded-s-none', className)} {...props} ref={ref} />
   )
@@ -75,33 +74,30 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
   );
 
   return (
-    <Popover>
+    <Popover modal={true}>
       <PopoverTrigger asChild>
         <Button
           type="button"
           variant={'outline'}
-          className={cn('flex gap-1 rounded-e-none rounded-s-lg h-10')}
+          className={cn('flex gap-1 rounded-e-none rounded-s-lg')}
           disabled={disabled}>
           <FlagComponent country={value} countryName={value} />
           <ChevronsUpDown
-            className={cn('-mr-2 h-4 w-4 opacity-50', disabled ? 'hidden' : 'opacity-100')}
+            className={cn('h-4 w-4 opacity-50', disabled ? 'hidden' : 'opacity-100')}
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-5" align="start">
+      <PopoverContent align="start" className="w-[300px] p-0">
         <Command>
+          <CommandInput placeholder={tCommon('phone-input.search') + '...'} />
           <CommandList>
             <ScrollArea className="h-72">
-              <CommandInput placeholder={tCommon('phone-input.search') + '...'} />
               <CommandEmpty>{tCommon('phone-input.not_found')}</CommandEmpty>
               <CommandGroup>
                 {options
                   .filter((x) => x.value)
                   .map((option) => (
-                    <CommandItem
-                      className="gap-2"
-                      key={option.value}
-                      onSelect={() => handleSelect(option.value)}>
+                    <CommandItem key={option.value} onSelect={() => handleSelect(option.value)}>
                       <span className="w-1/3 text-start">
                         <FlagComponent country={option.value} countryName={option.label} />
                       </span>
@@ -132,7 +128,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
 
   return (
-    <span className="bg-foreground/20 flex h-4 w-6 overflow-hidden rounded-sm">
+    <span className="bg-foreground/20 flex h-5 w-7 overflow-hidden rounded-sm [&_svg]:w-full [&_svg]:h-full [&_svg]:object-cover">
       {Flag && <Flag title={countryName} />}
     </span>
   );

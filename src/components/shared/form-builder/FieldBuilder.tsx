@@ -24,6 +24,7 @@ import { Editor } from '@/components/shared/editor/blocks/editor-x/editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import MultipleSelector from '@/components/ui/multi-select';
 import { MultipleFilesUploader } from './MultipleFilesUploader';
+import { PhoneInput } from '@/components/ui/phone-input';
 
 interface FieldBuilderProps {
   field?: Field<any>;
@@ -35,7 +36,6 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
   switch (field?.variant) {
     case 'text':
     case 'email':
-    case 'tel':
     case 'url':
       return (
         <Input
@@ -50,6 +50,19 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           onChange={(event) => {
             field?.props?.onChange?.(event.target.value);
           }}
+        />
+      );
+    case 'tel':
+      return (
+        <PhoneInput
+          {...field.props}
+          className={cn(
+            field?.className,
+            field.error && 'border-destructive focus-visible:ring-destructive'
+          )}
+          value={field?.props?.value}
+          onChange={(value) => field?.props?.onChange?.(value)}
+          placeholder={field?.placeholder}
         />
       );
     case 'number':
