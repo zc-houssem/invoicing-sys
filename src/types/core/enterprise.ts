@@ -59,7 +59,7 @@ export interface ResponseInterlocutorDto extends DatabaseEntity {
   lastName: string;
   phone: string;
   email: string;
-  enterprises?: ResponseEnterpriseInterlocutorDto[];
+  enterpriseInterlocutors?: ResponseEnterpriseInterlocutorDto[];
 }
 
 export interface CreateInterlocutorDto {
@@ -87,6 +87,7 @@ export interface ResponseEnterpriseInterlocutorDto extends DatabaseEntity {
 export interface CreateEnterpriseInterlocutorDto {
   interlocutor?: CreateInterlocutorDto;
   interlocutorId?: number;
+  enterpriseId?: number;
   main: boolean;
   position: string;
 }

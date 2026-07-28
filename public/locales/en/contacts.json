@@ -196,6 +196,18 @@
       "name_required": "First name is required",
       "surname_required": "Last name is required",
       "email_invalid": "Invalid email address"
-    }
+    },
+    "action_remove_success": "Interlocutor successfully removed",
+    "action_remove_failure": "Failed to remove interlocutor",
+    "action_add_success": "Interlocutor successfully added",
+    "action_add_failure": "Failed to add interlocutor",
+    "action_edit_success": "Interlocutor successfully updated",
+    "action_edit_failure": "Failed to update interlocutor",
+    "action_disassociate_success": "Interlocutor successfully disassociated",
+    "action_disassociate_failure": "Failed to disassociate interlocutor",
+    "delete_prompt": "Are you sure you want to delete the interlocutor",
+    "delete_dialog_description": "This action is irreversible and will permanently delete this interlocutor.",
+    "disassociate_prompt": "Are you sure you want to disassociate the interlocutor",
+    "disassociate_dialog_description": "This interlocutor will no longer be associated with this enterprise."
   }
 }

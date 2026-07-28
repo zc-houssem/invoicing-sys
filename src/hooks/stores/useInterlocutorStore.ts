@@ -4,8 +4,9 @@ import { CreateInterlocutorDto, UpdateInterlocutorDto, ResponseInterlocutorDto }
 
 interface InterlocutorData {
   response?: ResponseInterlocutorDto;
-  createDto: CreateInterlocutorDto;
-  updateDto?: UpdateInterlocutorDto;
+  enterpriseInterlocutorId?: number;
+  createDto: CreateInterlocutorDto & { position?: string; associateExisting?: boolean; interlocutorId?: number };
+  updateDto?: UpdateInterlocutorDto & { position?: string };
   errors?: Record<string, any>;
 }
 
@@ -19,7 +20,9 @@ const initialState: InterlocutorData = {
     firstName: '',
     lastName: '',
     email: '',
-    phone: ''
+    phone: '',
+    position: '',
+    associateExisting: false
   }
 };
 

@@ -4,7 +4,10 @@ import { useSheet } from '@/components/shared/Sheets';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { InterlocutorUpdateForm } from '../form/InterlocutorUpdateForm';
 
-export const useInterlocutorUpdateSheet = (resetInterlocutor?: () => void) => {
+export const useInterlocutorUpdateSheet = (
+  resetInterlocutor?: () => void,
+  enterpriseId?: number
+) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
   const store = useInterlocutorStore();
@@ -26,6 +29,7 @@ export const useInterlocutorUpdateSheet = (resetInterlocutor?: () => void) => {
         {store.response?.id && (
           <InterlocutorUpdateForm
             interlocutorId={store.response.id}
+            enterpriseId={enterpriseId}
             onSuccess={() => {
               closeUpdateInterlocutorSheet();
             }}

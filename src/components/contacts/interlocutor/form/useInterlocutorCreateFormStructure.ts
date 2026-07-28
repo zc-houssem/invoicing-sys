@@ -5,20 +5,78 @@ import {
   FieldVariant,
   SelectFieldProps,
   TextFieldProps,
-  TelFieldProps
+  TelFieldProps,
+  CheckboxFieldProps
 } from '@/components/shared/form-builder/types';
 import { SOCIAL_TITLE } from '@/api';
 import { InterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
 
 interface UseInterlocutorCreateFormStructureProps {
   store: InterlocutorStore;
+  enterpriseId?: number;
 }
 
 export const useInterlocutorCreateFormStructure = ({
-  store
+  store,
+  enterpriseId
 }: UseInterlocutorCreateFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
   const { t: tSocial } = useTranslation('social-title');
+
+  const { data: existingInterlocutors } = useQuery({
+    queryKey: ['all-interlocutors'],
+    queryFn: () => api.core.interlocutor.findAll({}),
+    enabled: !!enterpriseId && !!store.createDto.associateExisting
+  });
+
+  const associateExistingField: Field<CheckboxFieldProps> = {
+    id: 'associate-existing',
+    variant: FieldVariant.CHECKBOX,
+    description: tContact('interlocutor.form.associateExisting', 'Associer un interlocuteur existant'),
+    props: {
+      checked: store.createDto.associateExisting || false,
+      onCheckedChange: (checked: boolean | string) => {
+        store.setNested('createDto.associateExisting', !!checked);
+      }
+    }
+  };
+
+  const existingInterlocutorField: Field<SelectFieldProps> = {
+    id: 'existing-interlocutor',
+    label: tContact('interlocutor.form.existingInterlocutor', 'Interlocuteur'),
+    variant: FieldVariant.SELECT,
+    error: store.errors?.interlocutorId?.[0],
+    props: {
+      value: store.createDto.interlocutorId?.toString() || '',
+      onValueChange: (value: string) => {
+        store.setNested('createDto.interlocutorId', parseInt(value));
+        store.setNested?.('errors.interlocutorId', undefined);
+      },
+      options:
+        existingInterlocutors?.map((i) => ({
+          label: `${i.firstName} ${i.lastName} (${i.email || ''})`,
+          value: i.id.toString()
+        })) || []
+    }
+  };
+
+  const positionField: Field<TextFieldProps> = {
+    id: 'interlocutor-position',
+    label: tContact('interlocutor.form.position', 'Fonction / Position'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.position', "La position de l'interlocuteur dans l'entreprise"),
+    placeholder: tContact('interlocutor.form.placeholders.position', 'ex: Directeur Général'),
+    error: store.errors?.position?.[0],
+    props: {
+      value: store.createDto.position || '',
+      onChange: (value: string) => {
+        store.setNested('createDto.position', value);
+        store.setNested?.('errors.position', undefined);
+      }
+    }
+  };
 
   const socialTitleField: Field<SelectFieldProps> = {
     id: 'interlocutor-title',
@@ -104,26 +162,33 @@ export const useInterlocutorCreateFormStructure = ({
     }
   };
 
+  let rows = [];
+  if (enterpriseId) {
+    rows.push({ fields: [associateExistingField] });
+    if (store.createDto.associateExisting) {
+      rows.push({ fields: [existingInterlocutorField] });
+      rows.push({ fields: [positionField] });
+    } else {
+      rows.push({ fields: [socialTitleField] });
+      rows.push({ fields: [firstNameField, lastNameField] });
+      rows.push({ fields: [emailField] });
+      rows.push({ fields: [phoneField] });
+      rows.push({ fields: [positionField] });
+    }
+  } else {
+    rows.push({ fields: [socialTitleField] });
+    rows.push({ fields: [firstNameField, lastNameField] });
+    rows.push({ fields: [emailField] });
+    rows.push({ fields: [phoneField] });
+  }
+
   const interlocutorInformation: FormStructure = {
     title: {
       value: tContact('interlocutor.detailmenu.title')
     },
     fieldsets: [
       {
-        rows: [
-          {
-            fields: [socialTitleField]
-          },
-          {
-            fields: [firstNameField, lastNameField]
-          },
-          {
-            fields: [emailField]
-          },
-          {
-            fields: [phoneField]
-          }
-        ]
+        rows
       }
     ]
   };

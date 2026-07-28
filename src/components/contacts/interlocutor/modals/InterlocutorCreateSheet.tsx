@@ -6,7 +6,8 @@ import { Spinner } from '@/components/shared';
 import { InterlocutorCreateForm } from '../form/InterlocutorCreateForm';
 
 export const useInterlocutorCreateSheet = (
-  resetInterlocutor?: () => void
+  resetInterlocutor?: () => void,
+  enterpriseId?: number
 ) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
@@ -26,6 +27,7 @@ export const useInterlocutorCreateSheet = (
     children: (
       <div className="h-full py-4">
         <InterlocutorCreateForm
+          enterpriseId={enterpriseId}
           onSuccess={() => {
             closeCreateInterlocutorSheet();
           }}

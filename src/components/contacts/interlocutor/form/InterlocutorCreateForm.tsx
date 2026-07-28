@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
-import { CreateInterlocutorDto } from '@/types';
+import { CreateInterlocutorDto, CreateEnterpriseInterlocutorDto } from '@/types';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { createInterlocutorValidationSchema } from '@/types/validations/interlocutor.validation';
@@ -17,22 +17,25 @@ interface InterlocutorCreateFormProps {
   className?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
+  enterpriseId?: number;
 }
 
 export const InterlocutorCreateForm = ({
   className,
   onSuccess,
-  onCancel
+  onCancel,
+  enterpriseId
 }: InterlocutorCreateFormProps) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
   const interlocutorStore = useInterlocutorStore();
   const { interlocutorInformation } = useInterlocutorCreateFormStructure({
-    store: interlocutorStore
+    store: interlocutorStore,
+    enterpriseId
   });
   const queryClient = useQueryClient();
 
-  const { mutate: createInterlocutor, isPending } = useMutation({
+  const { mutate: createInterlocutor, isPending: isCreateInterlocutorPending } = useMutation({
     mutationFn: (data: CreateInterlocutorDto) => api.core.interlocutor.create(data),
     onSuccess: () => {
       toast.success(tContacts('interlocutor.action_add_success'));
@@ -45,19 +48,66 @@ export const InterlocutorCreateForm = ({
     }
   });
 
+  const { mutate: createEnterpriseInterlocutor, isPending: isCreateEnterpriseInterlocutorPending } = useMutation({
+    mutationFn: (data: CreateEnterpriseInterlocutorDto) => api.core.enterpriseInterlocutor.create(data),
+    onSuccess: () => {
+      toast.success(tContacts('interlocutor.action_add_success'));
+      queryClient.invalidateQueries({ queryKey: ['interlocutors'] });
+      interlocutorStore.reset();
+      onSuccess?.();
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage('contacts', error, tContacts('interlocutor.action_add_failure')));
+    }
+  });
+
+  const isPending = isCreateInterlocutorPending || isCreateEnterpriseInterlocutorPending;
+
   const handleSubmit = () => {
-    const result = createInterlocutorValidationSchema.safeParse(interlocutorStore.createDto);
-    if (!result.success) {
-      interlocutorStore.setNested('errors', result.error.flatten().fieldErrors);
-      toast.error(tCommon('errors.validation'));
-      return;
+    if (!interlocutorStore.createDto.associateExisting) {
+      const result = createInterlocutorValidationSchema.safeParse(interlocutorStore.createDto);
+      if (!result.success) {
+        interlocutorStore.setNested('errors', result.error.flatten().fieldErrors);
+        toast.error(tCommon('errors.validation'));
+        return;
+      }
+    } else {
+      if (!interlocutorStore.createDto.interlocutorId) {
+        interlocutorStore.setNested('errors', { interlocutorId: [tCommon('errors.required')] });
+        toast.error(tCommon('errors.validation'));
+        return;
+      }
     }
 
-    const payload: CreateInterlocutorDto = {
-      ...interlocutorStore.createDto
-    };
+    if (enterpriseId) {
+      const payload: CreateEnterpriseInterlocutorDto = {
+        enterpriseId,
+        position: interlocutorStore.createDto.position || '',
+        main: false,
+      };
 
-    createInterlocutor(payload);
+      if (interlocutorStore.createDto.associateExisting) {
+        payload.interlocutorId = interlocutorStore.createDto.interlocutorId;
+      } else {
+        payload.interlocutor = {
+          title: interlocutorStore.createDto.title,
+          firstName: interlocutorStore.createDto.firstName,
+          lastName: interlocutorStore.createDto.lastName,
+          email: interlocutorStore.createDto.email,
+          phone: interlocutorStore.createDto.phone,
+        };
+      }
+      createEnterpriseInterlocutor(payload);
+    } else {
+      const payload: CreateInterlocutorDto = {
+        title: interlocutorStore.createDto.title,
+        firstName: interlocutorStore.createDto.firstName,
+        lastName: interlocutorStore.createDto.lastName,
+        email: interlocutorStore.createDto.email,
+        phone: interlocutorStore.createDto.phone,
+      };
+      createInterlocutor(payload);
+    }
   };
 
   return (

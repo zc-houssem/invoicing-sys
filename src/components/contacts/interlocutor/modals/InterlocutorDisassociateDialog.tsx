@@ -31,7 +31,7 @@ export const useInterlocutorDisassociateDialog = (
         <div className="flex gap-2 justify-end">
           <Button
             onClick={() => {
-              disassociateInterlocutor?.(interlocutorStore.id);
+              disassociateInterlocutor?.(interlocutorStore.enterpriseInterlocutorId);
               closeDisassociateInterlocutorDialog();
             }}>
             {tCommon('commands.confirm')}

@@ -12,10 +12,12 @@ import { InterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 
 interface UseInterlocutorUpdateFormStructureProps {
   store: InterlocutorStore;
+  enterpriseId?: number;
 }
 
 export const useInterlocutorUpdateFormStructure = ({
-  store
+  store,
+  enterpriseId
 }: UseInterlocutorUpdateFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
   const { t: tSocial } = useTranslation('social-title');
@@ -104,26 +106,38 @@ export const useInterlocutorUpdateFormStructure = ({
     }
   };
 
+  const positionField: Field<TextFieldProps> = {
+    id: 'interlocutor-position',
+    label: tContact('interlocutor.form.position', 'Fonction / Position'),
+    variant: FieldVariant.TEXT,
+    description: tContact('interlocutor.form.descriptions.position', "La position de l'interlocuteur dans l'entreprise"),
+    placeholder: tContact('interlocutor.form.placeholders.position', 'ex: Directeur Général'),
+    error: store.errors?.position?.[0],
+    props: {
+      value: store.updateDto?.position || '',
+      onChange: (value: string) => {
+        store.setNested('updateDto.position', value);
+        store.setNested?.('errors.position', undefined);
+      }
+    }
+  };
+
+  let rows = [];
+  rows.push({ fields: [socialTitleField] });
+  rows.push({ fields: [firstNameField, lastNameField] });
+  rows.push({ fields: [emailField] });
+  rows.push({ fields: [phoneField] });
+  if (enterpriseId) {
+    rows.push({ fields: [positionField] });
+  }
+
   const interlocutorInformation: FormStructure = {
     title: {
       value: tContact('interlocutor.detailmenu.title')
     },
     fieldsets: [
       {
-        rows: [
-          {
-            fields: [socialTitleField]
-          },
-          {
-            fields: [firstNameField, lastNameField]
-          },
-          {
-            fields: [emailField]
-          },
-          {
-            fields: [phoneField]
-          }
-        ]
+        rows
       }
     ]
   };

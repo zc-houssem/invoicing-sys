@@ -196,6 +196,18 @@
       "name_required": "Le prénom est requis",
       "surname_required": "Le nom est requis",
       "email_invalid": "Adresse email invalide"
-    }
+    },
+    "action_remove_success": "Interlocuteur supprimé avec succès",
+    "action_remove_failure": "Échec de la suppression de l'interlocuteur",
+    "action_add_success": "Interlocuteur ajouté avec succès",
+    "action_add_failure": "Échec de l'ajout de l'interlocuteur",
+    "action_edit_success": "Interlocuteur mis à jour avec succès",
+    "action_edit_failure": "Échec de la mise à jour de l'interlocuteur",
+    "action_disassociate_success": "Interlocuteur dissocié avec succès",
+    "action_disassociate_failure": "Échec de la dissociation de l'interlocuteur",
+    "delete_prompt": "Voulez-vous vraiment supprimer l'interlocuteur",
+    "delete_dialog_description": "Cette action est irréversible et supprimera définitivement cet interlocuteur.",
+    "disassociate_prompt": "Voulez-vous vraiment dissocier l'interlocuteur",
+    "disassociate_dialog_description": "Cet interlocuteur ne sera plus associé à cette entreprise."
   }
 }

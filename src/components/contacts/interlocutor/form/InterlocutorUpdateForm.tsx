@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api';
-import { UpdateInterlocutorDto } from '@/types';
+import { UpdateInterlocutorDto, UpdateEnterpriseInterlocutorDto } from '@/types';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { updateInterlocutorValidationSchema } from '@/types/validations/interlocutor.validation';
@@ -18,20 +18,23 @@ interface InterlocutorUpdateFormProps {
   interlocutorId: number;
   onSuccess?: () => void;
   onCancel?: () => void;
+  enterpriseId?: number;
 }
 
 export const InterlocutorUpdateForm = ({
   className,
   interlocutorId,
   onSuccess,
-  onCancel
+  onCancel,
+  enterpriseId
 }: InterlocutorUpdateFormProps) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
-  const { interlocutorInformation } = useInterlocutorUpdateFormStructure({
-    store: useInterlocutorStore()
-  });
   const store = useInterlocutorStore();
+  const { interlocutorInformation } = useInterlocutorUpdateFormStructure({
+    store,
+    enterpriseId
+  });
   const queryClient = useQueryClient();
 
   const { isPending: isFetchPending } = useQuery({
@@ -40,22 +43,23 @@ export const InterlocutorUpdateForm = ({
     enabled: !!interlocutorId
   });
 
-  const { mutate: updateInterlocutor, isPending } = useMutation({
-    mutationFn: (data: UpdateInterlocutorDto) => api.core.interlocutor.update(interlocutorId, data),
-    onSuccess: () => {
-      toast.success(tContacts('interlocutor.action_edit_success'));
-      queryClient.invalidateQueries({ queryKey: ['interlocutors'] });
-      store.reset();
-      onSuccess?.();
-    },
-    onError: (error) => {
-      toast.error(
-        getErrorMessage('contacts', error, tContacts('interlocutor.action_edit_failure'))
-      );
-    }
+  const { mutateAsync: updateInterlocutorAsync, isPending: isUpdateInterlocutorPending } =
+    useMutation({
+      mutationFn: (data: UpdateInterlocutorDto) =>
+        api.core.interlocutor.update(interlocutorId, data)
+    });
+
+  const {
+    mutateAsync: updateEnterpriseInterlocutorAsync,
+    isPending: isUpdateEnterpriseInterlocutorPending
+  } = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateEnterpriseInterlocutorDto }) =>
+      api.core.enterpriseInterlocutor.update(id, data)
   });
 
-  const handleSubmit = () => {
+  const isPending = isUpdateInterlocutorPending || isUpdateEnterpriseInterlocutorPending;
+
+  const handleSubmit = async () => {
     const result = updateInterlocutorValidationSchema.safeParse(store.updateDto);
     if (!result.success) {
       store.setNested('errors', result.error.flatten().fieldErrors);
@@ -64,10 +68,32 @@ export const InterlocutorUpdateForm = ({
     }
 
     const payload: UpdateInterlocutorDto = {
-      ...store.updateDto
+      title: store.updateDto?.title,
+      firstName: store.updateDto?.firstName,
+      lastName: store.updateDto?.lastName,
+      email: store.updateDto?.email,
+      phone: store.updateDto?.phone
     };
 
-    updateInterlocutor(payload);
+    try {
+      await updateInterlocutorAsync(payload);
+
+      if (enterpriseId && store.enterpriseInterlocutorId !== undefined) {
+        await updateEnterpriseInterlocutorAsync({
+          id: store.enterpriseInterlocutorId,
+          data: { position: store.updateDto?.position || '' }
+        });
+      }
+
+      toast.success(tContacts('interlocutor.action_edit_success'));
+      queryClient.invalidateQueries({ queryKey: ['interlocutors'] });
+      store.reset();
+      onSuccess?.();
+    } catch (error: any) {
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('interlocutor.action_edit_failure'))
+      );
+    }
   };
 
   return (

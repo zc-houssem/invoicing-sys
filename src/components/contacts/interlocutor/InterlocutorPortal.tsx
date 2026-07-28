@@ -14,6 +14,12 @@ import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
+import { useInterlocutorDeleteDialog } from './modals/InterlocutorDeleteDialog';
+import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassociateDialog';
+import { Unlink } from 'lucide-react';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/errors';
+import { useMutation } from '@tanstack/react-query';
 
 interface InterlocutorPortalProps {
   className?: string;
@@ -98,6 +104,56 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     return interlocutorsResp?.data || [];
   }, [interlocutorsResp]);
 
+  const { mutate: removeInterlocutor, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => api.core.interlocutor.remove(id),
+    onSuccess: () => {
+      if (interlocutors?.length == 1 && page > 1) setPage(page - 1);
+      toast.success(tContacts('interlocutor.action_remove_success'));
+      refetchInterlocutors();
+      interlocutorStore.reset();
+    },
+    onError: (error) => {
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('interlocutor.action_remove_failure'))
+      );
+    }
+  });
+
+  const { mutate: disassociateInterlocutor, isPending: isDisassociatePending } = useMutation({
+    mutationFn: (id: number) => api.core.enterpriseInterlocutor.remove(id),
+    onSuccess: () => {
+      toast.success(tContacts('interlocutor.action_disassociate_success'));
+      refetchInterlocutors();
+    },
+    onError: (error) => {
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('interlocutor.action_disassociate_failure'))
+      );
+    }
+  });
+
+  const { deleteInterlocutorDialog, openDeleteInterlocutorDialog } =
+    useInterlocutorDeleteDialog(
+      `${interlocutorStore?.response?.firstName || ''} ${interlocutorStore?.response?.lastName || ''}`,
+      () => {
+        if (interlocutorStore?.response?.id) {
+          removeInterlocutor(interlocutorStore.response.id);
+        }
+      },
+      isDeletePending
+    );
+
+  const { disassociateInterlocutorDialog, openDisassociateInterlocutorDialog } =
+    useInterlocutorDisassociateDialog(
+      `${interlocutorStore?.response?.firstName || ''} ${interlocutorStore?.response?.lastName || ''}`,
+      (id?: number) => {
+        if (id) {
+          disassociateInterlocutor(id);
+        }
+      },
+      isDisassociatePending
+    );
+
   const context: DataTableConfig<ResponseInterlocutorDto> = {
     singularName: tContacts('interlocutor.singular'),
     pluralName: tContacts('interlocutor.plural'),
@@ -110,12 +166,24 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     },
     updateCallback: (entity: ResponseInterlocutorDto) => {
       interlocutorStore.set('response', entity);
+      
+      let position = '';
+      let enterpriseInterlocutorId = undefined;
+      
+      if (enterpriseId) {
+        const ei = entity.enterpriseInterlocutors?.find((e: any) => e.enterpriseId === enterpriseId);
+        enterpriseInterlocutorId = ei?.id;
+        position = ei?.position || '';
+      }
+      
+      interlocutorStore.set('enterpriseInterlocutorId', enterpriseInterlocutorId);
       interlocutorStore.set('updateDto', {
         title: entity.title,
         firstName: entity.firstName,
         lastName: entity.lastName,
         phone: entity.phone,
-        email: entity.email
+        email: entity.email,
+        position
       });
       openUpdateInterlocutorSheet();
     },
@@ -128,18 +196,38 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    deleteCallback: (entity: ResponseInterlocutorDto) => {
+      interlocutorStore.set('response', entity);
+      openDeleteInterlocutorDialog();
+    },
+    additionalActions: enterpriseId ? {
+      0: [
+        {
+          actionLabel: tCommon('commands.unassociate'),
+          actionIcon: <Unlink className="size-4" />,
+          actionCallback: (entity: ResponseInterlocutorDto) => {
+            const ei = entity.enterpriseInterlocutors?.find((e: any) => e.enterpriseId === enterpriseId);
+            if (ei?.id) {
+              interlocutorStore.set('response', entity);
+              interlocutorStore.set('enterpriseInterlocutorId', ei.id);
+              openDisassociateInterlocutorDialog();
+            }
+          }
+        }
+      ]
+    } : undefined
   };
 
   const { createInterlocutorSheet, openCreateInterlocutorSheet, closeCreateInterlocutorSheet } =
-    useInterlocutorCreateSheet(() => interlocutorStore.reset());
+    useInterlocutorCreateSheet(() => interlocutorStore.reset(), enterpriseId);
 
   const { updateInterlocutorSheet, openUpdateInterlocutorSheet, closeUpdateInterlocutorSheet } =
-    useInterlocutorUpdateSheet(() => interlocutorStore.reset());
+    useInterlocutorUpdateSheet(() => interlocutorStore.reset(), enterpriseId);
 
   const columns = useInterlocutorColumns(context, enterpriseId);
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting;
+  const isPending = isFetchPending || isDeletePending || isDisassociatePending || paging || resizing || searching || sorting;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
@@ -153,6 +241,8 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
       />
       {createInterlocutorSheet}
       {updateInterlocutorSheet}
+      {deleteInterlocutorDialog}
+      {disassociateInterlocutorDialog}
     </div>
   );
 };
