@@ -41,12 +41,13 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
         { title: tCommon('menu.contacts.title'), href: '/contacts' },
         { title: tCommon('menu.contacts.subs.interlocutors') }
       ]);
+      
+      return () => {
+        clearIntro?.();
+        clearRoutes?.();
+      };
     }
-    return () => {
-      clearIntro?.();
-      clearRoutes?.();
-    };
-  }, [router.locale]);
+  }, [router.locale, enterpriseId]);
 
   const interlocutorStore = useInterlocutorStore();
 

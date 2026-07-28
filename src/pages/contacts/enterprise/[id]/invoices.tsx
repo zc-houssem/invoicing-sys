@@ -8,7 +8,7 @@ export default function Page() {
 
   return (
     <EnterpriseDetails enterpriseId={Number(id)}>
-      <InvoicePortal />
+      <InvoicePortal enterpriseId={Number(id)} />
     </EnterpriseDetails>
   );
 }

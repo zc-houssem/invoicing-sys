@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRouter } from 'next/router';
 import { EnterpriseDetails } from '@/components/contacts/enterprise/EnterpriseDetails';
 import { EnterpriseOverview } from '@/components/contacts/enterprise/details/EnterpriseOverview';

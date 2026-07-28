@@ -16,25 +16,29 @@ import { useQuotationDeleteDialog } from './modals/QuotationDeleteDialog';
 
 interface QuotationPortalProps {
   className?: string;
+  enterpriseId?: number;
 }
 
-export const QuotationPortal = ({ className }: QuotationPortalProps) => {
+export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProps) => {
   const router = useRouter();
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setIntro?.(
-      'Selling Quotations',
-      'Here you can manage your selling quotations, which will be used for sales and invoicing.'
-    );
-    setRoutes?.([{ title: 'Selling' }, { title: 'Quotation' }]);
-    return () => {
-      clearIntro?.();
-      clearRoutes?.();
-    };
-  }, [router.locale]);
+    if (!enterpriseId) {
+      setIntro?.(
+        'Selling Quotations',
+        'Here you can manage your selling quotations, which will be used for sales and invoicing.'
+      );
+      setRoutes?.([{ title: 'Selling' }, { title: 'Quotation' }]);
+
+      return () => {
+        clearIntro?.();
+        clearRoutes?.();
+      };
+    }
+  }, [router.locale, enterpriseId]);
 
   const quotationStore = useQuotationStore();
 
@@ -73,7 +77,8 @@ export const QuotationPortal = ({ className }: QuotationPortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor'].join(',')
+        join: ['enterprise', 'interlocutor'].join(','),
+        filter: enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : undefined
       })
   });
 

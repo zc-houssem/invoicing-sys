@@ -2,7 +2,6 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Info, Hourglass, File, FileText, Wallet, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Separator } from '@/components/ui/separator';
 import SidebarNav from '@/components/sidebar-nav';
 import { Spinner } from '@/components/shared';
 import { useQuery } from '@tanstack/react-query';
@@ -92,7 +91,7 @@ export const EnterpriseDetails = ({
         <aside className="flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-[7] overflow-hidden">
+        <div className="flex flex-col flex-7 overflow-hidden">
           {!isEnterprisePending ? (
             children
           ) : (
