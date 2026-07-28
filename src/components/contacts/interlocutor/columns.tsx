@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 
 export const useInterlocutorColumns = (
-  context: DataTableConfig<ResponseInterlocutorDto>
+  context: DataTableConfig<ResponseInterlocutorDto>,
+  enterpriseId?: number
 ): ColumnDef<ResponseInterlocutorDto>[] => {
   const { t } = useTranslation('contacts');
   const { t: tCommon } = useTranslation('common');
@@ -96,7 +97,36 @@ export const useInterlocutorColumns = (
       ),
       enableSorting: true,
       enableHiding: true
-    },
+    }
+  ];
+
+  if (enterpriseId) {
+    columns.push({
+      accessorKey: t('interlocutor.table.columns.position', 'Position'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('interlocutor.table.columns.position', 'Position')}
+          attribute={'position'}
+        />
+      ),
+      cell: ({ row }) => {
+        // Find the enterprise entry
+        const entry =
+          (row.original as any).firmsToInterlocutor?.find((e: any) => e.firmId === enterpriseId) ||
+          (row.original as any).enterprises?.find((e: any) => e.enterpriseId === enterpriseId) ||
+          (row.original as any).enterpriseInterlocutors?.find(
+            (e: any) => e.enterpriseId === enterpriseId
+          );
+        return <div>{entry?.position || '-'}</div>;
+      },
+      enableSorting: false,
+      enableHiding: true
+    });
+  }
+
+  columns.push(
     {
       accessorKey: t('interlocutor.table.columns.createdAt'),
       header: ({ column }) => (
@@ -139,7 +169,7 @@ export const useInterlocutorColumns = (
         </div>
       )
     }
-  ];
+  );
 
   return columns;
 };

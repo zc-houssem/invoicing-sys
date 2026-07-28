@@ -8,8 +8,9 @@ const findPaginated = async ({
   sort,
   search = '',
   filter = '',
-  join = ''
-}: QueryParams): Promise<Paginated<ResponseInterlocutorDto>> => {
+  join = '',
+  enterpriseId
+}: QueryParams & { enterpriseId?: number }): Promise<Paginated<ResponseInterlocutorDto>> => {
   const params: { [key: string]: string | undefined } = {
     page,
     limit,
@@ -20,7 +21,8 @@ const findPaginated = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<Paginated<ResponseInterlocutorDto>>(`/interlocutor/list`, {
+  const url = enterpriseId ? `/interlocutor/enterprise/${enterpriseId}/list` : `/interlocutor/list`;
+  const response = await axios.get<Paginated<ResponseInterlocutorDto>>(url, {
     params
   });
 

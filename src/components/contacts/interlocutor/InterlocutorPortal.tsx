@@ -87,7 +87,9 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
         page: debouncedPage.toString(),
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
-        search: debouncedSearchTerm
+        search: debouncedSearchTerm,
+        join: enterpriseId ? 'enterpriseInterlocutors' : '',
+        enterpriseId
       })
   });
 
@@ -134,7 +136,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
   const { updateInterlocutorSheet, openUpdateInterlocutorSheet, closeUpdateInterlocutorSheet } =
     useInterlocutorUpdateSheet(() => interlocutorStore.reset());
 
-  const columns = useInterlocutorColumns(context);
+  const columns = useInterlocutorColumns(context, enterpriseId);
 
   const isPending = isFetchPending || paging || resizing || searching || sorting;
 
