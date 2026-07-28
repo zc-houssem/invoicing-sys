@@ -1,18 +1,14 @@
 import { BookUser } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSheet } from '@/components/shared/Sheets';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/shared';
-import { InterlocutorContactInformation } from '../form/InterlocutorContactInformation';
+import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
+import { InterlocutorUpdateForm } from '../form/InterlocutorUpdateForm';
 
-export const useInterlocutorUpdateSheet = (
-  firmId?: number,
-  updateInterlocutor?: () => void,
-  isUpdatePending?: boolean,
-  resetInterlocutor?: () => void
-) => {
+export const useInterlocutorUpdateSheet = (resetInterlocutor?: () => void) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
+  const store = useInterlocutorStore();
+
   const {
     SheetFragment: updateInterlocutorSheet,
     openSheet: openUpdateInterlocutorSheet,
@@ -20,33 +16,27 @@ export const useInterlocutorUpdateSheet = (
   } = useSheet({
     title: (
       <div className="flex items-center gap-2">
-        <BookUser />
-        {tContacts('interlocutor.update')}
+        <BookUser className="w-5 h-5 text-gray-500" />
+        {tContacts('interlocutor.update_dialog_title')}
       </div>
     ),
     description: tContacts('interlocutor.update_dialog_description'),
     children: (
-      <div>
-        <InterlocutorContactInformation className="my-4" />
-        <div className="flex gap-2 justify-end">
-          <Button
-            onClick={() => {
-              updateInterlocutor?.();
-            }}>
-            {tCommon('commands.save')}
-            <Spinner show={isUpdatePending} />
-          </Button>
-          <Button
-            variant={'secondary'}
-            onClick={() => {
+      <div className="h-full py-4">
+        {store.response?.id && (
+          <InterlocutorUpdateForm
+            interlocutorId={store.response.id}
+            onSuccess={() => {
               closeUpdateInterlocutorSheet();
-            }}>
-            {tCommon('commands.cancel')}
-          </Button>
-        </div>
+            }}
+            onCancel={() => {
+              closeUpdateInterlocutorSheet();
+            }}
+          />
+        )}
       </div>
     ),
-    className: 'min-w-[25vw]',
+    className: 'min-w-[40vw]',
     onToggle: resetInterlocutor
   });
 

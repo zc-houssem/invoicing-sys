@@ -1,11 +1,10 @@
-import { Interlocutor, ResponseInterlocutorDto } from '@/types';
-import { Badge } from '@/components/ui/badge';
+import { ResponseInterlocutorDto } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { transformDateTime } from '@/utils/date.utils';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
+import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 
 export const useInterlocutorColumns = (
   context: DataTableConfig<ResponseInterlocutorDto>
@@ -108,7 +107,10 @@ export const useInterlocutorColumns = (
           attribute={'createdAt'}
         />
       ),
-      cell: ({ row }) => <div>{transformDateTime(row.original?.createdAt || '')}</div>,
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.createdAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
       enableSorting: true,
       enableHiding: true
     },
@@ -122,7 +124,10 @@ export const useInterlocutorColumns = (
           attribute={'updatedAt'}
         />
       ),
-      cell: ({ row }) => <div>{transformDateTime(row.original?.updatedAt || '')}</div>,
+      cell: ({ row }) => {
+        const date = new Date(row?.original?.updatedAt);
+        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+      },
       enableSorting: true,
       enableHiding: true
     },

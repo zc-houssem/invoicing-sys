@@ -1,4 +1,9 @@
 {
+  "404": {
+    "go_back": "Retourner au tableau de bord",
+    "note1": "Quelque chose manque...",
+    "note2": "Désolé, nous ne trouvons pas cette page. Vous trouverez plein de choses à explorer sur la page d'accueil."
+  },
   "menu": {
     "dashboard": {
       "title": "Tableau de bord",
@@ -8,8 +13,10 @@
       "title": "Contacts",
       "subs": {
         "enterprises": "Entreprises",
-        "interlocutors": "Interlocuteurs"
-      }
+        "interlocutors": "Interlocuteurs",
+        "addresses": "Mes adresses"
+      },
+      "description": "Gérez vos contacts"
     },
     "selling": {
       "title": "Ventes",
@@ -56,11 +63,6 @@
         "system": "Système"
       }
     }
-  },
-  "404": {
-    "go_back": "Retourner au tableau de bord",
-    "note1": "Quelque chose manque...",
-    "note2": "Désolé, nous ne trouvons pas cette page. Vous trouverez plein de choses à explorer sur la page d'accueil."
   },
   "general": {
     "more": "plus",
@@ -213,5 +215,11 @@
       "asc": "Croissant",
       "desc": "Décroissant"
     }
+  },
+  "submenu": {
+    "enterprises": "Entreprises"
+  },
+  "errors": {
+    "validation": "Erreur de validation. Veuillez vérifier les champs."
   }
 }

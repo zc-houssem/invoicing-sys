@@ -1,4 +1,9 @@
 {
+  "404": {
+    "go_back": "Go Back to Dashboard",
+    "note1": "Something is missing...",
+    "note2": "Sorry, we can't find this page. You'll find plenty of things to explore on the homepage."
+  },
   "menu": {
     "dashboard": {
       "title": "Dashboard",
@@ -8,8 +13,10 @@
       "title": "Contacts",
       "subs": {
         "enterprises": "Enterprises",
-        "interlocutors": "Interlocutors"
-      }
+        "interlocutors": "Interlocutors",
+        "addresses": "My Addresses"
+      },
+      "description": "Manage your contacts"
     },
     "buying": {
       "title": "Buying",
@@ -56,11 +63,6 @@
         "system": "System"
       }
     }
-  },
-  "404": {
-    "go_back": "Go Back to Dashboard",
-    "note1": "Something is missing...",
-    "note2": "Sorry, we can't find this page. You'll find plenty of things to explore on the homepage."
   },
   "general": {
     "more": "more",
@@ -216,5 +218,11 @@
       "asc": "Ascending",
       "desc": "Descending"
     }
+  },
+  "submenu": {
+    "enterprises": "Enterprises"
+  },
+  "errors": {
+    "validation": "Validation error. Please check the fields."
   }
 }

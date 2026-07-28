@@ -76,6 +76,40 @@
       "invoices": "Invoices",
       "payments": "Payments",
       "chronological": "Chronological"
+    },
+    "action_remove_success": "Enterprise successfully removed",
+    "action_remove_failure": "Failed to remove enterprise",
+    "singular": "Enterprise",
+    "new": "New Enterprise",
+    "action_add_success": "Enterprise successfully added",
+    "action_add_failure": "Failed to add enterprise",
+    "edit": "Edit Enterprise",
+    "action_edit_success": "Enterprise successfully updated",
+    "action_edit_failure": "Failed to update enterprise",
+    "details": {
+      "general_information": "General Information",
+      "name": "Name",
+      "phone": "Phone",
+      "website": "Website",
+      "tax_id": "Tax ID",
+      "type": "Type",
+      "particular": "Particular",
+      "company": "Company",
+      "activity": "Activity",
+      "financial_information": "Financial Information",
+      "currency": "Currency",
+      "payment_condition": "Payment Condition",
+      "invoicing_address": "Invoicing Address",
+      "delivery_address": "Delivery Address",
+      "notes": "Notes"
+    },
+    "attributes": {
+      "activity": "Activity",
+      "currency": "Currency"
+    },
+    "empty_cells": {
+      "activity": "No activity",
+      "currency": "No currency"
     }
   },
   "address": {
@@ -104,6 +138,11 @@
   "interlocutor": {
     "singular": "Interlocutor",
     "plural": "Interlocutors",
+    "new": "New Interlocutor",
+    "create_dialog_title": "Create Interlocutor",
+    "create_dialog_description": "Create a new interlocutor by filling out the details below.",
+    "update_dialog_title": "Update Interlocutor",
+    "update_dialog_description": "Update the interlocutor details below.",
     "form": {
       "socialTitle": "Social Title",
       "firstName": "First Name",
@@ -151,6 +190,11 @@
       "overview": "Overview",
       "quotations": "Quotations",
       "invoices": "Invoices"
+    },
+    "validation": {
+      "name_required": "First name is required",
+      "surname_required": "Last name is required",
+      "email_invalid": "Invalid email address"
     }
   }
 }

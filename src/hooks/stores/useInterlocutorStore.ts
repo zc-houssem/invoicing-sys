@@ -1,58 +1,28 @@
-import { create } from 'zustand';
-import { Interlocutor } from '@/types';
+import _ from 'lodash';
+import { BaseActions, createBaseStore } from './useBaseStore';
+import { CreateInterlocutorDto, UpdateInterlocutorDto, ResponseInterlocutorDto } from '@/types';
 
 interface InterlocutorData {
-  id?: number;
-  title?: string;
-  name?: string;
-  surname?: string;
-  email?: string;
-  phone?: string;
-  position?: string;
+  response?: ResponseInterlocutorDto;
+  createDto: CreateInterlocutorDto;
+  updateDto?: UpdateInterlocutorDto;
+  errors?: Record<string, any>;
 }
 
-export interface InterlocutorStore extends InterlocutorData {
-  set: (name: keyof InterlocutorData, value: any) => void;
-  setInterlocutor: (interlocutor: Interlocutor, firmId?: number) => void;
-  reset: () => void;
-}
+interface IInterlocutorStore extends InterlocutorData {}
+
+export interface InterlocutorStore extends IInterlocutorStore, BaseActions<IInterlocutorStore> {}
 
 const initialState: InterlocutorData = {
-  id: undefined,
-  title: '',
-  name: '',
-  surname: '',
-  email: '',
-  phone: '',
-  position: ''
+  createDto: {
+    title: '' as any,
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: ''
+  }
 };
 
-export const useInterlocutorStore = create<InterlocutorStore>((set) => ({
-  ...initialState,
-
-  set: (name: keyof InterlocutorData, value: any) => {
-    set((state) => ({
-      ...state,
-      [name]: value
-    }));
-  },
-
-  setInterlocutor: (interlocutor: Interlocutor, firmId?: number) => {
-    const entry = firmId
-      ? interlocutor.firmsToInterlocutor?.find((e) => e.firmId === firmId)
-      : undefined;
-    set({
-      id: interlocutor.id,
-      title: interlocutor.title,
-      name: interlocutor.name,
-      surname: interlocutor.surname,
-      email: interlocutor.email,
-      phone: interlocutor.phone,
-      position: entry?.position || ''
-    });
-  },
-
-  reset: () => {
-    set({ ...initialState });
-  }
-}));
+export const useInterlocutorStore = createBaseStore<IInterlocutorStore>({
+  ...initialState
+});

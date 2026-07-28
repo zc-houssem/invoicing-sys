@@ -1,17 +1,12 @@
 import { api } from '@/api';
-import { CreateInterlocutorDto, Interlocutor, UpdateInterlocutorDto, ResponseInterlocutorDto } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { ResponseInterlocutorDto } from '@/types';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useRouter } from 'next/router';
-import { toast } from 'sonner';
-import { getErrorMessage } from '@/utils/errors';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useTranslation } from 'react-i18next';
-import { useInterlocutorDeleteDialog } from './modals/InterlocutorDeleteDialog';
-import { useInterlocutorCreateOrAssociateSheet } from './modals/InterlocutorCreateOrAssociateSheet';
+import { useInterlocutorCreateSheet } from './modals/InterlocutorCreateSheet';
 import { useInterlocutorUpdateSheet } from './modals/InterlocutorUpdateSheet';
-import { useInterlocutorPromoteDialog } from './modals/InterlocutorPromoteDialog';
-import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassociateDialog';
 import { useInterlocutorColumns } from './columns';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
@@ -19,14 +14,13 @@ import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
-import { ArrowUp, Trash2, Unlink } from 'lucide-react';
 
 interface InterlocutorPortalProps {
   className?: string;
-  firmId?: number;
+  enterpriseId?: number;
 }
 
-export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProps) => {
+export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPortalProps) => {
   const router = useRouter();
 
   const { t: tCommon } = useTranslation('common');
@@ -35,14 +29,17 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
   const { setRoutes, clearRoutes } = useBreadcrumb();
 
   React.useEffect(() => {
-    if (!firmId) {
+    if (!enterpriseId) {
       setIntro?.(
-        tCommon('routes.contacts.interlocutor.title'),
-        tCommon('routes.contacts.interlocutor.description')
+        tContacts('interlocutor.plural'),
+        tContacts('interlocutor.detailmenu.description').replace(
+          '{{interlocutorName}}',
+          'les interlocuteurs'
+        )
       );
       setRoutes?.([
-        { title: tCommon('menu.contacts'), href: '/contacts' },
-        { title: tCommon('submenu.interlocutors') }
+        { title: tCommon('menu.contacts.title'), href: '/contacts' },
+        { title: tCommon('menu.contacts.subs.interlocutors') }
       ]);
     }
     return () => {
@@ -83,7 +80,7 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
       debouncedSearchTerm,
-      firmId
+      enterpriseId
     ],
     queryFn: () =>
       api.core.interlocutor.findPaginated({
@@ -104,8 +101,21 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     inspectCallback: (entity: ResponseInterlocutorDto) => {
       router.push(`/contacts/interlocutor/${entity.id}`);
     },
-    createCallback: () => {},
-    updateCallback: () => {},
+    createCallback: () => {
+      interlocutorStore.reset();
+      openCreateInterlocutorSheet();
+    },
+    updateCallback: (entity: ResponseInterlocutorDto) => {
+      interlocutorStore.set('response', entity);
+      interlocutorStore.set('updateDto', {
+        title: entity.title,
+        firstName: entity.firstName,
+        lastName: entity.lastName,
+        phone: entity.phone,
+        email: entity.email
+      });
+      openUpdateInterlocutorSheet();
+    },
     searchTerm,
     setSearchTerm,
     page,
@@ -115,11 +125,14 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
     setSize,
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
-    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
-    targetEntity: (interlocutor: ResponseInterlocutorDto) => {
-      interlocutorStore.setInterlocutor(interlocutor as any, firmId);
-    }
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey })
   };
+
+  const { createInterlocutorSheet, openCreateInterlocutorSheet, closeCreateInterlocutorSheet } =
+    useInterlocutorCreateSheet(() => interlocutorStore.reset());
+
+  const { updateInterlocutorSheet, openUpdateInterlocutorSheet, closeUpdateInterlocutorSheet } =
+    useInterlocutorUpdateSheet(() => interlocutorStore.reset());
 
   const columns = useInterlocutorColumns(context);
 
@@ -135,6 +148,8 @@ export const InterlocutorPortal = ({ className, firmId }: InterlocutorPortalProp
         context={context}
         isPending={isPending}
       />
+      {createInterlocutorSheet}
+      {updateInterlocutorSheet}
     </div>
   );
 };

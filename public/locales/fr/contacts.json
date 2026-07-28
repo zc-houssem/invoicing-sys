@@ -76,6 +76,40 @@
       "invoices": "Factures",
       "payments": "Paiements",
       "chronological": "Chronologique"
+    },
+    "action_remove_success": "Entreprise supprimée avec succès",
+    "action_remove_failure": "Échec de la suppression de l'entreprise",
+    "singular": "Entreprise",
+    "new": "Nouvelle entreprise",
+    "action_add_success": "Entreprise ajoutée avec succès",
+    "action_add_failure": "Échec de l'ajout de l'entreprise",
+    "edit": "Modifier l'entreprise",
+    "action_edit_success": "Entreprise mise à jour avec succès",
+    "action_edit_failure": "Échec de la mise à jour de l'entreprise",
+    "details": {
+      "general_information": "Informations générales",
+      "name": "Nom",
+      "phone": "Téléphone",
+      "website": "Site Web",
+      "tax_id": "Numéro d'identification fiscale",
+      "type": "Type",
+      "particular": "Particulier",
+      "company": "Entreprise",
+      "activity": "Activité",
+      "financial_information": "Informations financières",
+      "currency": "Devise",
+      "payment_condition": "Condition de paiement",
+      "invoicing_address": "Adresse de facturation",
+      "delivery_address": "Adresse de livraison",
+      "notes": "Notes"
+    },
+    "attributes": {
+      "activity": "Activité",
+      "currency": "Devise"
+    },
+    "empty_cells": {
+      "activity": "Aucune activité",
+      "currency": "Aucune devise"
     }
   },
   "address": {
@@ -104,6 +138,11 @@
   "interlocutor": {
     "singular": "Interlocuteur",
     "plural": "Interlocuteurs",
+    "new": "Nouvel Interlocuteur",
+    "create_dialog_title": "Créer un interlocuteur",
+    "create_dialog_description": "Créez un nouvel interlocuteur en remplissant les détails ci-dessous.",
+    "update_dialog_title": "Modifier l'interlocuteur",
+    "update_dialog_description": "Modifiez les détails de l'interlocuteur ci-dessous.",
     "form": {
       "socialTitle": "Civilité",
       "firstName": "Prénom",
@@ -151,6 +190,11 @@
       "overview": "Aperçu",
       "quotations": "Devis",
       "invoices": "Factures"
+    },
+    "validation": {
+      "name_required": "Le prénom est requis",
+      "surname_required": "Le nom est requis",
+      "email_invalid": "Adresse email invalide"
     }
   }
 }

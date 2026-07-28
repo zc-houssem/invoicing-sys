@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { EnterpriseDetails } from '@/components/contacts/enterprise/EnterpriseDetails';
-import { ComingSoon } from '@/components/shared';
+import { InterlocutorPortal } from '@/components/contacts/interlocutor/InterlocutorPortal';
 
 export default function Page() {
   const router = useRouter();
@@ -8,7 +8,7 @@ export default function Page() {
 
   return (
     <EnterpriseDetails enterpriseId={Number(id)}>
-      <ComingSoon />
+      <InterlocutorPortal enterpriseId={Number(id)} />
     </EnterpriseDetails>
   );
 }
