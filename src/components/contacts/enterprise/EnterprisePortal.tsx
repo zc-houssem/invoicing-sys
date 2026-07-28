@@ -79,7 +79,8 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        filter: 'system||$eq||false'
+        filter: 'system||$eq||false',
+        join: 'activity'
       })
   });
 
@@ -131,6 +132,16 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     targetEntity: (enterprise: ResponseEnterpriseDto) => {
       enterpriseStore.setNested('response.id', enterprise.id);
       enterpriseStore.setNested('response.name', enterprise.name);
+    },
+    exportConfig: {
+      enabled: true,
+      filename: 'enterprises',
+      fetchAll: () =>
+        api.core.enterprise.findAll({
+          sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+          search: debouncedSearchTerm,
+          filter: 'system||$eq||false'
+        })
     }
   };
 

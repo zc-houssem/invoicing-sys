@@ -16,14 +16,18 @@ import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { ResponseRefParamDto } from '@/types';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { defineStepper } from '@/components/ui/stepper';
+import { useIntro } from '@/context/IntroContext';
+import { useUI } from '@/context/UIContext';
+import { useFooter } from '@/context/FooterContext';
 import { useEnterpriseCreateFormStructure } from './useEnterpriseCreateFormStructure';
+import { useEnterpriseAddressFormStructure } from './useEnterpriseAddressFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { CreateEnterpriseDto } from '@/types/core/enterprise';
 import { Separator } from '@/components/ui/separator';
+import { defineStepper } from '@/components/ui/stepper';
 
 const steps = [
   {
@@ -39,7 +43,7 @@ const steps = [
   {
     id: '3',
     title: 'Address information',
-    description: 'Invoicing and shipping addresses for the enterprise.'
+    description: 'Address information for the enterprise.'
   },
   {
     id: '4',
@@ -49,6 +53,40 @@ const steps = [
 ];
 
 const { Stepper } = defineStepper(...steps);
+
+const StepperFooterControls = ({ methods, isPending, handleSubmit, submitLabel }: any) => {
+  const { setContent } = useFooter();
+  React.useEffect(() => {
+    setContent?.(
+      <div className="flex items-center justify-end gap-2 px-4 py-1">
+        {!methods.isFirst && (
+          <Button variant="outline" size="sm" onClick={methods.prev} disabled={isPending}>
+            <div className="flex items-center gap-2">
+              <ChevronLeft /> <span>Previous</span>
+            </div>
+          </Button>
+        )}
+        <Button
+          size="sm"
+          onClick={methods.isLast ? handleSubmit : methods.next}
+          disabled={isPending}>
+          {methods.isLast ? (
+            <div className="flex items-center gap-2">
+              <span>{submitLabel}</span>
+              <Save />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>Next</span>
+              <ChevronRight />
+            </div>
+          )}
+        </Button>
+      </div>
+    );
+  }, [methods.current.id, isPending, handleSubmit, submitLabel, setContent]);
+  return null;
+};
 
 interface EnterpriseFormProps {
   className?: string;
@@ -73,57 +111,74 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const { interlocutors, isInterlocutorsPending } = useInterlocutors();
 
-  const {
-    enterpriseInformation,
-    addressInformation,
-    interlocutorInformation,
-    additionalInformation
-  } = useEnterpriseCreateFormStructure({
+  const { enterpriseInformation, interlocutorInformation, additionalInformation } =
+    useEnterpriseCreateFormStructure({
+      store: enterpriseStore,
+      activityOptions: mapToSelectOptions({
+        data: activities,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
+          `${tCommon(label)} ${entity?.extras?.symbol}`
+      }),
+      paymentConditionOptions: mapToSelectOptions({
+        data: paymentConditions,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      }),
+      interlocutorOptions: mapToSelectOptions({
+        data: interlocutors,
+        labelKey: 'firstName',
+        valueKey: 'id',
+        labelKeyTransformer: (firstName, entity) => `${firstName} ${entity.lastName}`
+      })
+    });
+
+  const { addressInformation } = useEnterpriseAddressFormStructure({
     store: enterpriseStore,
-    activityOptions: mapToSelectOptions({
-      data: activities,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
-        `${tCommon(label)} ${entity?.extras?.symbol}`
-    }),
-    paymentConditionOptions: mapToSelectOptions({
-      data: paymentConditions,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
     countryOptions: mapToSelectOptions({
       data: countries,
       labelKey: 'label',
       valueKey: 'id',
       labelKeyTransformer: (label) => tCountry(label)
-    }),
-    interlocutorOptions: mapToSelectOptions({
-      data: interlocutors,
-      labelKey: 'firstName',
-      valueKey: 'id',
-      labelKeyTransformer: (firstName, entity) => `${firstName} ${entity.lastName}`
     })
   });
 
   //set page title in the breadcrumb
   const { setRoutes } = useBreadcrumb();
+  const { setIntro, clearIntro } = useIntro();
+  const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
+  const { setContent } = useFooter();
+
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.contacts'), href: '/contacts' },
+      { title: tCommon('menu.contacts.title'), href: '/contacts' },
       { title: tCommon('submenu.enterprises'), href: '/contacts/enterprises' },
       { title: tContact('enterprise.new') }
     ]);
+
+    setIntro?.(tContact('enterprise.new'), 'Fill out the form below to create a new enterprise.');
+    setEnableMainOverflow?.(true);
+
     return () => {
       setRoutes?.([]);
+      clearIntro?.();
+      clearEnableMainOverflow?.();
+      setContent?.(null);
       enterpriseStore.reset();
     };
-  }, [router.locale]);
+  }, [router.locale, tContact, tCommon]);
 
   //create enterprise mutator
   const { mutate: createEnterprise, isPending: isCreatePending } = useMutation({
@@ -138,33 +193,33 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
     }
   });
 
-  const validateStep = (stepId: string) => {
-    if (stepId === '1') {
-      const result = createEnterpriseValidationSchema.safeParse(enterpriseStore.createDto);
-      if (!result.success) {
-        enterpriseStore.set('errors', result.error.flatten().fieldErrors);
-      }
-      return result.success;
-    }
-
-    if (stepId === '2') {
-    }
-
-    if (stepId === '3') {
-    }
-
-    if (stepId === '4') {
-    }
-    return true;
-  };
-
   //create handler
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
+    const result = createEnterpriseValidationSchema.safeParse(enterpriseStore.createDto);
+    if (!result.success) {
+      enterpriseStore.set('errors', result.error.flatten().fieldErrors);
+      toast.error(tCommon('errors.validation'));
+      return;
+    }
+
+    const payload = { ...enterpriseStore.createDto };
+
+    const cleanAddress = (address: any) => {
+      if (!address) return undefined;
+      if (!address.address && !address.region && !address.zipcode && !address.countryId) {
+        return undefined;
+      }
+      return address;
+    };
+
+    payload.deliveryAddress = cleanAddress(payload.deliveryAddress);
+    payload.invoicingAddress = cleanAddress(payload.invoicingAddress);
+
     createEnterprise({
-      ...enterpriseStore.createDto,
-      notes: JSON.stringify(enterpriseStore.createDto.notes)
+      ...payload,
+      notes: JSON.stringify(payload.notes)
     });
-  };
+  }, [enterpriseStore, createEnterprise, tCommon]);
 
   const loading =
     isFetchActivitiesPending ||
@@ -176,111 +231,47 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   //component representation
   if (loading) return <Spinner className="h-screen" show={loading} />;
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden m-5 lg:mx-10', className)}>
-      <div className={cn('flex flex-col flex-1 overflow-hidden')}>
-        <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
-          {({ methods }) => {
-            const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
+    <div className={cn('flex flex-col flex-1', className)}>
+      <Stepper.Provider className="flex flex-col flex-1" variant="horizontal">
+        {({ methods }) => {
+          const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
 
-            const handleNext = () => {
-              const valid = validateStep(methods.current.id);
-              if (!valid) return;
+          return (
+            <>
+              <Stepper.Navigation className="shrink">
+                {methods.all.map((step, index) => (
+                  <Stepper.Step key={step.id} of={step.id} onClick={() => methods.goTo(step.id)}>
+                    <Stepper.Title>{step.title}</Stepper.Title>
+                  </Stepper.Step>
+                ))}
+              </Stepper.Navigation>
 
-              if (methods.isLast) {
-                handleSubmit();
-              } else {
-                methods.next();
-              }
-            };
-
-            return (
-              <>
-                {/* Navigation */}
-                <Stepper.Navigation className="shrink">
-                  {methods.all.map((step, index) => (
-                    <Stepper.Step
-                      key={step.id}
-                      of={step.id}
-                      onClick={() => {
-                        if (index > activeIndex) {
-                          let valid = true;
-                          for (let i = 0; i <= activeIndex; i++) {
-                            valid = valid && validateStep(steps[i].id);
-                          }
-                          if (!valid) return;
-                        }
-                        methods.goTo(step.id);
-                      }}
-                      disabled={false}>
-                      <Stepper.Title>{step.title}</Stepper.Title>
-                    </Stepper.Step>
-                  ))}
-                </Stepper.Navigation>
-
-                {/* Content */}
-                {false ? (
-                  <Spinner />
-                ) : (
-                  <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
-                    <div className="flex flex-col flex-1 overflow-auto p-2">
-                      <div className="space-y-1 mb-4">
-                        <h1 className="text-lg font-bold">{methods.current.title}</h1>
-                        <p className="text-xs">{methods.current.description}</p>
-                        <Separator className="mt-2" />
-                      </div>
-                      <div className="my-auto">
-                        {methods.current.id === '1' && (
-                          <FormBuilder structure={enterpriseInformation} />
-                        )}
-                        {methods.current.id === '2' && (
-                          <div>
-                            <FormBuilder structure={interlocutorInformation} />
-                          </div>
-                        )}
-                        {methods.current.id === '3' && (
-                          <div>
-                            <FormBuilder structure={addressInformation} />
-                          </div>
-                        )}
-                        {methods.current.id === '4' && (
-                          <div>
-                            <FormBuilder structure={additionalInformation} />
-                          </div>
-                        )}
-                      </div>
-                    </div>
+              <div className="flex flex-col flex-1 my-4">
+                <div className="flex flex-col flex-1 p-2">
+                  <div className="space-y-1 mb-4">
+                    <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                    <p className="text-xs">{methods.current.description}</p>
                     <Separator className="mt-2" />
                   </div>
-                )}
 
-                {/* Controls */}
-                <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4">
-                  {!methods.isFirst && (
-                    <Button variant="outline" size="sm" onClick={methods.prev} disabled={false}>
-                      <div className="flex items-center gap-2">
-                        <ChevronLeft /> <span>Previous</span>
-                      </div>
-                    </Button>
+                  {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
+                  {methods.current.id === '2' && (
+                    <FormBuilder structure={interlocutorInformation} />
                   )}
-                  <Button size="sm" onClick={handleNext} disabled={false}>
-                    {methods.isLast ? (
-                      <div className="flex items-center gap-2">
-                        <span>Create</span>
-                        <Save />
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span>Next</span>
-                        <ChevronRight />
-                      </div>
-                    )}
-                  </Button>
-                </Stepper.Controls>
-              </>
-            );
-          }}
-        </Stepper.Provider>
-      </div>
+                  {methods.current.id === '3' && <FormBuilder structure={addressInformation} />}
+                  {methods.current.id === '4' && <FormBuilder structure={additionalInformation} />}
+                </div>
+              </div>
+              <StepperFooterControls
+                methods={methods}
+                isPending={isCreatePending}
+                handleSubmit={handleSubmit}
+                submitLabel="Create"
+              />
+            </>
+          );
+        }}
+      </Stepper.Provider>
     </div>
   );
 };

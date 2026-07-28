@@ -64,7 +64,8 @@
       "emptyCells": {
         "phone": "No phone",
         "website": "No website",
-        "taxId": "No tax ID"
+        "taxId": "No tax ID",
+        "activity": "No activity"
       }
     },
     "detailmenu": {

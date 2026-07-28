@@ -15,14 +15,18 @@ import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { ResponseRefParamDto } from '@/types';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { defineStepper } from '@/components/ui/stepper';
+import { useIntro } from '@/context/IntroContext';
+import { useUI } from '@/context/UIContext';
+import { useFooter } from '@/context/FooterContext';
 import { useEnterpriseUpdateFormStructure } from './useEnterpriseUpdateFormStructure';
+import { useEnterpriseAddressFormStructure } from './useEnterpriseAddressFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Separator } from '@/components/ui/separator';
 import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { UpdateEnterpriseDto } from '@/types/core/enterprise';
+import { defineStepper } from '@/components/ui/stepper';
 
 const steps = [
   {
@@ -33,7 +37,7 @@ const steps = [
   {
     id: '2',
     title: 'Address information',
-    description: 'Invoicing and shipping addresses for the enterprise.'
+    description: 'Address information for the enterprise.'
   },
   {
     id: '3',
@@ -43,6 +47,40 @@ const steps = [
 ];
 
 const { Stepper } = defineStepper(...steps);
+
+const StepperFooterControls = ({ methods, isPending, handleSubmit, submitLabel }: any) => {
+  const { setContent } = useFooter();
+  React.useEffect(() => {
+    setContent?.(
+      <div className="flex items-center justify-end gap-2 px-4 py-1">
+        {!methods.isFirst && (
+          <Button variant="outline" size="sm" onClick={methods.prev} disabled={isPending}>
+            <div className="flex items-center gap-2">
+              <ChevronLeft /> <span>Previous</span>
+            </div>
+          </Button>
+        )}
+        <Button
+          size="sm"
+          onClick={methods.isLast ? handleSubmit : methods.next}
+          disabled={isPending}>
+          {methods.isLast ? (
+            <div className="flex items-center gap-2">
+              <span>{submitLabel}</span>
+              <Save />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>Next</span>
+              <ChevronRight />
+            </div>
+          )}
+        </Button>
+      </div>
+    );
+  }, [methods.current.id, isPending, handleSubmit, submitLabel, setContent]);
+  return null;
+};
 
 interface EnterpriseUpdateFormProps {
   enterpriseId: number;
@@ -116,19 +154,7 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
           region: enterprise.invoicingAddress?.region || '',
           zipcode: enterprise.invoicingAddress?.zipcode,
           countryId: enterprise.invoicingAddress?.countryId
-        },
-        interlocutors:
-          (enterprise as any).interlocutors?.map((ei: any) => ({
-            interlocutor: {
-              title: ei.interlocutor?.title || '',
-              firstName: ei.interlocutor?.firstName || '',
-              lastName: ei.interlocutor?.lastName || '',
-              email: ei.interlocutor?.email || '',
-              phone: ei.interlocutor?.phone || ''
-            },
-            main: ei.main ?? false,
-            position: ei.position || ''
-          })) || []
+        }
       });
     }
     return () => {
@@ -136,30 +162,36 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
     };
   }, [enterprise]);
 
-  const {
-    enterpriseInformation,
-    addressInformation,
-    interlocutorInformation,
-    additionalInformation
-  } = useEnterpriseUpdateFormStructure({
+  const { enterpriseInformation, interlocutorInformation, additionalInformation } =
+    useEnterpriseUpdateFormStructure({
+      store: enterpriseStore,
+      activityOptions: mapToSelectOptions({
+        data: activities,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
+          `${tCommon(label)} ${entity?.extras?.symbol}`
+      }),
+      paymentConditionOptions: mapToSelectOptions({
+        data: paymentConditions,
+        labelKey: 'label',
+        valueKey: 'id'
+      }),
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      })
+    });
+
+  const { addressInformation } = useEnterpriseAddressFormStructure({
     store: enterpriseStore,
-    activityOptions: mapToSelectOptions({
-      data: activities,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
-        `${tCommon(label)} ${entity?.extras?.symbol}`
-    }),
-    paymentConditionOptions: mapToSelectOptions({
-      data: paymentConditions,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
     countryOptions: mapToSelectOptions({
       data: countries,
       labelKey: 'label',
@@ -170,16 +202,30 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
 
   //set page title in the breadcrumb
   const { setRoutes } = useBreadcrumb();
+  const { setIntro, clearIntro } = useIntro();
+  const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
+  const { setContent } = useFooter();
+
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.contacts'), href: '/contacts' },
+      { title: tCommon('menu.contacts.title'), href: '/contacts' },
       { title: tCommon('submenu.enterprises'), href: '/contacts/enterprises' },
       { title: enterprise?.name || tContact('enterprise.edit') }
     ]);
+
+    setIntro?.(
+      enterprise?.name || tContact('enterprise.edit'),
+      'Update the information for this enterprise.'
+    );
+    setEnableMainOverflow?.(true);
+
     return () => {
       setRoutes?.([]);
+      clearIntro?.();
+      clearEnableMainOverflow?.();
+      setContent?.(null);
     };
-  }, [router.locale, enterprise?.name]);
+  }, [router.locale, enterprise?.name, tContact, tCommon]);
 
   //update enterprise mutator
   const { mutate: updateEnterprise, isPending: isUpdatePending } = useMutation({
@@ -198,33 +244,36 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
     }
   });
 
-  const validateStep = (stepId: string) => {
-    if (stepId === '1') {
-      const result = updateEnterpriseValidationSchema.safeParse(enterpriseStore.updateDto);
-      if (!result.success) {
-        enterpriseStore.set('errors', result.error.flatten().fieldErrors);
-      }
-      return result.success;
-    }
-
-    if (stepId === '2') {
-    }
-
-    if (stepId === '3') {
-    }
-
-    if (stepId === '4') {
-    }
-    return true;
-  };
-
   //update handler
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
+    const result = updateEnterpriseValidationSchema.safeParse(enterpriseStore.updateDto);
+    if (!result.success) {
+      enterpriseStore.set('errors', result.error.flatten().fieldErrors);
+      toast.error(tCommon('errors.validation'));
+      return;
+    }
+
+    const payload = { ...enterpriseStore.updateDto };
+
+    const cleanAddress = (address: any) => {
+      if (!address) return null;
+      if (!address.address && !address.region && !address.zipcode && !address.countryId) {
+        return null;
+      }
+      return address;
+    };
+
+    payload.deliveryAddress = cleanAddress(payload.deliveryAddress);
+    payload.invoicingAddress = cleanAddress(payload.invoicingAddress);
+
+    // Interlocutors are not updated through this form anymore
+    delete payload.interlocutors;
+
     updateEnterprise({
-      ...enterpriseStore.updateDto,
-      notes: JSON.stringify(enterpriseStore.updateDto?.notes)
+      ...payload,
+      notes: JSON.stringify(payload.notes)
     });
-  };
+  }, [enterpriseStore, updateEnterprise, tCommon]);
 
   const loading =
     isFetchEnterprisePending ||
@@ -236,106 +285,44 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
   //component representation
   if (loading || !enterpriseStore.updateDto) return <Spinner className="h-screen" show={true} />;
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden m-5 lg:mx-10', className)}>
-      <div className={cn('flex flex-col flex-1 overflow-hidden')}>
-        <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
-          {({ methods }) => {
-            const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
+    <div className={cn('flex flex-col flex-1', className)}>
+      <Stepper.Provider className="flex flex-col flex-1" variant="horizontal">
+        {({ methods }) => {
+          const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
 
-            const handleNext = () => {
-              const valid = validateStep(methods.current.id);
-              if (!valid) return;
+          return (
+            <>
+              <Stepper.Navigation className="shrink">
+                {methods.all.map((step, index) => (
+                  <Stepper.Step key={step.id} of={step.id} onClick={() => methods.goTo(step.id)}>
+                    <Stepper.Title>{step.title}</Stepper.Title>
+                  </Stepper.Step>
+                ))}
+              </Stepper.Navigation>
 
-              if (methods.isLast) {
-                handleSubmit();
-              } else {
-                methods.next();
-              }
-            };
-
-            return (
-              <>
-                {/* Navigation */}
-                <Stepper.Navigation className="shrink">
-                  {methods.all.map((step, index) => (
-                    <Stepper.Step
-                      key={step.id}
-                      of={step.id}
-                      onClick={() => {
-                        if (index > activeIndex) {
-                          let valid = true;
-                          for (let i = 0; i <= activeIndex; i++) {
-                            valid = valid && validateStep(steps[i].id);
-                          }
-                          if (!valid) return;
-                        }
-                        methods.goTo(step.id);
-                      }}
-                      disabled={false}>
-                      <Stepper.Title>{step.title}</Stepper.Title>
-                    </Stepper.Step>
-                  ))}
-                </Stepper.Navigation>
-
-                {/* Content */}
-                {false ? (
-                  <Spinner />
-                ) : (
-                  <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
-                    <div className="flex flex-col flex-1 overflow-auto p-2">
-                      <div className="space-y-1 mb-4">
-                        <h1 className="text-lg font-bold">{methods.current.title}</h1>
-                        <p className="text-xs">{methods.current.description}</p>
-                        <Separator className="mt-2" />
-                      </div>
-                      <div className="my-auto">
-                        {methods.current.id === '1' && (
-                          <FormBuilder structure={enterpriseInformation} />
-                        )}
-                        {methods.current.id === '2' && (
-                          <div>
-                            <FormBuilder structure={addressInformation} />
-                          </div>
-                        )}
-                        {methods.current.id === '3' && (
-                          <div>
-                            <FormBuilder structure={additionalInformation} />
-                          </div>
-                        )}
-                      </div>
-                    </div>
+              <div className="flex flex-col flex-1 my-4">
+                <div className="flex flex-col flex-1 p-2">
+                  <div className="space-y-1 mb-4">
+                    <h1 className="text-lg font-bold">{methods.current.title}</h1>
+                    <p className="text-xs">{methods.current.description}</p>
                     <Separator className="mt-2" />
                   </div>
-                )}
 
-                {/* Controls */}
-                <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4">
-                  {!methods.isFirst && (
-                    <Button variant="outline" size="sm" onClick={methods.prev} disabled={false}>
-                      <div className="flex items-center gap-2">
-                        <ChevronLeft /> <span>Previous</span>
-                      </div>
-                    </Button>
-                  )}
-                  <Button size="sm" onClick={handleNext} disabled={isUpdatePending}>
-                    {methods.isLast ? (
-                      <div className="flex items-center gap-2">
-                        <span>Save</span>
-                        <Save />
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span>Next</span>
-                        <ChevronRight />
-                      </div>
-                    )}
-                  </Button>
-                </Stepper.Controls>
-              </>
-            );
-          }}
-        </Stepper.Provider>
-      </div>
+                  {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
+                  {methods.current.id === '2' && <FormBuilder structure={addressInformation} />}
+                  {methods.current.id === '3' && <FormBuilder structure={additionalInformation} />}
+                </div>
+              </div>
+              <StepperFooterControls
+                methods={methods}
+                isPending={isUpdatePending}
+                handleSubmit={handleSubmit}
+                submitLabel="Save"
+              />
+            </>
+          );
+        }}
+      </Stepper.Provider>
     </div>
   );
 };

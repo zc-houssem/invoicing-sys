@@ -17,6 +17,10 @@ export const useEnterpriseColumns = (
   return [
     {
       accessorKey: t('enterprise.table.columns.name'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.name'),
+        exportKey: 'name'
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -31,6 +35,10 @@ export const useEnterpriseColumns = (
     },
     {
       accessorKey: t('enterprise.table.columns.phone'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.phone'),
+        exportKey: 'phone'
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -53,6 +61,10 @@ export const useEnterpriseColumns = (
     },
     {
       accessorKey: t('enterprise.table.columns.website'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.website'),
+        exportKey: 'website'
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -83,6 +95,10 @@ export const useEnterpriseColumns = (
     },
     {
       accessorKey: t('enterprise.table.columns.taxId'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.taxId'),
+        exportKey: 'taxId'
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -103,6 +119,13 @@ export const useEnterpriseColumns = (
     },
     {
       accessorKey: t('enterprise.table.columns.particular.noun'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.particular.noun'),
+        exportValue: (row) =>
+          row.particular
+            ? t('enterprise.table.columns.particular.positive')
+            : t('enterprise.table.columns.particular.negative')
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -123,28 +146,30 @@ export const useEnterpriseColumns = (
       enableSorting: true,
       enableHiding: true
     },
-    // {
-    //   accessorKey: 'activity',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader
-    //       column={column}
-    //       context={context}
-    //       title={t('enterprise.attributes.activity')}
-    //       attribute={FIRM_FILTER_ATTRIBUTES.ACTIVITY}
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div>
-    //       {row.original?.activity?.label ? (
-    //         row.original?.activity?.label
-    //       ) : (
-    //         <span className="text-zinc-400">{t('enterprise.empty_cells.activity')}</span>
-    //       )}
-    //     </div>
-    //   ),
-    //   enableSorting: true,
-    //   enableHiding: true
-    // },
+    {
+      accessorKey: 'activity',
+      meta: {
+        exportLabel: t('enterprise.table.columns.activity'),
+        exportValue: (row) => row.activity?.label.toLocaleString()
+      },
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('enterprise.attributes.activity')}
+          attribute={'activityId'}
+        />
+      ),
+      cell: ({ row }) => (
+        <div>
+          {row.original?.activity?.label || (
+            <span className="opacity-50">{t('enterprise.table.emptyCells.activity')}</span>
+          )}
+        </div>
+      ),
+      enableSorting: true,
+      enableHiding: true
+    },
     // {
     //   accessorKey: 'currency',
     //   header: ({ column }) => (
@@ -172,6 +197,10 @@ export const useEnterpriseColumns = (
     // },
     {
       accessorKey: t('enterprise.table.columns.createdAt'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.createdAt'),
+        exportValue: (row) => new Date(row.createdAt).toLocaleString()
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -189,6 +218,10 @@ export const useEnterpriseColumns = (
     },
     {
       accessorKey: t('enterprise.table.columns.updatedAt'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.updatedAt'),
+        exportValue: (row) => new Date(row.updatedAt).toLocaleString()
+      },
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -206,6 +239,7 @@ export const useEnterpriseColumns = (
     },
     {
       id: 'actions',
+      meta: { skipExport: true },
       cell: ({ row }) => (
         <div className="flex justify-end">
           <DataTableRowActions row={row} context={context} />
