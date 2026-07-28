@@ -214,6 +214,15 @@
     "order": {
       "asc": "Croissant",
       "desc": "Décroissant"
+    },
+    "export": {
+      "title": "Exporter vers Excel",
+      "description": "Choisissez les données à exporter.",
+      "currentPage": "Page actuelle",
+      "allData": "Toutes les données",
+      "success": "Exportation réussie",
+      "error": "Échec de l'exportation. Veuillez réessayer.",
+      "noData": "Aucune donnée disponible à exporter"
     }
   },
   "submenu": {

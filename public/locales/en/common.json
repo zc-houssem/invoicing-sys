@@ -217,6 +217,15 @@
     "order": {
       "asc": "Ascending",
       "desc": "Descending"
+    },
+    "export": {
+      "title": "Export to Excel",
+      "description": "Choose which data you want to export.",
+      "currentPage": "Current page",
+      "allData": "All data",
+      "success": "Export completed successfully",
+      "error": "Export failed. Please try again.",
+      "noData": "No data available to export"
     }
   },
   "submenu": {
