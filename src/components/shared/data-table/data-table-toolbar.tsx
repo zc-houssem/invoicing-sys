@@ -6,13 +6,15 @@ import { DataTableViewOptions } from './data-table-view-options';
 import { Plus } from 'lucide-react';
 import { DataTableConfig } from './types';
 import { useTranslation } from 'react-i18next';
+import { DataTableExportButton } from './data-table-export-button';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  data: TData[];
   context: DataTableConfig<TData>;
 }
 
-export function DataTableToolbar<TData>({ table, context }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table, data, context }: DataTableToolbarProps<TData>) {
   const { t } = useTranslation('common');
   return (
     <div className="flex items-center justify-between gap-2">
@@ -34,6 +36,7 @@ export function DataTableToolbar<TData>({ table, context }: DataTableToolbarProp
         )}
       </div>
       <DataTableViewOptions table={table} />
+      <DataTableExportButton table={table} data={data} context={context} />
       {context.createCallback && (
         <Button size={'icon'} variant={'outline'} onClick={() => context.createCallback?.()}>
           <Plus className="h-4 w-4" />

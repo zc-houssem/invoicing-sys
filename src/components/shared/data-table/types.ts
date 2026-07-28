@@ -5,6 +5,24 @@ interface DataTableRowAdditionalAction<T> {
   isActionVisible?: (entity: T) => boolean;
 }
 
+export interface DataTableExportConfig<T> {
+  enabled: boolean;
+  filename: string;
+  fetchAll?: () => Promise<T[]>;
+}
+
+export interface DataTableColumnMeta<T> {
+  exportLabel?: string;
+  exportKey?: string;
+  exportValue?: (row: T) => unknown;
+  skipExport?: boolean;
+}
+
+declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData, TValue> extends DataTableColumnMeta<TData> {}
+}
+
 export interface DataTableConfig<T> {
   singularName: string;
   pluralName: string;
@@ -30,6 +48,7 @@ export interface DataTableConfig<T> {
   //utility
   targetEntity?: (entity: T) => void;
   invisibleColumns?: string[];
+  exportConfig?: DataTableExportConfig<T>;
 }
 
 export enum DataTableCellVariant {
