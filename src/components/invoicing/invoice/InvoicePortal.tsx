@@ -17,25 +17,29 @@ import { useInvoiceDeleteDialog } from './modals/InvoiceDeleteDialog';
 
 interface InvoicePortalProps {
   className?: string;
+  enterpriseId?: number;
 }
 
-export const InvoicePortal = ({ className }: InvoicePortalProps) => {
+export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) => {
   const router = useRouter();
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setIntro?.(
-      'Selling Invoices',
-      'Here you can manage your selling invoices, which will be used for sales and invoicing.'
-    );
-    setRoutes?.([{ title: 'Selling' }, { title: 'Invoice' }]);
-    return () => {
-      clearIntro?.();
-      clearRoutes?.();
-    };
-  }, [router.locale]);
+    if (!enterpriseId) {
+      setIntro?.(
+        'Selling Invoices',
+        'Here you can manage your selling invoices, which will be used for sales and invoicing.'
+      );
+      setRoutes?.([{ title: 'Selling' }, { title: 'Invoice' }]);
+
+      return () => {
+        clearIntro?.();
+        clearRoutes?.();
+      };
+    }
+  }, [router.locale, enterpriseId]);
 
   const invoiceStore = useInvoiceStore();
 
@@ -74,7 +78,8 @@ export const InvoicePortal = ({ className }: InvoicePortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor'].join(',')
+        join: ['enterprise', 'interlocutor'].join(','),
+        filter: enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : undefined
       })
   });
 

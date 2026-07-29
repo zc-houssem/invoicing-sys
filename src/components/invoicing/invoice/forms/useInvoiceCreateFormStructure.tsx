@@ -18,7 +18,7 @@ import { InvoiceStore } from '@/hooks/stores/useInvoiceStore';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { useTranslation } from 'react-i18next';
 import { InvoiceArticlesField } from './InvoiceArticlesField';
-import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { CurrencyPayload, ResponseRefParamDto, TaxWithholdingPayload } from '@/types';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
 import { Button } from '@/components/ui/button';
@@ -33,6 +33,7 @@ interface useInvoiceCreateFormStructureProps {
   bankAccountOptions: SelectOption[];
   isCreationPending: boolean;
   selectedCurrency?: ResponseRefParamDto<CurrencyPayload>;
+  selectedTaxWithholding?: ResponseRefParamDto<TaxWithholdingPayload>;
   onAttachmentsUpload?: (
     files: File[],
     options: {
@@ -52,6 +53,7 @@ export const useInvoiceCreateFormStructure = ({
   bankAccountOptions,
   isCreationPending,
   selectedCurrency,
+  selectedTaxWithholding,
   onAttachmentsUpload
 }: useInvoiceCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
@@ -294,7 +296,7 @@ export const useInvoiceCreateFormStructure = ({
               ]
             }}
           />
-          <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} />
+          <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} taxWithholding={selectedTaxWithholding} />
         </div>
       )
     }
@@ -421,7 +423,7 @@ export const useInvoiceCreateFormStructure = ({
     id: 'taxWithholding',
     label: t('invoice.form.taxWithholding'),
     variant: FieldVariant.SELECT,
-    required: true,
+    required: false,
     error: store.createDtoErrors.taxWithholdingId?.[0],
     placeholder: t('invoice.form.placeholders.taxWithholding'),
     description: t('invoice.form.descriptions.taxWithholding'),
@@ -430,8 +432,9 @@ export const useInvoiceCreateFormStructure = ({
       value: store.createDto.taxWithholdingId
         ? store.createDto.taxWithholdingId.toString()
         : undefined,
+      nullable: true,
       onValueChange: (value) => {
-        store.setNested('createDto.taxWithholdingId', Number(value));
+        store.setNested('createDto.taxWithholdingId', value ? Number(value) : undefined);
         store.setNested('createDtoErrors.taxWithholdingId', []);
       },
       options: taxWithholdingOptions

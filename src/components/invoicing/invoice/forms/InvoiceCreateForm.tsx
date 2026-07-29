@@ -114,6 +114,14 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     [invoiceStore.createDto.currencyId, currencies]
   );
 
+  const selectedTaxWithholding = React.useMemo(
+    () =>
+      taxWithholdings.find(
+        (t) => t.id === invoiceStore.createDto.taxWithholdingId
+      ) as ResponseRefParamDto<TaxWithholdingPayload>,
+    [invoiceStore.createDto.taxWithholdingId, taxWithholdings]
+  );
+
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
 
   const { mutate: createInvoice, isPending: isCreationPending } = useMutation({
@@ -195,6 +203,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     }),
     isCreationPending,
     selectedCurrency: selectedCurrency,
+    selectedTaxWithholding,
     onAttachmentsUpload: handleAttachmentsUpload
   });
 

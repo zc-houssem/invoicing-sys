@@ -3,7 +3,8 @@ import { Label } from '@/components/ui/label';
 import { useTaxRates } from '@/hooks/content/core/useTaxRates';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import { cn } from '@/lib/utils';
-import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { Checkbox } from '@/components/ui/checkbox';
+import { CurrencyPayload, ResponseRefParamDto, TaxWithholdingPayload } from '@/types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,9 +12,10 @@ interface ArticleResumeProps {
   className?: string;
   currency?: ResponseRefParamDto<CurrencyPayload>;
   includeHeader?: boolean;
+  taxWithholding?: ResponseRefParamDto<TaxWithholdingPayload>;
 }
 
-export function ArticleResume({ className, currency, includeHeader }: ArticleResumeProps) {
+export function ArticleResume({ className, currency, includeHeader, taxWithholding }: ArticleResumeProps) {
   const articleStore = useArticleStore();
   const { t } = useTranslation('invoicing');
 
@@ -80,9 +82,17 @@ export function ArticleResume({ className, currency, includeHeader }: ArticleRes
     }, 0);
   }, [articleStore.articles, taxRates]);
 
+  const [applyTaxWithholdingToHT, setApplyTaxWithholdingToHT] = React.useState(true);
+
+  const taxWithholdingAmount = React.useMemo(() => {
+    if (!taxWithholding || !taxWithholding.extras?.rate) return 0;
+    const base = applyTaxWithholdingToHT ? totalPriceExcludingTax : totalPriceIncludingTax;
+    return base * (taxWithholding.extras.rate / 100);
+  }, [taxWithholding, applyTaxWithholdingToHT, totalPriceExcludingTax, totalPriceIncludingTax]);
+
   const data = React.useMemo(() => {
     if (articleStore.articles.length === 0) return [];
-    return [
+    const items: Array<{label: string; value?: string}> = [
       {
         label: t('article.form.priceExcludingTax'),
         value: totalPriceExcludingTax
@@ -116,7 +126,26 @@ export function ArticleResume({ className, currency, includeHeader }: ArticleRes
           : undefined
       }
     ];
-  }, [totalPriceExcludingTax, discountValue, taxValue, totalPriceIncludingTax, currency, t]);
+
+    if (taxWithholding && taxWithholding.extras?.rate) {
+      items.push({
+        label: `${t('invoice.form.taxWithholding', { defaultValue: 'Tax Withholding' })} (${taxWithholding.extras.rate}%)`,
+        value: taxWithholdingAmount
+          ? `-${taxWithholdingAmount.toFixed(currency?.extras.digitsAfterComma || 2)} ${
+              currency?.extras.symbol || ''
+            }`
+          : undefined
+      });
+      items.push({
+        label: t('article.form.netToPay', { defaultValue: 'Net to Pay' }),
+        value: `${(totalPriceIncludingTax - taxWithholdingAmount).toFixed(currency?.extras.digitsAfterComma || 2)} ${
+          currency?.extras.symbol || ''
+        }`
+      });
+    }
+
+    return items;
+  }, [totalPriceExcludingTax, discountValue, taxValue, totalPriceIncludingTax, currency, t, taxWithholding, taxWithholdingAmount]);
 
   if (isTaxRatesPending) return <Spinner />;
   return (
@@ -132,6 +161,18 @@ export function ArticleResume({ className, currency, includeHeader }: ArticleRes
           </tr>
         ))}
       </table>
+      {taxWithholding && (
+        <div className="flex items-center gap-2 mt-2">
+          <Checkbox
+            id="apply-to-ht"
+            checked={applyTaxWithholdingToHT}
+            onCheckedChange={(checked) => setApplyTaxWithholdingToHT(checked === true)}
+          />
+          <Label htmlFor="apply-to-ht" className="text-xs">
+            {t('article.form.applyTaxWithholdingToHT', { defaultValue: 'Calculate from Price HT' })}
+          </Label>
+        </div>
+      )}
     </div>
   );
 }

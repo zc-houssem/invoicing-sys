@@ -108,18 +108,24 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
   const selectedCurrency = React.useMemo(
     () =>
       currencies.find(
-        (c) => c.id === invoiceStore.updateDto?.currencyId
+        (c) => c.id === workflow?.invoice.currencyId
       ) as ResponseRefParamDto<CurrencyPayload>,
-    [invoiceStore.updateDto?.currencyId, currencies]
+    [workflow?.invoice.currencyId, currencies]
   );
   const { taxWithholdings, isTaxWithholdingsPending } = useTaxWithholdings();
+
+  const selectedTaxWithholding = React.useMemo(
+    () =>
+      taxWithholdings.find(
+        (t) => t.id === invoiceStore.updateDto?.taxWithholdingId
+      ) as ResponseRefParamDto<TaxWithholdingPayload>,
+    [invoiceStore.updateDto?.taxWithholdingId, taxWithholdings]
+  );
 
   const { bankAccounts, isBankAccountsPending, refetchBankAccounts } = useBankAccounts();
 
   React.useEffect(() => {
-    console.log(workflow?.invoice.taxWithholdingId);
     if (workflow && enterprises) {
-      console.log(workflow.invoice);
       invoiceStore.set('response', workflow.invoice);
       invoiceStore.set('updateDto', {
         date: workflow?.invoice.date ? new Date(workflow.invoice.date) : undefined,
@@ -270,6 +276,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
     }),
     isUpdatePending,
     selectedCurrency,
+    selectedTaxWithholding,
     isUpdatable: !!workflow?.isUpdatable,
     onAttachmentsUpload: handleAttachmentsUpload
   });
