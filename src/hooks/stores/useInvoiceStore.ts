@@ -11,6 +11,7 @@ interface InvoiceData {
   updateDtoErrors: Record<string, string[]>;
 
   files: ManipulatedFile[];
+  sequencePreview: string;
 }
 
 interface IInvoiceStore extends InvoiceData {}
@@ -18,6 +19,7 @@ interface IInvoiceStore extends InvoiceData {}
 export interface InvoiceStore extends IInvoiceStore, BaseActions<IInvoiceStore> {}
 
 const initialState: InvoiceData = {
+  sequencePreview: '',
   response: null,
   createDto: {
     direction: 'outgoing',

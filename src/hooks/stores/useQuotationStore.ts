@@ -11,6 +11,7 @@ interface QuotationData {
   updateDtoErrors: Record<string, string[]>;
 
   files: ManipulatedFile[];
+  sequencePreview: string;
 }
 
 interface IQuotationStore extends QuotationData {}
@@ -18,6 +19,7 @@ interface IQuotationStore extends QuotationData {}
 export interface QuotationStore extends IQuotationStore, BaseActions<IQuotationStore> {}
 
 const initialState: QuotationData = {
+  sequencePreview: '',
   response: null,
   createDto: {
     direction: 'outgoing',

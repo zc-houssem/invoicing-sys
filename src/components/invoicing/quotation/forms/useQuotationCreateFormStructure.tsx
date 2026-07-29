@@ -302,6 +302,17 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
+  const sequenceField: Field<TextFieldProps> = {
+    id: 'sequence',
+    label: t('quotation.form.sequence', { defaultValue: 'Sequence' }),
+    variant: FieldVariant.TEXT,
+    required: false,
+    props: {
+      disabled: true,
+      value: store.sequencePreview || 'Loading...'
+    }
+  };
+
   const mainFormStructure: FormStructure = {
     title: {
       value: 'General Information'
@@ -322,7 +333,7 @@ export const useQuotationCreateFormStructure = ({
             fields: [dateField, dueDateField]
           },
           {
-            fields: [objectField]
+            fields: [objectField, sequenceField]
           },
           {
             fields: [enterpriseField, interlocutorField]

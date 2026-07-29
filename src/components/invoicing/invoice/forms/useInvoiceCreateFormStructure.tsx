@@ -296,9 +296,24 @@ export const useInvoiceCreateFormStructure = ({
               ]
             }}
           />
-          <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} taxWithholding={selectedTaxWithholding} />
+          <ArticleResume
+            className="w-full 2xl:w-1/3"
+            currency={selectedCurrency}
+            taxWithholding={selectedTaxWithholding}
+          />
         </div>
       )
+    }
+  };
+
+  const sequenceField: Field<TextFieldProps> = {
+    id: 'sequence',
+    label: t('invoice.form.sequence', { defaultValue: 'Sequence' }),
+    variant: FieldVariant.TEXT,
+    required: false,
+    props: {
+      disabled: true,
+      value: store.sequencePreview || 'Loading...'
     }
   };
 
@@ -322,7 +337,7 @@ export const useInvoiceCreateFormStructure = ({
             fields: [dateField, dueDateField]
           },
           {
-            fields: [objectField]
+            fields: [objectField, sequenceField]
           },
           {
             fields: [enterpriseField, interlocutorField]

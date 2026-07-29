@@ -9,7 +9,7 @@ import { ResponseStorageDto } from '../storage';
 
 export interface ResponseInvoiceDto extends DatabaseEntity {
   id: number;
-  sequential?: string;
+  sequence?: string;
   status: string;
   direction: 'incoming' | 'outgoing';
   date: Date;
@@ -27,6 +27,7 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
   notes?: string;
+  quotationId?: number;
   invoiceArticles: ResponseInvoiceArticleDto[];
   uploads: ResponseInvoiceUploadDto[];
 }
@@ -48,6 +49,7 @@ export interface CreateInvoiceDto {
   taxWithholdingId?: number;
   bankAccountId?: number;
   notes?: string;
+  quotationId?: number;
   invoiceArticles: CreateInvoiceArticleDto[];
   uploads: CreateInvoiceUploadDto[];
 }

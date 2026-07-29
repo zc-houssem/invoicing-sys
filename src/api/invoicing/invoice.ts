@@ -75,6 +75,11 @@ const remove = async (id?: number): Promise<ResponseInvoiceDto> => {
   return response.data;
 };
 
+const fromQuotation = async (id: number): Promise<ResponseInvoiceDto> => {
+  const response = await axios.post(`/_invoice/from-quotation/${id}`);
+  return response.data;
+};
+
 export const invoice = {
   findPaginated,
   findAll,
@@ -82,6 +87,7 @@ export const invoice = {
   create,
   update,
   remove,
+  fromQuotation,
   workflow: {
     findById: findWorkflowById,
     next

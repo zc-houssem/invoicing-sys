@@ -96,6 +96,33 @@ export const useSellingInvoiceColumns = (
       enableHiding: true
     },
     {
+      accessorKey: 'source',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.source', 'Source')}
+          attribute={'quotationId'}
+        />
+      ),
+      cell: ({ row }) => (
+        <div>
+          {row.original.quotationId ? (
+            <a 
+              href={`/selling/quotations/${row.original.quotationId}`}
+              className="text-primary hover:underline"
+            >
+              {t('invoice.table.source.quotation', 'Quotation #')}{row.original.quotationId}
+            </a>
+          ) : (
+            <span className="text-muted-foreground">{t('invoice.table.source.direct', 'Direct')}</span>
+          )}
+        </div>
+      ),
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
       accessorKey: t('invoice.table.columns.enterprise'),
       header: ({ column }) => (
         <DataTableColumnHeader
