@@ -123,9 +123,11 @@
       "unitPrice": "Prix unitaire",
       "priceExcludingTax": "Prix HT",
       "priceIncludingTax": "Prix TTC",
+      "netToPay": "Net à payer",
       "totalTax": "Total taxe",
       "totalDiscount": "Total remise",
       "taxRates": "Taux de taxe",
+      "applyTaxWithholdingToHT": "Calculer la retenue à la source à partir du Prix HT",
       "discountType": {
         "label": "Type de remise",
         "options": {

@@ -123,9 +123,11 @@
       "unitPrice": "Unit price",
       "priceExcludingTax": "Price excluding tax",
       "priceIncludingTax": "Price including tax",
+      "netToPay": "Net to Pay",
       "totalTax": "Total tax",
       "totalDiscount": "Total discount",
       "taxRates": "Tax rates",
+      "applyTaxWithholdingToHT": "Calculate tax withholding from Price HT",
       "discountType": {
         "label": "Discount type",
         "options": {
