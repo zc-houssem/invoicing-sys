@@ -62,7 +62,7 @@ export const InterlocutorUpdateForm = ({
   const handleSubmit = async () => {
     const result = updateInterlocutorValidationSchema.safeParse(store.updateDto);
     if (!result.success) {
-      store.setNested('errors', result.error.flatten().fieldErrors);
+      store.set('errors', result.error.flatten().fieldErrors);
       toast.error(tCommon('errors.validation'));
       return;
     }

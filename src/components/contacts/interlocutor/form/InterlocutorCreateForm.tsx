@@ -67,13 +67,13 @@ export const InterlocutorCreateForm = ({
     if (!interlocutorStore.createDto.associateExisting) {
       const result = createInterlocutorValidationSchema.safeParse(interlocutorStore.createDto);
       if (!result.success) {
-        interlocutorStore.setNested('errors', result.error.flatten().fieldErrors);
+        interlocutorStore.set('errors', result.error.flatten().fieldErrors);
         toast.error(tCommon('errors.validation'));
         return;
       }
     } else {
       if (!interlocutorStore.createDto.interlocutorId) {
-        interlocutorStore.setNested('errors', { interlocutorId: [tCommon('errors.required')] });
+        interlocutorStore.set('errors', { interlocutorId: [tCommon('errors.required')] });
         toast.error(tCommon('errors.validation'));
         return;
       }
