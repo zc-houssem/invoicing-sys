@@ -130,12 +130,21 @@ function EditorUpdateHandler({
 
         if (incomingStateStr !== currentStateStr) {
           const state = editor.parseEditorState(incomingStateStr);
-          if (state && !state.isEmpty()) {
+          if (state) {
             editor.setEditorState(state);
           }
         }
       } catch (error) {
         console.error('Failed to parse editor state:', error);
+      }
+    } else if (editorSerializedState === undefined || editorSerializedState === null) {
+      const emptyStateStr = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
+      const currentEditorState = editor.getEditorState();
+      const currentStateStr = JSON.stringify(currentEditorState.toJSON());
+
+      if (currentStateStr !== emptyStateStr) {
+        const state = editor.parseEditorState(emptyStateStr);
+        editor.setEditorState(state);
       }
     }
   }, [editor, editorSerializedState]);
