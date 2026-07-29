@@ -15,11 +15,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowDownIcon, ArrowUpIcon, Filter } from 'lucide-react';
 import { CaretSortIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { useTranslation } from 'react-i18next';
-import {
-  DataTableColumnFilterOption,
-  DataTableColumnFilterType,
-  DataTableConfig
-} from './types';
+import { DataTableColumnFilterOption, DataTableColumnFilterType, DataTableConfig } from './types';
 import { DataTableColumnStringFilter } from './data-table-column-string-filter';
 import { DataTableColumnSelectFilter } from './data-table-column-select-filter';
 import { DataTableColumnDateRangeFilter } from './data-table-column-date-range-filter';
@@ -53,9 +49,7 @@ export function DataTableColumnHeader<TData, TValue>({
   const resolvedFilterField = filterField ?? meta?.filterField ?? resolvedFilterKey;
   const resolvedFilterOptions = filterOptions ?? meta?.filterOptions;
   const resolvedFilterType =
-    filterType ??
-    meta?.filterType ??
-    (resolvedFilterOptions?.length ? 'options' : undefined);
+    filterType ?? meta?.filterType ?? (resolvedFilterOptions?.length ? 'options' : undefined);
 
   const canFilterOptions =
     resolvedFilterType === 'options' &&

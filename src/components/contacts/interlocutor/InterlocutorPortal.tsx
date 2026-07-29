@@ -13,6 +13,7 @@ import { useIntro } from '@/context/IntroContext';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableConfig } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
 import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { useInterlocutorDeleteDialog } from './modals/InterlocutorDeleteDialog';
 import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassociateDialog';
@@ -72,6 +73,16 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
   const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
+  const [columnFilters, setColumnFilters] = React.useState<Record<string, string>>({});
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<
+    Record<string, string>
+  >(columnFilters, 500);
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString('', debouncedColumnFilters),
+    [debouncedColumnFilters]
+  );
+
   const [deleteDialog, setDeleteDialog] = React.useState(false);
 
   const {
@@ -87,6 +98,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
       debouncedSearchTerm,
+      debouncedColumnFilters,
       enterpriseId
     ],
     queryFn: () =>
@@ -95,6 +107,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
+        filter: filterString,
         join: enterpriseId ? 'enterpriseInterlocutors' : '',
         enterpriseId
       })
@@ -197,6 +210,17 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
     deleteCallback: (entity: ResponseInterlocutorDto) => {
       interlocutorStore.set('response', entity);
       openDeleteInterlocutorDialog();
@@ -227,7 +251,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
 
   const columns = useInterlocutorColumns(context, enterpriseId);
 
-  const isPending = isFetchPending || isDeletePending || isDisassociatePending || paging || resizing || searching || sorting;
+  const isPending = isFetchPending || isDeletePending || isDisassociatePending || paging || resizing || searching || sorting || filtering;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
