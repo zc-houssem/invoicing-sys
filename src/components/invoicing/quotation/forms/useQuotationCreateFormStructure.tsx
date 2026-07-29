@@ -10,7 +10,8 @@ import {
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
-  TextFieldProps
+  TextFieldProps,
+  TextareaFieldProps
 } from '@/components/shared/form-builder/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
@@ -170,10 +171,10 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
-  const generalConditionsField: Field<EditorFieldProps> = {
+  const generalConditionsField: Field<TextareaFieldProps> = {
     id: 'generalConditions',
     label: t('quotation.form.generalConditions'),
-    variant: FieldVariant.EDITOR,
+    variant: FieldVariant.TEXTAREA,
     required: true,
     error: store.createDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
@@ -183,7 +184,8 @@ export const useQuotationCreateFormStructure = ({
       onChange: (value) => {
         store.setNested('createDto.generalConditions', value);
         store.setNested('createDtoErrors.generalConditions', []);
-      }
+      },
+      rows: 10
     }
   };
 

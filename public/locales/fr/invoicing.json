@@ -19,7 +19,8 @@
         "enterprise": "Sélectionnez une entreprise",
         "interlocutor": "Sélectionnez un interlocuteur",
         "currency": "Sélectionnez une devise",
-        "bankAccount": "Sélectionnez un compte bancaire"
+        "bankAccount": "Sélectionnez un compte bancaire",
+        "generalConditions": "Saisissez les conditions générales"
       },
       "descriptions": {
         "date": "Sélectionnez la date du devis.",
@@ -73,7 +74,8 @@
         "interlocutor": "Sélectionnez un interlocuteur",
         "currency": "Sélectionnez une devise",
         "bankAccount": "Sélectionnez un compte bancaire",
-        "taxWithholding": "Sélectionnez une retenue à la source"
+        "taxWithholding": "Sélectionnez une retenue à la source",
+        "generalConditions": "Saisissez les conditions générales"
       },
       "descriptions": {
         "date": "Sélectionnez la date de la facture.",

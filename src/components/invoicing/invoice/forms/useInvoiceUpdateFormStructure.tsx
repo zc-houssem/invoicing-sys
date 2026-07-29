@@ -10,7 +10,8 @@ import {
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
-  TextFieldProps
+  TextFieldProps,
+  TextareaFieldProps
 } from '@/components/shared/form-builder/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { InvoiceStore } from '@/hooks/stores/useInvoiceStore';
@@ -171,10 +172,10 @@ export const useInvoiceUpdateFormStructure = ({
     }
   };
 
-  const generalConditionsField: Field<EditorFieldProps> = {
+  const generalConditionsField: Field<TextareaFieldProps> = {
     id: 'generalConditions',
     label: t('invoice.form.generalConditions'),
-    variant: FieldVariant.EDITOR,
+    variant: FieldVariant.TEXTAREA,
     required: true,
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('invoice.form.placeholders.generalConditions'),
@@ -186,7 +187,8 @@ export const useInvoiceUpdateFormStructure = ({
       onChange: (value) => {
         store.setNested('updateDto.generalConditions', value);
         store.setNested('updateDtoErrors.generalConditions', []);
-      }
+      },
+      rows: 10
     }
   };
 

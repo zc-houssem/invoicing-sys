@@ -19,7 +19,8 @@
         "enterprise": "Select an enterprise",
         "interlocutor": "Select an interlocutor",
         "currency": "Select a currency",
-        "bankAccount": "Select a bank account"
+        "bankAccount": "Select a bank account",
+        "generalConditions": "Enter general conditions"
       },
       "descriptions": {
         "date": "Select the date of the quotation.",
@@ -73,7 +74,8 @@
         "interlocutor": "Select an interlocutor",
         "currency": "Select a currency",
         "bankAccount": "Select a bank account",
-        "taxWithholding": "Select a tax withholding"
+        "taxWithholding": "Select a tax withholding",
+        "generalConditions": "Enter general conditions"
       },
       "descriptions": {
         "date": "Select the date of the invoice.",

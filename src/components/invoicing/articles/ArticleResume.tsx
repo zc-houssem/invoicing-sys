@@ -120,15 +120,15 @@ export function ArticleResume({ className, currency, includeHeader }: ArticleRes
 
   if (isTaxRatesPending) return <Spinner />;
   return (
-    <div className={cn('flex flex-col mt-auto gap-2', className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       {includeHeader && <span className="font-bold text-xl">{t('common.financialResume')}</span>}
       <table className="w-full mt-2">
         {data.map((item, index) => (
           <tr key={index}>
             <td className="text-start">
-              <Label className="text-sm font-thin">{item.label}</Label>
+              <Label className="text-xs font-thin">{item.label}</Label>
             </td>
-            <td className="text-muted-foreground text-end">{item.value}</td>
+            <td className="text-muted-foreground text-end text-xs">{item.value || '-'}</td>
           </tr>
         ))}
       </table>
