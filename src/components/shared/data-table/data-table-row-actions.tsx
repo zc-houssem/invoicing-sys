@@ -27,7 +27,10 @@ export function DataTableRowActions<TData>({ row, context }: DataTableRowActions
   const targetAndTrigger = (callback: (entity: TData) => void) => {
     if (callback) {
       context.targetEntity?.(entity);
-      callback(entity);
+      // Wait for DropdownMenu close animation to finish to release pointer-events lock
+      setTimeout(() => {
+        callback(entity);
+      }, 150);
     }
   };
 
