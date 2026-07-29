@@ -209,7 +209,7 @@ export default function Roles({ className }: RolesProps) {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (role: ResponseRoleDto) => {
-      roleStore.setNested('response', role);
+      roleStore.set('response', role);
       roleStore.set<UpdateRoleDto>('updateDto', {
         label: role.label,
         description: role.description,

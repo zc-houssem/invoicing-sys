@@ -41,6 +41,7 @@ export const parseStringField = (field: string | string[] | number | undefined):
 };
 
 export const setDeepValue = <T>(obj: any, path: string, value: T): any => {
+  if (!path) return value;
   const keys = path.split('.');
   const lastKey = keys.pop();
   const nested = keys.reduce((acc, key) => {

@@ -185,7 +185,7 @@ export const RefTypePortal = ({ className }: RefTypePortalProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (refType: ResponseRefTypeDto) => {
-      referenceTypesStore.setNested('refType', refType);
+      referenceTypesStore.set('refType', refType);
       referenceTypesStore.set<UpdateRefTypeDto>('refTypeUpdateDto', {
         label: refType.label,
         description: refType.description,

@@ -184,7 +184,7 @@ export const RefParamPortal = ({ className }: RefParamPortalProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     targetEntity: (refParam: ResponseRefParamDto) => {
-      referenceTypesStore.setNested('refParam', refParam);
+      referenceTypesStore.set('refParam', refParam);
       referenceTypesStore.set<UpdateRefParamDto>('refParamUpdateDto', {
         label: refParam.label,
         description: refParam.description,
