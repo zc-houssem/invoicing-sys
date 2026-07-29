@@ -26,6 +26,7 @@ import { CharacterLimitPlugin } from '@/components/shared/editor/plugins/actions
 import { ClearEditorActionPlugin } from '@/components/shared/editor/plugins/actions/clear-editor-plugin';
 import { CounterCharacterPlugin } from '@/components/shared/editor/plugins/actions/counter-character-plugin';
 import { EditModeTogglePlugin } from '@/components/shared/editor/plugins/actions/edit-mode-toggle-plugin';
+import { FullscreenTogglePlugin } from '@/components/shared/editor/plugins/actions/fullscreen-toggle-plugin';
 import { ImportExportPlugin } from '@/components/shared/editor/plugins/actions/import-export-plugin';
 import { MarkdownTogglePlugin } from '@/components/shared/editor/plugins/actions/markdown-toggle-plugin';
 import { MaxLengthPlugin } from '@/components/shared/editor/plugins/actions/max-length-plugin';
@@ -103,15 +104,20 @@ import { IMAGE } from '@/components/shared/editor/transformers/markdown-image-tr
 import { TABLE } from '@/components/shared/editor/transformers/markdown-table-transformer';
 import { TWEET } from '@/components/shared/editor/transformers/markdown-tweet-transformer';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 const placeholder = 'Press / for commands...';
 
 export function Plugins({
   maxLength,
-  autoFocus = false
+  autoFocus = false,
+  isFullscreen = false,
+  onToggleFullscreen
 }: {
   maxLength?: number;
   autoFocus?: boolean;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }) {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -123,7 +129,7 @@ export function Plugins({
   };
 
   return (
-    <div className="relative">
+    <div className={cn('relative', isFullscreen && 'flex min-h-0 flex-1 flex-col')}>
       <ToolbarPlugin>
         {({ blockType }) => (
           <div className="vertical-align-middle sticky top-0 z-10 flex items-center gap-2 overflow-auto border-b p-1">
@@ -166,10 +172,19 @@ export function Plugins({
                 </BlockInsertPlugin>
               </>
             )}
+            {onToggleFullscreen && (
+              <div className="ml-auto flex items-center gap-2">
+                <Separator orientation="vertical" className="!h-7" />
+                <FullscreenTogglePlugin
+                  isFullscreen={isFullscreen}
+                  onToggle={onToggleFullscreen}
+                />
+              </div>
+            )}
           </div>
         )}
       </ToolbarPlugin>
-      <div className="relative">
+      <div className={cn('relative', isFullscreen && 'flex min-h-0 flex-1 flex-col')}>
         {autoFocus && <AutoFocusPlugin />}
         <RichTextPlugin
           contentEditable={
@@ -177,7 +192,10 @@ export function Plugins({
               <div className="" ref={onRef}>
                 <ContentEditable
                   placeholder={placeholder}
-                  className="ContentEditable__root relative block min-h-72 overflow-auto px-8 py-4 focus:outline-none"
+                  className={cn(
+                    'ContentEditable__root relative block overflow-auto px-8 py-4 focus:outline-none',
+                    isFullscreen ? 'min-h-0 flex-1' : 'min-h-72'
+                  )}
                 />
               </div>
             </div>

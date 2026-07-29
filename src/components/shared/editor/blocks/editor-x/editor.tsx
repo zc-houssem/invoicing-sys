@@ -7,6 +7,8 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 
 import { editorTheme } from '@/components/shared/editor/themes/editor-theme';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { useFullScreen } from '@/hooks/useFullScreen';
+import { cn } from '@/lib/utils';
 
 import { nodes } from './nodes';
 import { Plugins } from './plugins';
@@ -59,8 +61,20 @@ export function Editor({
     }
   };
 
+  const { isFullscreen, toggle: toggleFullscreen } = useFullScreen();
+
+  React.useEffect(() => {
+    const hamburgerButton = document.getElementById('nav-toggler');
+    if (hamburgerButton) hamburgerButton.style.display = isFullscreen ? 'none' : '';
+  }, [isFullscreen]);
+
   return (
-    <div className="bg-background overflow-hidden rounded-lg border shadow">
+    <div
+      className={cn(
+        'bg-background overflow-hidden rounded-lg border shadow',
+        isFullscreen &&
+          'fixed inset-0 z-50 flex flex-col rounded-none p-4 animate-in fade-in zoom-in-95'
+      )}>
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
@@ -72,7 +86,14 @@ export function Editor({
             editorSerializedState={validSerializedState}
             onSerializedChange={onSerializedChange}
           />
-          <Plugins maxLength={maxLength} autoFocus={autoFocus} />
+          <div className={cn(isFullscreen && 'flex min-h-0 flex-1 flex-col')}>
+            <Plugins
+              maxLength={maxLength}
+              autoFocus={autoFocus}
+              isFullscreen={isFullscreen}
+              onToggleFullscreen={toggleFullscreen}
+            />
+          </div>
 
           <OnChangePlugin
             ignoreSelectionChange={true}
