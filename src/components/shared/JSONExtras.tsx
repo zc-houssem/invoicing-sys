@@ -1,9 +1,9 @@
-import JSONForm, { JSONValue } from "@/components/shared/JsonEditor";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { Check, TextInitial } from "lucide-react";
-import React from "react";
+import JSONForm, { JSONValue } from '@/components/shared/JsonEditor';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { Check, Text } from 'lucide-react';
+import React from 'react';
 
 interface JSONExtrasProps {
   className?: string;
@@ -12,13 +12,8 @@ interface JSONExtrasProps {
 }
 
 export const JSONExtras = ({ className, value, onChange }: JSONExtrasProps) => {
-  const [jsonText, setJsonText] = React.useState(
-    JSON.stringify(value, null, 2)
-  );
-  const lineNumbers = React.useMemo(
-    () => (jsonText.match(/\n/g) || []).length + 1,
-    [jsonText]
-  );
+  const [jsonText, setJsonText] = React.useState(JSON.stringify(value, null, 2));
+  const lineNumbers = React.useMemo(() => (jsonText.match(/\n/g) || []).length + 8, [jsonText]);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleApply = () => {
@@ -27,7 +22,7 @@ export const JSONExtras = ({ className, value, onChange }: JSONExtrasProps) => {
       onChange(parsed);
       setError(null);
     } catch (err) {
-      setError("Invalid JSON format. Please fix and try again.");
+      setError('Invalid JSON format. Please fix and try again.');
     }
   };
 
@@ -37,12 +32,12 @@ export const JSONExtras = ({ className, value, onChange }: JSONExtrasProps) => {
       setJsonText(JSON.stringify(parsed, null, 2));
       setError(null);
     } catch (err) {
-      setError("Invalid JSON format. Please fix and try again.");
+      setError('Invalid JSON format. Please fix and try again.');
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div className={cn('flex flex-col gap-4', className)}>
       <div className="w-full flex flex-row gap-2">
         <div className="w-full">
           <Textarea
@@ -50,47 +45,33 @@ export const JSONExtras = ({ className, value, onChange }: JSONExtrasProps) => {
             value={jsonText}
             onChange={(e) => setJsonText(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Tab") {
+              if (e.key === 'Tab') {
                 e.preventDefault();
                 const target = e.target as HTMLTextAreaElement;
                 const start = target.selectionStart;
                 const end = target.selectionEnd;
 
-                const tab = "\t";
-                const newValue =
-                  jsonText.substring(0, start) + tab + jsonText.substring(end);
+                const tab = '\t';
+                const newValue = jsonText.substring(0, start) + tab + jsonText.substring(end);
 
                 setJsonText(newValue);
 
                 requestAnimationFrame(() => {
-                  target.selectionStart = target.selectionEnd =
-                    start + tab.length;
+                  target.selectionStart = target.selectionEnd = start + tab.length;
                 });
               }
             }}
             rows={lineNumbers}
           />
-          {error && (
-            <p className="text-red-500 text-xs font-bold mt-1">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-xs font-bold mt-1">{error}</p>}
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <Button
-            type="button"
-            variant="default"
-            size={"sm"}
-            onClick={handleApply}
-          >
+        <div className="flex flex-col gap-2">
+          <Button type="button" variant="outline" size={'sm'} onClick={handleApply}>
             <Check />
             Apply JSON
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            size={"sm"}
-            onClick={handleFormat}
-          >
-            <TextInitial />
+          <Button type="button" variant="outline" size={'sm'} onClick={handleFormat}>
+            <Text />
             Format JSON
           </Button>
         </div>

@@ -5,6 +5,7 @@ import {
   FormStructure,
   SelectFieldProps,
   SelectOption,
+  TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { JSONValue } from '@/components/shared/JsonEditor';
@@ -36,7 +37,7 @@ export const useUpdateRefTypeFormStructure = ({
     }
   };
 
-  const descriptionField: Field<TextFieldProps> = {
+  const descriptionField: Field<TextareaFieldProps> = {
     id: 'description',
     label: 'Description',
     variant: FieldVariant.TEXTAREA,
@@ -49,7 +50,8 @@ export const useUpdateRefTypeFormStructure = ({
       onChange: (value) => {
         referenceTypesStore?.setNested('refTypeUpdateDto.description', value);
         referenceTypesStore?.setNested('refTypeUpdateDtoErrors.description', []);
-      }
+      },
+      rows: 7
     }
   };
 
@@ -60,13 +62,13 @@ export const useUpdateRefTypeFormStructure = ({
     required: true,
     placeholder: 'Select a reference type',
     description: "Reference Type's reference parameter.",
-    error: referenceTypesStore?.refParamCreateDtoErrors?.refTypeId?.[0],
+    error: referenceTypesStore?.refTypeUpdateDtoErrors?.refTypeId?.[0],
     props: {
       options: refTypesOptions,
-      value: referenceTypesStore?.refTypeCreateDto.parentId?.toString() || undefined,
+      value: referenceTypesStore?.refTypeUpdateDto.parentId?.toString(),
       onValueChange: (value) => {
-        referenceTypesStore?.setNested('refTypeCreateDto.parentId', Number(value));
-        referenceTypesStore?.setNested('refTypeCreateDtoErrors.parentId', []);
+        referenceTypesStore?.setNested('refTypeUpdateDto.parentId', value);
+        referenceTypesStore?.setNested('refTypeUpdateDtoErrors.parentId', []);
       }
     }
   };
