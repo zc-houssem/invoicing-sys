@@ -21,6 +21,7 @@ import {
   CreateQuotationDto,
   CurrencyPayload,
   ResponseBankAccountDto,
+  ResponseInterlocutorDto,
   ResponseRefParamDto
 } from '@/types';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
@@ -164,7 +165,12 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+        const ei = item.enterpriseInterlocutors?.find(
+          (e) => e.enterpriseId === quotationStore.createDto.enterpriseId
+        );
+        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+      }
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,

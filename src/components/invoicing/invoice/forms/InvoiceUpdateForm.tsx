@@ -20,6 +20,7 @@ import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
   CurrencyPayload,
   ResponseBankAccountDto,
+  ResponseInterlocutorDto,
   ResponseRefParamDto,
   TaxWithholdingPayload
 } from '@/types';
@@ -240,7 +241,12 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+        const ei = item.enterpriseInterlocutors?.find(
+          (e) => e.enterpriseId === invoiceStore.updateDto?.enterpriseId
+        );
+        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+      }
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,

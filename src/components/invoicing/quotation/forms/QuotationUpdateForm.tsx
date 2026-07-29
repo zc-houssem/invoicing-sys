@@ -20,6 +20,7 @@ import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import {
   CurrencyPayload,
   ResponseBankAccountDto,
+  ResponseInterlocutorDto,
   ResponseRefParamDto,
   UpdateQuotationArticleDto,
   UpdateQuotationDto
@@ -238,7 +239,12 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+        const ei = item.enterpriseInterlocutors?.find(
+          (e) => e.enterpriseId === quotationStore.updateDto?.enterpriseId
+        );
+        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+      }
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,

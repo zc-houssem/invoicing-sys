@@ -19,6 +19,7 @@ import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
   CurrencyPayload,
   ResponseBankAccountDto,
+  ResponseInterlocutorDto,
   ResponseRefParamDto,
   TaxWithholdingPayload
 } from '@/types';
@@ -165,7 +166,12 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       data: interlocutors,
       labelKey: '',
       valueKey: 'id',
-      labelKeyTransformer: (_label, item) => `${item.firstName} ${item.lastName}`
+      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+        const ei = item.enterpriseInterlocutors?.find(
+          (e) => e.enterpriseId === invoiceStore.createDto.enterpriseId
+        );
+        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+      }
     }),
     currencyOptions: mapToSelectOptions({
       data: currencies,
