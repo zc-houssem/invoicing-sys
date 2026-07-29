@@ -10,6 +10,7 @@ export const baseQuotationSchema = z
     }),
     object: z.string().min(1, 'Object is required'),
     generalConditions: z.string().optional().or(z.literal('')),
+    notes: z.string().optional().or(z.literal('')),
     enterpriseId: z.number({
       errorMap: () => ({ message: 'Enterprise is required' })
     }),

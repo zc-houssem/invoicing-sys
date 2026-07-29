@@ -138,6 +138,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         currencyId: workflow?.invoice.currencyId,
         taxWithholdingId: workflow?.invoice.taxWithholdingId,
         bankAccountId: workflow?.invoice.bankAccountId,
+        notes: workflow?.invoice.notes,
         invoiceArticles: [],
         uploads: []
       });

@@ -128,6 +128,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         interlocutorId: workflow?.quotation.interlocutorId,
         currencyId: workflow?.quotation.currencyId,
         bankAccountId: workflow?.quotation.bankAccountId,
+        notes: workflow?.quotation.notes,
         quotationArticles: [],
         uploads: []
       });
