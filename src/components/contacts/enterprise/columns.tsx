@@ -1,30 +1,35 @@
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { ExternalLinkIcon } from 'lucide-react';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
-import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableCellVariant, DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 
 export const useEnterpriseColumns = (
-  context: DataTableConfig<ResponseEnterpriseDto>
+  context: DataTableConfig<ResponseEnterpriseDto>,
+  activityFilterOptions?: DataTableColumnFilterOption[]
 ): ColumnDef<ResponseEnterpriseDto>[] => {
   const { t } = useTranslation('contacts');
   const { t: tCurrency } = useTranslation('currency');
 
-  return [
+  return React.useMemo(() => [
     {
       accessorKey: t('enterprise.table.columns.name'),
       meta: {
         exportLabel: t('enterprise.table.columns.name'),
-        exportKey: 'name'
+        exportKey: 'name',
+        filterKey: 'name',
+        filterField: 'name',
+        filterType: 'string'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.name')}
           attribute={'name'}
         />
@@ -37,12 +42,15 @@ export const useEnterpriseColumns = (
       accessorKey: t('enterprise.table.columns.phone'),
       meta: {
         exportLabel: t('enterprise.table.columns.phone'),
-        exportKey: 'phone'
+        exportKey: 'phone',
+        filterKey: 'phone',
+        filterField: 'phone',
+        filterType: 'string'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.phone')}
           attribute={'phone'}
         />
@@ -63,12 +71,15 @@ export const useEnterpriseColumns = (
       accessorKey: t('enterprise.table.columns.website'),
       meta: {
         exportLabel: t('enterprise.table.columns.website'),
-        exportKey: 'website'
+        exportKey: 'website',
+        filterKey: 'website',
+        filterField: 'website',
+        filterType: 'string'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.website')}
           attribute={'website'}
         />
@@ -97,12 +108,15 @@ export const useEnterpriseColumns = (
       accessorKey: t('enterprise.table.columns.taxId'),
       meta: {
         exportLabel: t('enterprise.table.columns.taxId'),
-        exportKey: 'taxId'
+        exportKey: 'taxId',
+        filterKey: 'taxId',
+        filterField: 'taxId',
+        filterType: 'string'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.taxId')}
           attribute={'taxId'}
         />
@@ -124,12 +138,24 @@ export const useEnterpriseColumns = (
         exportValue: (row) =>
           row.particular
             ? t('enterprise.table.columns.particular.positive')
-            : t('enterprise.table.columns.particular.negative')
+            : t('enterprise.table.columns.particular.negative'),
+        filterKey: 'particular',
+        filterType: 'options',
+        filterOptions: [
+          {
+            label: t('enterprise.table.columns.particular.positive'),
+            filter: 'particular||$eq||1'
+          },
+          {
+            label: t('enterprise.table.columns.particular.negative'),
+            filter: 'particular||$eq||0'
+          }
+        ]
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.particular.noun')}
           attribute={'particular'}
         />
@@ -150,12 +176,15 @@ export const useEnterpriseColumns = (
       accessorKey: 'activity',
       meta: {
         exportLabel: t('enterprise.table.columns.activity'),
-        exportValue: (row) => row.activity?.label.toLocaleString()
+        exportValue: (row) => row.activity?.label.toLocaleString(),
+        filterKey: 'activity',
+        filterType: 'select',
+        filterOptions: activityFilterOptions
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.attributes.activity')}
           attribute={'activityId'}
         />
@@ -170,41 +199,19 @@ export const useEnterpriseColumns = (
       enableSorting: true,
       enableHiding: true
     },
-    // {
-    //   accessorKey: 'currency',
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader
-    //       column={column}
-    //       context={context}
-    //       title={t('enterprise.attributes.currency')}
-    //       attribute={FIRM_FILTER_ATTRIBUTES.CURRENCY}
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div>
-    //       {row.original?.currency ? (
-    //         <span>
-    //           {row.original?.currency?.code && tCurrency(row.original?.currency?.code)} (
-    //           {row.original?.currency?.symbol})
-    //         </span>
-    //       ) : (
-    //         <span className="text-zinc-400">{t('enterprise.empty_cells.currency')}</span>
-    //       )}
-    //     </div>
-    //   ),
-    //   enableSorting: true,
-    //   enableHiding: true
-    // },
     {
       accessorKey: t('enterprise.table.columns.createdAt'),
       meta: {
         exportLabel: t('enterprise.table.columns.createdAt'),
-        exportValue: (row) => new Date(row.createdAt).toLocaleString()
+        exportValue: (row) => new Date(row.createdAt).toLocaleString(),
+        filterKey: 'createdAt',
+        filterField: 'createdAt',
+        filterType: 'date-range'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.createdAt')}
           attribute={'createdAt'}
         />
@@ -220,12 +227,15 @@ export const useEnterpriseColumns = (
       accessorKey: t('enterprise.table.columns.updatedAt'),
       meta: {
         exportLabel: t('enterprise.table.columns.updatedAt'),
-        exportValue: (row) => new Date(row.updatedAt).toLocaleString()
+        exportValue: (row) => new Date(row.updatedAt).toLocaleString(),
+        filterKey: 'updatedAt',
+        filterField: 'updatedAt',
+        filterType: 'date-range'
       },
-      header: ({ column }) => (
+      header: ({ column, table }) => (
         <DataTableColumnHeader
           column={column}
-          context={context}
+          context={(table.options.meta as any)?.context}
           title={t('enterprise.table.columns.updatedAt')}
           attribute={'updatedAt'}
         />
@@ -240,11 +250,11 @@ export const useEnterpriseColumns = (
     {
       id: 'actions',
       meta: { skipExport: true },
-      cell: ({ row }) => (
+      cell: ({ row, table }) => (
         <div className="flex justify-end">
-          <DataTableRowActions row={row} context={context} />
+          <DataTableRowActions row={row} context={(table.options.meta as any)?.context} />
         </div>
       )
     }
-  ];
+  ], [t, tCurrency, activityFilterOptions]);
 };

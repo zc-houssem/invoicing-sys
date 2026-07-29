@@ -215,6 +215,21 @@
       "asc": "Croissant",
       "desc": "Décroissant"
     },
+    "filter": {
+      "title": "Filtrer",
+      "clear": "Effacer le filtre",
+      "valuePlaceholder": "Valeur",
+      "selectPlaceholder": "Sélectionnez une option...",
+      "dateFrom": "De",
+      "dateTo": "À",
+      "operators": {
+        "$eq": "Égal",
+        "!$eq": "Différent de",
+        "$cont": "Contient",
+        "$gt": "Supérieur à",
+        "$lt": "Inférieur à"
+      }
+    },
     "export": {
       "title": "Exporter vers Excel",
       "description": "Choisissez les données à exporter.",

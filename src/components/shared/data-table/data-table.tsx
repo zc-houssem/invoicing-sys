@@ -95,6 +95,9 @@ export function DataTable<TData, TValue>({
     defaultColumn: {
       size: 0,
       minSize: 0
+    },
+    meta: {
+      context
     }
   });
   return (

@@ -218,6 +218,21 @@
       "asc": "Ascending",
       "desc": "Descending"
     },
+    "filter": {
+      "title": "Filter",
+      "clear": "Clear filter",
+      "valuePlaceholder": "Value",
+      "selectPlaceholder": "Select an option...",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "operators": {
+        "$eq": "Equal",
+        "!$eq": "Not equal",
+        "$cont": "Contains",
+        "$gt": "Greater than",
+        "$lt": "Less than"
+      }
+    },
     "export": {
       "title": "Export to Excel",
       "description": "Choose which data you want to export.",

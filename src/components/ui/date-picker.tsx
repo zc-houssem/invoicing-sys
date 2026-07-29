@@ -135,7 +135,10 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
               type={type || 'date'}
               placeholder={format(new Date(), 'P', { locale: dateFnsLocale })}
               onClick={(e) => {
-                e.stopPropagation();
+                if (type === 'date' || !type) {
+                  e.stopPropagation();
+                }
+                props.onClick?.(e);
               }}
               ref={ref}
               value={value ?? ''}

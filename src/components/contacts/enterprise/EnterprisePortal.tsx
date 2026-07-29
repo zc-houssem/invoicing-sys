@@ -11,10 +11,12 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { EnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
+import { useActivities } from '@/hooks/content/core/useActivities';
 
 interface EnterprisePortalProps {
   className?: string;
@@ -57,6 +59,16 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
+  const [columnFilters, setColumnFilters] = React.useState<Record<string, string>>({});
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<
+    Record<string, string>
+  >(columnFilters, 500);
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString('system||$eq||0', debouncedColumnFilters),
+    [debouncedColumnFilters]
+  );
+
   const [deleteDialog, setDeleteDialog] = React.useState(false);
 
   const {
@@ -71,7 +83,8 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      debouncedColumnFilters
     ],
     queryFn: () =>
       api.core.enterprise.findPaginated({
@@ -79,7 +92,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        filter: 'system||$eq||false',
+        filter: filterString,
         join: 'activity'
       })
   });
@@ -129,6 +142,17 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
     targetEntity: (enterprise: ResponseEnterpriseDto) => {
       enterpriseStore.setNested('response.id', enterprise.id);
       enterpriseStore.setNested('response.name', enterprise.name);
@@ -140,14 +164,25 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
         api.core.enterprise.findAll({
           sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
           search: debouncedSearchTerm,
-          filter: 'system||$eq||false'
+          filter: filterString
         })
     }
   };
 
-  const columns = useEnterpriseColumns(context);
+  const { activities } = useActivities();
+  const activityFilterOptions: DataTableColumnFilterOption[] = React.useMemo(
+    () =>
+      activities.map((activity) => ({
+        label: activity.label,
+        filter: `activityId||$eq||${activity.id}`
+      })),
+    [activities]
+  );
 
-  const isPending = isFetchPending || isDeletePending || paging || resizing || searching || sorting;
+  const columns = useEnterpriseColumns(context, activityFilterOptions);
+
+  const isPending =
+    isFetchPending || isDeletePending || paging || resizing || searching || sorting || filtering;
 
   if (error) return 'An error has occurred: ' + error.message;
   return (

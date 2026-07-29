@@ -11,11 +11,22 @@ export interface DataTableExportConfig<T> {
   fetchAll?: () => Promise<T[]>;
 }
 
+export interface DataTableColumnFilterOption {
+  label: string;
+  filter: string;
+}
+
+export type DataTableColumnFilterType = 'options' | 'string' | 'select' | 'date-range';
+
 export interface DataTableColumnMeta<T> {
   exportLabel?: string;
   exportKey?: string;
   exportValue?: (row: T) => unknown;
   skipExport?: boolean;
+  filterKey?: string;
+  filterField?: string;
+  filterType?: DataTableColumnFilterType;
+  filterOptions?: DataTableColumnFilterOption[];
 }
 
 declare module '@tanstack/react-table' {
@@ -39,6 +50,8 @@ export interface DataTableConfig<T> {
   //filtering
   searchTerm?: string;
   setSearchTerm?: (searchTerm: string) => void;
+  columnFilters?: Record<string, string>;
+  setColumnFilter?: (filterKey: string, filterParam: string | null) => void;
   //actions
   createCallback?: () => void;
   inspectCallback?: (entity: T) => void;
