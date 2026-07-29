@@ -119,6 +119,7 @@ export interface SelectFieldProps extends BaseFieldProps {
   value?: string | null;
   onValueChange?: (value: string) => void;
   options?: SelectOption[];
+  nullable?: boolean;
 }
 
 export interface MultiSelectFieldProps extends BaseFieldProps {

@@ -92,7 +92,13 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         <Select
           {...field.props}
           value={field?.props?.value ?? ''}
-          onValueChange={field?.props?.onValueChange}
+          onValueChange={(value) => {
+            if (value === '__clear__') {
+              field?.props?.onValueChange?.(undefined);
+            } else {
+              field?.props?.onValueChange?.(value);
+            }
+          }}
           disabled={field?.props?.disabled}>
           <SelectTrigger
             id={field.id}
@@ -104,6 +110,11 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             <SelectValue placeholder={field.placeholder} />
           </SelectTrigger>
           <SelectContent className="overflow-y-auto max-h-60">
+            {field?.props?.nullable && (
+              <SelectItem value="__clear__" className="text-muted-foreground font-thin italic">
+                {field.placeholder || '---'}
+              </SelectItem>
+            )}
             {field?.props?.options?.map((option: SelectOption) => {
               return (
                 <SelectItem key={option.value} value={option.value}>
