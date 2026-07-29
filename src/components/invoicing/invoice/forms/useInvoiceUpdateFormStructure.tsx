@@ -182,7 +182,6 @@ export const useInvoiceUpdateFormStructure = ({
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('invoice.form.placeholders.generalConditions'),
     description: t('invoice.form.descriptions.generalConditions'),
-    pending: !store.updateDto?.generalConditions,
     props: {
       disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.generalConditions,

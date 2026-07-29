@@ -181,7 +181,6 @@ export const useQuotationUpdateFormStructure = ({
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
     description: t('quotation.form.descriptions.generalConditions'),
-    pending: !store.updateDto?.generalConditions,
     props: {
       disabled: isUpdatePending || !isUpdatable,
       value: store.updateDto?.generalConditions,
