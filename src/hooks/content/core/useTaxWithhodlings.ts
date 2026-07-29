@@ -1,7 +1,7 @@
 import React from 'react';
 import { api } from '@/api';
 import { useQuery } from '@tanstack/react-query';
-import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { ResponseRefParamDto, TaxWithholdingPayload } from '@/types';
 
 interface useTaxWithholdingsProps {
   enabled?: boolean;
@@ -25,7 +25,7 @@ export const useTaxWithholdings = (
 
   const taxWithholdings = React.useMemo(() => {
     if (!taxWithholdingsResp) return [];
-    return taxWithholdingsResp as ResponseRefParamDto<CurrencyPayload>[];
+    return taxWithholdingsResp as ResponseRefParamDto<TaxWithholdingPayload>[];
   }, [taxWithholdingsResp]);
 
   return {
