@@ -37,7 +37,8 @@ export function Editor({
   onSerializedChange,
   disabled,
   maxLength,
-  autoFocus = false
+  autoFocus = false,
+  namespace
 }: {
   editorState?: EditorState;
   editorSerializedState?: SerializedEditorState;
@@ -46,13 +47,16 @@ export function Editor({
   disabled?: boolean;
   maxLength?: number;
   autoFocus?: boolean;
+  namespace?: string;
 }) {
   const validSerializedState = isValidSerializedState(editorSerializedState)
     ? editorSerializedState
     : undefined;
 
+  const id = React.useId();
+
   const editorConfig: InitialConfigType = {
-    namespace: 'Editor',
+    namespace: namespace || `Editor-${id}`,
     theme: editorTheme,
     editable: !disabled,
     nodes,
@@ -120,15 +124,21 @@ function EditorUpdateHandler({
   React.useEffect(() => {
     if (isValidSerializedState(editorSerializedState)) {
       try {
-        const state = editor.parseEditorState(JSON.stringify(editorSerializedState));
-        if (state && !state.isEmpty()) {
-          editor.setEditorState(state);
+        const currentEditorState = editor.getEditorState();
+        const incomingStateStr = JSON.stringify(editorSerializedState);
+        const currentStateStr = JSON.stringify(currentEditorState.toJSON());
+
+        if (incomingStateStr !== currentStateStr) {
+          const state = editor.parseEditorState(incomingStateStr);
+          if (state && !state.isEmpty()) {
+            editor.setEditorState(state);
+          }
         }
       } catch (error) {
         console.error('Failed to parse editor state:', error);
       }
     }
-  }, [editor]);
+  }, [editor, editorSerializedState]);
 
   return null;
 }
