@@ -60,12 +60,21 @@ const downloadFile = async (slug: string, filename?: string) => {
       responseType: 'blob'
     });
 
+    const contentDisposition = response.headers['content-disposition'];
+    let finalFilename = filename || slug;
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch && filenameMatch.length === 2) {
+        finalFilename = filenameMatch[1];
+      }
+    }
+
     const blob = new Blob([response.data]);
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename || slug;
+    link.download = finalFilename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -82,7 +91,8 @@ const openFile = async (slug: string) => {
       responseType: 'blob'
     });
 
-    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const contentType = response.headers['content-type'] || response.data?.type || 'application/pdf';
+    const blob = new Blob([response.data], { type: contentType });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
 

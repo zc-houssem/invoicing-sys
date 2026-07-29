@@ -33,20 +33,35 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1024 ** i).toFixed(i ? 1 : 0)} ${sizes[i]}`;
 }
 
-function getFileIcon(file: File) {
-  const type = file.type;
-  const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
+export function getFileIcon(name: string, type?: string, className?: string) {
+  const extension = name.split('.').pop()?.toLowerCase() ?? '';
 
-  if (type.startsWith('video/')) {
-    return <FileVideoIcon />;
+  if (type?.startsWith('video/') || ['mp4', 'mkv', 'avi', 'mov', 'webm'].includes(extension)) {
+    return <FileVideoIcon className={cn("text-purple-500", className)} />;
   }
 
-  if (type.startsWith('audio/')) {
-    return <FileAudioIcon />;
+  if (type?.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'flac'].includes(extension)) {
+    return <FileAudioIcon className={cn("text-yellow-500", className)} />;
   }
 
-  if (type.startsWith('text/') || ['txt', 'md', 'rtf', 'pdf'].includes(extension)) {
-    return <FileTextIcon />;
+  if (['doc', 'docx'].includes(extension)) {
+    return <FileTextIcon className={cn("text-blue-500", className)} />;
+  }
+
+  if (['xls', 'xlsx', 'csv'].includes(extension)) {
+    return <FileTextIcon className={cn("text-green-500", className)} />;
+  }
+
+  if (['ppt', 'pptx'].includes(extension)) {
+    return <FileTextIcon className={cn("text-orange-500", className)} />;
+  }
+
+  if (extension === 'pdf') {
+    return <FileTextIcon className={cn("text-red-500", className)} />;
+  }
+
+  if (type?.startsWith('text/') || ['txt', 'md', 'rtf'].includes(extension)) {
+    return <FileTextIcon className={cn("text-slate-500", className)} />;
   }
 
   if (
@@ -68,21 +83,20 @@ function getFileIcon(file: File) {
       'cs'
     ].includes(extension)
   ) {
-    return <FileCodeIcon />;
+    return <FileCodeIcon className={cn("text-gray-500", className)} />;
   }
 
   if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].includes(extension)) {
-    return <FileArchiveIcon />;
+    return <FileArchiveIcon className={cn("text-orange-500", className)} />;
   }
 
   if (
-    ['exe', 'msi', 'app', 'apk', 'deb', 'rpm'].includes(extension) ||
-    type.startsWith('application/')
+    ['exe', 'msi', 'app', 'apk', 'deb', 'rpm'].includes(extension)
   ) {
-    return <FileCogIcon />;
+    return <FileCogIcon className={cn("text-gray-600", className)} />;
   }
 
-  return <FileIcon />;
+  return <FileIcon className={cn("text-muted-foreground", className)} />;
 }
 
 type Direction = 'ltr' | 'rtl';
@@ -1031,7 +1045,7 @@ function FileUploadItemPreview(props: FileUploadItemPreviewProps) {
         );
       }
 
-      return getFileIcon(file);
+      return getFileIcon(file.name, file.type);
     },
     [itemContext.fileState?.file.type, context.urlCache]
   );

@@ -60,12 +60,21 @@ const downloadFile = async (slug: string, filename?: string) => {
       responseType: 'blob'
     });
 
+    const contentDisposition = response.headers['content-disposition'];
+    let finalFilename = filename || slug;
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch && filenameMatch.length === 2) {
+        finalFilename = filenameMatch[1];
+      }
+    }
+
     const blob = new Blob([response.data]);
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename || slug;
+    link.download = finalFilename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -82,12 +91,21 @@ const downloadFileById = async (id: number, filename?: string) => {
       responseType: 'blob'
     });
 
+    const contentDisposition = response.headers['content-disposition'];
+    let finalFilename = filename || `file_${id}`;
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch && filenameMatch.length === 2) {
+        finalFilename = filenameMatch[1];
+      }
+    }
+
     const blob = new Blob([response.data]);
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename || `file_${id}`;
+    link.download = finalFilename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -98,13 +116,14 @@ const downloadFileById = async (id: number, filename?: string) => {
   }
 };
 
-const openFile = async (slug: string, mimeType: string = 'application/pdf') => {
+const openFile = async (slug: string, fallbackMimeType?: string) => {
   try {
     const response = await axios.get(`/storage/download/slug/${slug}`, {
       responseType: 'blob'
     });
 
-    const blob = new Blob([response.data], { type: mimeType });
+    const contentType = response.headers['content-type'] || response.data?.type || fallbackMimeType || 'application/pdf';
+    const blob = new Blob([response.data], { type: contentType });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
 
@@ -114,13 +133,14 @@ const openFile = async (slug: string, mimeType: string = 'application/pdf') => {
   }
 };
 
-const openFileById = async (id: number, mimeType: string = 'application/pdf') => {
+const openFileById = async (id: number, fallbackMimeType?: string) => {
   try {
     const response = await axios.get(`/storage/download/id/${id}`, {
       responseType: 'blob'
     });
 
-    const blob = new Blob([response.data], { type: mimeType });
+    const contentType = response.headers['content-type'] || response.data?.type || fallbackMimeType || 'application/pdf';
+    const blob = new Blob([response.data], { type: contentType });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
 

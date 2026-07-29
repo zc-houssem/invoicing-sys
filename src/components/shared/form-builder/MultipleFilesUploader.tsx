@@ -1,6 +1,15 @@
 'use client';
 
-import { Download, ExternalLink, FileIcon, Upload, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/api';
+
+import { 
+  Download, 
+  ExternalLink, 
+  FileIcon, 
+  Upload, 
+  X
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +21,8 @@ import {
   FileUploadItemPreview,
   FileUploadItemProgress,
   FileUploadList,
-  FileUploadTrigger
+  FileUploadTrigger,
+  getFileIcon
 } from '@/components/ui/file-upload';
 import { cn } from '@/lib/utils';
 import { ManipulatedFile } from './types';
@@ -36,6 +46,29 @@ interface MultipleFilesUploaderProps {
   onFileOpen?: (file: ManipulatedFile) => void;
   onFileDownload?: (file: ManipulatedFile) => void;
 }
+
+const UploadedFileIcon = ({ mf }: { mf: ManipulatedFile }) => {
+  const extension = mf.name.split('.').pop()?.toLowerCase() ?? '';
+  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(extension);
+
+  const { data: fetchedUrl } = useQuery({
+    queryKey: ['upload', mf.serverId],
+    queryFn: () => api.upload.getUploadById(Number(mf.serverId)),
+    enabled: isImage && !!mf.serverId && !mf.url,
+    staleTime: Infinity
+  });
+
+  const finalUrl = mf.url || fetchedUrl;
+
+  if (isImage && finalUrl) {
+    return (
+      // biome-ignore lint/performance/noImgElement: dynamic file URLs from user uploads don't work well with Next.js Image optimization
+      <img src={finalUrl} alt={mf.name} className="size-full object-cover" />
+    );
+  }
+
+  return getFileIcon(mf.name, undefined, "size-5");
+};
 
 export const MultipleFilesUploader = ({
   className,
@@ -162,8 +195,8 @@ export const MultipleFilesUploader = ({
         <div className="flex flex-col gap-2">
           {uploadedFiles.map((mf) => (
             <div key={mf.id} className="relative flex items-center gap-2.5 rounded-md border p-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-md border">
-                <FileIcon className="size-5 text-muted-foreground" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-md border overflow-hidden">
+                <UploadedFileIcon mf={mf} />
               </div>
               <div className="flex flex-1 flex-col gap-0.5 min-w-0">
                 <p className="text-sm font-medium truncate">{mf.name}</p>

@@ -74,7 +74,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
               onProgress(file, percent);
             });
             const uploaded = results[0];
-            const currentFiles = invoiceStore.files;
+            const currentFiles = useInvoiceStore.getState().files;
             invoiceStore.set(
               'files',
               currentFiles.map((mf) =>

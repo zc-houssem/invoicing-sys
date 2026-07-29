@@ -73,7 +73,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               onProgress(file, percent);
             });
             const uploaded = results[0];
-            const currentFiles = quotationStore.files;
+            const currentFiles = useQuotationStore.getState().files;
             quotationStore.set(
               'files',
               currentFiles.map((mf) =>
