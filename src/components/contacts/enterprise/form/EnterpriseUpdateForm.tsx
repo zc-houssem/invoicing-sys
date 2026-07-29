@@ -191,6 +191,7 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
     });
 
   const { addressInformation } = useEnterpriseAddressFormStructure({
+    isUpdate: true,
     store: enterpriseStore,
     countryOptions: mapToSelectOptions({
       data: countries,

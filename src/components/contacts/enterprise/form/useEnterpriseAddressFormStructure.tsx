@@ -14,15 +14,19 @@ import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface useEnterpriseAddressFormStructureProps {
+  isUpdate?: boolean;
   store: EnterpriseStore;
   countryOptions: SelectOption[];
 }
 
 export const useEnterpriseAddressFormStructure = ({
   store,
-  countryOptions
+  countryOptions,
+  isUpdate = false
 }: useEnterpriseAddressFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
+  const dtoKey = isUpdate ? 'updateDto' : 'createDto';
+  const dto = store[dtoKey];
 
   const deliveryAddressField: Field<TextFieldProps> = {
     id: 'delivery-address',
@@ -31,9 +35,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.address'),
     placeholder: tContact('address.form.placeholders.address'),
     props: {
-      value: store.updateDto?.deliveryAddress?.address,
+      value: dto?.deliveryAddress?.address,
       onChange: (value) => {
-        store.setNested('updateDto.deliveryAddress.address', value);
+        store.setNested(`${dtoKey}.deliveryAddress.address`, value);
         store.setNested('errors.deliveryAddress.address', []);
       }
     }
@@ -46,9 +50,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.address2'),
     placeholder: tContact('address.form.placeholders.address2'),
     props: {
-      value: store.updateDto?.deliveryAddress?.address2,
+      value: dto?.deliveryAddress?.address2,
       onChange: (value) => {
-        store.setNested('updateDto.deliveryAddress.address2', value);
+        store.setNested(`${dtoKey}.deliveryAddress.address2`, value);
         store.setNested('errors.deliveryAddress.address2', []);
       }
     }
@@ -61,9 +65,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.region'),
     placeholder: tContact('address.form.placeholders.region'),
     props: {
-      value: store.updateDto?.deliveryAddress?.region,
+      value: dto?.deliveryAddress?.region,
       onChange: (value) => {
-        store.setNested('updateDto.deliveryAddress.region', value);
+        store.setNested(`${dtoKey}.deliveryAddress.region`, value);
         store.setNested('errors.deliveryAddress.region', []);
       }
     }
@@ -76,9 +80,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.zipCode'),
     placeholder: tContact('address.form.placeholders.zipCode'),
     props: {
-      value: store.updateDto?.deliveryAddress?.zipcode,
+      value: dto?.deliveryAddress?.zipcode,
       onChange: (value) => {
-        store.setNested('updateDto.deliveryAddress.zipcode', value);
+        store.setNested(`${dtoKey}.deliveryAddress.zipcode`, value);
         store.setNested('errors.deliveryAddress.zipcode', []);
       }
     }
@@ -91,9 +95,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.country'),
     placeholder: tContact('address.form.placeholders.country'),
     props: {
-      value: store.updateDto?.deliveryAddress?.countryId?.toString(),
+      value: dto?.deliveryAddress?.countryId?.toString(),
       onValueChange: (value) => {
-        store.setNested('updateDto.deliveryAddress.countryId', Number(value));
+        store.setNested(`${dtoKey}.deliveryAddress.countryId`, Number(value));
         store.setNested('errors.deliveryAddress.countryId', []);
       },
       options: countryOptions
@@ -107,9 +111,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.address'),
     placeholder: tContact('address.form.placeholders.address'),
     props: {
-      value: store.updateDto?.invoicingAddress?.address,
+      value: dto?.invoicingAddress?.address,
       onChange: (value) => {
-        store.setNested('updateDto.invoicingAddress.address', value);
+        store.setNested(`${dtoKey}.invoicingAddress.address`, value);
         store.setNested('errors.invoicingAddress.address', []);
       }
     }
@@ -122,9 +126,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.address2'),
     placeholder: tContact('address.form.placeholders.address2'),
     props: {
-      value: store.updateDto?.invoicingAddress?.address2,
+      value: dto?.invoicingAddress?.address2,
       onChange: (value) => {
-        store.setNested('updateDto.invoicingAddress.address2', value);
+        store.setNested(`${dtoKey}.invoicingAddress.address2`, value);
         store.setNested('errors.invoicingAddress.address2', []);
       }
     }
@@ -137,9 +141,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.region'),
     placeholder: tContact('address.form.placeholders.region'),
     props: {
-      value: store.updateDto?.invoicingAddress?.region,
+      value: dto?.invoicingAddress?.region,
       onChange: (value) => {
-        store.setNested('updateDto.invoicingAddress.region', value);
+        store.setNested(`${dtoKey}.invoicingAddress.region`, value);
         store.setNested('errors.invoicingAddress.region', []);
       }
     }
@@ -152,9 +156,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.zipCode'),
     placeholder: tContact('address.form.placeholders.zipCode'),
     props: {
-      value: store.updateDto?.invoicingAddress?.zipcode,
+      value: dto?.invoicingAddress?.zipcode,
       onChange: (value) => {
-        store.setNested('updateDto.invoicingAddress.zipcode', value);
+        store.setNested(`${dtoKey}.invoicingAddress.zipcode`, value);
         store.setNested('errors.invoicingAddress.zipcode', []);
       }
     }
@@ -167,9 +171,9 @@ export const useEnterpriseAddressFormStructure = ({
     description: tContact('address.form.descriptions.country'),
     placeholder: tContact('address.form.placeholders.country'),
     props: {
-      value: store.updateDto?.invoicingAddress?.countryId?.toString(),
+      value: dto?.invoicingAddress?.countryId?.toString(),
       onValueChange: (value) => {
-        store.setNested('updateDto.invoicingAddress.countryId', Number(value));
+        store.setNested(`${dtoKey}.invoicingAddress.countryId`, Number(value));
         store.setNested('errors.invoicingAddress.countryId', []);
       },
       options: countryOptions
@@ -193,8 +197,8 @@ export const useEnterpriseAddressFormStructure = ({
             size="sm"
             type="button"
             onClick={() => {
-              store.setNested('updateDto.deliveryAddress', {
-                ...store.updateDto?.invoicingAddress
+              store.setNested(`${dtoKey}.deliveryAddress`, {
+                ...dto?.invoicingAddress
               });
             }}>
             <Copy />
@@ -226,8 +230,8 @@ export const useEnterpriseAddressFormStructure = ({
             size="sm"
             type="button"
             onClick={() => {
-              store.setNested('updateDto.invoicingAddress', {
-                ...store.updateDto?.deliveryAddress
+              store.setNested(`${dtoKey}.invoicingAddress`, {
+                ...dto?.deliveryAddress
               });
             }}>
             <Copy />
