@@ -1,4 +1,4 @@
-import { PaymentMain } from '@/components/selling/payment/PaymentMain';
+import { PaymentMain } from '@/components/invoicing/payment/PaymentMain';
 import React from 'react';
 
 export default function InvoicesPage() {

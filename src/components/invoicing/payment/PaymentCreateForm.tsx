@@ -7,7 +7,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaymentGeneralInformation } from './form/PaymentGeneralInformation';
 import useFirmChoices from '@/hooks/content/useFirmChoice';
-import useCurrency from '@/hooks/content/core/useCurrencies';
 import { PaymentInvoiceManagement } from './form/PaymentInvoiceManagement';
 import { PaymentFinancialInformation } from './form/PaymentFinancialInformation';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,13 +15,13 @@ import { usePaymentManager } from './hooks/usePaymentManager';
 import { useMutation } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';
 import { toast } from 'sonner';
-import { CreatePaymentDto, PaymentInvoiceEntry } from '@/types';
 import { usePaymentInvoiceManager } from './hooks/usePaymentInvoiceManager';
 import { PaymentControlSection } from './form/PaymentControlSection';
 import useCabinet from '@/hooks/content/useCabinet';
 import { PaymentExtraOptions } from './form/PaymentExtraOptions';
 import dinero from 'dinero.js';
 import { createDineroAmountFromFloatWithDynamicCurrency } from '@/utils/money.utils';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 
 interface PaymentFormProps {
   className?: string;
@@ -50,7 +49,7 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
   }, [router.locale, firmId]);
 
   // Fetch options
-  const { currencies, isFetchCurrenciesPending } = useCurrency();
+  const { currencies, isCurrenciesPending } = useCurrencies();
   const { cabinet, isFetchCabinetPending } = useCabinet();
 
   React.useEffect(() => {
@@ -130,7 +129,7 @@ export const PaymentCreateForm = ({ className, firmId }: PaymentFormProps) => {
     }
   };
 
-  const loading = isFetchFirmsPending || isFetchCurrenciesPending || isFetchCabinetPending;
+  const loading = isFetchFirmsPending || isCurrenciesPending || isFetchCabinetPending;
   return (
     <div className={cn('overflow-auto px-10 py-6', className)}>
       {/* Main Container */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PaymentCreateForm } from '@/components/selling/payment/PaymentCreateForm';
+import { PaymentCreateForm } from '@/components/invoicing/payment/PaymentCreateForm';
 import { useSearchParams } from 'next/navigation';
 
 export default function Page() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { PaymentUpdateForm } from '@/components/selling/payment/PaymentUpdateForm';
+import { PaymentUpdateForm } from '@/components/invoicing/payment/PaymentUpdateForm';
 
 export default function Page() {
   const router = useRouter();
