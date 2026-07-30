@@ -1,12 +1,11 @@
 import React from 'react';
-import { ResponseInterlocutorDto } from '@/types';
+import { ResponseInterlocutorDto, SOCIAL_TITLE } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 import { useTranslation } from 'react-i18next';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
-import { SOCIAL_TITLE } from '@/api';
 
 export const useInterlocutorColumns = (
   context: DataTableConfig<ResponseInterlocutorDto>,
@@ -22,7 +21,7 @@ export const useInterlocutorColumns = (
         accessorKey: t('interlocutor.table.columns.socialTitle'),
         meta: {
           exportLabel: t('interlocutor.table.columns.socialTitle'),
-          exportValue: (row) => row.title ? tSocial(row.title) : '',
+          exportValue: (row) => (row.title ? tSocial(row.title) : ''),
           exportKey: 'title',
           filterKey: 'title',
           filterType: 'select',
@@ -169,7 +168,9 @@ export const useInterlocutorColumns = (
         cell: ({ row }) => {
           // Find the enterprise entry
           const entry =
-            (row.original as any).firmsToInterlocutor?.find((e: any) => e.firmId === enterpriseId) ||
+            (row.original as any).firmsToInterlocutor?.find(
+              (e: any) => e.firmId === enterpriseId
+            ) ||
             (row.original as any).enterprises?.find((e: any) => e.enterpriseId === enterpriseId) ||
             (row.original as any).enterpriseInterlocutors?.find(
               (e: any) => e.enterpriseId === enterpriseId

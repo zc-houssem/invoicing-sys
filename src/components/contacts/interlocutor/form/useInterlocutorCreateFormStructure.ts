@@ -8,10 +8,10 @@ import {
   TelFieldProps,
   CheckboxFieldProps
 } from '@/components/shared/form-builder/types';
-import { SOCIAL_TITLE } from '@/api';
 import { InterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import { SOCIAL_TITLE } from '@/types';
 
 interface UseInterlocutorCreateFormStructureProps {
   store: InterlocutorStore;
@@ -34,7 +34,10 @@ export const useInterlocutorCreateFormStructure = ({
   const associateExistingField: Field<CheckboxFieldProps> = {
     id: 'associate-existing',
     variant: FieldVariant.CHECKBOX,
-    description: tContact('interlocutor.form.associateExisting', 'Associer un interlocuteur existant'),
+    description: tContact(
+      'interlocutor.form.associateExisting',
+      'Associer un interlocuteur existant'
+    ),
     props: {
       checked: store.createDto.associateExisting || false,
       onCheckedChange: (checked: boolean | string) => {
@@ -66,7 +69,10 @@ export const useInterlocutorCreateFormStructure = ({
     id: 'interlocutor-position',
     label: tContact('interlocutor.form.position', 'Fonction / Position'),
     variant: FieldVariant.TEXT,
-    description: tContact('interlocutor.form.descriptions.position', "La position de l'interlocuteur dans l'entreprise"),
+    description: tContact(
+      'interlocutor.form.descriptions.position',
+      "La position de l'interlocuteur dans l'entreprise"
+    ),
     placeholder: tContact('interlocutor.form.placeholders.position', 'ex: Directeur Général'),
     error: store.errors?.position?.[0],
     props: {

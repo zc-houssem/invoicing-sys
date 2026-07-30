@@ -1,4 +1,4 @@
-import { ResponseUserDto } from './user';
+import { ResponseUserDto } from './core/user-management';
 
 export interface SigninPayload {
   usernameOrEmail: string;

@@ -1,4 +1,4 @@
-import { ResponseTaxRateDto, Tax } from '@/types';
+import { ResponseTaxRateDto } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';

@@ -7,8 +7,8 @@ import {
   TextFieldProps,
   TelFieldProps
 } from '@/components/shared/form-builder/types';
-import { SOCIAL_TITLE } from '@/api';
 import { InterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
+import { SOCIAL_TITLE } from '@/types';
 
 interface UseInterlocutorUpdateFormStructureProps {
   store: InterlocutorStore;
@@ -110,7 +110,10 @@ export const useInterlocutorUpdateFormStructure = ({
     id: 'interlocutor-position',
     label: tContact('interlocutor.form.position', 'Fonction / Position'),
     variant: FieldVariant.TEXT,
-    description: tContact('interlocutor.form.descriptions.position', "La position de l'interlocuteur dans l'entreprise"),
+    description: tContact(
+      'interlocutor.form.descriptions.position',
+      "La position de l'interlocuteur dans l'entreprise"
+    ),
     placeholder: tContact('interlocutor.form.placeholders.position', 'ex: Directeur Général'),
     error: store.errors?.position?.[0],
     props: {

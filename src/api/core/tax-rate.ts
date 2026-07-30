@@ -1,11 +1,8 @@
 import {
-  CreateBankAccountDto,
   CreateTaxRateDto,
   Paginated,
   QueryParams,
-  ResponseBankAccountDto,
   ResponseTaxRateDto,
-  UpdateBankAccountDto,
   UpdateTaxRateDto
 } from '@/types';
 import axios from '../axios';

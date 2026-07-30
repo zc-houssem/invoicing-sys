@@ -7,13 +7,13 @@ import { useIntro } from '@/context/IntroContext';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useInvoiceStore } from '@/hooks/stores/useInvoiceStore';
 import { cn } from '@/lib/utils';
-import { ServerErrorResponse } from '@/api';
 import { ResponseInvoiceDto } from '@/types/core/invoicing/invoice';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useSellingInvoiceColumns } from './columns';
 import { toast } from 'sonner';
 import { useInvoiceDeleteDialog } from './modals/InvoiceDeleteDialog';
+import { ServerErrorResponse } from '@/types';
 
 interface InvoicePortalProps {
   className?: string;

@@ -1,4 +1,4 @@
-import { ResponseUserDto } from '../user';
+import { ResponseUserDto } from './user-management';
 
 export interface ResponseConfigurationParamDto {
   id: number;
