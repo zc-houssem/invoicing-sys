@@ -1,44 +1,18 @@
 export * from './enums';
 export * from './auth';
-export * from './activity';
-export * from './app-config';
 export * from './core/address';
-export * from './article';
-export * from './cabinet';
-export * from './country';
-export * from './currency';
-export * from './default-condition';
 export * from './invoice';
-export * from './payment';
-export * from './payment-condition';
-export * from './permission';
-// export * from './quotation';
-export type { Interlocutor, PagedInterlocutor } from './interlocutor';
-export type { Firm, PagedFirm } from './firm';
-export * from './firm-interlocutor-entry';
-export * from './sequence';
-export * from './tax';
-export * from './tax-withholding';
+export * from './response';
+export * from './core/enterprise';
+export * from './core/reference-types';
 export * from './toast-validation';
 export * from './upload';
 export * from './utils';
 
-// Aliases for legacy types that were renamed to Response*Dto
-export type { ResponseCurrencyDto as Currency } from './currency';
-export type { ResponseAddressDto as Address } from './core/address';
-export type { ResponseBankAccountDto as BankAccount } from './core/bank-account';
-export type { ResponseUserDto as User } from './core/user-management';
-export type { ResponseSequenceDto as Sequential } from './sequence';
-
 export * from './response';
 export * from './core/address';
 export * from './core/bank-account';
-export * from './core/configuration';
 export * from './core/enterprise';
 export * from './core/invoicing';
-export * from './core/logger';
 export * from './core/reference-types';
-export * from './core/tax-rate';
-export * from './core/template';
-export * from './core/storage';
 export * from './core/user-management';
