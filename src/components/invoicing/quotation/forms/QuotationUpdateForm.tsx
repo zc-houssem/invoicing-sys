@@ -3,7 +3,7 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
-import { api, ServerErrorResponse } from '@/api';
+import { api } from '@/api';
 import { toast } from 'sonner';
 import { createDraftQuotationSchema } from '@/types/validations/quotation.validation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -22,6 +22,7 @@ import {
   ResponseBankAccountDto,
   ResponseInterlocutorDto,
   ResponseRefParamDto,
+  ServerErrorResponse,
   UpdateQuotationArticleDto,
   UpdateQuotationDto
 } from '@/types';

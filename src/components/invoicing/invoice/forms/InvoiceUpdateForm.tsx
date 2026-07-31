@@ -3,7 +3,7 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useInvoiceStore } from '@/hooks/stores/useInvoiceStore';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
-import { api, ServerErrorResponse } from '@/api';
+import { api } from '@/api';
 import { toast } from 'sonner';
 import { createDraftInvoiceSchema } from '@/types/validations/invoice.validation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -22,6 +22,7 @@ import {
   ResponseBankAccountDto,
   ResponseInterlocutorDto,
   ResponseRefParamDto,
+  ServerErrorResponse,
   TaxWithholdingPayload
 } from '@/types';
 import { UpdateInvoiceArticleDto, UpdateInvoiceDto } from '@/types/core/invoicing/invoice';
