@@ -9,6 +9,7 @@ import { useDebounce } from '@/hooks/other/useDebounce';
 import { DataTableConfig } from '@/components/shared/data-table/types';
 import { ResponseLogDto } from '@/types';
 import { DataTable } from '@/components/shared/data-table/data-table';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useDevLoggerColumns } from './useDevLoggerColumns';
 
 interface DevLoggerPortalProps {
@@ -35,22 +36,22 @@ export const DevLoggerPortal = ({ className }: DevLoggerPortalProps) => {
     };
   }, [t, ready]);
 
-  const [page, setPage] = React.useState(1);
-  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+  const {
+    page, setPage,
+    size, setSize,
+    sortDetails, setSortDetails,
+    searchTerm, setSearchTerm,
+    columnFilters, setColumnFilters
+  } = useDataTableState('devlogger-table', { order: false, sortKey: 'createdAt' }, 10);
 
-  const [size, setSize] = React.useState(10);
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
-  const [sortDetails, setSortDetails] = React.useState({
-    order: false, // Default to DESC for logs (newest first)
-    sortKey: 'createdAt'
-  });
   const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
     sortDetails,
     500
   );
 
-  const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
   const {

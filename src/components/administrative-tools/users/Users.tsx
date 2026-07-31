@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { api } from '@/api';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useUserColumns } from './columns';
 import { DataTable } from '@/components/shared/data-table/data-table';
@@ -19,6 +19,7 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
 import { useUserStore } from '@/hooks/stores/useUserStore';
 import { useDebounce } from '@/hooks/other/useDebounce';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
 
 interface UsersProps {
   className?: string;
@@ -26,7 +27,6 @@ interface UsersProps {
 
 export const Users = ({ className }: UsersProps) => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   const { setIntro, clearIntro } = useIntro();
   const { t, ready } = useTranslation('user-management');
@@ -47,22 +47,27 @@ export const Users = ({ className }: UsersProps) => {
 
   const userStore = useUserStore();
 
-  const [page, setPage] = React.useState(1);
-  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+  const {
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters
+  } = useDataTableState('users-table', { order: true, sortKey: 'id' });
 
-  const [size, setSize] = React.useState(10);
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
-  const [sortDetails, setSortDetails] = React.useState({
-    order: true,
-    sortKey: 'id'
-  });
   const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
     sortDetails,
     500
   );
 
-  const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
   const {

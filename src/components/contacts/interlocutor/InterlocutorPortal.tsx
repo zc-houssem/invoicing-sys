@@ -21,6 +21,7 @@ import { Unlink } from 'lucide-react';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { useMutation } from '@tanstack/react-query';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
 
 interface InterlocutorPortalProps {
   className?: string;
@@ -48,7 +49,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
         { title: tCommon('menu.contacts.title'), href: '/contacts' },
         { title: tCommon('menu.contacts.subs.interlocutors') }
       ]);
-      
+
       return () => {
         clearIntro?.();
         clearRoutes?.();
@@ -58,25 +59,27 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
 
   const interlocutorStore = useInterlocutorStore();
 
-  const [page, setPage] = React.useState(1);
-  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+    const {
+    page, setPage,
+    size, setSize,
+    sortDetails, setSortDetails,
+    searchTerm, setSearchTerm,
+    columnFilters, setColumnFilters
+  } = useDataTableState('interlocutorportal-table', { order: true, sortKey: 'id' });
 
-  const [size, setSize] = React.useState(10);
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
-  const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
   const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
     sortDetails,
     500
   );
 
-  const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
-
-  const [columnFilters, setColumnFilters] = React.useState<Record<string, string>>({});
-  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<
-    Record<string, string>
-  >(columnFilters, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<Record<string, string>>(
+    columnFilters,
+    500
+  );
 
   const filterString = React.useMemo(
     () => buildDataTableFilterString('', debouncedColumnFilters),
@@ -145,16 +148,15 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     }
   });
 
-  const { deleteInterlocutorDialog, openDeleteInterlocutorDialog } =
-    useInterlocutorDeleteDialog(
-      `${interlocutorStore?.response?.firstName || ''} ${interlocutorStore?.response?.lastName || ''}`,
-      () => {
-        if (interlocutorStore?.response?.id) {
-          removeInterlocutor(interlocutorStore.response.id);
-        }
-      },
-      isDeletePending
-    );
+  const { deleteInterlocutorDialog, openDeleteInterlocutorDialog } = useInterlocutorDeleteDialog(
+    `${interlocutorStore?.response?.firstName || ''} ${interlocutorStore?.response?.lastName || ''}`,
+    () => {
+      if (interlocutorStore?.response?.id) {
+        removeInterlocutor(interlocutorStore.response.id);
+      }
+    },
+    isDeletePending
+  );
 
   const { disassociateInterlocutorDialog, openDisassociateInterlocutorDialog } =
     useInterlocutorDisassociateDialog(
@@ -179,16 +181,18 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     },
     updateCallback: (entity: ResponseInterlocutorDto) => {
       interlocutorStore.set('response', entity);
-      
+
       let position = '';
       let enterpriseInterlocutorId = undefined;
-      
+
       if (enterpriseId) {
-        const ei = entity.enterpriseInterlocutors?.find((e: any) => e.enterpriseId === enterpriseId);
+        const ei = entity.enterpriseInterlocutors?.find(
+          (e: any) => e.enterpriseId === enterpriseId
+        );
         enterpriseInterlocutorId = ei?.id;
         position = ei?.position || '';
       }
-      
+
       interlocutorStore.set('enterpriseInterlocutorId', enterpriseInterlocutorId);
       interlocutorStore.set('updateDto', {
         title: entity.title,
@@ -225,22 +229,36 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
       interlocutorStore.set('response', entity);
       openDeleteInterlocutorDialog();
     },
-    additionalActions: enterpriseId ? {
-      0: [
-        {
-          actionLabel: tCommon('commands.unassociate'),
-          actionIcon: <Unlink className="size-4" />,
-          actionCallback: (entity: ResponseInterlocutorDto) => {
-            const ei = entity.enterpriseInterlocutors?.find((e: any) => e.enterpriseId === enterpriseId);
-            if (ei?.id) {
-              interlocutorStore.set('response', entity);
-              interlocutorStore.set('enterpriseInterlocutorId', ei.id);
-              openDisassociateInterlocutorDialog();
+    additionalActions: enterpriseId
+      ? {
+          0: [
+            {
+              actionLabel: tCommon('commands.unassociate'),
+              actionIcon: <Unlink className="size-4" />,
+              actionCallback: (entity: ResponseInterlocutorDto) => {
+                const ei = entity.enterpriseInterlocutors?.find(
+                  (e: any) => e.enterpriseId === enterpriseId
+                );
+                if (ei?.id) {
+                  interlocutorStore.set('response', entity);
+                  interlocutorStore.set('enterpriseInterlocutorId', ei.id);
+                  openDisassociateInterlocutorDialog();
+                }
+              }
             }
-          }
+          ]
         }
-      ]
-    } : undefined
+      : undefined,
+    exportConfig: {
+      enabled: true,
+      filename: 'Interlocutors',
+      fetchAll: () =>
+        api.core.interlocutor.findAll({
+          sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+          search: debouncedSearchTerm,
+          filter: filterString
+        })
+    }
   };
 
   const { createInterlocutorSheet, openCreateInterlocutorSheet, closeCreateInterlocutorSheet } =
@@ -251,7 +269,15 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
 
   const columns = useInterlocutorColumns(context, enterpriseId);
 
-  const isPending = isFetchPending || isDeletePending || isDisassociatePending || paging || resizing || searching || sorting || filtering;
+  const isPending =
+    isFetchPending ||
+    isDeletePending ||
+    isDisassociatePending ||
+    paging ||
+    resizing ||
+    searching ||
+    sorting ||
+    filtering;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>

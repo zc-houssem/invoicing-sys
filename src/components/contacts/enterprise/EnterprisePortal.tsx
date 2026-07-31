@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
 import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { EnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
@@ -44,25 +45,27 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
 
   const enterpriseStore = useEnterpriseStore();
 
-  const [page, setPage] = React.useState(1);
-  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+  const {
+    page, setPage,
+    size, setSize,
+    sortDetails, setSortDetails,
+    searchTerm, setSearchTerm,
+    columnFilters, setColumnFilters
+  } = useDataTableState('enterprise-table');
 
-  const [size, setSize] = React.useState(10);
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
 
-  const [sortDetails, setSortDetails] = React.useState({ order: true, sortKey: 'id' });
   const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
     sortDetails,
     500
   );
 
-  const [searchTerm, setSearchTerm] = React.useState('');
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
-
-  const [columnFilters, setColumnFilters] = React.useState<Record<string, string>>({});
-  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<
-    Record<string, string>
-  >(columnFilters, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<Record<string, string>>(
+    columnFilters,
+    500
+  );
 
   const filterString = React.useMemo(
     () => buildDataTableFilterString('system||$eq||0', debouncedColumnFilters),

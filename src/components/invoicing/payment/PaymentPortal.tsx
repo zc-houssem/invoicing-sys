@@ -14,6 +14,7 @@ import { getErrorMessage } from '@/utils/errors';
 import { PaymentDeleteDialog } from './dialogs/PaymentDeleteDialog';
 import { cn } from '@/lib/utils';
 import { ResponsePaymentDto } from '@/types/core/invoicing/payment';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
 
 interface PaymentPortalProps {
   className?: string;
