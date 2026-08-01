@@ -12,8 +12,8 @@ const useSocket = (path: string) => {
   React.useEffect(() => {
     const newSocket = io(SOCKET_URL || '', {
       path,
-      extraHeaders: {
-        Authorization: `Bearer ${authPersistStore.accessToken}`
+      auth: {
+        token: authPersistStore.accessToken
       }
     });
 

@@ -30,7 +30,8 @@
         "interlocutor": "Sélectionnez l'interlocuteur pour ce devis. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
         "generalConditions": "Entrez les conditions générales pour ce devis. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
         "currency": "Sélectionnez la devise pour ce devis.",
-        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour ce devis."
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour ce devis.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise."
       }
     },
     "table": {
@@ -86,7 +87,8 @@
         "generalConditions": "Entrez les conditions générales pour cette facture. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
         "currency": "Sélectionnez la devise pour cette facture.",
         "bankAccount": "Sélectionnez le compte bancaire à utiliser pour cette facture.",
-        "taxWithholding": "Sélectionnez la retenue à la source à appliquer à cette facture."
+        "taxWithholding": "Sélectionnez la retenue à la source à appliquer à cette facture.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise."
       }
     },
     "table": {

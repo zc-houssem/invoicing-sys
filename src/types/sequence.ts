@@ -8,14 +8,16 @@ export enum Sequences {
 
 export interface ResponseSequenceDto extends DatabaseEntity {
   id: number;
-  label: string;
+  type: Sequences;
   prefix: string;
   dateFormat: DateFormat;
-  next: number;
+  nextValue: number;
+  padding: number;
 }
 
 export interface UpdateSequentialDto {
   prefix?: string;
   dateFormat?: DateFormat;
-  next?: number;
+  nextValue?: number;
+  padding?: number;
 }

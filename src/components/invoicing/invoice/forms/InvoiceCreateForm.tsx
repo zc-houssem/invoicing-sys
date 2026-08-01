@@ -1,10 +1,13 @@
 import { useInvoiceCreateFormStructure } from './useInvoiceCreateFormStructure';
+import { useActiveCompanyStore } from '@/hooks/stores/useActiveCompanyStore';
+import { Sequences } from '@/types/sequence';
+import { useSequence } from '@/hooks/useSequence';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
 import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
 import { useInvoiceStore } from '@/hooks/stores/useInvoiceStore';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
-import { api, ServerErrorResponse } from '@/api';
+import { api } from '@/api';
 import { toast } from 'sonner';
 import { createDraftInvoiceSchema } from '@/types/validations/invoice.validation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -21,6 +24,7 @@ import {
   ResponseBankAccountDto,
   ResponseInterlocutorDto,
   ResponseRefParamDto,
+  ServerErrorResponse,
   TaxWithholdingPayload
 } from '@/types';
 import { CreateInvoiceArticleDto, CreateInvoiceDto } from '@/types/core/invoicing/invoice';
@@ -123,6 +127,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
   );
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
+  const { activeCompanyId } = useActiveCompanyStore();
+  useSequence(activeCompanyId, Sequences.INVOICE, (preview: string) => invoiceStore.set('sequencePreview', preview));
 
   const { mutate: createInvoice, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateInvoiceDto) => api.invoicing.invoice.create(data),

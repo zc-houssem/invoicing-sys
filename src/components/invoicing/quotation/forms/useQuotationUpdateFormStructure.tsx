@@ -121,6 +121,17 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
+  const sequenceField: Field<TextFieldProps> = {
+    id: 'sequence',
+    label: t('quotation.form.sequence', { defaultValue: 'Sequence' }),
+    description: t('quotation.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
+    variant: FieldVariant.TEXT,
+    props: {
+      disabled: true,
+      value: store.response?.sequence || 'Loading...'
+    }
+  };
+
   const enterpriseField: Field<SelectFieldProps> = {
     id: 'enterprise',
     label: t('quotation.form.enterprise'),
@@ -311,7 +322,7 @@ export const useQuotationUpdateFormStructure = ({
             fields: [dateField, dueDateField]
           },
           {
-            fields: [objectField]
+            fields: [objectField, sequenceField]
           },
           {
             fields: [enterpriseField, interlocutorField]

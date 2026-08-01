@@ -305,6 +305,7 @@ export const useQuotationCreateFormStructure = ({
   const sequenceField: Field<TextFieldProps> = {
     id: 'sequence',
     label: t('quotation.form.sequence', { defaultValue: 'Sequence' }),
+    description: t('quotation.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
     variant: FieldVariant.TEXT,
     required: false,
     props: {

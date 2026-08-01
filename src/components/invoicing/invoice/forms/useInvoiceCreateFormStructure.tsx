@@ -309,6 +309,7 @@ export const useInvoiceCreateFormStructure = ({
   const sequenceField: Field<TextFieldProps> = {
     id: 'sequence',
     label: t('invoice.form.sequence', { defaultValue: 'Sequence' }),
+    description: t('invoice.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
     variant: FieldVariant.TEXT,
     required: false,
     props: {

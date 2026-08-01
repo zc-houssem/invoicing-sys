@@ -30,7 +30,8 @@
         "interlocutor": "Select the interlocutor for this quotation. The options available will depend on the enterprise you have selected.",
         "generalConditions": "Enter the general conditions for this quotation. You can use the editor to format the text as needed.",
         "currency": "Select the currency for this quotation.",
-        "bankAccount": "Select the bank account to be used for this quotation."
+        "bankAccount": "Select the bank account to be used for this quotation.",
+        "sequence": "Auto-generated sequence based on the company's configuration."
       }
     },
     "table": {
@@ -86,7 +87,8 @@
         "generalConditions": "Enter the general conditions for this invoice. You can use the editor to format the text as needed.",
         "currency": "Select the currency for this invoice.",
         "bankAccount": "Select the bank account to be used for this invoice.",
-        "taxWithholding": "Select the tax withholding to be applied to this invoice."
+        "taxWithholding": "Select the tax withholding to be applied to this invoice.",
+        "sequence": "Auto-generated sequence based on the company's configuration."
       }
     },
     "table": {

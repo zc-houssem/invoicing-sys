@@ -5,6 +5,7 @@ import { upload } from './upload';
 import { user } from './admin/users';
 import { core } from './core';
 import { invoicing } from './invoicing';
+import { sequence } from './sequence';
 
 export const api = {
   admin,
@@ -13,5 +14,6 @@ export const api = {
   upload,
   user,
   core,
-  invoicing
+  invoicing,
+  sequence
 };

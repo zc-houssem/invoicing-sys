@@ -122,6 +122,17 @@ export const useInvoiceUpdateFormStructure = ({
     }
   };
 
+  const sequenceField: Field<TextFieldProps> = {
+    id: 'sequence',
+    label: t('invoice.form.sequence', { defaultValue: 'Sequence' }),
+    description: t('invoice.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
+    variant: FieldVariant.TEXT,
+    props: {
+      disabled: true,
+      value: store.response?.sequence || 'Loading...'
+    }
+  };
+
   const enterpriseField: Field<SelectFieldProps> = {
     id: 'enterprise',
     label: t('invoice.form.enterprise'),
@@ -312,7 +323,7 @@ export const useInvoiceUpdateFormStructure = ({
             fields: [dateField, dueDateField]
           },
           {
-            fields: [objectField]
+            fields: [objectField, sequenceField]
           },
           {
             fields: [enterpriseField, interlocutorField]
@@ -448,7 +459,30 @@ export const useInvoiceUpdateFormStructure = ({
           },
           {
             fields: [taxWithholdingField]
-          }
+          },
+          ...(store.response?.quotationId ? [
+            {
+              fields: [
+                {
+                  id: 'quotationLink',
+                  variant: FieldVariant.CUSTOM,
+                  props: {
+                    children: (
+                      <div className="flex flex-col gap-2 mt-4">
+                        <span className="font-bold text-sm">{t('invoice.form.fromQuotation', 'Generated from quotation')}</span>
+                        <a 
+                          href={`/selling/quotations/${store.response?.quotationId}`}
+                          className="text-primary hover:underline text-sm"
+                        >
+                          {t('invoice.form.viewQuotation', 'View Quotation #')}{store.response?.quotationId}
+                        </a>
+                      </div>
+                    )
+                  }
+                } as Field<CustomFieldProps>
+              ]
+            }
+          ] : [])
         ]
       }
     ]

@@ -16,6 +16,12 @@ export const baseInvoiceSchema = z
     }),
     interlocutorId: z.number({
       errorMap: () => ({ message: 'Interlocutor is required' })
+    }),
+    currencyId: z.number({
+      errorMap: () => ({ message: 'Currency is required' })
+    }),
+    bankAccountId: z.number({
+      errorMap: () => ({ message: 'Bank account is required' })
     })
   })
   .refine((data) => data.dueDate >= data.date, {
