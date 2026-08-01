@@ -205,16 +205,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('menu.settings.subs.account'),
             url: '/settings/account/profile',
             icon: UserCog
-          },
-          {
-            title: t('menu.settings.subs.system'),
-            url: '/settings/system/sequence',
-            icon: FileCog
-          },
-          {
-            title: t('menu.settings.subs.other'),
-            url: '#',
-            icon: Wrench
           }
         ]
       }

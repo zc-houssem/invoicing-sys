@@ -18,54 +18,60 @@ interface LayoutProps {
 
 export const Layout = ({ children, className }: LayoutProps) => {
   const [routes, setRoutes] = React.useState<BreadcrumbRoute[]>([]);
-  const breadcrumbContext = {
+  const clearRoutes = React.useCallback(() => {
+    setRoutes([]);
+  }, []);
+  const breadcrumbContext = React.useMemo(() => ({
     routes,
     setRoutes,
-    clearRoutes: () => {
-      setRoutes?.([]);
-    }
-  };
+    clearRoutes
+  }), [routes, clearRoutes]);
 
   const [content, setContent] = React.useState<React.ReactNode>(null);
-  const footerContext = {
+  const clearContent = React.useCallback(() => {
+    setContent(null);
+  }, []);
+  const footerContext = React.useMemo(() => ({
     content,
     setContent,
-    clearContent: () => {
-      setContent?.(null);
-    }
-  };
+    clearContent
+  }), [content, clearContent]);
 
   const [title, setTitle] = React.useState<string>('');
   const [description, setDescription] = React.useState<string>('');
   const [floating, setFloating] = React.useState<React.ReactNode>(null);
-  const introContext = {
+  const setIntro = React.useCallback((newTitle: string, newDescription?: string) => {
+    setTitle(newTitle);
+    setDescription(newDescription || '');
+  }, []);
+  const clearIntro = React.useCallback(() => {
+    setTitle('');
+    setDescription('');
+  }, []);
+  const clearFloating = React.useCallback(() => {
+    setFloating(null);
+  }, []);
+  const introContext = React.useMemo(() => ({
     title,
     description,
     floating,
-    setIntro: (title: string, description?: string) => {
-      setTitle(title);
-      setDescription(description || '');
-    },
+    setIntro,
     setFloating,
-    clearIntro: () => {
-      setTitle('');
-      setDescription('');
-    },
-    clearFloating: () => {
-      setFloating(null);
-    }
-  };
+    clearIntro,
+    clearFloating
+  }), [title, description, floating, setIntro, clearIntro, clearFloating]);
 
   const isMobile = useMediaQuery('(max-width: 425px)');
 
   const [enableMainOverflow, setEnableMainOverflow] = React.useState<boolean>(false);
-  const uiContext = {
+  const clearEnableMainOverflow = React.useCallback(() => {
+    setEnableMainOverflow(false);
+  }, []);
+  const uiContext = React.useMemo(() => ({
     enableMainOverflow,
     setEnableMainOverflow,
-    clearEnableMainOverflow: () => {
-      setEnableMainOverflow?.(false);
-    }
-  };
+    clearEnableMainOverflow
+  }), [enableMainOverflow, clearEnableMainOverflow]);
 
   return (
     <div
