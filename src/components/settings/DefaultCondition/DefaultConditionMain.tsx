@@ -14,7 +14,6 @@ import { ACTIVITY_TYPE } from '@/types/enums/activity-type';
 import { Spinner } from '@/components/shared';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useRouter } from 'next/router';
-import ContentSection from '@/components/shared/ContentSection';
 
 interface DefaultConditionMainProps {
   className?: string;
@@ -70,71 +69,66 @@ export const DefaultConditionMain: React.FC<DefaultConditionMainProps> = ({ clas
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
-      <ContentSection
-        title={tSettings('default_condition.singular')}
-        desc={tSettings('default_condition.card_description')}
-        childrenClassName="overflow-auto">
-        <div>
-          <div className="mt-5 px-2">
-            <h1 className="font-medium text-lg border-b pb-2">
-              {tSettings('default_condition.section.selling')} :
-            </h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-              {defaultConditionManager.defaultConditions
-                ?.filter((condition) => {
-                  return condition.activity_type == ACTIVITY_TYPE.SELLING;
-                })
-                .map((condition) => {
-                  return (
-                    <DefaultConditionItem
-                      key={condition.id}
-                      title={tSettings(`default_condition.elements.${condition.document_type}`)}
-                      value={condition.value || ''}
-                      onChange={(value) => {
-                        defaultConditionManager.setDefaultConditionById(condition.id || 0, value);
-                        refetchDefaultConditions();
-                      }}
-                    />
-                  );
-                })}
-            </div>
-          </div>
-          <div className="mt-5 px-2">
-            <h1 className="font-medium text-lg border-b pb-2">
-              {tSettings('default_condition.section.buying')} :
-            </h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-              {defaultConditionManager.defaultConditions
-                ?.filter((condition) => {
-                  return condition.activity_type == ACTIVITY_TYPE.BUYING;
-                })
-                .map((condition) => {
-                  return (
-                    <DefaultConditionItem
-                      key={condition.id}
-                      title={tSettings(`default_condition.elements.${condition.document_type}`)}
-                      value={condition.value || ''}
-                      onChange={(value) => {
-                        defaultConditionManager.setDefaultConditionById(condition.id || 0, value);
-                        refetchDefaultConditions();
-                      }}
-                    />
-                  );
-                })}
-            </div>
-          </div>
-
-          <div className="flex justify-end mt-5">
-            <Button className="ml-3" onClick={handleSubmitUpdate}>
-              {tCommon('commands.save')}
-              <Spinner className="ml-2" size={'small'} show={isUpdatePending} />
-            </Button>
-            <Button variant="secondary" className="border-2 ml-3">
-              {tCommon('commands.cancel')}
-            </Button>
+      <div>
+        <div className="mt-5 px-2">
+          <h1 className="font-medium text-lg border-b pb-2">
+            {tSettings('default_condition.section.selling')} :
+          </h1>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            {defaultConditionManager.defaultConditions
+              ?.filter((condition) => {
+                return condition.activity_type == ACTIVITY_TYPE.SELLING;
+              })
+              .map((condition) => {
+                return (
+                  <DefaultConditionItem
+                    key={condition.id}
+                    title={tSettings(`default_condition.elements.${condition.document_type}`)}
+                    value={condition.value || ''}
+                    onChange={(value) => {
+                      defaultConditionManager.setDefaultConditionById(condition.id || 0, value);
+                      refetchDefaultConditions();
+                    }}
+                  />
+                );
+              })}
           </div>
         </div>
-      </ContentSection>
+        <div className="mt-5 px-2">
+          <h1 className="font-medium text-lg border-b pb-2">
+            {tSettings('default_condition.section.buying')} :
+          </h1>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            {defaultConditionManager.defaultConditions
+              ?.filter((condition) => {
+                return condition.activity_type == ACTIVITY_TYPE.BUYING;
+              })
+              .map((condition) => {
+                return (
+                  <DefaultConditionItem
+                    key={condition.id}
+                    title={tSettings(`default_condition.elements.${condition.document_type}`)}
+                    value={condition.value || ''}
+                    onChange={(value) => {
+                      defaultConditionManager.setDefaultConditionById(condition.id || 0, value);
+                      refetchDefaultConditions();
+                    }}
+                  />
+                );
+              })}
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-5">
+          <Button className="ml-3" onClick={handleSubmitUpdate}>
+            {tCommon('commands.save')}
+            <Spinner className="ml-2" size={'small'} show={isUpdatePending} />
+          </Button>
+          <Button variant="secondary" className="border-2 ml-3">
+            {tCommon('commands.cancel')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
