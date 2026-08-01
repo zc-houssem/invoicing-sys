@@ -3,8 +3,9 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import SidebarNav from '../sidebar-nav';
-import { Building, Landmark, User } from 'lucide-react';
+import { Building, Landmark, User, MapPin, HashIcon, MessageCircle } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
+import { useUI } from '@/context/UIContext';
 
 interface InformationalSettingsProps {
   className?: string;
@@ -23,11 +24,14 @@ export const InformationalSettings: React.FC<InformationalSettingsProps> = ({
   const { t: tSettings } = useTranslation('settings');
 
   const { setIntro, clearIntro } = useIntro();
+  const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
 
   React.useEffect(() => {
     setIntro?.(tSettings('account.singular'), tSettings('account.description'));
+    setEnableMainOverflow?.(true);
     return () => {
       clearIntro?.();
+      clearEnableMainOverflow?.();
     };
   }, [router.locale]);
 
@@ -47,16 +51,31 @@ export const InformationalSettings: React.FC<InformationalSettingsProps> = ({
       title: tCommon('settings.account.bank_accounts'),
       icon: <Landmark size={18} />,
       href: '/settings/account/banks'
+    },
+    {
+      title: tCommon('menu.contacts.subs.addresses'),
+      icon: <MapPin size={18} />,
+      href: '/settings/account/my-addresses'
+    },
+    {
+      title: tCommon('settings.system.sequence'),
+      icon: <HashIcon size={18} />,
+      href: '/settings/account/sequence'
+    },
+    {
+      title: tCommon('settings.system.default_condition'),
+      icon: <MessageCircle size={18} />,
+      href: '/settings/account/conditions'
     }
   ];
 
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
-      <div className="flex flex-col flex-1 overflow-hidden lg:flex-row">
+    <div className={cn('flex flex-col flex-1', className)}>
+      <div className="flex flex-col flex-1 lg:flex-row gap-4">
         <aside className="flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-7 overflow-hidden">{children}</div>
+        <div className="flex flex-col flex-7">{children}</div>
       </div>
     </div>
   );

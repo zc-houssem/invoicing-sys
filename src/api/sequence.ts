@@ -1,4 +1,4 @@
-import { ResponseSequenceDto, Sequences, UpdateSequentialDto } from '@/types/sequence';
+import { ResponseSequenceDto, Sequences, UpdateSequentialDto, BatchUpdateSequenceDto } from '@/types/sequence';
 import axios from './axios';
 
 const findByEnterprise = async (enterpriseId: number): Promise<ResponseSequenceDto[]> => {
@@ -23,8 +23,17 @@ const updateSequence = async (
   return data;
 };
 
+const updateSequenceBatch = async (
+  enterpriseId: number,
+  updateDto: BatchUpdateSequenceDto
+): Promise<ResponseSequenceDto[]> => {
+  const { data } = await axios.put(`/sequences/${enterpriseId}/batch`, updateDto);
+  return data;
+};
+
 export const sequence = {
   findByEnterprise,
   getNextSequencePreview,
-  updateSequence
+  updateSequence,
+  updateSequenceBatch
 };

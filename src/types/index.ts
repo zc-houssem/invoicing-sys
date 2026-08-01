@@ -20,3 +20,4 @@ export * from './core/user-management';
 export * from './core/configuration';
 export * from './core/tax-rate';
 export * from './core/template';
+export * from './sequence';

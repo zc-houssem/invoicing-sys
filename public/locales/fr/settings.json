@@ -1,1 +1,32 @@
-{}
+{
+  "sequence": {
+    "card_description": "Configurez les paramètres de la séquence numérique.",
+    "builder_description": "Définissez comment le numéro de séquence généré automatiquement sera formaté.",
+    "elements": {
+      "quotation": "Séquence de Devis",
+      "invoice": "Séquence de Facture"
+    },
+    "attributes": {
+      "prefix": {
+        "label": "Préfixe",
+        "placeholder": "ex: FAC",
+        "description": "Une chaîne de caractères statique avant le numéro."
+      },
+      "padding": {
+        "label": "Rembourrage",
+        "placeholder": "0",
+        "description": "Nombre de zéros au début (ex: 001)."
+      },
+      "dynamic_sequence": {
+        "label": "Format de Date",
+        "placeholder": "Sélectionnez un format",
+        "description": "La partie date dynamique de la séquence."
+      },
+      "next": {
+        "label": "Numéro Suivant",
+        "placeholder": "1",
+        "description": "La prochaine valeur à incrémenter automatiquement."
+      }
+    }
+  }
+}

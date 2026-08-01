@@ -38,12 +38,28 @@ export const useSequence = (enterpriseId?: number, enabled: boolean = true) => {
     }
   });
 
+  const { mutateAsync: updateSequenceBatchAsync, isPending: isBatchUpdating } = useMutation({
+    mutationFn: (dto: import('@/types/sequence').BatchUpdateSequenceDto) => {
+      if (!enterpriseId) throw new Error('Enterprise ID is required');
+      return api.sequence.updateSequenceBatch(enterpriseId, dto);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sequences', enterpriseId] });
+      toast.success('Séquence(s) mise(s) à jour avec succès');
+    },
+    onError: () => {
+      toast.error('Erreur lors de la mise à jour des séquences');
+    }
+  });
+
   return {
     sequences,
     isSequencesPending,
     refetchSequences,
     updateSequenceAsync,
-    isUpdating
+    updateSequenceBatchAsync,
+    isUpdating,
+    isBatchUpdating
   };
 };
 

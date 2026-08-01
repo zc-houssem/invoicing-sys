@@ -1,9 +1,14 @@
-import { DateFormat } from './enums';
 import { DatabaseEntity } from './response/database-entity';
 
 export enum Sequences {
   INVOICE = 'invoice',
   QUOTATION = 'quotation'
+}
+
+export enum DateFormat {
+  YYYY = 'yyyy',
+  YYMM = 'yy/MM',
+  YYYYMM = 'yyyy/MM'
 }
 
 export interface ResponseSequenceDto extends DatabaseEntity {
@@ -20,4 +25,12 @@ export interface UpdateSequentialDto {
   dateFormat?: DateFormat;
   nextValue?: number;
   padding?: number;
+}
+
+export interface BatchUpdateSequenceItemDto extends UpdateSequentialDto {
+  type: Sequences;
+}
+
+export interface BatchUpdateSequenceDto {
+  sequences: BatchUpdateSequenceItemDto[];
 }

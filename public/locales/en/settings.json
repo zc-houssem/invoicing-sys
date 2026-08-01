@@ -1,1 +1,32 @@
-{}
+{
+  "sequence": {
+    "card_description": "Configure the numerical sequence settings.",
+    "builder_description": "Define how the auto-generated sequence number will be formatted.",
+    "elements": {
+      "quotation": "Quotation Sequence",
+      "invoice": "Invoice Sequence"
+    },
+    "attributes": {
+      "prefix": {
+        "label": "Prefix",
+        "placeholder": "e.g., INV",
+        "description": "A static string before the sequence number."
+      },
+      "padding": {
+        "label": "Padding",
+        "placeholder": "0",
+        "description": "Number of leading zeros (e.g., 001)."
+      },
+      "dynamic_sequence": {
+        "label": "Date Format",
+        "placeholder": "Select a format",
+        "description": "The dynamic date part of the sequence."
+      },
+      "next": {
+        "label": "Next Number",
+        "placeholder": "1",
+        "description": "The next auto-incrementing value."
+      }
+    }
+  }
+}
