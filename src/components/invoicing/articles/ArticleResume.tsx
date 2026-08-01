@@ -152,14 +152,16 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
     <div className={cn('flex flex-col gap-2', className)}>
       {includeHeader && <span className="font-bold text-xl">{t('common.financialResume')}</span>}
       <table className="w-full mt-2">
-        {data.map((item, index) => (
-          <tr key={index}>
-            <td className="text-start">
-              <Label className="text-xs font-thin">{item.label}</Label>
-            </td>
-            <td className="text-muted-foreground text-end text-xs">{item.value || '-'}</td>
-          </tr>
-        ))}
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              <td className="text-start">
+                <Label className="text-xs font-thin">{item.label}</Label>
+              </td>
+              <td className="text-muted-foreground text-end text-xs">{item.value || '-'}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
       {taxWithholding && (
         <div className="flex items-center gap-2 mt-2">
