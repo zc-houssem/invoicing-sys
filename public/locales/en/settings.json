@@ -28,5 +28,13 @@
         "description": "The next auto-incrementing value."
       }
     }
+  },
+  "default_condition": {
+    "action_edit_success": "Default conditions updated successfully",
+    "action_edit_failure": "Failed to update default conditions",
+    "elements": {
+      "quotation": "Quotation Default Conditions",
+      "invoice": "Invoice Default Conditions"
+    }
   }
 }

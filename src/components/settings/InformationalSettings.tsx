@@ -112,7 +112,7 @@ export const InformationalSettings: React.FC<InformationalSettingsProps> = ({
         <aside className="flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-7">{children}</div>
+        <div className="flex flex-col flex-7 min-w-0">{children}</div>
       </div>
     </div>
   );

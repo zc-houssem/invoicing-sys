@@ -21,6 +21,10 @@ import { QuotationArticlesField } from './QuotationArticlesField';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
 import { api } from '@/api';
+import { DefaultConditionActions } from '@/components/invoicing-commons/DefaultConditionActions';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { Sequences } from '@/types/sequence';
+import { toast } from 'sonner';
 
 interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
@@ -53,6 +57,7 @@ export const useQuotationUpdateFormStructure = ({
   onAttachmentsUpload
 }: useQuotationUpdateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
+  const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
 
@@ -184,10 +189,10 @@ export const useQuotationUpdateFormStructure = ({
     }
   };
 
-  const generalConditionsField: Field<TextareaFieldProps> = {
+  const generalConditionsField: Field<EditorFieldProps> = {
     id: 'generalConditions',
     label: t('quotation.form.generalConditions'),
-    variant: FieldVariant.TEXTAREA,
+    variant: FieldVariant.EDITOR,
     required: true,
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
@@ -198,8 +203,46 @@ export const useQuotationUpdateFormStructure = ({
       onChange: (value) => {
         store.setNested('updateDto.generalConditions', value);
         store.setNested('updateDtoErrors.generalConditions', []);
-      },
-      rows: 10
+      }
+    }
+  };
+
+  const handleInsertDefaultConditions = async () => {
+    if (!activeCompanyId) {
+      toast.error('No active company selected.');
+      return;
+    }
+    if (!isUpdatable || isUpdatePending) return;
+    try {
+      const conditions = await api.defaultCondition.find(activeCompanyId);
+      const match = conditions.find((c) => c.document_type === Sequences.QUOTATION);
+      if (match && match.value) {
+        store.setNested('updateDto.generalConditions', match.value);
+        toast.success('Default conditions inserted successfully.');
+      } else {
+        toast.error('No default conditions found for quotations.');
+      }
+    } catch (e) {
+      toast.error('Failed to load default conditions.');
+    }
+  };
+
+  const handleClearGeneralConditions = () => {
+    if (!isUpdatable || isUpdatePending) return;
+    store.setNested('updateDto.generalConditions', '{}');
+  };
+
+  const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
+    id: 'defaultGeneralConditionsActions',
+    variant: FieldVariant.CUSTOM,
+    hidden: !isUpdatable,
+    props: {
+      children: (
+        <DefaultConditionActions
+          onInsert={handleInsertDefaultConditions}
+          onClear={handleClearGeneralConditions}
+        />
+      )
     }
   };
 
@@ -290,6 +333,9 @@ export const useQuotationUpdateFormStructure = ({
                   rows: [
                     {
                       fields: [generalConditionsField]
+                    },
+                    {
+                      fields: [defaultGeneralConditionsActionsField]
                     }
                   ]
                 }

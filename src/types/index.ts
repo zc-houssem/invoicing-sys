@@ -22,3 +22,4 @@ export * from './core/configuration';
 export * from './core/tax-rate';
 export * from './core/template';
 export * from './sequence';
+export * from './default-condition';

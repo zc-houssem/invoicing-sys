@@ -117,7 +117,9 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
   const { activeCompanyId } = useActiveCompanyContext();
-  useSequence(activeCompanyId, Sequences.QUOTATION, (preview: string) => quotationStore.set('sequencePreview', preview));
+  useSequence(activeCompanyId, Sequences.QUOTATION, (preview: string) =>
+    quotationStore.set('sequencePreview', preview)
+  );
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),

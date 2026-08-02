@@ -10,8 +10,7 @@ import {
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
-  TextFieldProps,
-  TextareaFieldProps
+  TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { QuotationStore } from '@/hooks/stores/useQuotationStore';
@@ -21,8 +20,11 @@ import { QuotationArticlesField } from './QuotationArticlesField';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
-import { Button } from '@/components/ui/button';
-import { BrushCleaning, Newspaper } from 'lucide-react';
+import { DefaultConditionActions } from '@/components/invoicing-commons/DefaultConditionActions';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { api } from '@/api';
+import { Sequences } from '@/types/sequence';
+import { toast } from 'sonner';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
@@ -53,6 +55,7 @@ export const useQuotationCreateFormStructure = ({
   onAttachmentsUpload
 }: useQuotationCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
+  const { activeCompanyId } = useActiveCompanyContext();
 
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
@@ -142,7 +145,6 @@ export const useQuotationCreateFormStructure = ({
         store.setNested('createDtoErrors.enterpriseId', []);
 
         const enterprise = enterprises.find((ent) => ent.id === numericValue);
-        console.log('Selected enterprise:', enterprise);
         enterpriseStore.set('response', enterprise);
       },
       options: enterprises.map((ent) => ({
@@ -171,10 +173,10 @@ export const useQuotationCreateFormStructure = ({
     }
   };
 
-  const generalConditionsField: Field<TextareaFieldProps> = {
+  const generalConditionsField: Field<EditorFieldProps> = {
     id: 'generalConditions',
     label: t('quotation.form.generalConditions'),
-    variant: FieldVariant.TEXTAREA,
+    variant: FieldVariant.EDITOR,
     required: true,
     error: store.createDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
@@ -184,9 +186,31 @@ export const useQuotationCreateFormStructure = ({
       onChange: (value) => {
         store.setNested('createDto.generalConditions', value);
         store.setNested('createDtoErrors.generalConditions', []);
-      },
-      rows: 10
+      }
     }
+  };
+
+  const handleInsertDefaultConditions = async () => {
+    if (!activeCompanyId) {
+      toast.error('No active company selected.');
+      return;
+    }
+    try {
+      const conditions = await api.defaultCondition.find(activeCompanyId);
+      const match = conditions.find((c) => c.document_type === Sequences.QUOTATION);
+      if (match && match.value) {
+        store.setNested('createDto.generalConditions', match.value);
+        toast.success('Default conditions inserted successfully.');
+      } else {
+        toast.error('No default conditions found for quotations.');
+      }
+    } catch (e) {
+      toast.error('Failed to load default conditions.');
+    }
+  };
+
+  const handleClearGeneralConditions = () => {
+    store.setNested('createDto.generalConditions', '{}');
   };
 
   const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
@@ -194,19 +218,10 @@ export const useQuotationCreateFormStructure = ({
     variant: FieldVariant.CUSTOM,
     props: {
       children: (
-        <div className="flex gap-2">
-          <Button size="sm">
-            <Newspaper className="mr-2" />
-            <span>Insert Default General Conditions</span>
-          </Button>
-          <Button
-            size="sm"
-            variant={'outline'}
-            onClick={() => store.setNested('createDto.generalConditions', '{}')}>
-            <BrushCleaning className="mr-2" />
-            <span>Clear General Conditions</span>
-          </Button>
-        </div>
+        <DefaultConditionActions
+          onInsert={handleInsertDefaultConditions}
+          onClear={handleClearGeneralConditions}
+        />
       )
     }
   };
@@ -305,7 +320,9 @@ export const useQuotationCreateFormStructure = ({
   const sequenceField: Field<TextFieldProps> = {
     id: 'sequence',
     label: t('quotation.form.sequence', { defaultValue: 'Sequence' }),
-    description: t('quotation.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
+    description: t('quotation.form.descriptions.sequence', {
+      defaultValue: 'Auto-generated sequence'
+    }),
     variant: FieldVariant.TEXT,
     required: false,
     props: {

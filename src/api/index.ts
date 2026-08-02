@@ -6,6 +6,7 @@ import { user } from './admin/users';
 import { core } from './core';
 import { invoicing } from './invoicing';
 import { sequence } from './sequence';
+import { defaultCondition } from './defaultCondition';
 
 export const api = {
   admin,
@@ -15,5 +16,6 @@ export const api = {
   user,
   core,
   invoicing,
-  sequence
+  sequence,
+  defaultCondition
 };

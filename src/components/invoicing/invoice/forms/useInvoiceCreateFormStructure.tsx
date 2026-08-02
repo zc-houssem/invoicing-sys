@@ -10,8 +10,7 @@ import {
   SelectFieldProps,
   SelectOption,
   SingleFileFieldProps,
-  TextFieldProps,
-  TextareaFieldProps
+  TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { InvoiceStore } from '@/hooks/stores/useInvoiceStore';
@@ -21,8 +20,11 @@ import { InvoiceArticlesField } from './InvoiceArticlesField';
 import { CurrencyPayload, ResponseRefParamDto, TaxWithholdingPayload } from '@/types';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { ArticleResume } from '../../articles/ArticleResume';
-import { Button } from '@/components/ui/button';
-import { BrushCleaning, Newspaper } from 'lucide-react';
+import { DefaultConditionActions } from '@/components/invoicing-commons/DefaultConditionActions';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { api } from '@/api';
+import { Sequences } from '@/types/sequence';
+import { toast } from 'sonner';
 
 interface useInvoiceCreateFormStructureProps {
   store: InvoiceStore;
@@ -57,6 +59,7 @@ export const useInvoiceCreateFormStructure = ({
   onAttachmentsUpload
 }: useInvoiceCreateFormStructureProps) => {
   const enterpriseStore = useEnterpriseStore();
+  const { activeCompanyId } = useActiveCompanyContext();
 
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
@@ -171,10 +174,10 @@ export const useInvoiceCreateFormStructure = ({
     }
   };
 
-  const generalConditionsField: Field<TextareaFieldProps> = {
+  const generalConditionsField: Field<EditorFieldProps> = {
     id: 'generalConditions',
     label: t('invoice.form.generalConditions'),
-    variant: FieldVariant.TEXTAREA,
+    variant: FieldVariant.EDITOR,
     required: true,
     error: store.createDtoErrors.generalConditions?.[0],
     placeholder: t('invoice.form.placeholders.generalConditions'),
@@ -184,9 +187,31 @@ export const useInvoiceCreateFormStructure = ({
       onChange: (value) => {
         store.setNested('createDto.generalConditions', value);
         store.setNested('createDtoErrors.generalConditions', []);
-      },
-      rows: 10
+      }
     }
+  };
+
+  const handleInsertDefaultConditions = async () => {
+    if (!activeCompanyId) {
+      toast.error('No active company selected.');
+      return;
+    }
+    try {
+      const conditions = await api.defaultCondition.find(activeCompanyId);
+      const match = conditions.find((c) => c.document_type === Sequences.INVOICE);
+      if (match && match.value) {
+        store.setNested('createDto.generalConditions', match.value);
+        toast.success('Default conditions inserted successfully.');
+      } else {
+        toast.error('No default conditions found for invoices.');
+      }
+    } catch (e) {
+      toast.error('Failed to load default conditions.');
+    }
+  };
+
+  const handleClearGeneralConditions = () => {
+    store.setNested('createDto.generalConditions', '{}');
   };
 
   const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
@@ -194,19 +219,10 @@ export const useInvoiceCreateFormStructure = ({
     variant: FieldVariant.CUSTOM,
     props: {
       children: (
-        <div className="flex gap-2">
-          <Button size="sm">
-            <Newspaper className="mr-2" />
-            <span>Insert Default General Conditions</span>
-          </Button>
-          <Button
-            size="sm"
-            variant={'outline'}
-            onClick={() => store.setNested('createDto.generalConditions', '{}')}>
-            <BrushCleaning className="mr-2" />
-            <span>Clear General Conditions</span>
-          </Button>
-        </div>
+        <DefaultConditionActions
+          onInsert={handleInsertDefaultConditions}
+          onClear={handleClearGeneralConditions}
+        />
       )
     }
   };
@@ -309,7 +325,9 @@ export const useInvoiceCreateFormStructure = ({
   const sequenceField: Field<TextFieldProps> = {
     id: 'sequence',
     label: t('invoice.form.sequence', { defaultValue: 'Sequence' }),
-    description: t('invoice.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
+    description: t('invoice.form.descriptions.sequence', {
+      defaultValue: 'Auto-generated sequence'
+    }),
     variant: FieldVariant.TEXT,
     required: false,
     props: {
