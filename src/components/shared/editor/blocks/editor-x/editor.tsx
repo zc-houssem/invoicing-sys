@@ -54,6 +54,9 @@ export function Editor({
     : undefined;
 
   const id = React.useId();
+  const lastEmittedStringRef = React.useRef<string | undefined>(
+    validSerializedState ? JSON.stringify(validSerializedState) : undefined
+  );
 
   const editorConfig: InitialConfigType = {
     namespace: namespace || `Editor-${id}`,
@@ -88,7 +91,7 @@ export function Editor({
         <TooltipProvider>
           <EditorUpdateHandler
             editorSerializedState={validSerializedState}
-            onSerializedChange={onSerializedChange}
+            lastEmittedStringRef={lastEmittedStringRef}
           />
           <div className={cn(isFullscreen && 'flex min-h-0 flex-1 flex-col')}>
             <Plugins
@@ -102,8 +105,10 @@ export function Editor({
           <OnChangePlugin
             ignoreSelectionChange={true}
             onChange={(editorState) => {
+              const json = editorState.toJSON();
+              lastEmittedStringRef.current = JSON.stringify(json);
               onChange?.(editorState);
-              onSerializedChange?.(editorState.toJSON());
+              onSerializedChange?.(json);
             }}
           />
         </TooltipProvider>
@@ -114,40 +119,46 @@ export function Editor({
 
 function EditorUpdateHandler({
   editorSerializedState,
-  onSerializedChange
+  lastEmittedStringRef
 }: {
   editorSerializedState?: SerializedEditorState;
-  onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
+  lastEmittedStringRef: React.MutableRefObject<string | undefined>;
 }) {
   const [editor] = useLexicalComposerContext();
 
   React.useEffect(() => {
-    if (isValidSerializedState(editorSerializedState)) {
-      try {
-        const currentEditorState = editor.getEditorState();
-        const incomingStateStr = JSON.stringify(editorSerializedState);
-        const currentStateStr = JSON.stringify(currentEditorState.toJSON());
+    const incomingStr = editorSerializedState ? JSON.stringify(editorSerializedState) : undefined;
+    if (incomingStr === lastEmittedStringRef.current) {
+      return;
+    }
 
-        if (incomingStateStr !== currentStateStr) {
-          const state = editor.parseEditorState(incomingStateStr);
+    if (isValidSerializedState(editorSerializedState) && incomingStr) {
+      try {
+        const currentStateStr = JSON.stringify(editor.getEditorState().toJSON());
+
+        if (incomingStr !== currentStateStr) {
+          const state = editor.parseEditorState(incomingStr);
           if (state) {
             editor.setEditorState(state);
+            lastEmittedStringRef.current = incomingStr;
           }
+        } else {
+          lastEmittedStringRef.current = incomingStr;
         }
       } catch (error) {
         console.error('Failed to parse editor state:', error);
       }
     } else if (editorSerializedState === undefined || editorSerializedState === null) {
       const emptyStateStr = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
-      const currentEditorState = editor.getEditorState();
-      const currentStateStr = JSON.stringify(currentEditorState.toJSON());
+      const currentStateStr = JSON.stringify(editor.getEditorState().toJSON());
 
       if (currentStateStr !== emptyStateStr) {
         const state = editor.parseEditorState(emptyStateStr);
         editor.setEditorState(state);
       }
+      lastEmittedStringRef.current = undefined;
     }
-  }, [editor, editorSerializedState]);
+  }, [editor, editorSerializedState, lastEmittedStringRef]);
 
   return null;
 }

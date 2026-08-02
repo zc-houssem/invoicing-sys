@@ -193,7 +193,7 @@ export function Plugins({
                 <ContentEditable
                   placeholder={placeholder}
                   className={cn(
-                    'ContentEditable__root relative block overflow-auto px-8 py-4 focus:outline-none',
+                    'ContentEditable__root relative block overflow-auto px-8 py-4 focus:outline-none break-words',
                     isFullscreen ? 'min-h-0 flex-1' : 'min-h-72'
                   )}
                 />
@@ -241,7 +241,6 @@ export function Plugins({
             ...TEXT_MATCH_TRANSFORMERS
           ]}
         />
-        <TypingPerfPlugin />
         <TabFocusPlugin />
         <AutocompletePlugin />
         <AutoLinkPlugin />

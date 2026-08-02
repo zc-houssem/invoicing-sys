@@ -26,6 +26,39 @@ import MultipleSelector from '@/components/ui/multi-select';
 import { MultipleFilesUploader } from './MultipleFilesUploader';
 import { PhoneInput } from '@/components/ui/phone-input';
 
+const EditorWrapper: React.FC<{ props: any }> = React.memo(({ props }) => {
+  const { value, onChange, ...restProps } = props || {};
+
+  const onChangeRef = React.useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const parsedEditorState = React.useMemo(() => {
+    if (!value) return undefined;
+    try {
+      let state = JSON.parse(value);
+      while (typeof state === 'string') {
+        state = JSON.parse(state);
+      }
+      return state;
+    } catch {
+      return undefined;
+    }
+  }, [value]);
+
+  const handleSerializedChange = React.useCallback((val: any) => {
+    onChangeRef.current?.(JSON.stringify(val));
+  }, []);
+
+  return (
+    <Editor
+      {...restProps}
+      editorSerializedState={parsedEditorState}
+      onSerializedChange={handleSerializedChange}
+    />
+  );
+});
+EditorWrapper.displayName = 'EditorWrapper';
+
 interface FieldBuilderProps {
   field?: Field<any>;
 }
@@ -190,7 +223,6 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             field?.className
           )}
           onValueChange={(value) => {
-            console.log('radio changed', value);
             field?.props?.onValueChange?.(value);
           }}>
           {field.props?.options?.map((option: SelectOption) => (
@@ -246,24 +278,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         />
       );
     case 'editor': {
-      let parsedEditorState: any = undefined;
-      if (field?.props?.value) {
-        try {
-          parsedEditorState = JSON.parse(field.props.value);
-          while (typeof parsedEditorState === 'string') {
-            parsedEditorState = JSON.parse(parsedEditorState);
-          }
-        } catch {
-          parsedEditorState = undefined;
-        }
-      }
-      return (
-        <Editor
-          {...field.props}
-          editorSerializedState={parsedEditorState}
-          onSerializedChange={(value) => field?.props?.onChange?.(JSON.stringify(value))}
-        />
-      );
+      return <EditorWrapper props={field.props} />;
     }
     case 'checkbox':
       return (

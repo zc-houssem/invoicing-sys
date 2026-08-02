@@ -24,7 +24,7 @@ import {
  * @see https://github.com/radix-ui/primitives/blob/main/packages/react/compose-refs/src/compose-refs.tsx
  */
 
-type PossibleRef<T> = React.Ref<T> | undefined
+type PossibleRef<T> = React.Ref<T> | React.LegacyRef<T> | undefined
 
 /**
  * Set a given ref to a given value
@@ -36,7 +36,7 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
   }
 
   if (ref !== null && ref !== undefined) {
-    ref.current = value
+    (ref as React.MutableRefObject<T>).current = value
   }
 }
 
@@ -1364,10 +1364,10 @@ function ColorPickerEyeDropper(props: ColorPickerEyeDropperProps) {
 
 interface ColorPickerFormatSelectProps
   extends Omit<React.ComponentProps<typeof Select>, "value" | "onValueChange">,
-    Pick<React.ComponentProps<typeof SelectTrigger>, "size" | "className"> {}
+    Pick<React.ComponentProps<typeof SelectTrigger>, "className"> {}
 
 function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
-  const { size, className, ...selectProps } = props
+  const { className, ...selectProps } = props
   const context = useColorPickerContext("ColorPickerFormatSelector")
   const store = useColorPickerStoreContext("ColorPickerFormatSelector")
 
@@ -1390,7 +1390,6 @@ function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
     >
       <SelectTrigger
         data-slot="color-picker-format-select-trigger"
-        size={size ?? "sm"}
         className={cn(className)}
       >
         <SelectValue />
