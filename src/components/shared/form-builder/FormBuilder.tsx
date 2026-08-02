@@ -1,9 +1,6 @@
-import React from 'react';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { FieldBuilder } from './FieldBuilder';
-import { FieldVariant, FormStructure, Fieldset } from './types';
+import { FormStructure } from './types';
 import {
   Accordion,
   AccordionContent,
@@ -23,11 +20,7 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
       {!!structure?.includeHeader && (
         <div>
           <div className="space-y-1 py-5 sm:py-0">
-            <h1
-              className={cn(
-                'text-2xl font-bold tracking-tight md:text-3xl',
-                structure.title?.className
-              )}>
+            <h1 className={cn('text-lg font-bold tracking-tight', structure.title?.className)}>
               {structure.title?.value}
             </h1>
 
