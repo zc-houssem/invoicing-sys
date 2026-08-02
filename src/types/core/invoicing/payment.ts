@@ -35,6 +35,7 @@ export interface CreatePaymentDto {
   date: Date | null;
   mode: PAYMENT_MODE;
   notes?: string;
+  systemEnterpriseId?: number;
   enterpriseId: number;
   interlocutorId?: number;
   currencyId?: number;
@@ -68,6 +69,8 @@ export interface ResponsePaymentDto extends DatabaseEntity {
   date: Date;
   mode: string;
   notes?: string;
+  systemEnterprise?: ResponseEnterpriseDto;
+  systemEnterpriseId?: number;
   enterprise: ResponseEnterpriseDto;
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;

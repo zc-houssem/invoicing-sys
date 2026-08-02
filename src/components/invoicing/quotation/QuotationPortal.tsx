@@ -7,13 +7,14 @@ import { useIntro } from '@/context/IntroContext';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { cn } from '@/lib/utils';
-import { ResponseQuotationDto, ServerErrorResponse, UpdateQuotationDto } from '@/types';
+import { ResponseQuotationDto, ServerErrorResponse } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useSellingQuotationColumns } from './columns';
 import { toast } from 'sonner';
 import { useQuotationDeleteDialog } from './modals/QuotationDeleteDialog';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 
 interface QuotationPortalProps {
   className?: string;
@@ -22,6 +23,7 @@ interface QuotationPortalProps {
 
 export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProps) => {
   const router = useRouter();
+  const { activeCompanyId } = useActiveCompanyContext();
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -43,12 +45,17 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
 
   const quotationStore = useQuotationStore();
 
-    const {
-    page, setPage,
-    size, setSize,
-    sortDetails, setSortDetails,
-    searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+  const {
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters
   } = useDataTableState('quotationportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -69,6 +76,7 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
   } = useQuery({
     queryKey: [
       'selling-quotations',
+      activeCompanyId,
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -82,7 +90,13 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
         join: ['enterprise', 'interlocutor'].join(','),
-        filter: enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : undefined
+        filter:
+          [
+            activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
+            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : ''
+          ]
+            .filter(Boolean)
+            .join(';') || undefined
       })
   });
 

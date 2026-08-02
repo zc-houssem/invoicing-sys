@@ -1,5 +1,5 @@
 import { useInvoiceCreateFormStructure } from './useInvoiceCreateFormStructure';
-import { useActiveCompanyStore } from '@/hooks/stores/useActiveCompanyStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { Sequences } from '@/types/sequence';
 import { useSequence } from '@/hooks/useSequence';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
@@ -127,7 +127,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
   );
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
-  const { activeCompanyId } = useActiveCompanyStore();
+  const { activeCompanyId } = useActiveCompanyContext();
   useSequence(activeCompanyId, Sequences.INVOICE, (preview: string) => invoiceStore.set('sequencePreview', preview));
 
   const { mutate: createInvoice, isPending: isCreationPending } = useMutation({
@@ -151,6 +151,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     } else {
       createInvoice({
         ...invoiceStore.createDto,
+        systemEnterpriseId: activeCompanyId ?? undefined,
         invoiceArticles: articleStore.articles.map(
           (article, order) =>
             ({

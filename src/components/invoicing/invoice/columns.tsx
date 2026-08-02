@@ -15,17 +15,17 @@ export const useSellingInvoiceColumns = (
 
   return [
     {
-      accessorKey: t('invoice.table.columns.id'),
+      accessorKey: t('invoice.table.columns.sequence', 'Sequence'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('invoice.table.columns.id')}
-          attribute={'id'}
+          title={t('invoice.table.columns.sequence', 'Sequence')}
+          attribute={'sequence'}
         />
       ),
 
-      cell: ({ row }) => <div>{row.original.id}</div>,
+      cell: ({ row }) => <div>{row.original.sequence || row.original.id}</div>,
       enableSorting: true,
       enableHiding: true
     },
@@ -112,7 +112,7 @@ export const useSellingInvoiceColumns = (
               href={`/selling/quotations/${row.original.quotationId}`}
               className="text-primary hover:underline"
             >
-              {t('invoice.table.source.quotation', 'Quotation #')}{row.original.quotationId}
+              {row.original.quotation?.sequence || row.original.quotationId}
             </a>
           ) : (
             <span className="text-muted-foreground">{t('invoice.table.source.direct', 'Direct')}</span>

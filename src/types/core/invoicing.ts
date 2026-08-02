@@ -16,6 +16,8 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   dueDate: Date;
   object: string;
   generalConditions: string;
+  systemEnterprise?: ResponseEnterpriseDto;
+  systemEnterpriseId?: number;
   enterprise: ResponseEnterpriseDto;
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
@@ -40,6 +42,7 @@ export interface CreateQuotationDto {
   dueDate: Date | null;
   object: string;
   generalConditions?: string;
+  systemEnterpriseId?: number;
   enterpriseId?: number;
   interlocutorId?: number;
   currencyId?: number;

@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { useInvoiceDeleteDialog } from './modals/InvoiceDeleteDialog';
 import { ServerErrorResponse } from '@/types';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 
 interface InvoicePortalProps {
   className?: string;
@@ -23,6 +24,7 @@ interface InvoicePortalProps {
 
 export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) => {
   const router = useRouter();
+  const { activeCompanyId } = useActiveCompanyContext();
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -44,12 +46,17 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
 
   const invoiceStore = useInvoiceStore();
 
-    const {
-    page, setPage,
-    size, setSize,
-    sortDetails, setSortDetails,
-    searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+  const {
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters
   } = useDataTableState('invoiceportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -70,6 +77,7 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
   } = useQuery({
     queryKey: [
       'selling-invoices',
+      activeCompanyId,
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -82,8 +90,14 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor'].join(','),
-        filter: enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : undefined
+        join: ['enterprise', 'interlocutor', 'quotation'].join(','),
+        filter:
+          [
+            activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
+            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : ''
+          ]
+            .filter(Boolean)
+            .join(';') || undefined
       })
   });
 

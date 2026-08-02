@@ -474,7 +474,7 @@ export const useInvoiceUpdateFormStructure = ({
                           href={`/selling/quotations/${store.response?.quotationId}`}
                           className="text-primary hover:underline text-sm"
                         >
-                          {t('invoice.form.viewQuotation', 'View Quotation #')}{store.response?.quotationId}
+                          {t('invoice.form.viewQuotation', 'View Quotation #')}{store.response?.quotation?.sequence || store.response?.quotationId}
                         </a>
                       </div>
                     )

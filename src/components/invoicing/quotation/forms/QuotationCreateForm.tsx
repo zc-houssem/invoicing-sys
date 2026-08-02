@@ -1,10 +1,11 @@
 import { useQuotationCreateFormStructure } from './useQuotationCreateFormStructure';
+import { useSequence } from '@/hooks/useSequence';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
 import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
 import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { useMutation } from '@tanstack/react-query';
-import { api, ServerErrorResponse } from '@/api';
+import { api } from '@/api';
 import { toast } from 'sonner';
 import { createDraftQuotationSchema } from '@/types/validations/quotation.validation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -15,6 +16,8 @@ import { Spinner } from '@/components/shared';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { Sequences } from '@/types/sequence';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
   CreateQuotationArticleDto,
@@ -22,7 +25,8 @@ import {
   CurrencyPayload,
   ResponseBankAccountDto,
   ResponseInterlocutorDto,
-  ResponseRefParamDto
+  ResponseRefParamDto,
+  ServerErrorResponse
 } from '@/types';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
@@ -112,6 +116,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
   );
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
+  const { activeCompanyId } = useActiveCompanyContext();
+  useSequence(activeCompanyId, Sequences.QUOTATION, (preview: string) => quotationStore.set('sequencePreview', preview));
 
   const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
@@ -136,6 +142,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     } else {
       createQuotation({
         ...quotationStore.createDto,
+        systemEnterpriseId: activeCompanyId ?? undefined,
         quotationArticles: articleStore.articles.map(
           (article, order) =>
             ({

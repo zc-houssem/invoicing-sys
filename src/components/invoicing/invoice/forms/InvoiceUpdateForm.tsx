@@ -92,7 +92,8 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       'invoiceArticles.article',
       'invoiceArticles.taxes',
       'uploads',
-      'uploads.upload'
+      'uploads.upload',
+      'quotation'
     ]
   });
 

@@ -10,6 +10,7 @@ import '@/styles/globals.css';
 import '@/components/shared/editor/themes/editor-theme.css';
 import { SessionProvider } from 'next-auth/react';
 import { AuthTokenSync } from '@/components/auth/AuthTokenSync';
+import { ActiveCompanyProvider } from '@/context/ActiveCompanyContext';
 
 const inter = { className: 'font-inter' };
 const queryClient = new QueryClient();
@@ -26,13 +27,15 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
       <SessionProvider session={session}>
         <AuthTokenSync />
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange>
-            <Application Component={Component} pageProps={pageProps} className={inter.className} />
-          </ThemeProvider>
+          <ActiveCompanyProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange>
+              <Application Component={Component} pageProps={pageProps} className={inter.className} />
+            </ThemeProvider>
+          </ActiveCompanyProvider>
         </QueryClientProvider>
       </SessionProvider>
     </React.Fragment>

@@ -15,6 +15,7 @@ import { PaymentDeleteDialog } from './dialogs/PaymentDeleteDialog';
 import { cn } from '@/lib/utils';
 import { ResponsePaymentDto } from '@/types/core/invoicing/payment';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 
 interface PaymentPortalProps {
   className?: string;
@@ -24,6 +25,7 @@ interface PaymentPortalProps {
 
 export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: PaymentPortalProps) => {
   const router = useRouter();
+  const { activeCompanyId } = useActiveCompanyContext();
   const { t: tCommon } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
 
@@ -31,10 +33,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
     if (!enterpriseId && !interlocutorId) {
-      setIntro?.(
-        tInvoicing('payment.plural'),
-        'Here you can manage your payments.'
-      );
+      setIntro?.(tInvoicing('payment.plural'), 'Here you can manage your payments.');
       setRoutes?.([
         { title: tCommon('menu.selling'), href: '/selling' },
         { title: tCommon('submenu.payments') }
@@ -46,12 +45,17 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
     }
   }, [router.locale, enterpriseId, interlocutorId]);
 
-    const {
-    page, setPage,
-    size, setSize,
-    sortDetails, setSortDetails,
-    searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+  const {
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters
   } = useDataTableState('paymentportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -75,6 +79,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
   } = useQuery({
     queryKey: [
       'payments',
+      activeCompanyId,
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -87,13 +92,15 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: 'currency'
-        // filter: [
-        //   enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
-        //   interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
-        // ]
-        //   .filter(Boolean)
-        //   .join(',')
+        join: 'currency',
+        filter:
+          [
+            activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
+            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
+          ]
+            .filter(Boolean)
+            .join(',') || undefined
       })
   });
 

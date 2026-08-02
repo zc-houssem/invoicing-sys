@@ -6,6 +6,7 @@ import { ResponseBankAccountDto } from '../bank-account';
 import { ResponseTaxRateDto } from '../tax-rate';
 import { ResponseWorkflowDto } from '../../response/workflow';
 import { ResponseStorageDto } from '../storage';
+import { ResponseQuotationDto } from '../invoicing';
 
 export interface ResponseInvoiceDto extends DatabaseEntity {
   id: number;
@@ -16,6 +17,8 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   dueDate: Date;
   object: string;
   generalConditions: string;
+  systemEnterprise?: ResponseEnterpriseDto;
+  systemEnterpriseId?: number;
   enterprise: ResponseEnterpriseDto;
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
@@ -28,6 +31,7 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   bankAccountId: number;
   notes?: string;
   quotationId?: number;
+  quotation?: ResponseQuotationDto;
   invoiceArticles: ResponseInvoiceArticleDto[];
   uploads: ResponseInvoiceUploadDto[];
 }
@@ -43,6 +47,7 @@ export interface CreateInvoiceDto {
   dueDate: Date | null;
   object: string;
   generalConditions?: string;
+  systemEnterpriseId?: number;
   enterpriseId?: number;
   interlocutorId?: number;
   currencyId?: number;

@@ -37,6 +37,7 @@
     "table": {
       "columns": {
         "id": "ID",
+        "sequence": "Sequence",
         "object": "Object",
         "date": "Date",
         "status": "Status",
@@ -94,6 +95,7 @@
     "table": {
       "columns": {
         "id": "ID",
+        "sequence": "Sequence",
         "object": "Object",
         "date": "Date",
         "status": "Status",

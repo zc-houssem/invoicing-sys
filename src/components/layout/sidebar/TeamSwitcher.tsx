@@ -19,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar';
-import { useActiveCompanyStore } from '@/hooks/stores/useActiveCompanyStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 
 type Team = {
   id: number;
@@ -31,7 +31,7 @@ type Team = {
 export function TeamSwitcher({ teams }: { teams: Team[] }) {
   const router = useRouter();
   const { isMobile } = useSidebar();
-  const { activeCompanyId, setActiveCompanyId } = useActiveCompanyStore();
+  const { activeCompanyId, setActiveCompanyId } = useActiveCompanyContext();
 
   const activeTeam = React.useMemo(() => {
     if (teams.length === 0) return undefined;

@@ -15,17 +15,17 @@ export const useSellingQuotationColumns = (
 
   return [
     {
-      accessorKey: t('quotation.table.columns.id'),
+      accessorKey: t('quotation.table.columns.sequence', 'Sequence'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('quotation.table.columns.id')}
-          attribute={'id'}
+          title={t('quotation.table.columns.sequence', 'Sequence')}
+          attribute={'sequence'}
         />
       ),
 
-      cell: ({ row }) => <div>{row.original.id}</div>,
+      cell: ({ row }) => <div>{row.original.sequence || row.original.id}</div>,
       enableSorting: true,
       enableHiding: true
     },

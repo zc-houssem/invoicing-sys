@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useSequence } from '@/hooks/content/sequence/useSequence';
-import { useActiveCompanyStore } from '@/hooks/stores/useActiveCompanyStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { useFooter } from '@/context/FooterContext';
 import { SequenceItem } from './SequeceItem';
 import { DateFormat, UpdateSequentialDto } from '@/types';
@@ -31,7 +31,7 @@ export const SequencePortal = ({ className }: SequencePortalProps) => {
   }, [router.locale, setRoutes, tCommon]);
 
   const sequenceStore = useSequenceStore();
-  const { activeCompanyId } = useActiveCompanyStore();
+  const { activeCompanyId } = useActiveCompanyContext();
   const { sequences, isSequencesPending, updateSequenceBatchAsync, isBatchUpdating } = useSequence(
     activeCompanyId || undefined
   );
