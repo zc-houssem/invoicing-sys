@@ -1,33 +1,28 @@
 import React from 'react';
-import { useActivities } from '@/hooks/content/core/useActivities';
 import { useCountries } from '@/hooks/content/core/useCountries';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/shared';
-import { usePaymentCondition } from '@/hooks/content/core/usePaymentConditions';
 import { api } from '@/api';
 import { toast } from 'sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';
-import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
-import { ResponseRefParamDto, UpdateEnterpriseDto } from '@/types';
-import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { useEnterpriseUpdateFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseUpdateFormStructure';
+import { UpdateEnterpriseDto } from '@/types';
+import { useEnterpriseAddressFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseAddressFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
-import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { useFooter } from '@/context/FooterContext';
 
-interface ActiveEnterpriseEditFormProps {
+interface ActiveEnterpriseAddressEditFormProps {
   className?: string;
 }
 
-export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditFormProps) => {
-  const router = useRouter();
+export const ActiveEnterpriseAddressEditForm = ({
+  className
+}: ActiveEnterpriseAddressEditFormProps) => {
   const { t: tCommon } = useTranslation('common');
   const { t: tContact } = useTranslation('contacts');
   const { t: tCountry } = useTranslation('country');
@@ -45,15 +40,12 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
     queryFn: () =>
       api.core.enterprise.findById(
         activeCompanyId!,
-        ['interlocutors', 'deliveryAddress', 'invoicingAddress'].join(',')
+        ['deliveryAddress', 'invoicingAddress'].join(',')
       ),
     enabled: !!activeCompanyId
   });
 
-  const { activities, isFetchActivitiesPending } = useActivities();
-  const { currencies, isCurrenciesPending } = useCurrencies();
   const { countries, isFetchCountriesPending } = useCountries();
-  const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
 
   React.useEffect(() => {
     if (enterprise) {
@@ -108,44 +100,17 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
     };
   }, [enterprise]);
 
-  const { enterpriseInformation, additionalInformation } = useEnterpriseUpdateFormStructure({
-    store: enterpriseStore,
-    activityOptions: mapToSelectOptions({
-      data: activities,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label, entity: ResponseRefParamDto<{ symbol: string }>) =>
-        `${tCommon(label)} ${entity?.extras?.symbol}`
-    }),
-    paymentConditionOptions: mapToSelectOptions({
-      data: paymentConditions,
-      labelKey: 'label',
-      valueKey: 'id'
-    }),
-    countryOptions: mapToSelectOptions({
-      data: countries,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label) => tCountry(label)
-    })
-  });
-
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: 'System Enterprises' },
-      { title: enterprise?.name || 'Edit Active Enterprise' }
-    ]);
-    return () => {
-      setRoutes?.([]);
-    };
-  }, [router.locale, enterprise?.name]);
+  const { deliveryAddressInformation, invoicingAddressInformation } =
+    useEnterpriseAddressFormStructure({
+      isUpdate: true,
+      store: enterpriseStore,
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      })
+    });
 
   const queryClient = useQueryClient();
 
@@ -169,12 +134,7 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
   });
 
   const handleSubmit = React.useCallback(() => {
-    const result = updateEnterpriseValidationSchema.safeParse(enterpriseStore.updateDto);
-    if (!result.success) {
-      enterpriseStore.set('errors', result.error.flatten().fieldErrors);
-      toast.error(tCommon('errors.validation'));
-      return;
-    }
+    if (!enterpriseStore.updateDto) return;
 
     const payload = { ...enterpriseStore.updateDto };
 
@@ -193,16 +153,11 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
 
     updateEnterprise({
       ...payload,
-      notes: JSON.stringify(payload.notes)
+      notes: typeof payload.notes === 'string' ? payload.notes : JSON.stringify(payload.notes || '')
     });
-  }, [enterpriseStore, tCommon, updateEnterprise]);
+  }, [enterpriseStore, updateEnterprise]);
 
-  const loading =
-    isFetchEnterprisePending ||
-    isFetchActivitiesPending ||
-    isCurrenciesPending ||
-    isFetchCountriesPending ||
-    isFetchPaymentConditionsPending;
+  const loading = isFetchEnterprisePending || isFetchCountriesPending;
 
   const handleReset = React.useCallback(() => {
     refetchEnterprise();
@@ -253,15 +208,9 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
   if (loading || !enterpriseStore.updateDto) return <Spinner className="h-screen" show={true} />;
 
   return (
-    <div className={cn('flex flex-col flex-1', className)}>
-      <div className={cn('flex flex-col flex-1')}>
-        <div className="flex flex-col flex-1 h-full my-4">
-          <div className="flex flex-col flex-1 gap-8">
-            <FormBuilder structure={enterpriseInformation} />
-            <FormBuilder structure={additionalInformation} />
-          </div>
-        </div>
-      </div>
+    <div className={cn('flex flex-col flex-1 gap-8', className)}>
+      <FormBuilder structure={deliveryAddressInformation} />
+      <FormBuilder structure={invoicingAddressInformation} />
     </div>
   );
 };

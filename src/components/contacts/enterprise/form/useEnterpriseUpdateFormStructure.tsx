@@ -173,6 +173,13 @@ export const useEnterpriseUpdateFormStructure = ({
   };
 
   const enterpriseInformation: FormStructure = {
+    title: {
+      value: 'Enterprise information'
+    },
+    description: {
+      value: 'Basic information about the enterprise.'
+    },
+    includeHeader: true,
     fieldsets: [
       {
         rows: [
@@ -328,6 +335,10 @@ export const useEnterpriseUpdateFormStructure = ({
     title: {
       value: 'Additional information'
     },
+    description: {
+      value: 'Additional information about the enterprise.'
+    },
+    includeHeader: true,
     fieldsets: [
       {
         rows: [

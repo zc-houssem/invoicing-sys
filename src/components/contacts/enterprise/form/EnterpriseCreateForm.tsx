@@ -145,15 +145,16 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
       })
     });
 
-  const { addressInformation } = useEnterpriseAddressFormStructure({
-    store: enterpriseStore,
-    countryOptions: mapToSelectOptions({
-      data: countries,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label) => tCountry(label)
-    })
-  });
+  const { deliveryAddressInformation, invoicingAddressInformation } =
+    useEnterpriseAddressFormStructure({
+      store: enterpriseStore,
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      })
+    });
 
   //set page title in the breadcrumb
   const { setRoutes } = useBreadcrumb();
@@ -248,17 +249,16 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
 
               <div className="flex flex-col flex-1 my-4">
                 <div className="flex flex-col flex-1 p-2">
-                  <div className="space-y-1 mb-4">
-                    <h1 className="text-lg font-bold">{methods.current.title}</h1>
-                    <p className="text-xs">{methods.current.description}</p>
-                    <Separator className="mt-2" />
-                  </div>
-
                   {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
                   {methods.current.id === '2' && (
                     <FormBuilder structure={interlocutorInformation} />
                   )}
-                  {methods.current.id === '3' && <FormBuilder structure={addressInformation} />}
+                  {methods.current.id === '3' && (
+                    <div className="flex flex-col flex-1 gap-8">
+                      <FormBuilder structure={deliveryAddressInformation} />
+                      <FormBuilder structure={invoicingAddressInformation} />
+                    </div>
+                  )}
                   {methods.current.id === '4' && <FormBuilder structure={additionalInformation} />}
                 </div>
               </div>

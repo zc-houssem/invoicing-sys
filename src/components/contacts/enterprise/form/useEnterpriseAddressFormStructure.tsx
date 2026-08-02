@@ -180,17 +180,16 @@ export const useEnterpriseAddressFormStructure = ({
     }
   };
 
-  const addressInformation: FormStructure = {
+  const deliveryAddressInformation: FormStructure = {
+    title: {
+      value: tContact('enterprise.form.deliveryAddress')
+    },
+    description: {
+      value: tContact('enterprise.form.descriptions.deliveryAddress')
+    },
+    includeHeader: true,
     fieldsets: [
       {
-        title: {
-          value: tContact('enterprise.form.deliveryAddress'),
-          className: 'text-sm font-bold'
-        },
-        description: {
-          value: tContact('enterprise.form.descriptions.deliveryAddress'),
-          className: 'text-xs'
-        },
         component: (
           <Button
             variant={'outline'}
@@ -205,7 +204,6 @@ export const useEnterpriseAddressFormStructure = ({
             <span className="text-xs">Copy Invoicing Address</span>
           </Button>
         ),
-        includeHeader: true,
         rows: [
           {
             fields: [deliveryAddressField, deliveryAddress2Field]
@@ -214,16 +212,20 @@ export const useEnterpriseAddressFormStructure = ({
             fields: [deliveryRegionField, deliveryZipCodeField, deliveryCountryField]
           }
         ]
-      },
+      }
+    ]
+  };
+
+  const invoicingAddressInformation: FormStructure = {
+    title: {
+      value: tContact('enterprise.form.invoicingAddress')
+    },
+    description: {
+      value: tContact('enterprise.form.descriptions.invoicingAddress')
+    },
+    includeHeader: true,
+    fieldsets: [
       {
-        title: {
-          value: tContact('enterprise.form.invoicingAddress'),
-          className: 'text-sm font-bold mt-6'
-        },
-        description: {
-          value: tContact('enterprise.form.descriptions.invoicingAddress'),
-          className: 'text-xs'
-        },
         component: (
           <Button
             variant={'outline'}
@@ -238,7 +240,6 @@ export const useEnterpriseAddressFormStructure = ({
             <span className="text-xs">Copy Delivery Address</span>
           </Button>
         ),
-        includeHeader: true,
         rows: [
           {
             fields: [invoicingAddressField, invoicingAddress2Field]
@@ -251,5 +252,9 @@ export const useEnterpriseAddressFormStructure = ({
     ]
   };
 
-  return { addressInformation };
+  return {
+    deliveryAddressInformation,
+    invoicingAddressInformation,
+    addressInformation: deliveryAddressInformation // fallback if referenced elsewhere
+  };
 };
