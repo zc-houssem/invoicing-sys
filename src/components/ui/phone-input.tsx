@@ -37,7 +37,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
           flagComponent={FlagComponent}
           countrySelectComponent={CountrySelect}
           inputComponent={InputComponent}
-          onChange={(value) => onChange?.(value)}
+          onChange={(value) => onChange?.(value as any)}
           {...props}
         />
       ) : (

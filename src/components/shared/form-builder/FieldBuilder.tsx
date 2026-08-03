@@ -79,7 +79,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           )}
           type={field.variant}
           placeholder={field.placeholder}
-          value={field.props?.value}
+          value={field.props?.value ?? ''}
           onChange={(event) => {
             field?.props?.onChange?.(event.target.value);
           }}
@@ -93,7 +93,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             field?.className,
             field.error && 'border-destructive focus-visible:ring-destructive'
           )}
-          value={field?.props?.value}
+          value={field?.props?.value ?? ''}
           onChange={(value) => field?.props?.onChange?.(value)}
           placeholder={field?.placeholder}
         />
@@ -208,7 +208,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           <Checkbox
             {...field.props}
             id={field.label}
-            checked={field?.props?.value}
+            checked={field?.props?.value ?? false}
             defaultChecked={field?.props?.defaultChecked}
             onCheckedChange={(value) => field?.props?.onCheckedChange?.(value)}
           />
@@ -221,7 +221,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'radio':
       return (
         <RadioGroup
-          defaultValue={field.props?.value}
+          value={field.props?.value ?? ''}
           className={cn(
             'flex w-fit my-2.5',
             field?.props?.spread === 'horizontal' ? 'flex-row' : 'flex-col',
@@ -252,7 +252,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
             field.error && 'border-destructive focus-visible:ring-destructive',
             field?.className
           )}
-          value={field?.props?.value as string}
+          value={(field?.props?.value as string) ?? ''}
           onChange={(e) => field?.props?.onChange?.(e.target.value)}
         />
       );
@@ -262,7 +262,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           <Switch
             {...field.props}
             id={field.label}
-            checked={field?.props?.value}
+            checked={field?.props?.value ?? false}
             defaultChecked={field?.props?.defaultChecked}
             onCheckedChange={(value) => field?.props?.onCheckedChange?.(value)}
           />{' '}
@@ -276,7 +276,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           id={field.id}
           className={cn(!field.props?.resizable && 'resize-none', field?.className)}
           placeholder={field.placeholder}
-          value={field.props?.value}
+          value={field.props?.value ?? ''}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             field?.props?.onChange?.(e.target.value)
           }
