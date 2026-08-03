@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { useQuotationDeleteDialog } from './modals/QuotationDeleteDialog';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface QuotationPortalProps {
   className?: string;
@@ -24,6 +26,7 @@ interface QuotationPortalProps {
 export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
+  const { t } = useTranslation('common');
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -116,6 +119,17 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
     }
   });
 
+  const { mutate: duplicateQuotation, isPending: isDuplicatePending } = useMutation({
+    mutationFn: (id: number) => api.invoicing.quotation.duplicate(id),
+    onSuccess: (data) => {
+      toast.success('Quotation duplicated successfully');
+      router.push(`/selling/quotations/${data.id}`);
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data.message || 'Failed to duplicate quotation');
+    }
+  });
+
   const { deleteQuotationDialog, openDeleteQuotationDialog, closeDeleteQuotationDialog } =
     useQuotationDeleteDialog({
       representation: `Quotation #${quotationStore.response?.id} - ${quotationStore.response?.object}`,
@@ -138,7 +152,15 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
       quotationStore.set('response', quotation);
       openDeleteQuotationDialog();
     },
-    additionalActions: {},
+    additionalActions: {
+      1: [
+        {
+          actionCallback: (q) => duplicateQuotation(q.id),
+          actionLabel: t('commands.duplicate', 'Duplicate'),
+          actionIcon: <Copy className="h-4 w-4" />
+        }
+      ]
+    },
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
@@ -157,7 +179,7 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
 
   const columns = useSellingQuotationColumns(context);
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting;
+  const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>

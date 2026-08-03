@@ -80,6 +80,11 @@ const fromQuotation = async (id: number): Promise<ResponseInvoiceDto> => {
   return response.data;
 };
 
+const duplicate = async (id: number): Promise<ResponseInvoiceDto> => {
+  const response = await axios.post(`/_invoice/duplicate/${id}`);
+  return response.data;
+};
+
 export const invoice = {
   findPaginated,
   findAll,
@@ -88,6 +93,7 @@ export const invoice = {
   update,
   remove,
   fromQuotation,
+  duplicate,
   workflow: {
     findById: findWorkflowById,
     next

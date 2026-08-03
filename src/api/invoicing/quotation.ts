@@ -75,6 +75,11 @@ const remove = async (id?: number): Promise<ResponseQuotationDto> => {
   return response.data;
 };
 
+const duplicate = async (id: number): Promise<ResponseQuotationDto> => {
+  const response = await axios.post(`/_quotation/duplicate/${id}`);
+  return response.data;
+};
+
 export const quotation = {
   findPaginated,
   findAll,
@@ -82,6 +87,7 @@ export const quotation = {
   create,
   update,
   remove,
+  duplicate,
   workflow: {
     findById: findWorkflowById,
     next

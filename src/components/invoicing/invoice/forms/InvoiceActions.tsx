@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResponseInvoiceWorkflowDto } from '@/types/core/invoicing/invoice';
 import { useMutation } from '@tanstack/react-query';
-import { Printer, Repeat2, Save } from 'lucide-react';
+import { Copy, Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { useRouter } from 'next/router';
 
 interface InvoiceActionsProps {
   className?: string;
@@ -23,6 +24,7 @@ export const InvoiceActions = ({
   reset
 }: InvoiceActionsProps) => {
   const { t } = useTranslation('common');
+  const router = useRouter();
 
   const { mutate: next, isPending: isNextPending } = useMutation({
     mutationFn: async (event: string) =>
@@ -30,6 +32,17 @@ export const InvoiceActions = ({
     onSuccess: () => {
       reload();
       toast.success('Invoice status updated successfully');
+    }
+  });
+
+  const { mutate: duplicateInvoice, isPending: isDuplicatePending } = useMutation({
+    mutationFn: async () => api.invoicing.invoice.duplicate(workflow?.invoice?.id!),
+    onSuccess: (data) => {
+      toast.success('Invoice duplicated successfully');
+      router.push(`/selling/invoices/${data.id}`);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to duplicate invoice');
     }
   });
 
@@ -144,6 +157,18 @@ export const InvoiceActions = ({
         <Printer />
         <span>
           {isPrintPending ? t('commands.printing') || 'Printing...' : t('commands.print')}
+        </span>
+      </Button>
+      <Button
+        variant={'outline'}
+        className="w-full"
+        disabled={!workflow?.invoice?.id || isDuplicatePending || isNextPending}
+        onClick={() => duplicateInvoice()}>
+        <Copy />
+        <span>
+          {isDuplicatePending
+            ? t('commands.duplicating', 'Duplicating...')
+            : t('commands.duplicate', 'Duplicate')}
         </span>
       </Button>
       {workflow?.nextSteps.map((step) => (

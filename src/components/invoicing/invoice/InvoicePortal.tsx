@@ -16,6 +16,8 @@ import { useInvoiceDeleteDialog } from './modals/InvoiceDeleteDialog';
 import { ServerErrorResponse } from '@/types';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface InvoicePortalProps {
   className?: string;
@@ -25,6 +27,7 @@ interface InvoicePortalProps {
 export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
+  const { t } = useTranslation('common');
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -127,6 +130,17 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
     }
   });
 
+  const { mutate: duplicateInvoice, isPending: isDuplicatePending } = useMutation({
+    mutationFn: (id: number) => api.invoicing.invoice.duplicate(id),
+    onSuccess: (data) => {
+      toast.success('Invoice duplicated successfully');
+      router.push(`/selling/invoices/${data.id}`);
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(error.response?.data.message || 'Failed to duplicate invoice');
+    }
+  });
+
   const { deleteInvoiceDialog, openDeleteInvoiceDialog, closeDeleteInvoiceDialog } =
     useInvoiceDeleteDialog({
       representation: `Invoice #${invoiceStore.response?.id} - ${invoiceStore.response?.object}`,
@@ -149,7 +163,15 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
       invoiceStore.set('response', invoice);
       openDeleteInvoiceDialog();
     },
-    additionalActions: {},
+    additionalActions: {
+      1: [
+        {
+          actionCallback: (inv) => duplicateInvoice(inv.id),
+          actionLabel: t('commands.duplicate', 'Duplicate'),
+          actionIcon: <Copy className="h-4 w-4" />
+        }
+      ]
+    },
     invisibleColumns: ['taxWithholding'],
     columnVisibility,
     setColumnVisibility,
@@ -171,7 +193,7 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
 
   const columns = useSellingInvoiceColumns(context);
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting;
+  const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
