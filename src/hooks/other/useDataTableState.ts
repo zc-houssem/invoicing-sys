@@ -55,6 +55,19 @@ export function useDataTableState(
     return defaultColumnFilters;
   });
 
+  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>(() => {
+    if (!isClient) return {};
+    const saved = localStorage.getItem(`datatable-${id}-visibility`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return {};
+      }
+    }
+    return {};
+  });
+
   React.useEffect(() => {
     localStorage.setItem(`datatable-${id}-size`, JSON.stringify(size));
   }, [id, size]);
@@ -67,6 +80,10 @@ export function useDataTableState(
     localStorage.setItem(`datatable-${id}-filters`, JSON.stringify(columnFilters));
   }, [id, columnFilters]);
 
+  React.useEffect(() => {
+    localStorage.setItem(`datatable-${id}-visibility`, JSON.stringify(columnVisibility));
+  }, [id, columnVisibility]);
+
   return {
     page,
     setPage,
@@ -77,6 +94,8 @@ export function useDataTableState(
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+    columnVisibility,
+    setColumnVisibility
   };
 }
