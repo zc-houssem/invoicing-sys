@@ -170,8 +170,9 @@ export const UserUpdateForm = ({ userId, className, onSuccess }: UserUpdateFormP
 
     if (!userResult.success) {
       userStore.set('updateDtoErrors', userResult.error.flatten().fieldErrors);
-      console.log('Validation failed', userResult.error.flatten().fieldErrors);
-      toast.error('Validation failed: ' + Object.keys(userResult.error.flatten().fieldErrors).join(', '));
+      toast.error(
+        'Validation failed: ' + Object.keys(userResult.error.flatten().fieldErrors).join(', ')
+      );
       return;
     }
     userStore.set('updateDtoErrors', {});

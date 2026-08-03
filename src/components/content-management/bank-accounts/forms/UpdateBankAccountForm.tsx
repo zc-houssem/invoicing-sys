@@ -38,7 +38,6 @@ export const UpdateBankAccountForm = ({
 
   const handleSubmit = () => {
     const result = updateBankAccountSchema.safeParse(bankAccountStore.updateDto);
-    console.log(result);
     if (!result.success) {
       bankAccountStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
     } else {
@@ -51,7 +50,10 @@ export const UpdateBankAccountForm = ({
       <FormBuilder className="flex flex-col flex-1 overflow-auto p-2" structure={structure} />
       <Separator className="mb-4 mt-2" />
       <div className="flex flex-row justify-end gap-2">
-        <Button variant="secondary" onClick={() => bankAccountStore.reset()} disabled={isUpdatePending}>
+        <Button
+          variant="secondary"
+          onClick={() => bankAccountStore.reset()}
+          disabled={isUpdatePending}>
           <Repeat2 /> {tCommon('commands.reset')}
         </Button>
         <Button onClick={handleSubmit} disabled={isUpdatePending}>

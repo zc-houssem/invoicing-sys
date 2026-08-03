@@ -156,7 +156,6 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
                         if (!valid) return;
                       }
                       methods.goTo(step.id);
-                      console.log('STEP CHANGE:', step.id);
                     }}
                     disabled={false}>
                     <Stepper.Title>{step.title}</Stepper.Title>
