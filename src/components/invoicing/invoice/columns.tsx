@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
@@ -148,7 +149,19 @@ export const useSellingInvoiceColumns = (
           attribute={'enterprise.name'}
         />
       ),
-      cell: ({ row }) => <div>{row.original.enterprise?.name}</div>,
+      cell: ({ row }) => {
+        const ent = row.original.enterprise;
+        const entId = row.original.enterpriseId || ent?.id;
+        if (!ent?.name || !entId) return <div>—</div>;
+        return (
+          <Link
+            href={`/contacts/enterprise/${entId}`}
+            className="font-medium text-primary hover:underline hover:text-primary/80 transition-colors"
+            onClick={(e) => e.stopPropagation()}>
+            {ent.name}
+          </Link>
+        );
+      },
       enableSorting: true,
       enableHiding: true
     },
