@@ -1,11 +1,11 @@
 import React from 'react';
-import { ComingSoon } from '@/components/shared';
 import { InformationalSettings } from '@/components/settings/InformationalSettings';
+import { ProfilePortal } from '@/components/settings/profile/ProfilePortal';
 
 export default function Page() {
   return (
     <InformationalSettings>
-      <ComingSoon />
+      <ProfilePortal />
     </InformationalSettings>
   );
 }

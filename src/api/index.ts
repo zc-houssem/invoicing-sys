@@ -7,6 +7,7 @@ import { core } from './core';
 import { invoicing } from './invoicing';
 import { sequence } from './sequence';
 import { defaultCondition } from './defaultCondition';
+import { currentUser } from './current-user';
 
 export const api = {
   admin,
@@ -14,6 +15,7 @@ export const api = {
   auth,
   upload,
   user,
+  currentUser,
   core,
   invoicing,
   sequence,

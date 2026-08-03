@@ -12,11 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/api';
 import { useTranslation } from 'react-i18next';
 import { identifyUser, identifyUserAvatar } from '@/lib/user';
 import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
+import { useUpload } from '@/hooks/useUpload';
 import { signOut } from 'next-auth/react';
 import { useAuthPersistStore } from '@/hooks/stores/useAuthPersistStore';
 
@@ -28,17 +27,11 @@ export function UserNav({ className }: UserNavProps) {
   const { t } = useTranslation('common');
   const router = useRouter();
   const { user } = useCurrentUser();
+  const { url: profilePictureUrl } = useUpload({ uploadId: user?.pictureId });
   const authPersistStore = useAuthPersistStore();
 
   const identity = React.useMemo(() => identifyUser(user), [user]);
   const avatarIdentity = React.useMemo(() => identifyUserAvatar(user), [user]);
-
-  // const { data: profilePicture } = useQuery({
-  //   queryKey: ['profile-picture', user?.pictureId],
-  //   queryFn: () => api.upload.getUploadById(user?.pictureId as number),
-  //   enabled: !!user?.pictureId,
-  //   staleTime: Infinity
-  // });
 
   const handleSignOut = async () => {
     authPersistStore.logout();
@@ -49,8 +42,7 @@ export function UserNav({ className }: UserNavProps) {
     <DropdownMenu>
       <DropdownMenuTrigger className={cn(className)}>
         <Avatar className="h-8 w-8 rounded-full">
-          {/* <AvatarImage src={profilePicture} alt={identity} /> */}
-
+          <AvatarImage src={profilePictureUrl ?? undefined} alt={identity} />
           <AvatarFallback>{avatarIdentity}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -62,7 +54,7 @@ export function UserNav({ className }: UserNavProps) {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              {/* <AvatarImage src={profilePicture} alt={identity} /> */}
+              <AvatarImage src={profilePictureUrl ?? undefined} alt={identity} />
               <AvatarFallback className="rounded-lg">{avatarIdentity}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -73,7 +65,7 @@ export function UserNav({ className }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push('/profile')}>
+          <DropdownMenuItem onClick={() => router.push('/settings/account/profile')}>
             <User />
             {t('common.buttons.profile')}
           </DropdownMenuItem>

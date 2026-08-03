@@ -1,4 +1,9 @@
 {
+  "account": {
+    "description": "Manage your personal account information and preferences.",
+    "update_success": "Profile updated successfully",
+    "update_failure": "Failed to update profile"
+  },
   "sequence": {
     "card_description": "Configure the numerical sequence settings.",
     "builder_description": "Define how the auto-generated sequence number will be formatted.",

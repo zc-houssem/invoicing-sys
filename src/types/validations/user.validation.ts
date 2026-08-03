@@ -125,4 +125,38 @@ function updateUserSchema(requirePasswordUpdate: boolean) {
     });
 }
 
-export { baseUserSchema, createUserSchema, updateUserSchema };
+function profileUpdateSchema(requirePasswordUpdate: boolean) {
+  return baseUserSchema
+    .extend({
+      password: requirePasswordUpdate
+        ? z
+            .string()
+            .min(8, {
+              message: 'userManagement.validation.invalidPasswordLength'
+            })
+            .optional()
+        : z.string().optional(),
+      confirmPassword: z.string().optional()
+    })
+    .superRefine((data, ctx) => {
+      if (requirePasswordUpdate) {
+        if (!data.password || data.password.length < 8) {
+          ctx.addIssue({
+            path: ['password'],
+            message: 'userManagement.validation.invalidPasswordLength',
+            code: 'custom'
+          });
+        }
+
+        if (data.password !== data.confirmPassword) {
+          ctx.addIssue({
+            path: ['confirmPassword'],
+            message: 'userManagement.validation.passwordMismatch',
+            code: 'custom'
+          });
+        }
+      }
+    });
+}
+
+export { baseUserSchema, createUserSchema, updateUserSchema, profileUpdateSchema };
