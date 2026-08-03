@@ -61,9 +61,29 @@ export function DataTable<TData, TValue>({
   }, [footerPagination, context.totalPageCount, context.size, context.page]);
 
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
-    Object.fromEntries(context?.invisibleColumns?.map((column) => [column, false]) || [])
+  const initialDefaultVisibility = React.useMemo(
+    () => Object.fromEntries(context?.invisibleColumns?.map((column) => [column, false]) || []),
+    [context?.invisibleColumns]
   );
+  const [internalColumnVisibility, setInternalColumnVisibility] = React.useState<VisibilityState>(
+    initialDefaultVisibility
+  );
+
+  const columnVisibility = context?.columnVisibility
+    ? { ...initialDefaultVisibility, ...context.columnVisibility }
+    : internalColumnVisibility;
+
+  const handleColumnVisibilityChange = React.useCallback(
+    (updaterOrValue: VisibilityState | ((old: VisibilityState) => VisibilityState)) => {
+      if (context?.setColumnVisibility) {
+        context.setColumnVisibility(updaterOrValue as any);
+      } else {
+        setInternalColumnVisibility(updaterOrValue);
+      }
+    },
+    [context]
+  );
+
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -80,7 +100,7 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

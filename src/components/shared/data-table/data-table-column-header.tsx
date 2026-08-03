@@ -81,7 +81,11 @@ export function DataTableColumnHeader<TData, TValue>({
   const canSort = column.getCanSort();
 
   if (!canSort && !canFilter) {
-    return <div className={cn(className)}>{title}</div>;
+    return (
+      <div className={cn('text-xs truncate max-w-30', className)} title={title}>
+        {title}
+      </div>
+    );
   }
 
   return (
@@ -95,7 +99,9 @@ export function DataTableColumnHeader<TData, TValue>({
               'text-center data-[state=open]:bg-accent -ml-3',
               isFilterActive && 'text-primary'
             )}>
-            <span className="text-xs">{title}</span>
+            <span className="text-xs truncate max-w-30" title={title}>
+              {title}
+            </span>
             {canSort && context.order === true && isSorted ? (
               <ArrowDownIcon className="ml-2 h-4 w-4" />
             ) : canSort && context.order === false && isSorted ? (

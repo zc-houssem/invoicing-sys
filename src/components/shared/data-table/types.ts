@@ -61,6 +61,8 @@ export interface DataTableConfig<T> {
   //utility
   targetEntity?: (entity: T) => void;
   invisibleColumns?: string[];
+  columnVisibility?: Record<string, boolean>;
+  setColumnVisibility?: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
   exportConfig?: DataTableExportConfig<T>;
 }
 
