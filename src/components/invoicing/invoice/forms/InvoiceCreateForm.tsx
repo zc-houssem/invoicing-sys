@@ -15,6 +15,7 @@ import { useEnterprises } from '@/hooks/content/core/useEnterprises';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseInterlocutors';
 import { Spinner } from '@/components/shared';
+import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
@@ -33,7 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { Button } from '@/components/ui/button';
 import { Repeat2, Save } from 'lucide-react';
-import { Status } from '../../Status';
+import { DocumentMetaHeader } from '../../CreatedByDisplay';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useTaxWithholdings } from '@/hooks/content/core/useTaxWithhodlings';
@@ -49,6 +50,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
   const { t: tCurrency } = useTranslation('currency');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const invoiceStore = useInvoiceStore();
+  const { user: currentUser } = useCurrentUser();
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
 
@@ -235,20 +237,27 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status="New">
-            {invoiceStore.createDto?.quotationId && (
-              <div className="flex flex-row items-center gap-1.5 mt-1 text-xs">
-                <span className="font-semibold text-muted-foreground">
-                  {tInvoicing('invoice.form.fromQuotation', 'Generated from quotation')}:
-                </span>
-                <a
-                  href={`/selling/quotations/${invoiceStore.createDto?.quotationId}`}
-                  className="text-primary hover:underline font-medium">
-                  #{invoiceStore.createDto?.quotationId}
-                </a>
-              </div>
-            )}
-          </Status>
+          <DocumentMetaHeader
+            status="New"
+            createdByLabel={tInvoicing('invoice.form.creatingAs')}
+            user={currentUser}
+            extraRows={
+              invoiceStore.createDto?.quotationId
+                ? [
+                    {
+                      label: tInvoicing('invoice.form.fromQuotation', 'Generated from quotation'),
+                      value: (
+                        <a
+                          href={`/selling/quotations/${invoiceStore.createDto.quotationId}`}
+                          className="font-medium text-primary hover:underline">
+                          #{invoiceStore.createDto.quotationId}
+                        </a>
+                      )
+                    }
+                  ]
+                : []
+            }
+          />
           <Separator />
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs font-bold">Actions</Label>

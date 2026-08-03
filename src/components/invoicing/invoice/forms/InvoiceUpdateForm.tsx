@@ -28,7 +28,7 @@ import {
 import { UpdateInvoiceArticleDto, UpdateInvoiceDto } from '@/types/core/invoicing/invoice';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useInvoiceWorkflow } from '@/hooks/content/core/useInvoiceWorkflow';
-import { Status } from '../../Status';
+import { DocumentMetaHeader } from '../../CreatedByDisplay';
 import { InvoiceActions } from './InvoiceActions';
 import { useTranslation } from 'react-i18next';
 import { useTaxWithholdings } from '@/hooks/content/core/useTaxWithhodlings';
@@ -94,7 +94,8 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       'invoiceArticles.taxes',
       'uploads',
       'uploads.upload',
-      'quotation'
+      'quotation',
+      'createdBy'
     ]
   });
 
@@ -308,21 +309,29 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status={workflow?.status || '-'}>
-            {invoiceStore.response?.quotationId && (
-              <div className="flex flex-row items-center gap-1.5 mt-1 text-xs">
-                <span className="font-semibold text-muted-foreground">
-                  {tInvoicing('invoice.form.fromQuotation', 'Generated from quotation')}:
-                </span>
-                <a
-                  href={`/selling/quotations/${invoiceStore.response?.quotationId}`}
-                  className="text-primary hover:underline font-medium">
-                  #
-                  {invoiceStore.response?.quotation?.sequence || invoiceStore.response?.quotationId}
-                </a>
-              </div>
-            )}
-          </Status>
+          <DocumentMetaHeader
+            status={workflow?.status || '-'}
+            createdByLabel={tInvoicing('invoice.form.createdBy')}
+            user={invoiceStore.response?.createdBy}
+            extraRows={
+              invoiceStore.response?.quotationId
+                ? [
+                    {
+                      label: tInvoicing('invoice.form.fromQuotation', 'Generated from quotation'),
+                      value: (
+                        <a
+                          href={`/selling/quotations/${invoiceStore.response.quotationId}`}
+                          className="font-medium text-primary hover:underline">
+                          #
+                          {invoiceStore.response?.quotation?.sequence ||
+                            invoiceStore.response.quotationId}
+                        </a>
+                      )
+                    }
+                  ]
+                : []
+            }
+          />
           <InvoiceActions
             className="my-4"
             workflow={workflow}

@@ -101,6 +101,7 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
           'quotation',
           'currency',
           'taxWithholding',
+          'createdBy',
           'invoiceArticles',
           'invoiceArticles.taxes'
         ].join(','),

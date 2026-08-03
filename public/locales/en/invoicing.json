@@ -12,6 +12,8 @@
       "generalConditions": "General conditions",
       "currency": "Currency",
       "bankAccount": "Bank Account",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",
@@ -31,7 +33,9 @@
         "generalConditions": "Enter the general conditions for this quotation. You can use the editor to format the text as needed.",
         "currency": "Select the currency for this quotation.",
         "bankAccount": "Select the bank account to be used for this quotation.",
-        "sequence": "Auto-generated sequence based on the company's configuration."
+        "sequence": "Auto-generated sequence based on the company's configuration.",
+        "createdBy": "User who created this quotation.",
+        "creatingAs": "You will be recorded as the creator of this quotation."
       }
     },
     "table": {
@@ -44,6 +48,7 @@
         "dueDate": "Due date",
         "enterprise": "Enterprise",
         "interlocutor": "Interlocutor",
+        "createdBy": "Created by",
         "createdAt": "Created at",
         "updatedAt": "Updated at"
       }
@@ -68,6 +73,10 @@
       "currency": "Currency",
       "bankAccount": "Bank Account",
       "taxWithholding": "Tax Withholding",
+      "fromQuotation": "Generated from quotation",
+      "viewQuotation": "View Quotation #",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",
@@ -89,7 +98,9 @@
         "currency": "Select the currency for this invoice.",
         "bankAccount": "Select the bank account to be used for this invoice.",
         "taxWithholding": "Select the tax withholding to be applied to this invoice.",
-        "sequence": "Auto-generated sequence based on the company's configuration."
+        "sequence": "Auto-generated sequence based on the company's configuration.",
+        "createdBy": "User who created this invoice.",
+        "creatingAs": "You will be recorded as the creator of this invoice."
       }
     },
     "table": {
@@ -102,9 +113,21 @@
         "dueDate": "Due date",
         "enterprise": "Enterprise",
         "interlocutor": "Interlocutor",
+        "createdBy": "Created by",
+        "total": "Total TTC",
+        "taxWithholding": "Retenue à la source",
+        "amountToPay": "Amount to Pay",
         "createdAt": "Created at",
         "updatedAt": "Updated at"
       }
+    },
+    "status": {
+      "Draft": "Draft",
+      "Validated": "Validated",
+      "Sent": "Sent",
+      "PartiallyPaid": "Partially Paid",
+      "Paid": "Paid",
+      "Overdue": "Overdue"
     },
     "dialogs": {
       "delete": {
@@ -151,5 +174,66 @@
       }
     }
   },
-  "payment": {}
+  "payment": {
+    "plural": "Payments",
+    "singular": "Payment",
+    "new": "New payment",
+    "section": {
+      "general": "General Information",
+      "financial": "Financial Information",
+      "invoices": "Invoice Management",
+      "attachments": "Attachments"
+    },
+    "form": {
+      "date": "Date",
+      "enterprise": "Enterprise",
+      "currency": "Currency",
+      "convertionRate": "Conversion rate",
+      "mode": "Payment mode",
+      "amount": "Amount",
+      "fee": "Fee",
+      "notes": "Notes / Remarks",
+      "files": "Attached documents",
+      "placeholders": {
+        "date": "Select payment date",
+        "enterprise": "Select an enterprise",
+        "currency": "Select currency",
+        "convertionRate": "Enter conversion rate",
+        "mode": "Select payment mode",
+        "amount": "Enter amount",
+        "fee": "Enter fee",
+        "notes": "Enter your notes or remarks here"
+      },
+      "descriptions": {
+        "date": "Select the payment execution date.",
+        "enterprise": "Select the enterprise associated with this payment.",
+        "currency": "Select the currency used for this payment.",
+        "convertionRate": "Specify the conversion rate if paying in a foreign currency.",
+        "mode": "Choose the payment method (transfer, check, cash, etc.).",
+        "amount": "Enter total payment amount.",
+        "fee": "Enter bank or transaction fees.",
+        "notes": "Enter any specific notes or instructions."
+      }
+    },
+    "modes": {
+      "Cash": "Cash",
+      "Transfer": "Bank Transfer",
+      "Check": "Check",
+      "CreditCard": "Credit Card",
+      "Other": "Other"
+    },
+    "financial_status": {
+      "received": "Received Amount",
+      "used": "Used Amount",
+      "available": "Available Amount"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete this payment",
+        "description": "This action cannot be undone. This will permanently delete the payment from our database.",
+        "confirm": "Yes, delete it",
+        "cancel": "No, keep it"
+      }
+    }
+  }
 }

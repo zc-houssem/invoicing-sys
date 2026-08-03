@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ResponseInvoiceDto } from '@/types/core/invoicing/invoice';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
+import { CreatedByDisplay } from '../CreatedByDisplay';
 
 export const useSellingInvoiceColumns = (
   context: DataTableConfig<ResponseInvoiceDto>
@@ -45,6 +46,20 @@ export const useSellingInvoiceColumns = (
         </div>
       ),
       enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('invoice.table.columns.createdBy', 'Created by'),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.createdBy', 'Created by')}
+          attribute={'createdBy.firstName'}
+        />
+      ),
+      cell: ({ row }) => <CreatedByDisplay user={row.original.createdBy} />,
+      enableSorting: false,
       enableHiding: true
     },
     {

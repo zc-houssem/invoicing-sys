@@ -13,6 +13,7 @@ import { useEnterprises } from '@/hooks/content/core/useEnterprises';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseInterlocutors';
 import { Spinner } from '@/components/shared';
+import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
@@ -33,7 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { Button } from '@/components/ui/button';
 import { Repeat2, Save } from 'lucide-react';
-import { Status } from '../../Status';
+import { DocumentMetaHeader } from '../../CreatedByDisplay';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
@@ -44,9 +45,11 @@ interface QuotationCreateFormProps {
 export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => {
   const router = useRouter();
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const quotationStore = useQuotationStore();
+  const { user: currentUser } = useCurrentUser();
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
 
@@ -215,7 +218,11 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status="New" />
+          <DocumentMetaHeader
+            status="New"
+            createdByLabel={tInvoicing('quotation.form.creatingAs')}
+            user={currentUser}
+          />
           <Separator />
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs font-bold">Actions</Label>

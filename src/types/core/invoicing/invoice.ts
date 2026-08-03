@@ -7,6 +7,7 @@ import { ResponseTaxRateDto } from '../tax-rate';
 import { ResponseWorkflowDto } from '../../response/workflow';
 import { ResponseStorageDto } from '../storage';
 import { ResponseQuotationDto } from '../invoicing';
+import { ResponseUserDto } from '../user-management';
 
 export enum INVOICE_STATUS {
   Draft = 'Draft',
@@ -44,6 +45,8 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
   notes?: string;
+  createdById?: string;
+  createdBy?: ResponseUserDto;
   quotationId?: number;
   quotation?: ResponseQuotationDto;
   invoiceArticles: ResponseInvoiceArticleDto[];

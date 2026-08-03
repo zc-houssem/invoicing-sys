@@ -28,7 +28,7 @@ import {
 } from '@/types';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
-import { Status } from '../../Status';
+import { DocumentMetaHeader } from '../../CreatedByDisplay';
 import { QuotationActions } from './QuotationActions';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +40,7 @@ interface QuotationUpdateFormProps {
 export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
   const quotationStore = useQuotationStore();
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
@@ -91,7 +92,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       'quotationArticles.article',
       'quotationArticles.taxes',
       'uploads',
-      'uploads.upload'
+      'uploads.upload',
+      'createdBy'
     ]
   });
 
@@ -284,7 +286,11 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status={workflow?.status || '-'} />
+          <DocumentMetaHeader
+            status={workflow?.status || '-'}
+            createdByLabel={tInvoicing('quotation.form.createdBy')}
+            user={quotationStore.response?.createdBy}
+          />
           <QuotationActions
             className="my-4"
             workflow={workflow}

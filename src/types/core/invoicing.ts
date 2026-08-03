@@ -6,6 +6,7 @@ import { ResponseBankAccountDto } from './bank-account';
 import { ResponseTaxRateDto } from './tax-rate';
 import { ResponseWorkflowDto } from '../response/workflow';
 import { ResponseStorageDto } from './storage';
+import { ResponseUserDto } from './user-management';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -29,6 +30,8 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
   notes?: string;
+  createdById?: string;
+  createdBy?: ResponseUserDto;
   quotationArticles: ResponseQuotationArticleDto[];
   uploads: ResponseQuotationUploadDto[];
 }
