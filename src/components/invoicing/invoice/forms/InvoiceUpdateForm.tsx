@@ -41,6 +41,7 @@ interface InvoiceUpdateFormProps {
 export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
   const invoiceStore = useInvoiceStore();
   const enterpriseStore = useEnterpriseStore();
   const articleStore = useArticleStore();
@@ -139,6 +140,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         interlocutorId: workflow?.invoice.interlocutorId,
         currencyId: workflow?.invoice.currencyId,
         taxWithholdingId: workflow?.invoice.taxWithholdingId,
+        taxWithholdingExcludeTaxes: workflow?.invoice.taxWithholdingExcludeTaxes,
         bankAccountId: workflow?.invoice.bankAccountId,
         notes: workflow?.invoice.notes,
         invoiceArticles: [],
@@ -203,6 +205,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
     const result = createDraftInvoiceSchema.safeParse(invoiceStore.updateDto);
 
     if (!result.success) {
+      toast.error('Veuillez vérifier les champs obligatoires.');
       invoiceStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
       return;
     } else {
@@ -305,7 +308,21 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status={workflow?.status || '-'} />
+          <Status className="mx-auto" status={workflow?.status || '-'}>
+            {invoiceStore.response?.quotationId && (
+              <div className="flex flex-row items-center gap-1.5 mt-1 text-xs">
+                <span className="font-semibold text-muted-foreground">
+                  {tInvoicing('invoice.form.fromQuotation', 'Generated from quotation')}:
+                </span>
+                <a
+                  href={`/selling/quotations/${invoiceStore.response?.quotationId}`}
+                  className="text-primary hover:underline font-medium">
+                  #
+                  {invoiceStore.response?.quotation?.sequence || invoiceStore.response?.quotationId}
+                </a>
+              </div>
+            )}
+          </Status>
           <InvoiceActions
             className="my-4"
             workflow={workflow}

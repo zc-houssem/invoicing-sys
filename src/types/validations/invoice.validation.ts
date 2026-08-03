@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 export const baseInvoiceSchema = z
   .object({
-    date: z.date({
+    date: z.coerce.date({
       errorMap: () => ({ message: 'Invalid date' })
     }),
-    dueDate: z.date({
+    dueDate: z.coerce.date({
       errorMap: () => ({ message: 'Invalid due date' })
     }),
     object: z.string().min(1, 'Object is required'),
@@ -24,7 +24,7 @@ export const baseInvoiceSchema = z
       errorMap: () => ({ message: 'Bank account is required' })
     })
   })
-  .refine((data) => data.dueDate >= data.date, {
+  .refine((data) => new Date(data.dueDate) >= new Date(data.date), {
     message: 'Due date must be the same or after the date',
     path: ['dueDate']
   });

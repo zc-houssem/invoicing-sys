@@ -1,16 +1,30 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from '../enterprise';
 import { DatabaseEntity } from '../../response/database-entity';
 import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from '../article';
-import { ResponseRefParamDto } from '../reference-types';
+import { CurrencyPayload, ResponseRefParamDto, TaxWithholdingPayload } from '../reference-types';
 import { ResponseBankAccountDto } from '../bank-account';
 import { ResponseTaxRateDto } from '../tax-rate';
 import { ResponseWorkflowDto } from '../../response/workflow';
 import { ResponseStorageDto } from '../storage';
 import { ResponseQuotationDto } from '../invoicing';
 
+export enum INVOICE_STATUS {
+  Draft = 'Draft',
+  Validated = 'Validated',
+  Sent = 'Sent',
+  PartiallyPaid = 'PartiallyPaid',
+  Paid = 'Paid',
+  Overdue = 'Overdue'
+}
+
 export interface ResponseInvoiceDto extends DatabaseEntity {
   id: number;
   sequence?: string;
+  totalExcludingTaxes?: number;
+  totalIncludingTaxes?: number;
+  taxWithholdingExcludeTaxes?: boolean;
+  taxWithholdingAmount?: number;
+  amountToPay?: number;
   status: string;
   direction: 'incoming' | 'outgoing';
   date: Date;
@@ -23,9 +37,9 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
   interlocutorId: number;
-  currency: ResponseRefParamDto;
+  currency: ResponseRefParamDto<CurrencyPayload>;
   currencyId: number;
-  taxWithholding: ResponseRefParamDto;
+  taxWithholding: ResponseRefParamDto<TaxWithholdingPayload>;
   taxWithholdingId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
@@ -52,6 +66,7 @@ export interface CreateInvoiceDto {
   interlocutorId?: number;
   currencyId?: number;
   taxWithholdingId?: number;
+  taxWithholdingExcludeTaxes?: boolean;
   bankAccountId?: number;
   notes?: string;
   quotationId?: number;

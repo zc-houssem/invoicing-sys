@@ -37,23 +37,33 @@ export function ArticleItem({ className, index, currency, disabled }: ArticleIte
 
   const totalPriceExcludingTax = React.useMemo(() => {
     const article = articleStore.articles[index];
-    return article.quantity * article.unitPrice;
-  }, [articleStore.articles[index].quantity, articleStore.articles[index].unitPrice]);
+    const qty = Number(article.quantity) || 0;
+    const price = Number(article.unitPrice) || 0;
+    const basePrice = qty * price;
+    const discVal = Number(article.discountValue) || 0;
+    const discount =
+      article.discountType === 'fixed'
+        ? discVal
+        : basePrice * (discVal / 100);
+    return basePrice - discount;
+  }, [
+    articleStore.articles[index].quantity,
+    articleStore.articles[index].unitPrice,
+    articleStore.articles[index].discountType,
+    articleStore.articles[index].discountValue
+  ]);
 
   const totalPriceIncludingTax = React.useMemo(() => {
     const article = articleStore.articles[index];
     let finalPrice = totalPriceExcludingTax;
 
-    // discount
-    if (article.discountType === 'fixed') finalPrice -= article.discountValue;
-    else finalPrice *= 1 - article.discountValue / 100;
-
     // tax
     article.taxIds?.forEach((taxId) => {
       const tax = taxRates.find((t) => t.id === taxId);
       if (tax) {
-        if (tax.type === 'rate') finalPrice *= 1 + tax.value / 100;
-        else finalPrice += tax.value;
+        const taxVal = Number(tax.value) || 0;
+        if (tax.type === 'rate') finalPrice *= 1 + taxVal / 100;
+        else finalPrice += taxVal;
       }
     });
 
@@ -77,15 +87,15 @@ export function ArticleItem({ className, index, currency, disabled }: ArticleIte
         <div className="flex flex-col text-xs">
           <span className="font-bold">{t('article.form.priceExcludingTax')}: </span>
           <span className="flex gap-1 font-light">
-            <span>{totalPriceExcludingTax.toFixed(currency?.extras.digitsAfterComma ?? 2)}</span>
-            <span>{currency?.extras.symbol}</span>
+            <span>{totalPriceExcludingTax.toFixed(Number(currency?.extras?.digitsAfterComma ?? 3))}</span>
+            <span>{currency?.extras?.symbol}</span>
           </span>
         </div>
         <div className="flex flex-col text-xs">
           <span className="font-bold">{t('article.form.priceIncludingTax')}: </span>
           <span className="flex gap-1 font-light">
-            <span>{totalPriceIncludingTax.toFixed(currency?.extras.digitsAfterComma ?? 2)}</span>
-            <span>{currency?.extras.symbol}</span>
+            <span>{totalPriceIncludingTax.toFixed(Number(currency?.extras?.digitsAfterComma ?? 3))}</span>
+            <span>{currency?.extras?.symbol}</span>
           </span>
         </div>
       </div>

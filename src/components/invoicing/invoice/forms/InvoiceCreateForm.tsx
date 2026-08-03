@@ -45,6 +45,7 @@ interface InvoiceCreateFormProps {
 export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
   const router = useRouter();
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
   const isMobile = useMediaQuery('(max-width: 768px)');
   const invoiceStore = useInvoiceStore();
@@ -234,7 +235,20 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status="New" />
+          <Status className="mx-auto" status="New">
+            {invoiceStore.createDto?.quotationId && (
+              <div className="flex flex-row items-center gap-1.5 mt-1 text-xs">
+                <span className="font-semibold text-muted-foreground">
+                  {tInvoicing('invoice.form.fromQuotation', 'Generated from quotation')}:
+                </span>
+                <a
+                  href={`/selling/quotations/${invoiceStore.createDto?.quotationId}`}
+                  className="text-primary hover:underline font-medium">
+                  #{invoiceStore.createDto?.quotationId}
+                </a>
+              </div>
+            )}
+          </Status>
           <Separator />
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs font-bold">Actions</Label>

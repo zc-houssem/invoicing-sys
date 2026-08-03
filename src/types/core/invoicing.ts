@@ -1,7 +1,7 @@
 import { ResponseEnterpriseDto, ResponseInterlocutorDto } from './enterprise';
 import { DatabaseEntity } from '../response/database-entity';
 import { CreateArticleDto, ResponseArticleDto, UpdateArticleDto } from './article';
-import { ResponseRefParamDto } from './reference-types';
+import { CurrencyPayload, ResponseRefParamDto } from './reference-types';
 import { ResponseBankAccountDto } from './bank-account';
 import { ResponseTaxRateDto } from './tax-rate';
 import { ResponseWorkflowDto } from '../response/workflow';
@@ -10,6 +10,8 @@ import { ResponseStorageDto } from './storage';
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
   sequence?: string;
+  totalExcludingTaxes?: number;
+  totalIncludingTaxes?: number;
   status: string;
   direction: 'incoming' | 'outgoing';
   date: Date;
@@ -22,7 +24,7 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   enterpriseId: number;
   interlocutor: ResponseInterlocutorDto;
   interlocutorId: number;
-  currency: ResponseRefParamDto;
+  currency: ResponseRefParamDto<CurrencyPayload>;
   currencyId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;

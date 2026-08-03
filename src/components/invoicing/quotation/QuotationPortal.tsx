@@ -89,7 +89,7 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor'].join(','),
+        join: ['enterprise', 'interlocutor', 'currency', 'quotationArticles', 'quotationArticles.taxes'].join(','),
         filter:
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',

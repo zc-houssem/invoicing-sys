@@ -130,6 +130,26 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
+      id: 'totalIncludingTaxes',
+      accessorKey: 'totalIncludingTaxes',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.total', 'Total TTC')}
+          attribute={'totalIncludingTaxes'}
+        />
+      ),
+      cell: ({ row }) => {
+        const q = row.original;
+        const symbol = q.currency?.extras?.symbol || '';
+        const digits = Number(q.currency?.extras?.digitsAfterComma ?? 3);
+        return <div>{`${Number(q.totalIncludingTaxes || 0).toFixed(digits)} ${symbol}`}</div>;
+      },
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
       accessorKey: t('quotation.table.columns.createdAt'),
       header: ({ column }) => (
         <DataTableColumnHeader

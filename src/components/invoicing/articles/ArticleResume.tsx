@@ -13,9 +13,18 @@ interface ArticleResumeProps {
   currency?: ResponseRefParamDto<CurrencyPayload>;
   includeHeader?: boolean;
   taxWithholding?: ResponseRefParamDto<TaxWithholdingPayload>;
+  taxWithholdingExcludeTaxes?: boolean;
+  onTaxWithholdingExcludeTaxesChange?: (excludeTaxes: boolean) => void;
 }
 
-export function ArticleResume({ className, currency, includeHeader, taxWithholding }: ArticleResumeProps) {
+export function ArticleResume({
+  className,
+  currency,
+  includeHeader,
+  taxWithholding,
+  taxWithholdingExcludeTaxes = true,
+  onTaxWithholdingExcludeTaxesChange
+}: ArticleResumeProps) {
   const articleStore = useArticleStore();
   const { t } = useTranslation('invoicing');
 
@@ -26,25 +35,36 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
   const totalPriceExcludingTax = React.useMemo(() => {
     if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
-      return prev + article.quantity * article.unitPrice;
+      const qty = Number(article.quantity) || 0;
+      const price = Number(article.unitPrice) || 0;
+      const basePrice = qty * price;
+      const discVal = Number(article.discountValue) || 0;
+      const discount = article.discountType === 'fixed' ? discVal : basePrice * (discVal / 100);
+      return prev + (basePrice - discount);
     }, 0);
   }, [articleStore.articles]);
 
   const totalPriceIncludingTax = React.useMemo(() => {
     if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
-      let finalPrice = article.quantity * article.unitPrice;
+      const qty = Number(article.quantity) || 0;
+      const price = Number(article.unitPrice) || 0;
+      const basePrice = qty * price;
+      const discVal = Number(article.discountValue) || 0;
+
+      let finalPrice = basePrice;
 
       // discount
-      if (article.discountType === 'fixed') finalPrice -= article.discountValue;
-      else finalPrice *= 1 - article.discountValue / 100;
+      if (article.discountType === 'fixed') finalPrice -= discVal;
+      else if (discVal) finalPrice *= 1 - discVal / 100;
 
       // tax
       article.taxIds?.forEach((taxId) => {
         const tax = taxRates.find((t) => t.id === taxId);
         if (tax) {
-          if (tax.type === 'rate') finalPrice *= 1 + tax.value / 100;
-          else finalPrice += tax.value;
+          const taxVal = Number(tax.value) || 0;
+          if (tax.type === 'rate') finalPrice *= 1 + taxVal / 100;
+          else finalPrice += taxVal;
         }
       });
 
@@ -55,10 +75,16 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
   const discountValue = React.useMemo(() => {
     if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
+      const qty = Number(article.quantity) || 0;
+      const price = Number(article.unitPrice) || 0;
+      const basePrice = qty * price;
+      const discVal = Number(article.discountValue) || 0;
+
       let discount = 0;
-      if (article.discountType === 'fixed') discount = article.discountValue;
-      else discount = article.quantity * article.unitPrice * (article.discountValue / 100);
-      return prev + discount;
+      if (article.discountType === 'fixed') discount = discVal;
+      else if (discVal) discount = basePrice * (discVal / 100);
+
+      return prev + (isNaN(discount) ? 0 : discount);
     }, 0);
   }, [articleStore.articles]);
 
@@ -66,63 +92,57 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
     if (articleStore.articles.length === 0) return 0;
     return articleStore.articles.reduce((prev, article) => {
       let taxAmount = 0;
+      const qty = Number(article.quantity) || 0;
+      const price = Number(article.unitPrice) || 0;
+      const basePrice = qty * price;
+      const discVal = Number(article.discountValue) || 0;
+
+      const discount = article.discountType === 'fixed' ? discVal : basePrice * (discVal / 100);
+
+      const priceAfterDiscount = basePrice - discount;
+
       article.taxIds?.forEach((taxId) => {
         const tax = taxRates.find((t) => t.id === taxId);
         if (tax) {
-          const priceAfterDiscount =
-            article.quantity * article.unitPrice -
-            (article.discountType === 'fixed'
-              ? article.discountValue
-              : article.quantity * article.unitPrice * (article.discountValue / 100));
-          if (tax.type === 'rate') taxAmount += priceAfterDiscount * (tax.value / 100);
-          else taxAmount += tax.value;
+          const taxVal = Number(tax.value) || 0;
+          if (tax.type === 'rate') taxAmount += priceAfterDiscount * (taxVal / 100);
+          else taxAmount += taxVal;
         }
       });
       return prev + taxAmount;
     }, 0);
   }, [articleStore.articles, taxRates]);
 
-  const [applyTaxWithholdingToHT, setApplyTaxWithholdingToHT] = React.useState(true);
-
   const taxWithholdingAmount = React.useMemo(() => {
     if (!taxWithholding || !taxWithholding.extras?.rate) return 0;
-    const base = applyTaxWithholdingToHT ? totalPriceExcludingTax : totalPriceIncludingTax;
+    const base = !taxWithholdingExcludeTaxes ? totalPriceExcludingTax : totalPriceIncludingTax;
     return base * (taxWithholding.extras.rate / 100);
-  }, [taxWithholding, applyTaxWithholdingToHT, totalPriceExcludingTax, totalPriceIncludingTax]);
+  }, [taxWithholding, taxWithholdingExcludeTaxes, totalPriceExcludingTax, totalPriceIncludingTax]);
 
   const data = React.useMemo(() => {
     if (articleStore.articles.length === 0) return [];
-    const items: Array<{label: string; value?: string}> = [
+    const digits = Number(currency?.extras?.digitsAfterComma ?? 3);
+    const symbol = currency?.extras?.symbol || '';
+
+    const items: Array<{ label: string; value?: string }> = [
       {
         label: t('article.form.priceExcludingTax'),
         value: totalPriceExcludingTax
-          ? `${totalPriceExcludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-              currency?.extras.symbol || ''
-            }`
+          ? `${totalPriceExcludingTax.toFixed(digits)} ${symbol}`
           : undefined
       },
       {
         label: t('article.form.totalDiscount'),
-        value: discountValue
-          ? `${Number(discountValue).toFixed(currency?.extras.digitsAfterComma || 2)} ${
-              currency?.extras.symbol || ''
-            }`
-          : undefined
+        value: discountValue ? `${Number(discountValue).toFixed(digits)} ${symbol}` : undefined
       },
       {
         label: t('article.form.totalTax'),
-        value: taxValue
-          ? `${taxValue.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-              currency?.extras.symbol || ''
-            }`
-          : undefined
+        value: taxValue ? `${taxValue.toFixed(digits)} ${symbol}` : undefined
       },
       {
         label: t('article.form.priceIncludingTax'),
         value: totalPriceIncludingTax
-          ? `${totalPriceIncludingTax.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-              currency?.extras.symbol || ''
-            }`
+          ? `${totalPriceIncludingTax.toFixed(digits)} ${symbol}`
           : undefined
       }
     ];
@@ -131,21 +151,26 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
       items.push({
         label: `${t('invoice.form.taxWithholding', { defaultValue: 'Tax Withholding' })} (${taxWithholding.extras.rate}%)`,
         value: taxWithholdingAmount
-          ? `-${taxWithholdingAmount.toFixed(currency?.extras.digitsAfterComma || 2)} ${
-              currency?.extras.symbol || ''
-            }`
+          ? `-${taxWithholdingAmount.toFixed(digits)} ${symbol}`
           : undefined
       });
       items.push({
         label: t('article.form.netToPay', { defaultValue: 'Net to Pay' }),
-        value: `${(totalPriceIncludingTax - taxWithholdingAmount).toFixed(currency?.extras.digitsAfterComma || 2)} ${
-          currency?.extras.symbol || ''
-        }`
+        value: `${(totalPriceIncludingTax - taxWithholdingAmount).toFixed(digits)} ${symbol}`
       });
     }
 
     return items;
-  }, [totalPriceExcludingTax, discountValue, taxValue, totalPriceIncludingTax, currency, t, taxWithholding, taxWithholdingAmount]);
+  }, [
+    totalPriceExcludingTax,
+    discountValue,
+    taxValue,
+    totalPriceIncludingTax,
+    currency,
+    t,
+    taxWithholding,
+    taxWithholdingAmount
+  ]);
 
   if (isTaxRatesPending) return <Spinner />;
   return (
@@ -167,8 +192,8 @@ export function ArticleResume({ className, currency, includeHeader, taxWithholdi
         <div className="flex items-center gap-2 mt-2">
           <Checkbox
             id="apply-to-ht"
-            checked={applyTaxWithholdingToHT}
-            onCheckedChange={(checked) => setApplyTaxWithholdingToHT(checked === true)}
+            checked={!taxWithholdingExcludeTaxes}
+            onCheckedChange={(checked) => onTaxWithholdingExcludeTaxesChange?.(checked !== true)}
           />
           <Label htmlFor="apply-to-ht" className="text-xs">
             {t('article.form.applyTaxWithholdingToHT', { defaultValue: 'Calculate from Price HT' })}

@@ -316,6 +316,10 @@ export const useInvoiceCreateFormStructure = ({
             className="w-full 2xl:w-1/3"
             currency={selectedCurrency}
             taxWithholding={selectedTaxWithholding}
+            taxWithholdingExcludeTaxes={store.createDto.taxWithholdingExcludeTaxes ?? false}
+            onTaxWithholdingExcludeTaxesChange={(excludeTaxes) => {
+              store.setNested('createDto.taxWithholdingExcludeTaxes', excludeTaxes);
+            }}
           />
         </div>
       )

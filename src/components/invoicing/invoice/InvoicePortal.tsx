@@ -56,7 +56,9 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+    columnVisibility,
+    setColumnVisibility
   } = useDataTableState('invoiceportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -90,7 +92,15 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: ['enterprise', 'interlocutor', 'quotation'].join(','),
+        join: [
+          'enterprise',
+          'interlocutor',
+          'quotation',
+          'currency',
+          'taxWithholding',
+          'invoiceArticles',
+          'invoiceArticles.taxes'
+        ].join(','),
         filter:
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
@@ -140,6 +150,9 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
       openDeleteInvoiceDialog();
     },
     additionalActions: {},
+    invisibleColumns: ['taxWithholding'],
+    columnVisibility,
+    setColumnVisibility,
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,

@@ -15,7 +15,12 @@ import {
 } from '@/components/shared/form-builder/types';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { InvoiceStore } from '@/hooks/stores/useInvoiceStore';
-import { CurrencyPayload, ResponseEnterpriseDto, ResponseRefParamDto, TaxWithholdingPayload } from '@/types';
+import {
+  CurrencyPayload,
+  ResponseEnterpriseDto,
+  ResponseRefParamDto,
+  TaxWithholdingPayload
+} from '@/types';
 import { useTranslation } from 'react-i18next';
 import { InvoiceArticlesField } from './InvoiceArticlesField';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
@@ -130,7 +135,9 @@ export const useInvoiceUpdateFormStructure = ({
   const sequenceField: Field<TextFieldProps> = {
     id: 'sequence',
     label: t('invoice.form.sequence', { defaultValue: 'Sequence' }),
-    description: t('invoice.form.descriptions.sequence', { defaultValue: 'Auto-generated sequence' }),
+    description: t('invoice.form.descriptions.sequence', {
+      defaultValue: 'Auto-generated sequence'
+    }),
     variant: FieldVariant.TEXT,
     props: {
       disabled: true,
@@ -343,7 +350,15 @@ export const useInvoiceUpdateFormStructure = ({
               ]
             }}
           />
-          <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} taxWithholding={selectedTaxWithholding} />
+          <ArticleResume
+            className="w-full 2xl:w-1/3"
+            currency={selectedCurrency}
+            taxWithholding={selectedTaxWithholding}
+            taxWithholdingExcludeTaxes={store.updateDto?.taxWithholdingExcludeTaxes ?? false}
+            onTaxWithholdingExcludeTaxesChange={(excludeTaxes) => {
+              store.setNested('updateDto.taxWithholdingExcludeTaxes', excludeTaxes);
+            }}
+          />
         </div>
       )
     }
@@ -505,30 +520,7 @@ export const useInvoiceUpdateFormStructure = ({
           },
           {
             fields: [taxWithholdingField]
-          },
-          ...(store.response?.quotationId ? [
-            {
-              fields: [
-                {
-                  id: 'quotationLink',
-                  variant: FieldVariant.CUSTOM,
-                  props: {
-                    children: (
-                      <div className="flex flex-col gap-2 mt-4">
-                        <span className="font-bold text-sm">{t('invoice.form.fromQuotation', 'Generated from quotation')}</span>
-                        <a 
-                          href={`/selling/quotations/${store.response?.quotationId}`}
-                          className="text-primary hover:underline text-sm"
-                        >
-                          {t('invoice.form.viewQuotation', 'View Quotation #')}{store.response?.quotation?.sequence || store.response?.quotationId}
-                        </a>
-                      </div>
-                    )
-                  }
-                } as Field<CustomFieldProps>
-              ]
-            }
-          ] : [])
+          }
         ]
       }
     ]

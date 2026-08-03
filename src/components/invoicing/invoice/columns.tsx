@@ -108,14 +108,15 @@ export const useSellingInvoiceColumns = (
       cell: ({ row }) => (
         <div>
           {row.original.quotationId ? (
-            <a 
+            <a
               href={`/selling/quotations/${row.original.quotationId}`}
-              className="text-primary hover:underline"
-            >
+              className="text-primary hover:underline">
               {row.original.quotation?.sequence || row.original.quotationId}
             </a>
           ) : (
-            <span className="text-muted-foreground">{t('invoice.table.source.direct', 'Direct')}</span>
+            <span className="text-muted-foreground">
+              {t('invoice.table.source.direct', 'Direct')}
+            </span>
           )}
         </div>
       ),
@@ -153,6 +154,71 @@ export const useSellingInvoiceColumns = (
             : ''}
         </div>
       ),
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      id: 'totalIncludingTaxes',
+      accessorKey: 'totalIncludingTaxes',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.total', 'Total TTC')}
+          attribute={'totalIncludingTaxes'}
+        />
+      ),
+      cell: ({ row }) => {
+        const inv = row.original;
+        const symbol = inv.currency?.extras?.symbol || '';
+        const digits = Number(inv.currency?.extras?.digitsAfterComma ?? 3);
+        return <div>{`${Number(inv.totalIncludingTaxes || 0).toFixed(digits)} ${symbol}`}</div>;
+      },
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      id: 'taxWithholding',
+      accessorKey: 'taxWithholding',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.taxWithholding', 'Retenue à la source')}
+          attribute={'taxWithholdingAmount'}
+        />
+      ),
+      cell: ({ row }) => {
+        const inv = row.original;
+        const rate = inv.taxWithholding?.extras?.rate || 0;
+        const amount = Number(inv.taxWithholdingAmount || 0);
+        const symbol = inv.currency?.extras?.symbol || '';
+        const digits = Number(inv.currency?.extras?.digitsAfterComma ?? 3);
+
+        return <div>{rate > 0 ? `${amount.toFixed(digits)} ${symbol} (${rate}%)` : '-'}</div>;
+      },
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      id: 'amountToPay',
+      accessorKey: 'amountToPay',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('invoice.table.columns.amountToPay', 'Montant à payer')}
+          attribute={'amountToPay'}
+        />
+      ),
+      cell: ({ row }) => {
+        const inv = row.original;
+        const amount = Number(inv.amountToPay || 0);
+        const symbol = inv.currency?.extras?.symbol || '';
+        const digits = Number(inv.currency?.extras?.digitsAfterComma ?? 3);
+
+        return <div>{`${amount.toFixed(digits)} ${symbol}`}</div>;
+      },
       enableSorting: true,
       enableHiding: true
     },
