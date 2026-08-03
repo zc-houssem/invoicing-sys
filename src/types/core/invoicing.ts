@@ -7,6 +7,7 @@ import { ResponseTaxRateDto } from './tax-rate';
 import { ResponseWorkflowDto } from '../response/workflow';
 import { ResponseStorageDto } from './storage';
 import { ResponseUserDto } from './user-management';
+import { ResponseInvoiceDto } from './invoicing/invoice';
 
 export interface ResponseQuotationDto extends DatabaseEntity {
   id: number;
@@ -34,6 +35,7 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   createdBy?: ResponseUserDto;
   quotationArticles: ResponseQuotationArticleDto[];
   uploads: ResponseQuotationUploadDto[];
+  invoices?: ResponseInvoiceDto[];
 }
 
 export interface ResponseQuotationWorkflowDto extends ResponseWorkflowDto {

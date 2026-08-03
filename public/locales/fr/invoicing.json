@@ -12,6 +12,7 @@
       "generalConditions": "Conditions générales",
       "currency": "Devise",
       "bankAccount": "Compte bancaire",
+      "invoices": "Factures liées",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
       "placeholders": {

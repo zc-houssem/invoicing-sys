@@ -93,7 +93,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       'quotationArticles.taxes',
       'uploads',
       'uploads.upload',
-      'createdBy'
+      'createdBy',
+      'invoices'
     ]
   });
 
@@ -290,6 +291,27 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             status={workflow?.status || '-'}
             createdByLabel={tInvoicing('quotation.form.createdBy')}
             user={quotationStore.response?.createdBy}
+            extraRows={
+              quotationStore.response?.invoices && quotationStore.response.invoices.length > 0
+                ? [
+                    {
+                      label: tInvoicing('quotation.form.invoices', 'Invoices'),
+                      value: (
+                        <div className="flex flex-col gap-1">
+                          {quotationStore.response.invoices.map((invoice) => (
+                            <a
+                              key={invoice.id}
+                              href={`/selling/invoices/${invoice.id}`}
+                              className="font-medium text-primary hover:underline">
+                              #{invoice.sequence || invoice.id}
+                            </a>
+                          ))}
+                        </div>
+                      )
+                    }
+                  ]
+                : []
+            }
           />
           <QuotationActions
             className="my-4"

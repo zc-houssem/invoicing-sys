@@ -12,6 +12,7 @@
       "generalConditions": "General conditions",
       "currency": "Currency",
       "bankAccount": "Bank Account",
+      "invoices": "Invoices",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
       "placeholders": {
