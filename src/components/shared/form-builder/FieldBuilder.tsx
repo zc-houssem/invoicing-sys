@@ -109,10 +109,15 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           type={field.variant}
           min={field.props?.min}
           max={field.props?.max}
-          value={field.props?.value}
+          value={field.props?.value ?? ''}
           placeholder={field?.placeholder}
           onChange={(event) => {
+            if (event.target.value === '') {
+              field?.props?.onChange?.(undefined);
+              return;
+            }
             const inputValue = Number(event.target.value);
+            if (isNaN(inputValue)) return;
             const min = field.props?.min ?? -Infinity;
             const max = field.props?.max ?? Infinity;
             const clampedValue = Math.max(min, Math.min(max, inputValue));

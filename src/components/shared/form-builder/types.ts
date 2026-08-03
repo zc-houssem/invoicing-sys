@@ -94,7 +94,7 @@ export interface TelFieldProps extends BaseFieldProps {
 
 export interface NumberFieldProps extends BaseFieldProps {
   value?: number | null;
-  onChange?: (e: number) => void;
+  onChange?: (e: number | undefined) => void;
   min?: number;
   max?: number;
 }
@@ -164,7 +164,7 @@ export interface EditorFieldProps extends BaseFieldProps {
 }
 
 export interface ImageFieldProps extends BaseFieldProps {
-  image?: File | null;
+  image?: File | string | null;
   accept?: string;
   progress?: number;
   placeholder?: string;
