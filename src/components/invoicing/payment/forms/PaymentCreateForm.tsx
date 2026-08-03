@@ -23,6 +23,8 @@ import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { useSequence } from '@/hooks/useSequence';
+import { Sequences } from '@/types/sequence';
 
 interface PaymentFormProps {
   className?: string;
@@ -38,6 +40,11 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
   const store = usePaymentStore();
   const { activeCompanyId } = useActiveCompanyContext();
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  useSequence(activeCompanyId, Sequences.PAYMENT, (preview: string) =>
+    store.set('sequencePreview', preview)
+  );
+
 
   React.useEffect(() => {
     setRoutes?.(

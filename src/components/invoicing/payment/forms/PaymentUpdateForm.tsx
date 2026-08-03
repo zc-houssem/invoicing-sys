@@ -15,7 +15,7 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { DocumentMetaTable } from '../../CreatedByDisplay';
+import { DocumentMetaHeader } from '../../CreatedByDisplay';
 import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
 import { PaymentActions } from './PaymentActions';
 import { UpdatePaymentDto } from '@/types/core/invoicing/payment';
@@ -46,7 +46,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
     queryFn: () =>
       api.invoicing.payment.findById(
         parseInt(paymentId),
-        'enterprise,currency,interlocutor,uploads.upload,invoices.invoice'
+        'enterprise,currency,interlocutor,createdBy,uploads.upload,invoices.invoice'
       )
   });
 
@@ -59,11 +59,11 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
       setRoutes?.([
         { title: tCommon('menu.selling.title'), href: '/selling' },
         { title: tInvoicing('payment.plural'), href: '/selling/payments' },
-        { title: tInvoicing('payment.singular') + ' N° ' + payment?.id }
+        { title: tInvoicing('payment.singular') + ' N° ' + (payment?.sequence || payment?.id) }
       ]);
       return () => clearRoutes?.();
     }
-  }, [router.locale, payment?.id]);
+  }, [router.locale, payment?.id, payment?.sequence]);
 
   // Fetch options
   const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
@@ -91,7 +91,11 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
       interlocutorId: data.interlocutorId,
       currencyId: data.currencyId,
       invoices:
-        data.invoices?.map((i: any) => ({ invoiceId: i.invoiceId, amount: i.amount })) || [],
+        data.invoices?.map((i: any) => ({
+          invoiceId: i.invoiceId,
+          amount: i.amount,
+          invoice: i.invoice
+        })) || [],
       uploads: data.uploads?.map((u: any) => ({ uploadId: u.uploadId })) || []
     });
 
@@ -176,7 +180,12 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <DocumentMetaTable className="mx-auto" rows={[{ label: 'Status', value: payment?.status || 'Draft' }]} />
+          <DocumentMetaHeader
+            className="mx-auto"
+            status={payment?.status || 'Draft'}
+            createdByLabel={tCommon('menu.created_by', { defaultValue: 'Created by' })}
+            user={payment?.createdBy}
+          />
           <PaymentActions
             className="my-2"
             payment={payment}

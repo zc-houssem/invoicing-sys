@@ -9,7 +9,8 @@
     "builder_description": "Définissez comment le numéro de séquence généré automatiquement sera formaté.",
     "elements": {
       "quotation": "Séquence de Devis",
-      "invoice": "Séquence de Facture"
+      "invoice": "Séquence de Facture",
+      "payment": "Séquence de Paiement"
     },
     "attributes": {
       "prefix": {

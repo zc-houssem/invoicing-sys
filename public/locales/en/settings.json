@@ -9,7 +9,8 @@
     "builder_description": "Define how the auto-generated sequence number will be formatted.",
     "elements": {
       "quotation": "Quotation Sequence",
-      "invoice": "Invoice Sequence"
+      "invoice": "Invoice Sequence",
+      "payment": "Payment Sequence"
     },
     "attributes": {
       "prefix": {

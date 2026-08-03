@@ -7,8 +7,9 @@ import {
   MultipleFilesFieldProps,
   SelectFieldProps,
   SelectOption,
-  TextFieldProps,
-  TextareaFieldProps
+  NumberFieldProps,
+  EditorFieldProps,
+  TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { ResponseEnterpriseDto, ResponseRefParamDto } from '@/types';
 import { useTranslation } from 'react-i18next';
@@ -74,7 +75,7 @@ export const usePaymentCreateFormStructure = ({
           enterprise?.invoices
             ?.filter(
               (invoice: any) =>
-                invoice?.status && ['PartiallyPaid', 'Sent', 'Unpaid'].includes(invoice?.status)
+                invoice?.status && ['Sent', 'PartiallyPaid', 'Overdue'].includes(invoice?.status)
             )
             .map((invoice: any) => ({
               amount: 0,
@@ -111,17 +112,17 @@ export const usePaymentCreateFormStructure = ({
     }
   };
 
-  const convertionRateField: Field<TextFieldProps> = {
+  const convertionRateField: Field<NumberFieldProps> = {
     id: 'convertionRate',
     label: tInvoicing('payment.form.convertionRate'),
-    variant: FieldVariant.TEXT,
+    variant: FieldVariant.NUMBER,
     placeholder: tInvoicing('payment.form.placeholders.convertionRate'),
     description: tInvoicing('payment.form.descriptions.convertionRate'),
     props: {
       disabled: loading,
-      value: store.createDto.convertionRate?.toString(),
+      value: store.createDto.convertionRate,
       onChange: (value) => {
-        store.setNested('createDto.convertionRate', parseFloat(value || '1'));
+        store.setNested('createDto.convertionRate', value ?? undefined);
       }
     }
   };
@@ -146,33 +147,33 @@ export const usePaymentCreateFormStructure = ({
     }
   };
 
-  const amountField: Field<TextFieldProps> = {
+  const amountField: Field<NumberFieldProps> = {
     id: 'amount',
     label: tInvoicing('payment.form.amount'),
-    variant: FieldVariant.TEXT,
+    variant: FieldVariant.NUMBER,
     required: true,
     placeholder: tInvoicing('payment.form.placeholders.amount'),
     description: tInvoicing('payment.form.descriptions.amount'),
     props: {
       disabled: loading,
-      value: store.createDto.amount?.toString(),
+      value: store.createDto.amount,
       onChange: (value) => {
-        store.setNested('createDto.amount', parseFloat(value || '0'));
+        store.setNested('createDto.amount', value ?? undefined);
       }
     }
   };
 
-  const feeField: Field<TextFieldProps> = {
+  const feeField: Field<NumberFieldProps> = {
     id: 'fee',
     label: tInvoicing('payment.form.fee'),
-    variant: FieldVariant.TEXT,
+    variant: FieldVariant.NUMBER,
     placeholder: tInvoicing('payment.form.placeholders.fee'),
     description: tInvoicing('payment.form.descriptions.fee'),
     props: {
       disabled: loading,
-      value: store.createDto.fee?.toString(),
+      value: store.createDto.fee,
       onChange: (value) => {
-        store.setNested('createDto.fee', parseFloat(value || '0'));
+        store.setNested('createDto.fee', value ?? undefined);
       }
     }
   };
@@ -201,10 +202,9 @@ export const usePaymentCreateFormStructure = ({
     }
   };
 
-  const notesField: Field<TextareaFieldProps> = {
+  const notesField: Field<EditorFieldProps> = {
     id: 'notes',
-    label: tInvoicing('payment.form.notes'),
-    variant: FieldVariant.TEXTAREA,
+    variant: FieldVariant.EDITOR,
     placeholder: tInvoicing('payment.form.placeholders.notes'),
     description: tInvoicing('payment.form.descriptions.notes'),
     props: {
@@ -212,8 +212,7 @@ export const usePaymentCreateFormStructure = ({
       value: store.createDto.notes,
       onChange: (value) => {
         store.setNested('createDto.notes', value);
-      },
-      rows: 7
+      }
     }
   };
 
@@ -222,6 +221,20 @@ export const usePaymentCreateFormStructure = ({
     variant: FieldVariant.CUSTOM,
     props: {
       children: <PaymentFinancialInformation loading={loading} />
+    }
+  };
+
+  const sequenceField: Field<TextFieldProps> = {
+    id: 'sequence',
+    label: tInvoicing('payment.form.sequence', { defaultValue: 'Sequence' }),
+    description: tInvoicing('payment.form.descriptions.sequence', {
+      defaultValue: 'Auto-generated sequence'
+    }),
+    variant: FieldVariant.TEXT,
+    required: false,
+    props: {
+      disabled: true,
+      value: store.sequencePreview || 'Loading...'
     }
   };
 
@@ -234,8 +247,9 @@ export const usePaymentCreateFormStructure = ({
         title: { value: tInvoicing('payment.section.general') },
         includeHeader: true,
         rows: [
-          { fields: [dateField, enterpriseField] },
-          { fields: [currencyField, convertionRateField, modeField] },
+          { fields: [dateField, sequenceField] },
+          { fields: [enterpriseField, modeField] },
+          { fields: [currencyField, convertionRateField] },
           { fields: [amountField, feeField] }
         ]
       },
@@ -250,30 +264,14 @@ export const usePaymentCreateFormStructure = ({
         rows: [{ fields: [filesField] }]
       },
       {
+        title: { value: tInvoicing('payment.form.notes') },
+        includeHeader: true,
+        rows: [{ fields: [notesField] }]
+      },
+      {
         title: { value: tInvoicing('payment.section.financial') },
         includeHeader: true,
-        rows: [
-          {
-            fields: [
-              {
-                id: 'additionalInfo',
-                variant: FieldVariant.CUSTOM,
-                props: {
-                  children: (
-                    <div className="flex flex-col xl:flex-row gap-6">
-                      <div className="w-full xl:w-2/3">
-                        <FieldBuilder field={notesField} />
-                      </div>
-                      <div className="w-full xl:w-1/3 mt-6 xl:mt-0">
-                        {financialInformationField.props?.children}
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            ]
-          }
-        ]
+        rows: [{ fields: [financialInformationField] }]
       }
     ]
   };

@@ -6,10 +6,10 @@ import { PackageOpen, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInvoices } from '@/hooks/content/core/useInvoices';
 import { ResponseInvoiceDto } from '@/types/core/invoicing/invoice';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/shared';
 
 interface PaymentInvoiceManagementProps {
   className?: string;
@@ -29,46 +29,11 @@ export const PaymentInvoiceManagement = ({ className }: PaymentInvoiceManagement
 
   const { invoices: availableInvoices, isInvoicesPending } = useInvoices({
     enterpriseId,
-    currencyId,
-    join: ['enterprise', 'currency']
+    join: ['enterprise', 'currency', 'invoiceArticles', 'invoiceArticles.taxes', 'payments']
   });
-
-  const handleAddInvoice = () => {
-    const unallocated = availableInvoices.find(
-      (inv) => !invoicesList.some((entry) => entry.invoiceId === inv.id)
-    );
-    if (!unallocated) return;
-
-    const newEntries = [
-      ...invoicesList,
-      {
-        invoiceId: unallocated.id,
-        amount: 0
-      }
-    ];
-
-    if (isUpdate) {
-      store.setNested('updateDto.invoices', newEntries);
-    } else {
-      store.setNested('createDto.invoices', newEntries);
-    }
-  };
 
   const handleRemoveInvoice = (index: number) => {
     const updated = invoicesList.filter((_, i) => i !== index);
-    if (isUpdate) {
-      store.setNested('updateDto.invoices', updated);
-    } else {
-      store.setNested('createDto.invoices', updated);
-    }
-  };
-
-  const handleInvoiceChange = (index: number, newInvoiceId: number) => {
-    const updated = [...invoicesList];
-    updated[index] = {
-      ...updated[index],
-      invoiceId: newInvoiceId
-    };
     if (isUpdate) {
       store.setNested('updateDto.invoices', updated);
     } else {
@@ -90,6 +55,28 @@ export const PaymentInvoiceManagement = ({ className }: PaymentInvoiceManagement
     }
   };
 
+  React.useEffect(() => {
+    if (!isInvoicesPending && availableInvoices) {
+      const eligible = availableInvoices.filter((inv) => {
+        if (!inv?.status) return false;
+        const s = String(inv.status)
+          .toLowerCase()
+          .replace(/[^a-z]/g, '');
+        return s.includes('sent') || s.includes('partially') || s.includes('overdue');
+      });
+
+      if (!isUpdate) {
+        // Only set if not already set or enterprise changed
+        const newEntries = eligible.map((inv) => ({
+          invoiceId: inv.id,
+          amount: 0,
+          invoice: inv
+        }));
+        store.setNested('createDto.invoices', newEntries);
+      }
+    }
+  }, [availableInvoices, isInvoicesPending, enterpriseId, isUpdate]);
+
   if (!enterpriseId) {
     return (
       <div className="flex items-center justify-center gap-2 text-muted-foreground h-24 text-center text-sm">
@@ -100,70 +87,89 @@ export const PaymentInvoiceManagement = ({ className }: PaymentInvoiceManagement
     );
   }
 
+  if (isInvoicesPending) {
+    return (
+      <div className="flex items-center justify-center h-24">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
-    <Card className={cn('w-full border-0 shadow-none', className)}>
+    <Card className={cn('w-full border-0 shadow-none p-4', className)}>
       <CardHeader className="p-0 pb-4 space-y-1 w-full flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="text-xl font-bold">{tInvoicing('invoice.plural', { defaultValue: 'Invoices' })}</CardTitle>
+          <CardTitle className="text-xl font-bold">
+            {tInvoicing('invoice.plural', { defaultValue: 'Invoices' })}
+          </CardTitle>
           <CardDescription>
             {tInvoicing('payment.manage_invoice_allocations', {
               defaultValue: 'Allocate payment amounts to enterprise invoices.'
             })}
           </CardDescription>
         </div>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={handleAddInvoice}
-          disabled={isInvoicesPending || availableInvoices.length === 0}
-        >
-          <Plus className="size-4 mr-1" />
-          {tInvoicing('payment.add_invoice', { defaultValue: 'Add Invoice' })}
-        </Button>
       </CardHeader>
       <CardContent className="p-0 grid gap-3">
         {invoicesList.length === 0 ? (
           <div className="flex items-center justify-center gap-2 font-medium h-24 text-center text-muted-foreground text-sm border border-dashed rounded-lg">
-            {tInvoicing('payment.no_invoices', { defaultValue: 'No invoices added yet' })} <PackageOpen className="size-5" />
+            {tInvoicing('payment.no_invoices', {
+              defaultValue: 'No invoices available for this enterprise'
+            })}{' '}
+            <PackageOpen className="size-5" />
           </div>
         ) : (
           <div className="space-y-3">
             {invoicesList.map((entry, index) => {
-              const selectedInvoice = availableInvoices.find((inv) => inv.id === entry.invoiceId);
+              const selectedInvoice = entry.invoice || availableInvoices.find((inv) => inv.id === entry.invoiceId);
+
+              const symbol = selectedInvoice?.currency?.extras?.symbol || '';
+              const digits = Number(selectedInvoice?.currency?.extras?.digitsAfterComma ?? 3);
+              const total = Number(selectedInvoice?.totalIncludingTaxes ?? (selectedInvoice as any)?.total ?? 0);
+              const remaining = Number(selectedInvoice?.amountToPay ?? 0);
+
+              let paid = 0;
+              const paymentsArr = (selectedInvoice as any)?.payments;
+              if (Array.isArray(paymentsArr) && paymentsArr.length > 0) {
+                paid = paymentsArr.reduce((acc: number, p: any) => acc + Number(p.amount || 0), 0);
+              } else if (typeof (selectedInvoice as any)?.amountPaid === 'number') {
+                paid = (selectedInvoice as any).amountPaid;
+              } else if (total > remaining) {
+                paid = total - remaining;
+              }
+
               return (
                 <div
                   key={index}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 border rounded-lg bg-card"
-                >
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 border rounded-lg bg-card">
                   <div className="flex-1 w-full">
-                    <Label className="text-xs font-semibold mb-1 block">
+                    <Label className="text-xs font-semibold mb-1 block text-muted-foreground">
                       {tInvoicing('invoice.singular', { defaultValue: 'Invoice' })}
                     </Label>
-                    <Select
-                      value={entry.invoiceId ? String(entry.invoiceId) : ''}
-                      onValueChange={(val) => handleInvoiceChange(index, Number(val))}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={tInvoicing('invoice.form.placeholders.object', { defaultValue: 'Select invoice' })} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableInvoices.map((inv: ResponseInvoiceDto) => {
-                          const isSelectedElsewhere = invoicesList.some(
-                            (e, i) => i !== index && e.invoiceId === inv.id
-                          );
-                          return (
-                            <SelectItem
-                              key={inv.id}
-                              value={String(inv.id)}
-                              disabled={isSelectedElsewhere}
-                            >
-                              #{inv.id} - {inv.object} ({inv.sequence || 'No ref'})
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
+                    <div className="text-sm font-medium py-1.5 px-3 bg-muted/40 rounded-md border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        {selectedInvoice ? (
+                          <>
+                            <span className="font-bold">#{selectedInvoice.id}</span>
+                            {selectedInvoice.object ? ` - ${selectedInvoice.object}` : ''}
+                            {selectedInvoice.sequence ? ` (${selectedInvoice.sequence})` : ''}
+                          </>
+                        ) : (
+                          `Invoice #${entry.invoiceId}`
+                        )}
+                      </div>
+                      {selectedInvoice && (
+                        <div className="flex items-center gap-3 text-xs shrink-0">
+                          <span className="text-muted-foreground">
+                            {tInvoicing('invoice.paid', { defaultValue: 'Paid' })}:{' '}
+                            <strong className="text-emerald-600 font-semibold">{`${paid.toFixed(digits)} ${symbol}`}</strong>
+                          </span>
+                          <span className="text-muted-foreground">
+                            {tInvoicing('invoice.remaining', { defaultValue: 'Remaining' })}:{' '}
+                            <strong className="text-amber-600 font-semibold">{`${remaining.toFixed(digits)} ${symbol}`}</strong>
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="w-full sm:w-48">
                     <Label className="text-xs font-semibold mb-1 block">
@@ -184,8 +190,7 @@ export const PaymentInvoiceManagement = ({ className }: PaymentInvoiceManagement
                       variant="ghost"
                       size="icon"
                       className="text-destructive hover:bg-destructive/10"
-                      onClick={() => handleRemoveInvoice(index)}
-                    >
+                      onClick={() => handleRemoveInvoice(index)}>
                       <Trash2 className="size-4" />
                     </Button>
                   </div>

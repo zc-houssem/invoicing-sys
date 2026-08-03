@@ -3,6 +3,7 @@ import { ResponseEnterpriseDto, ResponseInterlocutorDto } from '../enterprise';
 import { ResponseRefParamDto, CurrencyPayload } from '../reference-types';
 import { DatabaseEntity } from '@/types/response/database-entity';
 import { ResponseStorageDto } from '../storage';
+import { ResponseUserDto } from '../user-management';
 
 export enum PAYMENT_MODE {
   Cash = 'Cash',
@@ -21,6 +22,7 @@ export enum PAYMENT_STATUS {
 export interface CreatePaymentInvoiceEntryDto {
   invoiceId: number;
   amount: number;
+  invoice?: ResponseInvoiceDto;
 }
 
 export interface CreatePaymentUploadDto {
@@ -29,16 +31,18 @@ export interface CreatePaymentUploadDto {
 }
 
 export interface CreatePaymentDto {
-  amount: number;
+  sequence?: string;
+  amount?: number;
   fee?: number;
   convertionRate?: number;
   date: Date | null;
   mode: PAYMENT_MODE;
   notes?: string;
   systemEnterpriseId?: number;
-  enterpriseId: number;
+  enterpriseId?: number;
   interlocutorId?: number;
   currencyId?: number;
+  createdById?: string;
   invoices: CreatePaymentInvoiceEntryDto[];
   uploads: CreatePaymentUploadDto[];
 }
@@ -53,6 +57,7 @@ export interface ResponsePaymentInvoiceEntryDto {
   invoiceId: number;
   amount: number;
   invoice: ResponseInvoiceDto;
+  payment?: ResponsePaymentDto;
 }
 
 export interface ResponsePaymentUploadDto {
@@ -65,6 +70,7 @@ export interface ResponsePaymentUploadDto {
 export interface ResponsePaymentDto extends DatabaseEntity {
   id: number;
   status: string;
+  sequence?: string;
   amount: number;
   fee: number;
   convertionRate: number;
@@ -79,6 +85,8 @@ export interface ResponsePaymentDto extends DatabaseEntity {
   interlocutorId: number;
   currency: ResponseRefParamDto<CurrencyPayload>;
   currencyId: number;
+  createdBy?: ResponseUserDto;
+  createdById?: string;
   invoices: ResponsePaymentInvoiceEntryDto[];
   uploads: ResponsePaymentUploadDto[];
 }

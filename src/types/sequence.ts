@@ -2,7 +2,8 @@ import { DatabaseEntity } from './response/database-entity';
 
 export enum Sequences {
   INVOICE = 'invoice',
-  QUOTATION = 'quotation'
+  QUOTATION = 'quotation',
+  PAYMENT = 'payment'
 }
 
 export enum DateFormat {

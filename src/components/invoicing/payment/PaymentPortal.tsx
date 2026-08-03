@@ -90,7 +90,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
-        join: 'currency',
+        join: ['enterprise', 'currency', 'createdBy'].join(','),
         filter:
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
@@ -122,7 +122,9 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
 
   const { deletePaymentDialog, openDeletePaymentDialog, closeDeletePaymentDialog } =
     usePaymentDeleteDialog({
-      representation: `Payment #${paymentStore.response?.id}`,
+      representation: paymentStore.response?.sequence
+        ? `${paymentStore.response.sequence}`
+        : `#${paymentStore.response?.id}`,
       deletePayment: () => paymentStore.response?.id && removePayment(paymentStore.response.id),
       isDeletionPending: isDeletePending,
       resetPayment: () => paymentStore.reset()

@@ -16,6 +16,7 @@ interface PaymentData {
   updateDtoErrors: Record<string, string[]>;
 
   files: ManipulatedFile[];
+  sequencePreview: string;
 }
 
 interface IPaymentStore extends PaymentData {}
@@ -23,15 +24,16 @@ interface IPaymentStore extends PaymentData {}
 export interface PaymentStore extends IPaymentStore, BaseActions<IPaymentStore> {}
 
 const initialState: PaymentData = {
+  sequencePreview: '',
   response: null,
   createDto: {
-    amount: 0,
+    amount: undefined,
     fee: 0,
     convertionRate: 1,
     date: null,
     mode: PAYMENT_MODE.Cash,
     notes: '',
-    enterpriseId: 0,
+    enterpriseId: undefined,
     interlocutorId: undefined,
     currencyId: undefined,
     invoices: [],
