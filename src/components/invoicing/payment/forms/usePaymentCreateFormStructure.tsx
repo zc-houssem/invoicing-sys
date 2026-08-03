@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   CustomFieldProps,
   DateFieldProps,
@@ -7,6 +6,7 @@ import {
   FormStructure,
   MultipleFilesFieldProps,
   SelectFieldProps,
+  SelectOption,
   TextFieldProps,
   TextareaFieldProps
 } from '@/components/shared/form-builder/types';
@@ -16,11 +16,12 @@ import { PAYMENT_MODE } from '@/types/core/invoicing/payment';
 import { PaymentStore } from '@/hooks/stores/usePaymentStore';
 import { PaymentInvoiceManagement } from './PaymentInvoiceManagement';
 import { PaymentFinancialInformation } from './PaymentFinancialInformation';
+import { FieldBuilder } from '@/components/shared/form-builder/FieldBuilder';
 
 interface usePaymentCreateFormStructureProps {
   store: PaymentStore;
   enterprises: ResponseEnterpriseDto[];
-  currencies: ResponseRefParamDto[];
+  currencies: SelectOption[];
   loading?: boolean;
 }
 
@@ -36,9 +37,11 @@ export const usePaymentCreateFormStructure = ({
 
   const dateField: Field<DateFieldProps> = {
     id: 'date',
-    label: tInvoicing('invoice.attributes.date') + ' (*)',
+    label: tInvoicing('payment.form.date'),
     variant: FieldVariant.DATE,
     required: true,
+    placeholder: tInvoicing('payment.form.placeholders.date'),
+    description: tInvoicing('payment.form.descriptions.date'),
     props: {
       disabled: loading,
       value: store.createDto.date,
@@ -50,10 +53,11 @@ export const usePaymentCreateFormStructure = ({
 
   const enterpriseField: Field<SelectFieldProps> = {
     id: 'enterprise',
-    label: tCommon('submenu.enterprises') + ' (*)',
+    label: tInvoicing('payment.form.enterprise'),
     variant: FieldVariant.SELECT,
     required: true,
-    placeholder: tInvoicing('invoice.associate_enterprise'),
+    placeholder: tInvoicing('payment.form.placeholders.enterprise'),
+    description: tInvoicing('payment.form.descriptions.enterprise'),
     props: {
       disabled: loading,
       value: store.createDto.enterpriseId?.toString(),
@@ -90,9 +94,10 @@ export const usePaymentCreateFormStructure = ({
 
   const currencyField: Field<SelectFieldProps> = {
     id: 'currency',
-    label: tInvoicing('payment.attributes.currency'),
+    label: tInvoicing('payment.form.currency'),
     variant: FieldVariant.SELECT,
-    placeholder: tInvoicing('controls.currency_select_placeholder'),
+    placeholder: tInvoicing('payment.form.placeholders.currency'),
+    description: tInvoicing('payment.form.descriptions.currency'),
     props: {
       disabled: loading || currencies.length === 1,
       value: store.createDto.currencyId?.toString(),
@@ -102,19 +107,16 @@ export const usePaymentCreateFormStructure = ({
         // Reset invoices
         store.setNested('createDto.invoices', []);
       },
-      options:
-        currencies?.map((currency: any) => ({
-          label: `${currency?.code && tCurrency(currency?.code)} (${currency.symbol})`,
-          value: currency.id?.toString() || ''
-        })) || []
+      options: currencies
     }
   };
 
   const convertionRateField: Field<TextFieldProps> = {
     id: 'convertionRate',
-    label: tInvoicing('payment.attributes.convertion_rate'),
+    label: tInvoicing('payment.form.convertionRate'),
     variant: FieldVariant.TEXT,
-    placeholder: '1',
+    placeholder: tInvoicing('payment.form.placeholders.convertionRate'),
+    description: tInvoicing('payment.form.descriptions.convertionRate'),
     props: {
       disabled: loading,
       value: store.createDto.convertionRate?.toString(),
@@ -126,9 +128,10 @@ export const usePaymentCreateFormStructure = ({
 
   const modeField: Field<SelectFieldProps> = {
     id: 'mode',
-    label: tInvoicing('payment.attributes.mode') + ' (*)',
+    label: tInvoicing('payment.form.mode'),
     variant: FieldVariant.SELECT,
-    placeholder: tInvoicing('payment.attributes.mode'),
+    placeholder: tInvoicing('payment.form.placeholders.mode'),
+    description: tInvoicing('payment.form.descriptions.mode'),
     required: true,
     props: {
       disabled: loading,
@@ -137,7 +140,7 @@ export const usePaymentCreateFormStructure = ({
         store.setNested('createDto.mode', value as PAYMENT_MODE);
       },
       options: Object.values(PAYMENT_MODE).map((title) => ({
-        label: tInvoicing(title as string),
+        label: tInvoicing(`payment.modes.${title}`),
         value: title as string
       }))
     }
@@ -145,9 +148,11 @@ export const usePaymentCreateFormStructure = ({
 
   const amountField: Field<TextFieldProps> = {
     id: 'amount',
-    label: tInvoicing('payment.attributes.amount'),
+    label: tInvoicing('payment.form.amount'),
     variant: FieldVariant.TEXT,
-    placeholder: '0',
+    required: true,
+    placeholder: tInvoicing('payment.form.placeholders.amount'),
+    description: tInvoicing('payment.form.descriptions.amount'),
     props: {
       disabled: loading,
       value: store.createDto.amount?.toString(),
@@ -159,9 +164,10 @@ export const usePaymentCreateFormStructure = ({
 
   const feeField: Field<TextFieldProps> = {
     id: 'fee',
-    label: tInvoicing('payment.attributes.fee'),
+    label: tInvoicing('payment.form.fee'),
     variant: FieldVariant.TEXT,
-    placeholder: '0',
+    placeholder: tInvoicing('payment.form.placeholders.fee'),
+    description: tInvoicing('payment.form.descriptions.fee'),
     props: {
       disabled: loading,
       value: store.createDto.fee?.toString(),
@@ -186,7 +192,7 @@ export const usePaymentCreateFormStructure = ({
   const filesField: Field<MultipleFilesFieldProps> = {
     id: 'files',
     variant: FieldVariant.FILES,
-    label: tInvoicing('payment.attributes.files'),
+    label: tInvoicing('payment.form.files'),
     props: {
       files: store.files,
       onFilesChange: (files) => {
@@ -197,9 +203,10 @@ export const usePaymentCreateFormStructure = ({
 
   const notesField: Field<TextareaFieldProps> = {
     id: 'notes',
-    label: tInvoicing('payment.attributes.notes'),
+    label: tInvoicing('payment.form.notes'),
     variant: FieldVariant.TEXTAREA,
-    placeholder: tInvoicing('payment.attributes.notes'),
+    placeholder: tInvoicing('payment.form.placeholders.notes'),
+    description: tInvoicing('payment.form.descriptions.notes'),
     props: {
       disabled: loading,
       value: store.createDto.notes,
@@ -219,12 +226,12 @@ export const usePaymentCreateFormStructure = ({
   };
 
   const mainFormStructure: FormStructure = {
-    title: { value: 'General Information' },
+    title: { value: tInvoicing('payment.section.general') },
     toggleableFieldsets: true,
     orientation: 'horizontal',
     fieldsets: [
       {
-        title: { value: 'General Information' },
+        title: { value: tInvoicing('payment.section.general') },
         includeHeader: true,
         rows: [
           { fields: [dateField, enterpriseField] },
@@ -233,17 +240,17 @@ export const usePaymentCreateFormStructure = ({
         ]
       },
       {
-        title: { value: 'Invoices' },
+        title: { value: tInvoicing('payment.section.invoices') },
         includeHeader: true,
         rows: [{ fields: [invoicesField] }]
       },
       {
-        title: { value: 'Attachments' },
+        title: { value: tInvoicing('payment.section.attachments') },
         includeHeader: true,
         rows: [{ fields: [filesField] }]
       },
       {
-        title: { value: 'Additional Information' },
+        title: { value: tInvoicing('payment.section.financial') },
         includeHeader: true,
         rows: [
           {
@@ -255,10 +262,10 @@ export const usePaymentCreateFormStructure = ({
                   children: (
                     <div className="flex flex-col xl:flex-row gap-6">
                       <div className="w-full xl:w-2/3">
-                        <notesField.variant {...(notesField.props as any)} />
+                        <FieldBuilder field={notesField} />
                       </div>
                       <div className="w-full xl:w-1/3 mt-6 xl:mt-0">
-                        {financialInformationField.props.children}
+                        {financialInformationField.props?.children}
                       </div>
                     </div>
                   )

@@ -2,25 +2,27 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useFirmChoices from '@/hooks/content/useFirmChoice';
 import { api } from '@/api';
 import { useMutation } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/errors';
 import { toast } from 'sonner';
 import { useEnterprises } from '@/hooks/content/core/useEnterprises';
-import useCabinet from '@/hooks/content/useCabinet';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { usePaymentCreateFormStructure } from './usePaymentCreateFormStructure';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
+import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { Status } from '../../Status';
+import { DocumentMetaTable } from '../../CreatedByDisplay';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Save, Repeat2 } from 'lucide-react';
 import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 
 interface PaymentFormProps {
   className?: string;
@@ -30,16 +32,18 @@ interface PaymentFormProps {
 export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps) => {
   const router = useRouter();
   const { t: tCommon } = useTranslation('common');
+  const { t: tCurrency } = useTranslation('currency');
   const { t: tInvoicing } = useTranslation('invoicing');
   const { setRoutes, clearRoutes } = useBreadcrumb();
   const store = usePaymentStore();
+  const { activeCompanyId } = useActiveCompanyContext();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   React.useEffect(() => {
     setRoutes?.(
       !enterpriseId
         ? [
-            { title: tCommon('menu.selling'), href: '/selling' },
+            { title: tCommon('menu.selling.title'), href: '/selling' },
             { title: tInvoicing('payment.plural'), href: '/selling/payments' },
             { title: tInvoicing('payment.new') }
           ]
@@ -50,20 +54,15 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
 
   // Fetch options
   const { currencies, isCurrenciesPending } = useCurrencies();
-  const { cabinet, isFetchCabinetPending } = useCabinet();
-
-  React.useEffect(() => {
-    store.setNested('createDto.currencyId', cabinet?.currency?.id);
-  }, [cabinet]);
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
     join: ['currency', 'invoices', 'invoices.currency'],
     excludeSystem: true
   });
 
-  const currency = React.useMemo(() => {
-    return currencies.find((c) => c.id === store.createDto.currencyId);
-  }, [store.createDto.currencyId, currencies]);
+  const loading = isEnterprisesPending || isCurrenciesPending;
+  const isFormReady = !loading;
+  useInvoicingFormScroll(isFormReady);
 
   const { mutate: createPayment, isPending: isCreatePending } = useMutation({
     mutationFn: (data: { payment: any }) => api.invoicing.payment.create(data.payment),
@@ -89,22 +88,27 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
 
   const onSubmit = () => {
     // TODO validation of amounts etc.
-    const payment = store.createDto;
+    const payment = {
+      ...store.createDto,
+      systemEnterpriseId: activeCompanyId ?? undefined
+    };
 
     // validation logic from before is omitted here temporarily, assuming valid or you'll handle on backend
     createPayment({
-      payment,
+      payment
     });
   };
-
-  const loading = isEnterprisesPending || isCurrenciesPending || isFetchCabinetPending;
 
   const { mainFormStructure } = usePaymentCreateFormStructure({
     store,
     enterprises: enterprises || [],
-    currencies: currencies.filter(
-      (c) => c.id == cabinet?.currencyId || c.id == store.createDto.currencyId
-    ),
+    currencies: mapToSelectOptions({
+      data: currencies || [],
+      labelKey: 'label',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+        `${tCurrency(item.label)} (${item.extras.symbol})`
+    }),
     loading
   });
 
@@ -120,7 +124,7 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status="New" />
+          <DocumentMetaTable className="mx-auto" rows={[{ label: 'Status', value: 'New' }]} />
           <Separator />
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs font-bold">Actions</Label>

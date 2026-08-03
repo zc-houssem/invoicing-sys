@@ -16,40 +16,47 @@ export const PaymentFinancialInformation = ({
   const { t: tInvoicing } = useTranslation('invoicing');
   const store = usePaymentStore();
 
-  const amountPaid = store.createDto.amount || 0;
-  const fee = store.createDto.fee || 0;
+  const dto = store.updateDto || store.createDto;
+  const amountPaid = Number(dto.amount || 0);
+  const fee = Number(dto.fee || 0);
   const available = amountPaid + fee;
 
-  // Placeholder for used amount until invoices logic is fully integrated
-  const used = 0; 
+  const used = React.useMemo(() => {
+    return (dto.invoices || []).reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+  }, [dto.invoices]);
+
   const remaining_amount = available - used;
 
   return (
-    <div className={cn(className)}>
-      <div className="flex flex-col w-full">
-        <div className="flex my-2">
-          <Label className="mr-auto">{tInvoicing('payment.financial_status.received')}</Label>
-          <Label className="ml-auto">
-            {available.toFixed(2)}
-          </Label>
-        </div>
-      </div>
-      <div className="flex flex-col w-full mt-1">
-        <div className="flex my-2">
-          <Label className="mr-auto">{tInvoicing('payment.financial_status.used')}</Label>
-          <Label className="ml-auto">
-            {used.toFixed(2)}
-          </Label>
-        </div>
-      </div>
-      <div className="flex flex-col w-full border-t pt-1">
-        <div className="flex my-2">
-          <Label className="mr-auto">{tInvoicing('payment.financial_status.available')}</Label>
-          <Label className="ml-auto">
-            {remaining_amount.toFixed(2)}
-          </Label>
-        </div>
-      </div>
+    <div className={cn('flex flex-col gap-2', className)}>
+      <table className="w-full mt-2">
+        <tbody>
+          <tr>
+            <td className="text-start">
+              <Label className="text-xs font-thin">
+                {tInvoicing('payment.financial_status.received', { defaultValue: 'Received Amount' })}
+              </Label>
+            </td>
+            <td className="text-muted-foreground text-end text-xs">{available.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td className="text-start">
+              <Label className="text-xs font-thin">
+                {tInvoicing('payment.financial_status.used', { defaultValue: 'Used Amount' })}
+              </Label>
+            </td>
+            <td className="text-muted-foreground text-end text-xs">{used.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td className="text-start">
+              <Label className="text-xs font-thin">
+                {tInvoicing('payment.financial_status.available', { defaultValue: 'Available Amount' })}
+              </Label>
+            </td>
+            <td className="text-muted-foreground text-end text-xs">{remaining_amount.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

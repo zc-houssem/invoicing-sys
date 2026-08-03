@@ -11,16 +11,16 @@ import useInitializedState from '@/hooks/use-initialized-state';
 import { useEnterprises } from '@/hooks/content/core/useEnterprises';
 import { usePaymentUpdateFormStructure } from './usePaymentUpdateFormStructure';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
+import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { Status } from '../../Status';
-import { Separator } from '@/components/ui/separator';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Save, Repeat2 } from 'lucide-react';
+import { DocumentMetaTable } from '../../CreatedByDisplay';
 import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
+import { PaymentActions } from './PaymentActions';
 import { UpdatePaymentDto } from '@/types/core/invoicing/payment';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
+import { CurrencyPayload, ResponseRefParamDto } from '@/types';
 
 interface PaymentFormProps {
   className?: string;
@@ -30,6 +30,7 @@ interface PaymentFormProps {
 export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) => {
   const router = useRouter();
   const { t: tCommon } = useTranslation('common');
+  const { t: tCurrency } = useTranslation('currency');
   const { t: tInvoicing } = useTranslation('invoicing');
   const { setRoutes, clearRoutes } = useBreadcrumb();
   const store = usePaymentStore();
@@ -56,7 +57,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
   React.useEffect(() => {
     if (payment?.id) {
       setRoutes?.([
-        { title: tCommon('menu.selling'), href: '/selling' },
+        { title: tCommon('menu.selling.title'), href: '/selling' },
         { title: tInvoicing('payment.plural'), href: '/selling/payments' },
         { title: tInvoicing('payment.singular') + ' N° ' + payment?.id }
       ]);
@@ -66,19 +67,15 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
 
   // Fetch options
   const { currencies, isCurrenciesPending: isFetchCurrenciesPending } = useCurrencies();
-  const { cabinet, isFetchCabinetPending } = useCabinet();
-
-  React.useEffect(() => {
-    store.setNested('updateDto.currencyId', cabinet?.currency?.id);
-  }, [cabinet]);
 
   const { enterprises, isEnterprisesPending } = useEnterprises({
     join: ['currency', 'invoices', 'invoices.currency'],
     excludeSystem: true
   });
-  
-  const fetching =
-    isFetchPending || isEnterprisesPending || isFetchCurrenciesPending || isFetchCabinetPending;
+
+  const fetching = isFetchPending || isEnterprisesPending || isFetchCurrenciesPending;
+  const isFormReady = !fetching;
+  useInvoicingFormScroll(isFormReady);
 
   const setPaymentData = (data: any) => {
     if (!data) return;
@@ -157,9 +154,13 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
   const { mainFormStructure } = usePaymentUpdateFormStructure({
     store,
     enterprises: enterprises || [],
-    currencies: currencies.filter(
-      (c) => c.id == cabinet?.currencyId || c.id == store.updateDto?.currencyId
-    ),
+    currencies: mapToSelectOptions({
+      data: currencies || [],
+      labelKey: 'label',
+      valueKey: 'id',
+      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+        `${tCurrency(item.label)} (${item.extras.symbol})`
+    }),
     loading: fetching
   });
 
@@ -175,35 +176,16 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <Status className="mx-auto" status={payment?.status || 'Draft'} />
-          <Separator />
-          <div className="flex flex-col gap-2 w-full">
-            <Label className="text-xs font-bold">Actions</Label>
-            <Button
-              type="button"
-              size="lg"
-              className="rounded-xl"
-              variant={'outline'}
-              disabled={isDisabled || isUpdatePending}
-              onClick={() => {
-                onSubmit();
-              }}>
-              <Save className="size-16" />
-              <span>{tCommon('commands.save')}</span>
-            </Button>
-            <Button
-              type="button"
-              size="lg"
-              className="rounded-xl"
-              variant={'ghost'}
-              disabled={isUpdatePending}
-              onClick={() => {
-                globalReset();
-              }}>
-              <Repeat2 className="size-16" />
-              <span>{tCommon('commands.reset')}</span>
-            </Button>
-          </div>
+          <DocumentMetaTable className="mx-auto" rows={[{ label: 'Status', value: payment?.status || 'Draft' }]} />
+          <PaymentActions
+            className="my-2"
+            payment={payment}
+            save={onSubmit}
+            reload={() => refetchInvoice()}
+            reset={globalReset}
+            isSaveDisabled={isDisabled}
+            isUpdatePending={isUpdatePending}
+          />
         </>
       }
     />

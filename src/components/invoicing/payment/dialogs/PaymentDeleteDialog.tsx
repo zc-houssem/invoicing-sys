@@ -1,100 +1,63 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle
-} from '@/components/ui/drawer';
+import { useDialog } from '@/components/shared/Dialogs';
+import { Spinner } from '@/components/shared/Spinner';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/shared';
-import { cn } from '@/lib/utils';
-import { Check, X } from 'lucide-react';
-import { useMediaQuery } from '@/hooks/other/useMediaQuery';
-import { Label } from '@/components/ui/label';
+import { useTranslation } from 'react-i18next';
 
 interface PaymentDeleteDialogProps {
-  className?: string;
-  id?: number;
-  open: boolean;
-  deletePayment: () => void;
+  representation?: string;
+  deletePayment?: () => void;
   isDeletionPending?: boolean;
-  onClose: () => void;
+  resetPayment?: () => void;
 }
 
-export const PaymentDeleteDialog: React.FC<PaymentDeleteDialogProps> = ({
-  className,
-  id,
-  open,
+export const usePaymentDeleteDialog = ({
+  representation,
   deletePayment,
   isDeletionPending,
-  onClose
-}) => {
-  const { t: tCommon } = useTranslation('common');
-  const isDesktop = useMediaQuery('(min-width: 1500px)');
+  resetPayment
+}: PaymentDeleteDialogProps) => {
+  const { t } = useTranslation('invoicing');
 
-  const header = (
-    <Label className="leading-5">Voulez-vous vraiment supprimer le paiement N° PAY{id}</Label>
-  );
+  const {
+    DialogFragment: deletePaymentDialog,
+    openDialog: openDeletePaymentDialog,
+    closeDialog: closeDeletePaymentDialog
+  } = useDialog({
+    title: (
+      <div className="leading-normal">
+        {t('payment.dialogs.delete.title')} <span className="font-light">{representation}</span> ?
+      </div>
+    ),
+    description: t('payment.dialogs.delete.description'),
+    children: (
+      <div>
+        <div className="flex gap-2 justify-end">
+          <Button
+            onClick={() => {
+              deletePayment?.();
+              closeDeletePaymentDialog();
+            }}>
+            {t('payment.dialogs.delete.confirm')}
+            <Spinner show={isDeletionPending} />
+          </Button>
+          <Button
+            variant={'secondary'}
+            onClick={() => {
+              resetPayment?.();
+              closeDeletePaymentDialog();
+            }}>
+            {t('payment.dialogs.delete.cancel')}
+          </Button>
+        </div>
+      </div>
+    ),
+    className: 'w-[500px]',
+    onToggle: resetPayment
+  });
 
-  const footer = (
-    <div className="flex gap-2 mt-2 items-center justify-center">
-      <Button
-        className="w-1/2 flex gap-2"
-        onClick={() => {
-          id && deletePayment();
-          onClose();
-        }}>
-        <Check />
-        {tCommon('commands.delete')}
-        <Spinner className="ml-2" size={'small'} show={isDeletionPending} />
-      </Button>
-      <Button
-        className="w-1/2 flex gap-2"
-        variant={'secondary'}
-        onClick={() => {
-          onClose();
-        }}>
-        <X />
-        {tCommon('answer.no')}
-      </Button>
-    </div>
-  );
-
-  if (isDesktop)
-    return (
-      <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className={cn('max-w-[30vw] p-8', className)}>
-          <DialogHeader>
-            <DialogTitle />
-            <DialogDescription className="flex gap-2 pt-4 items-center px-2">
-              {header}
-            </DialogDescription>
-          </DialogHeader>
-          {footer}
-        </DialogContent>
-      </Dialog>
-    );
-  return (
-    <Drawer open={open} onClose={onClose}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle />
-          <DrawerDescription className="flex gap-2 pt-4 items-center px-2">
-            {header}
-          </DrawerDescription>
-        </DrawerHeader>
-        <DrawerFooter className="border-t pt-2">{footer}</DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  );
+  return {
+    deletePaymentDialog,
+    openDeletePaymentDialog,
+    closeDeletePaymentDialog
+  };
 };

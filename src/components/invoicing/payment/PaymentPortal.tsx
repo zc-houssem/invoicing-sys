@@ -11,11 +11,12 @@ import { DataTableConfig } from '@/components/shared/data-table/types';
 import { usePaymentColumns } from './columns';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
-import { PaymentDeleteDialog } from './dialogs/PaymentDeleteDialog';
+import { usePaymentDeleteDialog } from './dialogs/PaymentDeleteDialog';
 import { cn } from '@/lib/utils';
 import { ResponsePaymentDto } from '@/types/core/invoicing/payment';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
 
 interface PaymentPortalProps {
   className?: string;
@@ -25,6 +26,7 @@ interface PaymentPortalProps {
 
 export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: PaymentPortalProps) => {
   const router = useRouter();
+  const paymentStore = usePaymentStore();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t: tCommon } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
@@ -35,8 +37,8 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
     if (!enterpriseId && !interlocutorId) {
       setIntro?.(tInvoicing('payment.plural'), 'Here you can manage your payments.');
       setRoutes?.([
-        { title: tCommon('menu.selling'), href: '/selling' },
-        { title: tCommon('submenu.payments') }
+        { title: tCommon('menu.selling.title'), href: '/selling' },
+        { title: tInvoicing('payment.plural') }
       ]);
       return () => {
         clearIntro?.();
@@ -68,13 +70,9 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
 
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
-  const [deleteDialog, setDeleteDialog] = React.useState(false);
-  const [paymentToDelete, setPaymentToDelete] = React.useState<number | undefined>();
-
   const {
-    isPending: isFetchPending,
-    error,
     data: paymentsResp,
+    isPending: isFetchPending,
     refetch: refetchPayments
   } = useQuery({
     queryKey: [
@@ -100,7 +98,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
             interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
           ]
             .filter(Boolean)
-            .join(',') || undefined
+            .join(';') || undefined
       })
   });
 
@@ -115,12 +113,20 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
       if (payments?.length == 1 && page > 1) setPage(page - 1);
       toast.success(tInvoicing('payment.action_remove_success'));
       refetchPayments();
-      setDeleteDialog(false);
+      closeDeletePaymentDialog();
     },
     onError: (error) => {
       toast.error(getErrorMessage('invoicing', error, tInvoicing('payment.action_remove_failure')));
     }
   });
+
+  const { deletePaymentDialog, openDeletePaymentDialog, closeDeletePaymentDialog } =
+    usePaymentDeleteDialog({
+      representation: `Payment #${paymentStore.response?.id}`,
+      deletePayment: () => paymentStore.response?.id && removePayment(paymentStore.response.id),
+      isDeletionPending: isDeletePending,
+      resetPayment: () => paymentStore.reset()
+    });
 
   const context: DataTableConfig<ResponsePaymentDto> = {
     singularName: 'Payment',
@@ -133,8 +139,8 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
       router.push(`/selling/payments/${payment.id}`);
     },
     deleteCallback: (payment) => {
-      setPaymentToDelete(payment.id);
-      setDeleteDialog(true);
+      paymentStore.set('response', payment);
+      openDeletePaymentDialog();
     },
     additionalActions: {},
     //search, filtering, sorting & paging
@@ -159,15 +165,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
 
   return (
     <>
-      <PaymentDeleteDialog
-        id={paymentToDelete}
-        open={deleteDialog}
-        deletePayment={() => {
-          paymentToDelete && removePayment(paymentToDelete);
-        }}
-        isDeletionPending={isDeletePending}
-        onClose={() => setDeleteDialog(false)}
-      />
+      {deletePaymentDialog}
       <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
         <DataTable
           className="flex flex-col flex-1 overflow-hidden p-1"

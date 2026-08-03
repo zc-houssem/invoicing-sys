@@ -43,7 +43,9 @@ export interface CreatePaymentDto {
   uploads: CreatePaymentUploadDto[];
 }
 
-export interface UpdatePaymentDto extends Partial<CreatePaymentDto> {}
+export interface UpdatePaymentDto extends Partial<CreatePaymentDto> {
+  status?: PAYMENT_STATUS | string;
+}
 
 export interface ResponsePaymentInvoiceEntryDto {
   id: number;
