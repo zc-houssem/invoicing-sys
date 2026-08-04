@@ -1,5 +1,15 @@
 {
   "common": {},
+  "page": {
+    "enterprises": {
+      "title": "Enterprises",
+      "description": "Browse, create, and manage your client and supplier enterprises."
+    },
+    "interlocutors": {
+      "title": "Interlocutors",
+      "description": "Browse and manage contact persons linked to your enterprises."
+    }
+  },
   "enterprise": {
     "single": "Enterprise",
     "plural": "Enterprises",
@@ -82,6 +92,12 @@
     "action_remove_failure": "Failed to remove enterprise",
     "singular": "Enterprise",
     "new": "New Enterprise",
+    "create_page": {
+      "description": "Fill out the form below to create a new enterprise."
+    },
+    "edit_page": {
+      "description": "Update the information for this enterprise."
+    },
     "action_add_success": "Enterprise successfully added",
     "action_add_failure": "Failed to add enterprise",
     "edit": "Edit Enterprise",

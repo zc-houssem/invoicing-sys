@@ -38,9 +38,27 @@
   "default_condition": {
     "action_edit_success": "Default conditions updated successfully",
     "action_edit_failure": "Failed to update default conditions",
+    "page_description": "Manage default text conditions applied to new quotations and invoices.",
     "elements": {
       "quotation": "Quotation Default Conditions",
       "invoice": "Invoice Default Conditions"
+    }
+  },
+  "enterprise": {
+    "my_enterprise": {
+      "description": "Manage your active enterprise profile, activity, and financial settings."
+    },
+    "my_addresses": {
+      "description": "Manage delivery and invoicing addresses for your active enterprise."
+    },
+    "banks": {
+      "description": "Manage bank accounts and payment details for your active enterprise."
+    },
+    "new": {
+      "title": "New Enterprise",
+      "description": "Create a new system enterprise workspace for your organization.",
+      "success": "System enterprise created successfully",
+      "failure": "Failed to create system enterprise"
     }
   },
   "members": {

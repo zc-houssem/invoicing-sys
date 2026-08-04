@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { ResponseRefParamDto, CreateEnterpriseDto } from '@/types';
+import { useIntro } from '@/context/IntroContext';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useEnterpriseCreateFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseCreateFormStructure';
 import { useEnterpriseAddressFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseAddressFormStructure';
@@ -86,7 +87,10 @@ interface SystemEnterpriseCreateFormProps {
 export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreateFormProps) => {
   const router = useRouter();
   const { t: tCommon } = useTranslation('common');
+  const { t: tSettings } = useTranslation('settings');
   const { t: tCountry } = useTranslation('country');
+  const { setIntro, clearIntro } = useIntro();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
 
   const enterpriseStore = useEnterpriseStore();
   const queryClient = useQueryClient();
@@ -96,6 +100,25 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const { setContent } = useFooter();
+
+  React.useEffect(() => {
+    setIntro?.(tSettings('enterprise.new.title'), tSettings('enterprise.new.description'));
+    setRoutes?.([
+      { title: tCommon('menu.settings.title') },
+      {
+        title: tCommon('menu.enterprise.title'),
+        href: '/settings/enterprise/my-enterprise'
+      },
+      { title: tSettings('enterprise.new.title') }
+    ]);
+
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+      setContent?.(null);
+      enterpriseStore.reset();
+    };
+  }, [router.locale, setIntro, clearIntro, setRoutes, clearRoutes, setContent, tCommon, tSettings]);
 
   const { enterpriseInformation, additionalInformation } = useEnterpriseCreateFormStructure({
     store: enterpriseStore,
@@ -136,29 +159,15 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
       })
     });
 
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: 'System Enterprises' },
-      { title: 'New System Enterprise' }
-    ]);
-    return () => {
-      setRoutes?.([]);
-      setContent?.(null);
-      enterpriseStore.reset();
-    };
-  }, [router.locale]);
-
   const { mutate: createEnterprise, isPending: isCreatePending } = useMutation({
     mutationFn: (data: CreateEnterpriseDto) => api.core.enterprise.createSystem(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['system-enterprises'] });
-      toast.success('System enterprise created successfully');
+      toast.success(tSettings('enterprise.new.success'));
       router.back();
     },
     onError: (error): void => {
-      const message = getErrorMessage('settings', error, 'Failed to create system enterprise');
+      const message = getErrorMessage('settings', error, tSettings('enterprise.new.failure'));
       toast.error(message);
     }
   });

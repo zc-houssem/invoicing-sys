@@ -211,13 +211,13 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
   React.useEffect(() => {
     setRoutes?.([
       { title: tCommon('menu.contacts.title'), href: '/contacts' },
-      { title: tCommon('submenu.enterprises'), href: '/contacts/enterprises' },
+      { title: tCommon('menu.contacts.subs.enterprises'), href: '/contacts/enterprises' },
       { title: enterprise?.name || tContact('enterprise.edit') }
     ]);
 
     setIntro?.(
       enterprise?.name || tContact('enterprise.edit'),
-      'Update the information for this enterprise.'
+      tContact('enterprise.edit_page.description')
     );
     setEnableMainOverflow?.(true);
 

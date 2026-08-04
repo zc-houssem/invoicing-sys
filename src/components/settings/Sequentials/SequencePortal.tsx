@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSequenceStore } from '../../../hooks/stores/useSequenceStore';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/router';
-import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useSequence } from '@/hooks/content/sequence/useSequence';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { useFooter } from '@/context/FooterContext';
@@ -17,18 +15,8 @@ interface SequencePortalProps {
 }
 
 export const SequencePortal = ({ className }: SequencePortalProps) => {
-  const router = useRouter();
   const { t: tSettings } = useTranslation('settings');
   const { t: tCommon } = useTranslation('common');
-
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    setRoutes?.([
-      { title: tCommon('menu.settings.title') },
-      { title: tCommon('menu.enterprise.title') },
-      { title: tCommon('settings.system.sequence') }
-    ]);
-  }, [router.locale, setRoutes, tCommon]);
 
   const sequenceStore = useSequenceStore();
   const { activeCompanyId } = useActiveCompanyContext();

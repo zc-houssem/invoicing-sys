@@ -34,7 +34,7 @@ export const InterlocutorDetails = ({
   React.useEffect(() => {
     if (interlocutor) {
       setIntro?.(
-        tContacts('interlocutor.detailmenu.title', { interlocutorName: fullName }),
+        fullName,
         tContacts('interlocutor.detailmenu.description', { interlocutorName: fullName })
       );
     }
@@ -47,7 +47,7 @@ export const InterlocutorDetails = ({
       clearIntro?.();
       clearRoutes?.();
     };
-  }, [interlocutor, router.locale]);
+  }, [interlocutor, fullName, router.locale, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
 
   const sidebarNavItems = [
     {

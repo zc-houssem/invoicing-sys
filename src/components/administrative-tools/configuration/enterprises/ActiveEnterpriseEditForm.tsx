@@ -13,7 +13,6 @@ import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { ResponseRefParamDto, UpdateEnterpriseDto } from '@/types';
-import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useEnterpriseUpdateFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseUpdateFormStructure';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
@@ -134,18 +133,6 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
       labelKeyTransformer: (label) => tCountry(label)
     })
   });
-
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: 'System Enterprises' },
-      { title: enterprise?.name || 'Edit Active Enterprise' }
-    ]);
-    return () => {
-      setRoutes?.([]);
-    };
-  }, [router.locale, enterprise?.name]);
 
   const queryClient = useQueryClient();
 

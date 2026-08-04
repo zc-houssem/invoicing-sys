@@ -1,5 +1,15 @@
 {
   "common": {},
+  "page": {
+    "enterprises": {
+      "title": "Entreprises",
+      "description": "Consultez, créez et gérez vos entreprises clientes et fournisseurs."
+    },
+    "interlocutors": {
+      "title": "Interlocuteurs",
+      "description": "Consultez et gérez les personnes de contact liées à vos entreprises."
+    }
+  },
   "enterprise": {
     "single": "Entreprise",
     "plural": "Entreprises",
@@ -82,6 +92,12 @@
     "action_remove_failure": "Échec de la suppression de l'entreprise",
     "singular": "Entreprise",
     "new": "Nouvelle entreprise",
+    "create_page": {
+      "description": "Remplissez le formulaire ci-dessous pour créer une nouvelle entreprise."
+    },
+    "edit_page": {
+      "description": "Mettez à jour les informations de cette entreprise."
+    },
     "action_add_success": "Entreprise ajoutée avec succès",
     "action_add_failure": "Échec de l'ajout de l'entreprise",
     "edit": "Modifier l'entreprise",

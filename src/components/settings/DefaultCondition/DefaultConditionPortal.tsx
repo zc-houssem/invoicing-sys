@@ -10,8 +10,6 @@ import { UpdateDefaultConditionDto } from '@/types';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
 import { Spinner } from '@/components/shared';
-import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import { useRouter } from 'next/router';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { useFooter } from '@/context/FooterContext';
 
@@ -40,20 +38,8 @@ const MemoizedConditionItemWrapper = React.memo(
 MemoizedConditionItemWrapper.displayName = 'MemoizedConditionItemWrapper';
 
 export const DefaultConditionPortal = ({ className }: DefaultConditionPortalProps) => {
-  //next-router
-  const router = useRouter();
   const { t: tSettings } = useTranslation('settings');
   const { t: tCommon } = useTranslation('common');
-
-  //set page title in the breadcrumb
-  const { setRoutes } = useBreadcrumb();
-  React.useEffect(() => {
-    setRoutes?.([
-      { title: tCommon('menu.settings.title') },
-      { title: tCommon('menu.enterprise.title') },
-      { title: tCommon('settings.system.default_condition') }
-    ]);
-  }, [router.locale, setRoutes, tCommon]);
 
   const { activeCompanyId } = useActiveCompanyContext();
   const defaultConditionsStore = useDefaultConditionManager((state) => state.defaultConditions);

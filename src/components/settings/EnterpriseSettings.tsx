@@ -6,10 +6,17 @@ import SidebarNav from '../sidebar-nav';
 import { Building, Landmark, MapPin, HashIcon, MessageCircle, Users } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
 import { useUI } from '@/context/UIContext';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
 
 interface EnterpriseSettingsProps {
   className?: string;
   children?: React.ReactNode;
+}
+
+interface EnterprisePageMeta {
+  title: string;
+  description: string;
+  breadcrumbTitle: string;
 }
 
 export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ className, children }) => {
@@ -18,56 +25,86 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
   const { t: tSettings } = useTranslation('settings');
   const { setIntro, clearIntro } = useIntro();
   const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
 
-  const getPageIntro = React.useCallback(() => {
+  const getPageMeta = React.useCallback((): EnterprisePageMeta => {
     switch (router.pathname) {
       case '/settings/enterprise/my-enterprise':
         return {
           title: tCommon('settings.account.my_enterprise'),
-          description: 'Manage your active enterprise configuration details.'
+          description: tSettings('enterprise.my_enterprise.description'),
+          breadcrumbTitle: tCommon('settings.account.my_enterprise')
         };
       case '/settings/enterprise/my-addresses':
         return {
           title: tCommon('menu.contacts.subs.addresses'),
-          description: 'Manage enterprise delivery and invoicing addresses.'
+          description: tSettings('enterprise.my_addresses.description'),
+          breadcrumbTitle: tCommon('menu.contacts.subs.addresses')
         };
       case '/settings/enterprise/members':
         return {
           title: tCommon('settings.account.members'),
-          description: tSettings('members.page.description')
+          description: tSettings('members.page.description'),
+          breadcrumbTitle: tCommon('settings.account.members')
         };
       case '/settings/enterprise/banks':
         return {
           title: tCommon('settings.account.bank_accounts'),
-          description: 'Manage your bank accounts and payment details.'
+          description: tSettings('enterprise.banks.description'),
+          breadcrumbTitle: tCommon('settings.account.bank_accounts')
         };
       case '/settings/enterprise/sequence':
         return {
           title: tCommon('settings.system.sequence'),
-          description: tSettings('sequence.card_description')
+          description: tSettings('sequence.card_description'),
+          breadcrumbTitle: tCommon('settings.system.sequence')
         };
       case '/settings/enterprise/conditions':
         return {
           title: tCommon('settings.system.default_condition'),
-          description: 'Manage default conditions for invoicing.'
+          description: tSettings('default_condition.page_description'),
+          breadcrumbTitle: tCommon('settings.system.default_condition')
         };
       default:
         return {
           title: tCommon('menu.enterprise.title'),
-          description: ''
+          description: '',
+          breadcrumbTitle: tCommon('menu.enterprise.title')
         };
     }
   }, [router.pathname, tCommon, tSettings]);
 
   React.useEffect(() => {
-    const intro = getPageIntro();
-    setIntro?.(intro.title, intro.description);
+    const meta = getPageMeta();
+
+    setIntro?.(meta.title, meta.description);
+    setRoutes?.([
+      { title: tCommon('menu.settings.title') },
+      {
+        title: tCommon('menu.enterprise.title'),
+        href: '/settings/enterprise/my-enterprise'
+      },
+      { title: meta.breadcrumbTitle }
+    ]);
     setEnableMainOverflow?.(true);
+
     return () => {
       clearIntro?.();
+      clearRoutes?.();
       clearEnableMainOverflow?.();
     };
-  }, [router.pathname, router.locale, getPageIntro, setIntro, clearIntro, setEnableMainOverflow, clearEnableMainOverflow]);
+  }, [
+    router.pathname,
+    router.locale,
+    getPageMeta,
+    setIntro,
+    clearIntro,
+    setRoutes,
+    clearRoutes,
+    setEnableMainOverflow,
+    clearEnableMainOverflow,
+    tCommon
+  ]);
 
   const sidebarNavItems = [
     {

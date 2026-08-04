@@ -38,9 +38,27 @@
   "default_condition": {
     "action_edit_success": "Conditions par défaut mises à jour avec succès",
     "action_edit_failure": "Échec de la mise à jour des conditions par défaut",
+    "page_description": "Gérez les conditions textuelles par défaut appliquées aux nouveaux devis et factures.",
     "elements": {
       "quotation": "Conditions par défaut de devis",
       "invoice": "Conditions par défaut de facture"
+    }
+  },
+  "enterprise": {
+    "my_enterprise": {
+      "description": "Gérez le profil, l'activité et les paramètres financiers de votre entreprise active."
+    },
+    "my_addresses": {
+      "description": "Gérez les adresses de livraison et de facturation de votre entreprise active."
+    },
+    "banks": {
+      "description": "Gérez les comptes bancaires et les coordonnées de paiement de votre entreprise active."
+    },
+    "new": {
+      "title": "Nouvelle entreprise",
+      "description": "Créez un nouvel espace de travail pour votre organisation.",
+      "success": "Entreprise système créée avec succès",
+      "failure": "Échec de la création de l'entreprise système"
     }
   },
   "members": {

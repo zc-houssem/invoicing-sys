@@ -32,7 +32,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
   const { setRoutes, clearRoutes } = useBreadcrumb();
 
   React.useEffect(() => {
-    setIntro?.(tCommon('menu.contacts.title'), tCommon('menu.contacts.description'));
+    setIntro?.(tContacts('page.enterprises.title'), tContacts('page.enterprises.description'));
     setRoutes?.([
       { title: tCommon('menu.contacts.title'), href: '/contacts' },
       { title: tCommon('menu.contacts.subs.enterprises') }
@@ -41,7 +41,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
       clearIntro?.();
       clearRoutes?.();
     };
-  }, [router.locale]);
+  }, [router.locale, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
 
   const enterpriseStore = useEnterpriseStore();
 

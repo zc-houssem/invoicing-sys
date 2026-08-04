@@ -38,13 +38,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
 
   React.useEffect(() => {
     if (!enterpriseId) {
-      setIntro?.(
-        tContacts('interlocutor.plural'),
-        tContacts('interlocutor.detailmenu.description').replace(
-          '{{interlocutorName}}',
-          'les interlocuteurs'
-        )
-      );
+      setIntro?.(tContacts('page.interlocutors.title'), tContacts('page.interlocutors.description'));
       setRoutes?.([
         { title: tCommon('menu.contacts.title'), href: '/contacts' },
         { title: tCommon('menu.contacts.subs.interlocutors') }
@@ -55,7 +49,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId]);
+  }, [router.locale, enterpriseId, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
 
   const interlocutorStore = useInterlocutorStore();
 

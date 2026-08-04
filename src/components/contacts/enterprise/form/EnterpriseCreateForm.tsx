@@ -165,11 +165,11 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   React.useEffect(() => {
     setRoutes?.([
       { title: tCommon('menu.contacts.title'), href: '/contacts' },
-      { title: tCommon('submenu.enterprises'), href: '/contacts/enterprises' },
+      { title: tCommon('menu.contacts.subs.enterprises'), href: '/contacts/enterprises' },
       { title: tContact('enterprise.new') }
     ]);
 
-    setIntro?.(tContact('enterprise.new'), 'Fill out the form below to create a new enterprise.');
+    setIntro?.(tContact('enterprise.new'), tContact('enterprise.create_page.description'));
     setEnableMainOverflow?.(true);
 
     return () => {
