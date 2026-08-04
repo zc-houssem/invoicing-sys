@@ -22,9 +22,10 @@ import { useTranslation } from 'react-i18next';
 interface InvoicePortalProps {
   className?: string;
   enterpriseId?: number;
+  interlocutorId?: number;
 }
 
-export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) => {
+export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: InvoicePortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
@@ -33,7 +34,7 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    if (!enterpriseId) {
+    if (!enterpriseId && !interlocutorId) {
       setIntro?.(
         'Selling Invoices',
         'Here you can manage your selling invoices, which will be used for sales and invoicing.'
@@ -45,7 +46,7 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId]);
+  }, [router.locale, enterpriseId, interlocutorId]);
 
   const invoiceStore = useInvoiceStore();
 
@@ -110,7 +111,8 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
         filter:
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
-            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : ''
+            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
           ]
             .filter(Boolean)
             .join(';') || undefined

@@ -21,9 +21,10 @@ import { useTranslation } from 'react-i18next';
 interface QuotationPortalProps {
   className?: string;
   enterpriseId?: number;
+  interlocutorId?: number;
 }
 
-export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProps) => {
+export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: QuotationPortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
@@ -32,7 +33,7 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    if (!enterpriseId) {
+    if (!enterpriseId && !interlocutorId) {
       setIntro?.(
         'Selling Quotations',
         'Here you can manage your selling quotations, which will be used for sales and invoicing.'
@@ -44,7 +45,7 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId]);
+  }, [router.locale, enterpriseId, interlocutorId]);
 
   const quotationStore = useQuotationStore();
 
@@ -96,7 +97,8 @@ export const QuotationPortal = ({ className, enterpriseId }: QuotationPortalProp
         filter:
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
-            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : ''
+            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
           ]
             .filter(Boolean)
             .join(';') || undefined
