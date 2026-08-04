@@ -54,17 +54,15 @@ export const PaymentActions = ({
         className="w-full"
         disabled={isSaveDisabled || isPending}
         onClick={save}>
-        <Save />
         <span>{tCommon('commands.save')}</span>
       </Button>
 
       {currentStatus === PAYMENT_STATUS.Draft && (
         <Button
           variant={'outline'}
-          className="w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+          className="w-full"
           disabled={isPending}
           onClick={() => updateStatus(PAYMENT_STATUS.Validated)}>
-          <CheckCircle2 className="size-4 mr-2" />
           <span>{tInvoicing('payment.actions.validate', 'Validate')}</span>
         </Button>
       )}
@@ -72,10 +70,9 @@ export const PaymentActions = ({
       {(currentStatus === PAYMENT_STATUS.Draft || currentStatus === PAYMENT_STATUS.Validated) && (
         <Button
           variant={'outline'}
-          className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+          className="w-full"
           disabled={isPending}
           onClick={() => updateStatus(PAYMENT_STATUS.Cancelled)}>
-          <XCircle className="size-4 mr-2" />
           <span>{tInvoicing('payment.actions.cancel', 'Cancel')}</span>
         </Button>
       )}
@@ -86,7 +83,6 @@ export const PaymentActions = ({
           className="w-full"
           disabled={isPending}
           onClick={() => updateStatus(PAYMENT_STATUS.Draft)}>
-          <Repeat2 className="size-4 mr-2" />
           <span>{tInvoicing('payment.actions.back_to_draft', 'Back to draft')}</span>
         </Button>
       )}
@@ -96,7 +92,6 @@ export const PaymentActions = ({
         className="w-full"
         disabled={isPending}
         onClick={reset}>
-        <Repeat2 />
         <span>{tCommon('commands.reset')}</span>
       </Button>
     </div>
