@@ -15,7 +15,7 @@ import { DataTableColumnFilterOption, DataTableConfig } from '@/components/share
 import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
-import { EnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
+import { useEnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
 import { useActivities } from '@/hooks/content/core/useActivities';
 
@@ -72,8 +72,6 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     [debouncedColumnFilters]
   );
 
-  const [deleteDialog, setDeleteDialog] = React.useState(false);
-
   const {
     isPending: isFetchPending,
     error,
@@ -119,6 +117,16 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     }
   });
 
+  const { deleteEnterpriseDialog, openDeleteEnterpriseDialog } = useEnterpriseDeleteDialog(
+    enterpriseStore?.response?.name,
+    () => {
+      if (enterpriseStore?.response?.id) {
+        removeEnterprise(enterpriseStore.response.id);
+      }
+    },
+    isDeletePending
+  );
+
   const context: DataTableConfig<ResponseEnterpriseDto> = {
     singularName: tContacts('enterprise.singular'),
     pluralName: tContacts('enterprise.plural'),
@@ -132,7 +140,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
       router.push(`/contacts/modify-enterprise/${entity.id}`);
     },
     deleteCallback: () => {
-      setDeleteDialog(true);
+      openDeleteEnterpriseDialog();
     },
     additionalActions: {},
     searchTerm,
@@ -199,18 +207,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
         isPending={isPending}
       />
 
-      <EnterpriseDeleteDialog
-        open={deleteDialog}
-        deleteEnterprise={() => {
-          enterpriseStore?.response && removeEnterprise(enterpriseStore?.response.id);
-          setDeleteDialog(false);
-        }}
-        isDeletionPending={isDeletePending}
-        label={enterpriseStore?.response?.name}
-        onClose={() => {
-          setDeleteDialog(false);
-        }}
-      />
+      {deleteEnterpriseDialog}
     </div>
   );
 };
