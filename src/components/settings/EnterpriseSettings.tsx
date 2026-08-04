@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import SidebarNav from '../sidebar-nav';
-import { Building, Landmark, MapPin, HashIcon, MessageCircle } from 'lucide-react';
+import { Building, Landmark, MapPin, HashIcon, MessageCircle, Users } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
 import { useUI } from '@/context/UIContext';
 
@@ -30,6 +30,11 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
         return {
           title: tCommon('menu.contacts.subs.addresses'),
           description: 'Manage enterprise delivery and invoicing addresses.'
+        };
+      case '/settings/enterprise/members':
+        return {
+          title: tCommon('settings.account.members'),
+          description: tSettings('members.page.description')
         };
       case '/settings/enterprise/banks':
         return {
@@ -74,6 +79,11 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
       title: tCommon('menu.contacts.subs.addresses'),
       icon: <MapPin size={18} />,
       href: '/settings/enterprise/my-addresses'
+    },
+    {
+      title: tCommon('settings.account.members'),
+      icon: <Users size={18} />,
+      href: '/settings/enterprise/members'
     },
     {
       title: tCommon('settings.account.bank_accounts'),

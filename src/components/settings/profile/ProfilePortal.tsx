@@ -42,7 +42,7 @@ export const ProfilePortal = ({ className }: ProfilePortalProps) => {
   React.useEffect(() => {
     setRoutes?.([
       { title: tCommon('menu.settings.title') },
-      { title: tCommon('menu.settings.subs.account') },
+      { title: tCommon('menu.account.title') },
       { title: tCommon('settings.account.my_profile') }
     ]);
     return () => {

@@ -42,5 +42,62 @@
       "quotation": "Quotation Default Conditions",
       "invoice": "Invoice Default Conditions"
     }
+  },
+  "members": {
+    "singular": "Member",
+    "plural": "Members",
+    "page": {
+      "description": "Manage users who have access to this enterprise."
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "owner": "Owner"
+      },
+      "ownerBadge": "Owner",
+      "proprietaryBadge": "Proprietary"
+    },
+    "actions": {
+      "makeProprietary": "Make proprietary"
+    },
+    "form": {
+      "user": "User",
+      "userPlaceholder": "Select a user to add",
+      "noAvailableUsers": "No users available to add.",
+      "isOwner": "Enterprise owner",
+      "isOwnerDescription": "Owners have full access and cannot be removed if they are the last owner.",
+      "isProprietary": "Proprietary",
+      "isProprietaryDescription": "Proprietary members have full ownership access to this enterprise."
+    },
+    "sheets": {
+      "create": {
+        "title": "Add Member",
+        "description": "Add an existing user to this enterprise."
+      }
+    },
+    "dialogs": {
+      "remove": {
+        "title": "Remove member",
+        "description": "This user will lose access to this enterprise.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "makeProprietary": {
+        "title": "Make proprietary",
+        "description": "This member will become a proprietary owner of this enterprise.",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "addSuccess": "Member added successfully",
+      "addFailure": "Failed to add member",
+      "removeSuccess": "Member removed successfully",
+      "removeFailure": "Failed to remove member",
+      "makeProprietarySuccess": "Member is now proprietary",
+      "makeProprietaryFailure": "Failed to make member proprietary"
+    }
   }
 }

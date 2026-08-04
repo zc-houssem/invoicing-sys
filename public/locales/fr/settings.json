@@ -42,5 +42,62 @@
       "quotation": "Conditions par défaut de devis",
       "invoice": "Conditions par défaut de facture"
     }
+  },
+  "members": {
+    "singular": "Membre",
+    "plural": "Membres",
+    "page": {
+      "description": "Gérez les utilisateurs ayant accès à cette entreprise."
+    },
+    "table": {
+      "columns": {
+        "name": "Nom",
+        "email": "E-mail",
+        "role": "Rôle",
+        "owner": "Propriétaire"
+      },
+      "ownerBadge": "Propriétaire",
+      "proprietaryBadge": "Propriétaire"
+    },
+    "actions": {
+      "makeProprietary": "Rendre propriétaire"
+    },
+    "form": {
+      "user": "Utilisateur",
+      "userPlaceholder": "Sélectionnez un utilisateur à ajouter",
+      "noAvailableUsers": "Aucun utilisateur disponible à ajouter.",
+      "isOwner": "Propriétaire de l'entreprise",
+      "isOwnerDescription": "Les propriétaires ont un accès complet et ne peuvent pas être supprimés s'ils sont le dernier propriétaire.",
+      "isProprietary": "Propriétaire",
+      "isProprietaryDescription": "Les membres propriétaires ont un accès complet à cette entreprise."
+    },
+    "sheets": {
+      "create": {
+        "title": "Ajouter un membre",
+        "description": "Ajoutez un utilisateur existant à cette entreprise."
+      }
+    },
+    "dialogs": {
+      "remove": {
+        "title": "Supprimer le membre",
+        "description": "Cet utilisateur perdra l'accès à cette entreprise.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      },
+      "makeProprietary": {
+        "title": "Rendre propriétaire",
+        "description": "Ce membre deviendra propriétaire de cette entreprise.",
+        "confirm": "Confirmer",
+        "cancel": "Annuler"
+      }
+    },
+    "messages": {
+      "addSuccess": "Membre ajouté avec succès",
+      "addFailure": "Échec de l'ajout du membre",
+      "removeSuccess": "Membre supprimé avec succès",
+      "removeFailure": "Échec de la suppression du membre",
+      "makeProprietarySuccess": "Le membre est maintenant propriétaire",
+      "makeProprietaryFailure": "Échec lors de la promotion en propriétaire"
+    }
   }
 }

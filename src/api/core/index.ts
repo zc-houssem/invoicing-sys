@@ -1,6 +1,7 @@
 import { enterprise } from './enterprise';
 import { interlocutor } from './interlocutor';
 import { enterpriseInterlocutor } from './enterprise-interlocutor';
+import { enterpriseMember } from './enterprise-member';
 import { articleFamily } from './article-family';
 import { article } from './article';
 import { bankAccount } from './bank-account';
@@ -16,6 +17,7 @@ export const core = {
   enterprise,
   interlocutor,
   enterpriseInterlocutor,
+  enterpriseMember,
   taxRate,
   template,
   templateType,
