@@ -15,6 +15,26 @@
       "notify": "Notifier",
       "userDetails": "Détails de l'Utilisateur"
     },
+    "detailmenu": {
+      "title": "{{userName}}",
+      "description": "Gérer les informations et l'activité de {{userName}}",
+      "overview": "Aperçu",
+      "quotations": "Devis",
+      "invoices": "Factures",
+      "payments": "Paiements"
+    },
+    "details": {
+      "general_information": "Informations Générales",
+      "account_information": "Informations du Compte",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "approved": "Approuvé",
+      "pending_approval": "En attente d'approbation",
+      "emailVerified": "Email Vérifié",
+      "notVerified": "Non Vérifié",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour"
+    },
     "columns": {
       "id": "ID",
       "photo": "Photo",

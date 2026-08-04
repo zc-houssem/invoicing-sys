@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { UserDetails } from '@/components/administrative-tools/users/UserDetails';
-import { UserOverview } from '@/components/administrative-tools/users/details/UserOverview';
+import { QuotationPortal } from '@/components/invoicing/quotation/QuotationPortal';
 
 export default function Page() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <UserDetails userId={id}>
-      <UserOverview id={id} />
+      <QuotationPortal createdById={id} />
     </UserDetails>
   );
 }

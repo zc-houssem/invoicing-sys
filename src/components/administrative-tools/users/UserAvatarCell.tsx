@@ -17,7 +17,7 @@ const UserAvatarCell = React.memo(
       <DataTableCell
         variant={DataTableCellVariant.AVATAR}
         value={{ url, fallback }}
-        className="my-2 w-10 h-10 bg-muted border-2 rounded-full"
+        className="my-1 w-8 h-8 bg-muted border rounded-full"
       />
     );
   }

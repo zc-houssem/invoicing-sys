@@ -15,6 +15,26 @@
       "notify": "Notify",
       "userDetails": "User Details"
     },
+    "detailmenu": {
+      "title": "{{userName}}",
+      "description": "Manage {{userName}}'s information and activity",
+      "overview": "Overview",
+      "quotations": "Quotations",
+      "invoices": "Invoices",
+      "payments": "Payments"
+    },
+    "details": {
+      "general_information": "General Information",
+      "account_information": "Account Information",
+      "active": "Active",
+      "inactive": "Inactive",
+      "approved": "Approved",
+      "pending_approval": "Pending Approval",
+      "emailVerified": "Email Verified",
+      "notVerified": "Not Verified",
+      "memberSince": "Member Since",
+      "lastUpdated": "Last Updated"
+    },
     "columns": {
       "id": "ID",
       "photo": "Photo",

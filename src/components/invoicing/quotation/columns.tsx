@@ -11,7 +11,7 @@ import { CreatedByDisplay } from '../CreatedByDisplay';
 
 export const useSellingQuotationColumns = (
   context: DataTableConfig<ResponseQuotationDto>,
-  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean }
+  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean; hideCreatedBy?: boolean }
 ): ColumnDef<ResponseQuotationDto>[] => {
   const { t } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
@@ -228,6 +228,7 @@ export const useSellingQuotationColumns = (
   return columns.filter((col) => {
     if (options?.hideEnterprise && (col as any).accessorKey === t('quotation.table.columns.enterprise')) return false;
     if (options?.hideInterlocutor && (col as any).accessorKey === t('quotation.table.columns.interlocutor')) return false;
+    if (options?.hideCreatedBy && (col as any).accessorKey === t('quotation.table.columns.createdBy')) return false;
     return true;
   });
 };

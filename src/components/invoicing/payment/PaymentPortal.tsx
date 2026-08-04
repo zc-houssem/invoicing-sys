@@ -22,9 +22,15 @@ interface PaymentPortalProps {
   className?: string;
   enterpriseId?: number;
   interlocutorId?: number;
+  createdById?: string;
 }
 
-export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: PaymentPortalProps) => {
+export const PaymentPortal = ({
+  className,
+  enterpriseId,
+  interlocutorId,
+  createdById
+}: PaymentPortalProps) => {
   const router = useRouter();
   const paymentStore = usePaymentStore();
   const { activeCompanyId } = useActiveCompanyContext();
@@ -34,7 +40,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    if (!enterpriseId && !interlocutorId) {
+    if (!enterpriseId && !interlocutorId && !createdById) {
       setIntro?.(tInvoicing('payment.plural'), 'Here you can manage your payments.');
       setRoutes?.([
         { title: tCommon('menu.selling.title'), href: '/selling' },
@@ -45,7 +51,7 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById]);
 
   const {
     page,
@@ -84,7 +90,10 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      enterpriseId,
+      interlocutorId,
+      createdById
     ],
     queryFn: () =>
       api.invoicing.payment.findPaginated({
@@ -97,7 +106,8 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
             enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
-            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : '',
+            createdById ? `createdById||$eq||${createdById}` : ''
           ]
             .filter(Boolean)
             .join(';') || undefined
@@ -167,7 +177,8 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
 
   const columns = usePaymentColumns(context, {
     hideEnterprise: !!enterpriseId,
-    hideInterlocutor: !!interlocutorId
+    hideInterlocutor: !!interlocutorId,
+    hideCreatedBy: !!createdById
   });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting;

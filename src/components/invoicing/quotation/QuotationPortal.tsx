@@ -22,9 +22,15 @@ interface QuotationPortalProps {
   className?: string;
   enterpriseId?: number;
   interlocutorId?: number;
+  createdById?: string;
 }
 
-export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: QuotationPortalProps) => {
+export const QuotationPortal = ({
+  className,
+  enterpriseId,
+  interlocutorId,
+  createdById
+}: QuotationPortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
@@ -33,7 +39,7 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    if (!enterpriseId && !interlocutorId) {
+    if (!enterpriseId && !interlocutorId && !createdById) {
       setIntro?.(
         'Selling Quotations',
         'Here you can manage your selling quotations, which will be used for sales and invoicing.'
@@ -45,7 +51,7 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById]);
 
   const quotationStore = useQuotationStore();
 
@@ -87,7 +93,10 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      enterpriseId,
+      interlocutorId,
+      createdById
     ],
     queryFn: () =>
       api.invoicing.quotation.findPaginated({
@@ -100,7 +109,8 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
             enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
-            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : '',
+            createdById ? `createdById||$eq||${createdById}` : ''
           ]
             .filter(Boolean)
             .join(';') || undefined
@@ -185,7 +195,8 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
 
   const columns = useSellingQuotationColumns(context, {
     hideEnterprise: !!enterpriseId,
-    hideInterlocutor: !!interlocutorId
+    hideInterlocutor: !!interlocutorId,
+    hideCreatedBy: !!createdById
   });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;

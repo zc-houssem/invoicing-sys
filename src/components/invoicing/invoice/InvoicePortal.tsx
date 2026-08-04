@@ -23,9 +23,15 @@ interface InvoicePortalProps {
   className?: string;
   enterpriseId?: number;
   interlocutorId?: number;
+  createdById?: string;
 }
 
-export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: InvoicePortalProps) => {
+export const InvoicePortal = ({
+  className,
+  enterpriseId,
+  interlocutorId,
+  createdById
+}: InvoicePortalProps) => {
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
@@ -34,7 +40,7 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    if (!enterpriseId && !interlocutorId) {
+    if (!enterpriseId && !interlocutorId && !createdById) {
       setIntro?.(
         'Selling Invoices',
         'Here you can manage your selling invoices, which will be used for sales and invoicing.'
@@ -46,7 +52,7 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById]);
 
   const invoiceStore = useInvoiceStore();
 
@@ -88,7 +94,10 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      enterpriseId,
+      interlocutorId,
+      createdById
     ],
     queryFn: () =>
       api.invoicing.invoice.findPaginated({
@@ -112,7 +121,8 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
           [
             activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
             enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
-            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : ''
+            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : '',
+            createdById ? `createdById||$eq||${createdById}` : ''
           ]
             .filter(Boolean)
             .join(';') || undefined
@@ -198,7 +208,8 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
 
   const columns = useSellingInvoiceColumns(context, {
     hideEnterprise: !!enterpriseId,
-    hideInterlocutor: !!interlocutorId
+    hideInterlocutor: !!interlocutorId,
+    hideCreatedBy: !!createdById
   });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;

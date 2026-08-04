@@ -11,7 +11,7 @@ import { CreatedByDisplay } from '../CreatedByDisplay';
 
 export const useSellingInvoiceColumns = (
   context: DataTableConfig<ResponseInvoiceDto>,
-  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean }
+  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean; hideCreatedBy?: boolean }
 ): ColumnDef<ResponseInvoiceDto>[] => {
   const { t } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
@@ -301,6 +301,7 @@ export const useSellingInvoiceColumns = (
   return columns.filter((col) => {
     if (options?.hideEnterprise && (col as any).accessorKey === t('invoice.table.columns.enterprise')) return false;
     if (options?.hideInterlocutor && (col as any).accessorKey === t('invoice.table.columns.interlocutor')) return false;
+    if (options?.hideCreatedBy && (col as any).accessorKey === t('invoice.table.columns.createdBy')) return false;
     return true;
   });
 };

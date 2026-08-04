@@ -64,11 +64,10 @@ export const UserUpdateForm = ({ userId, className, onSuccess }: UserUpdateFormP
     };
   }, [router.locale, tCommon, tUser]);
 
-  const { user: fetchedUser, isFetchUserPending } = useIdentifiedUser(
-    userId,
-    undefined,
-    Boolean(userId)
-  );
+  const { user: fetchedUser, isFetchUserPending } = useIdentifiedUser({
+    id: userId,
+    enabled: Boolean(userId)
+  });
 
   React.useEffect(() => {
     if (fetchedUser) {
