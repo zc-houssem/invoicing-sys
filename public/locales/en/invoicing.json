@@ -54,6 +54,17 @@
         "updatedAt": "Updated at"
       }
     },
+    "status": {
+      "Draft": "Draft",
+      "Sent": "Sent",
+      "Accepted": "Accepted",
+      "Rejected": "Rejected",
+      "Expired": "Expired",
+      "Converted": "Converted",
+      "Invoiced": "Invoiced",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled"
+    },
     "dialogs": {
       "delete": {
         "title": "Are you sure you want to delete this quotation",
@@ -76,6 +87,8 @@
       "taxWithholding": "Tax Withholding",
       "fromQuotation": "Generated from quotation",
       "viewQuotation": "View Quotation #",
+      "payments": "Payments",
+      "amountPaid": "Amount Paid",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
       "placeholders": {
@@ -118,6 +131,8 @@
         "total": "Total TTC",
         "taxWithholding": "Retenue à la source",
         "amountToPay": "Amount to Pay",
+        "amountPaid": "Amount Paid",
+        "payments": "Payments",
         "createdAt": "Created at",
         "updatedAt": "Updated at"
       }
@@ -127,9 +142,13 @@
       "Validated": "Validated",
       "Sent": "Sent",
       "PartiallyPaid": "Partially Paid",
+      "Partially Paid": "Partially Paid",
       "Paid": "Paid",
-      "Overdue": "Overdue"
+      "Overdue": "Overdue",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled"
     },
+    "remaining": "Remaining",
     "dialogs": {
       "delete": {
         "title": "Are you sure you want to delete this invoice",
@@ -187,6 +206,7 @@
     },
     "form": {
       "date": "Date",
+      "sequence": "Sequence",
       "enterprise": "Enterprise",
       "currency": "Currency",
       "convertionRate": "Conversion rate",
@@ -207,6 +227,7 @@
       },
       "descriptions": {
         "date": "Select the payment execution date.",
+        "sequence": "Auto-generated sequence based on enterprise configuration.",
         "enterprise": "Select the enterprise associated with this payment.",
         "currency": "Select the currency used for this payment.",
         "convertionRate": "Specify the conversion rate if paying in a foreign currency.",
@@ -223,10 +244,22 @@
       "CreditCard": "Credit Card",
       "Other": "Other"
     },
+    "status": {
+      "Draft": "Draft",
+      "Validated": "Validated",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled"
+    },
     "financial_status": {
       "received": "Received Amount",
       "used": "Used Amount",
       "available": "Available Amount"
+    },
+    "invoice_item": {
+      "already_paid": "Already Paid",
+      "already_remaining": "Already Remaining",
+      "new_paid": "New Paid",
+      "new_remaining": "New Remaining"
     },
     "dialogs": {
       "delete": {

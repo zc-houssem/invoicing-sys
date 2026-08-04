@@ -41,11 +41,14 @@ export const useSellingInvoiceColumns = (
           attribute={'status'}
         />
       ),
-      cell: ({ row }) => (
-        <div>
-          <Badge variant={'outline'}>{row.original.status}</Badge>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const s = row.original.status || '';
+        return (
+          <div>
+            <Badge variant={'outline'}>{t(`invoice.status.${s}`, s)}</Badge>
+          </div>
+        );
+      },
       enableSorting: true,
       enableHiding: true
     },

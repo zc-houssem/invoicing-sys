@@ -54,6 +54,17 @@
         "updatedAt": "Mis à jour le"
       }
     },
+    "status": {
+      "Draft": "Brouillon",
+      "Sent": "Envoyé",
+      "Accepted": "Accepté",
+      "Rejected": "Refusé",
+      "Expired": "Expiré",
+      "Converted": "Converti",
+      "Invoiced": "Facturé",
+      "Cancelled": "Annulé",
+      "Canceled": "Annulé"
+    },
     "dialogs": {
       "delete": {
         "title": "Êtes-vous sûr de vouloir supprimer ce devis",
@@ -76,6 +87,8 @@
       "taxWithholding": "Retenue à la source",
       "fromQuotation": "Généré à partir du devis",
       "viewQuotation": "Voir le devis n°",
+      "payments": "Paiements",
+      "amountPaid": "Montant payé",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
       "placeholders": {
@@ -118,6 +131,8 @@
         "total": "Total TTC",
         "taxWithholding": "Retenue à la source",
         "amountToPay": "Montant à payer",
+        "amountPaid": "Montant payé",
+        "payments": "Paiements",
         "createdAt": "Créé le",
         "updatedAt": "Mis à jour le"
       }
@@ -127,9 +142,13 @@
       "Validated": "Validée",
       "Sent": "Envoyée",
       "PartiallyPaid": "Partiellement payée",
+      "Partially Paid": "Partiellement payée",
       "Paid": "Payée",
-      "Overdue": "En retard"
+      "Overdue": "En retard",
+      "Cancelled": "Annulée",
+      "Canceled": "Annulée"
     },
+    "remaining": "Reste à payer",
     "dialogs": {
       "delete": {
         "title": "Êtes-vous sûr de vouloir supprimer cette facture",
@@ -188,6 +207,7 @@
     },
     "form": {
       "date": "Date",
+      "sequence": "Séquence",
       "enterprise": "Entreprise",
       "currency": "Devise",
       "convertionRate": "Taux de conversion",
@@ -208,6 +228,7 @@
       },
       "descriptions": {
         "date": "Sélectionnez la date de réalisation du paiement.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
         "enterprise": "Sélectionnez l'entreprise associée à ce paiement.",
         "currency": "Sélectionnez la devise utilisée pour ce paiement.",
         "convertionRate": "Spécifiez le taux de conversion s'il s'agit d'une devise étrangère.",
@@ -224,10 +245,22 @@
       "CreditCard": "Carte bancaire",
       "Other": "Autre"
     },
+    "status": {
+      "Draft": "Brouillon",
+      "Validated": "Validé",
+      "Cancelled": "Annulé",
+      "Canceled": "Annulé"
+    },
     "financial_status": {
       "received": "Montant reçu",
       "used": "Montant utilisé",
       "available": "Montant disponible"
+    },
+    "invoice_item": {
+      "already_paid": "Déjà payé",
+      "already_remaining": "Reste déjà",
+      "new_paid": "Nouveau payé",
+      "new_remaining": "Nouveau reste"
     },
     "dialogs": {
       "delete": {

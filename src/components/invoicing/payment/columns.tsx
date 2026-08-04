@@ -39,11 +39,14 @@ export const usePaymentColumns = (
           attribute={'status'}
         />
       ),
-      cell: ({ row }) => (
-        <div>
-          <Badge variant={'outline'}>{row.original.status || 'Draft'}</Badge>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const s = row.original.status || 'Draft';
+        return (
+          <div>
+            <Badge variant={'outline'}>{t(`payment.status.${s}`, s)}</Badge>
+          </div>
+        );
+      },
       enableSorting: true,
       enableHiding: true
     },
