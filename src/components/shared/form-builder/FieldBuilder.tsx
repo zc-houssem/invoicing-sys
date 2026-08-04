@@ -281,8 +281,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
           <Switch
             {...field.props}
             id={field.label}
-            checked={field?.props?.value ?? false}
-            defaultChecked={field?.props?.defaultChecked}
+            checked={field?.props?.checked ?? field?.props?.value ?? false}
             onCheckedChange={(value) => field?.props?.onCheckedChange?.(value)}
           />{' '}
           <Label className="text-xs font-light">{field.description}</Label>
