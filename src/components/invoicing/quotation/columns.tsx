@@ -79,7 +79,7 @@ export const useSellingQuotationColumns = (
       ),
       cell: ({ row }) => {
         const date = row.original.date ? new Date(row.original.date) : null;
-        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+        return <DataTableCell variant={DataTableCellVariant.DATE} value={date} />;
       },
       enableSorting: true,
       enableHiding: true
@@ -96,7 +96,7 @@ export const useSellingQuotationColumns = (
       ),
       cell: ({ row }) => {
         const date = row.original.dueDate ? new Date(row.original.dueDate) : null;
-        return <DataTableCell variant={DataTableCellVariant.DATE_TIME} value={date} />;
+        return <DataTableCell variant={DataTableCellVariant.DATE} value={date} />;
       },
       enableSorting: true,
       enableHiding: true

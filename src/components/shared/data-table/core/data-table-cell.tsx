@@ -15,7 +15,10 @@ export default function DataTableCell({ className, variant, value }: DataTableCe
   } else if (variant === DataTableCellVariant.NUMBER) {
     return <div className={className}>{value}</div>;
   } else if (variant === DataTableCellVariant.DATE) {
-    return <div className={className}>{value}</div>;
+    if (!value) return <div className={className}>No Date</div>;
+    const date = value instanceof Date ? value : new Date(value);
+    if (isNaN(date.getTime())) return <div className={className} />;
+    return <div className={className}>{date.toLocaleDateString()}</div>;
   } else if (variant === DataTableCellVariant.DATE_TIME) {
     if (!value) return <div className={className}>No Date</div>;
     return (
