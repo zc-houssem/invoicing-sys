@@ -17,7 +17,6 @@ import { PAYMENT_MODE } from '@/types/core/invoicing/payment';
 import { PaymentStore } from '@/hooks/stores/usePaymentStore';
 import { PaymentInvoiceManagement } from './PaymentInvoiceManagement';
 import { PaymentFinancialInformation } from './PaymentFinancialInformation';
-import { FieldBuilder } from '@/components/shared/form-builder/FieldBuilder';
 
 interface usePaymentCreateFormStructureProps {
   store: PaymentStore;
@@ -32,9 +31,7 @@ export const usePaymentCreateFormStructure = ({
   currencies,
   loading
 }: usePaymentCreateFormStructureProps) => {
-  const { t: tCommon } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
-  const { t: tCurrency } = useTranslation('currency');
 
   const dateField: Field<DateFieldProps> = {
     id: 'date',
@@ -70,20 +67,8 @@ export const usePaymentCreateFormStructure = ({
         // Find currency
         store.setNested('createDto.currencyId', enterprise?.currencyId);
 
-        // Reset invoices
-        const invoices =
-          enterprise?.invoices
-            ?.filter(
-              (invoice: any) =>
-                invoice?.status && ['Sent', 'PartiallyPaid', 'Overdue'].includes(invoice?.status)
-            )
-            .map((invoice: any) => ({
-              amount: 0,
-              invoiceId: invoice.id,
-              invoice: invoice
-            })) || [];
-
-        store.setNested('createDto.invoices', invoices);
+        // Reset invoices array so PaymentInvoiceManagement fetches live invoices
+        store.setNested('createDto.invoices', []);
       },
       options:
         enterprises?.map((ent) => ({

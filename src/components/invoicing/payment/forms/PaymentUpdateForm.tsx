@@ -7,7 +7,6 @@ import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
-import useInitializedState from '@/hooks/use-initialized-state';
 import { useEnterprises } from '@/hooks/content/core/useEnterprises';
 import { usePaymentUpdateFormStructure } from './usePaymentUpdateFormStructure';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
@@ -77,10 +76,11 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
   const isFormReady = !fetching;
   useInvoicingFormScroll(isFormReady);
 
-  const setPaymentData = (data: any) => {
+  const setPaymentData = React.useCallback((data: any) => {
     if (!data) return;
-    store.set('response', data);
-    store.set('updateDto', {
+    const s = usePaymentStore.getState();
+    s.set('response', data);
+    s.set('updateDto', {
       amount: data.amount,
       fee: data.fee,
       convertionRate: data.convertionRate,
@@ -105,24 +105,17 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
         upload: u.upload,
         file: new File([], u.upload?.filename || 'file') // mock file to show, usually logic is different
       })) || [];
-    store.set('files', files);
-  };
+    s.set('files', files);
+  }, []);
 
-  const { isDisabled, globalReset } = useInitializedState({
-    data: payment || {},
-    getCurrentData: () => {
-      return {
-        payment: store.updateDto
-      };
-    },
-    setFormData: (data: any) => {
-      setPaymentData(data);
-    },
-    resetData: () => {
-      store.reset();
-    },
-    loading: fetching
-  });
+  React.useEffect(() => {
+    if (payment) {
+      setPaymentData(payment);
+    }
+    return () => {
+      usePaymentStore.getState().reset();
+    };
+  }, [payment, paymentId, setPaymentData]);
 
   const currency = React.useMemo(() => {
     return currencies.find((c) => c.id === store.updateDto?.currencyId);
@@ -182,7 +175,11 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
         <>
           <DocumentMetaHeader
             className="mx-auto"
-            status={payment?.status || 'Draft'}
+            status={tInvoicing(
+              `payment.status.${payment?.status || 'Draft'}`,
+              payment?.status || 'Draft'
+            )}
+            statusLabel={tInvoicing('payment.table.columns.status', 'Statut')}
             createdByLabel={tCommon('menu.created_by', { defaultValue: 'Created by' })}
             user={payment?.createdBy}
           />
@@ -191,8 +188,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
             payment={payment}
             save={onSubmit}
             reload={() => refetchInvoice()}
-            reset={globalReset}
-            isSaveDisabled={isDisabled}
+            reset={() => payment && setPaymentData(payment)}
             isUpdatePending={isUpdatePending}
           />
         </>

@@ -45,7 +45,6 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
     store.set('sequencePreview', preview)
   );
 
-
   React.useEffect(() => {
     setRoutes?.(
       !enterpriseId
@@ -84,14 +83,22 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
     }
   });
 
-  //Reset Form
-  const globalReset = () => {
+  const globalReset = React.useCallback(() => {
     store.reset();
-  };
+    if (enterpriseId) {
+      const entIdNum = parseInt(enterpriseId);
+      if (!isNaN(entIdNum)) {
+        store.setNested('createDto.enterpriseId', entIdNum);
+      }
+    }
+  }, [enterpriseId]);
 
   React.useEffect(() => {
     globalReset();
-  }, []);
+    return () => {
+      store.reset();
+    };
+  }, [enterpriseId, globalReset]);
 
   const onSubmit = () => {
     // TODO validation of amounts etc.

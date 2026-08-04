@@ -40,6 +40,7 @@ const initialState: PaymentData = {
     uploads: [],
   },
   createDtoErrors: {},
+  updateDto: undefined,
   updateDtoErrors: {},
   files: [],
 };
