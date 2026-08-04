@@ -9,7 +9,9 @@ import { FooterContext } from '@/context/FooterContext';
 import { UIContext } from '@/context/UIContext';
 import { PageHeader } from './PageHeader';
 import { useMediaQuery } from '@/hooks/other/useMediaQuery';
+import { useScrollToTopOnRouteChange } from '@/hooks/other/useScrollToTopOnRouteChange';
 import { Footer } from './Footer';
+import { useRouter } from 'next/router';
 
 interface LayoutProps {
   className?: string;
@@ -17,25 +19,33 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children, className }: LayoutProps) => {
+  const router = useRouter();
+  const isEmbed = router.query.embed === 'true' || router.query.embed === '1';
   const [routes, setRoutes] = React.useState<BreadcrumbRoute[]>([]);
   const clearRoutes = React.useCallback(() => {
     setRoutes([]);
   }, []);
-  const breadcrumbContext = React.useMemo(() => ({
-    routes,
-    setRoutes,
-    clearRoutes
-  }), [routes, clearRoutes]);
+  const breadcrumbContext = React.useMemo(
+    () => ({
+      routes,
+      setRoutes,
+      clearRoutes
+    }),
+    [routes, clearRoutes]
+  );
 
   const [content, setContent] = React.useState<React.ReactNode>(null);
   const clearContent = React.useCallback(() => {
     setContent(null);
   }, []);
-  const footerContext = React.useMemo(() => ({
-    content,
-    setContent,
-    clearContent
-  }), [content, clearContent]);
+  const footerContext = React.useMemo(
+    () => ({
+      content,
+      setContent,
+      clearContent
+    }),
+    [content, clearContent]
+  );
 
   const [title, setTitle] = React.useState<string>('');
   const [description, setDescription] = React.useState<string>('');
@@ -51,27 +61,45 @@ export const Layout = ({ children, className }: LayoutProps) => {
   const clearFloating = React.useCallback(() => {
     setFloating(null);
   }, []);
-  const introContext = React.useMemo(() => ({
-    title,
-    description,
-    floating,
-    setIntro,
-    setFloating,
-    clearIntro,
-    clearFloating
-  }), [title, description, floating, setIntro, clearIntro, clearFloating]);
+  const introContext = React.useMemo(
+    () => ({
+      title,
+      description,
+      floating,
+      setIntro,
+      setFloating,
+      clearIntro,
+      clearFloating
+    }),
+    [title, description, floating, setIntro, clearIntro, clearFloating]
+  );
 
   const isMobile = useMediaQuery('(max-width: 425px)');
+
+  const { scrollRef: mainRef } = useScrollToTopOnRouteChange();
 
   const [enableMainOverflow, setEnableMainOverflow] = React.useState<boolean>(false);
   const clearEnableMainOverflow = React.useCallback(() => {
     setEnableMainOverflow(false);
   }, []);
-  const uiContext = React.useMemo(() => ({
-    enableMainOverflow,
-    setEnableMainOverflow,
-    clearEnableMainOverflow
-  }), [enableMainOverflow, clearEnableMainOverflow]);
+  const uiContext = React.useMemo(
+    () => ({
+      enableMainOverflow,
+      setEnableMainOverflow,
+      clearEnableMainOverflow
+    }),
+    [enableMainOverflow, clearEnableMainOverflow]
+  );
+
+  if (isEmbed) {
+    return (
+      <div
+        ref={mainRef as React.RefObject<HTMLDivElement>}
+        className="w-full h-full min-h-screen p-4 overflow-auto bg-background">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -91,6 +119,7 @@ export const Layout = ({ children, className }: LayoutProps) => {
                   <div className="flex flex-col flex-1 overflow-hidden bg-background">
                     <Header />
                     <main
+                      ref={mainRef}
                       className={cn(
                         'flex flex-col flex-1 min-h-0',
                         enableMainOverflow ? 'overflow-auto' : 'overflow-hidden',

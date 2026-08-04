@@ -1,11 +1,9 @@
 import React from 'react';
 import { useUI } from '@/context/UIContext';
+import { scrollElementToTop } from '@/hooks/other/useScrollToTopOnRouteChange';
 
 const resetMainScroll = () => {
-  const main = document.querySelector('main');
-  if (!main) return;
-
-  main.scrollTop = 0;
+  scrollElementToTop(document.querySelector('main'));
 };
 
 export const useInvoicingFormScroll = (ready: boolean) => {
