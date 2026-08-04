@@ -19,6 +19,7 @@
       "title": "{{userName}}",
       "description": "Gérer les informations et l'activité de {{userName}}",
       "overview": "Aperçu",
+      "systemEnterprises": "Entreprises Système",
       "quotations": "Devis",
       "invoices": "Factures",
       "payments": "Paiements"
@@ -33,7 +34,38 @@
       "emailVerified": "Email Vérifié",
       "notVerified": "Non Vérifié",
       "memberSince": "Membre depuis",
-      "lastUpdated": "Dernière mise à jour"
+      "lastUpdated": "Dernière mise à jour",
+      "systemEnterprises": {
+        "title": "Entreprises Système",
+        "singular": "Entreprise Système",
+        "plural": "Entreprises Système",
+        "proprietaryBadge": "Propriétaire",
+        "actions": {
+          "disassociate": "Dissocier",
+          "remove": "Supprimer"
+        },
+        "columns": {
+          "name": "Nom",
+          "phone": "Téléphone",
+          "taxId": "Numéro fiscal",
+          "owner": "Propriétaire",
+          "memberSince": "Membre depuis"
+        },
+        "dialogs": {
+          "disassociate": {
+            "title": "Dissocier de",
+            "description": "Cet utilisateur perdra l'accès à cette entreprise système."
+          },
+          "remove": {
+            "title": "Supprimer",
+            "description": "Cette action est irréversible et supprimera définitivement cette entreprise système."
+          }
+        },
+        "messages": {
+          "disassociateSuccess": "Utilisateur dissocié de l'entreprise système avec succès.",
+          "disassociateFailure": "Échec de la dissociation de l'utilisateur de l'entreprise système."
+        }
+      }
     },
     "columns": {
       "id": "ID",

@@ -19,6 +19,7 @@
       "title": "{{userName}}",
       "description": "Manage {{userName}}'s information and activity",
       "overview": "Overview",
+      "systemEnterprises": "System Enterprises",
       "quotations": "Quotations",
       "invoices": "Invoices",
       "payments": "Payments"
@@ -33,7 +34,38 @@
       "emailVerified": "Email Verified",
       "notVerified": "Not Verified",
       "memberSince": "Member Since",
-      "lastUpdated": "Last Updated"
+      "lastUpdated": "Last Updated",
+      "systemEnterprises": {
+        "title": "System Enterprises",
+        "singular": "System Enterprise",
+        "plural": "System Enterprises",
+        "proprietaryBadge": "Proprietary",
+        "actions": {
+          "disassociate": "Disassociate",
+          "remove": "Remove"
+        },
+        "columns": {
+          "name": "Name",
+          "phone": "Phone",
+          "taxId": "Tax ID",
+          "owner": "Owner",
+          "memberSince": "Member Since"
+        },
+        "dialogs": {
+          "disassociate": {
+            "title": "Disassociate from",
+            "description": "This user will lose access to this system enterprise."
+          },
+          "remove": {
+            "title": "Remove",
+            "description": "This action is irreversible and will permanently delete this system enterprise."
+          }
+        },
+        "messages": {
+          "disassociateSuccess": "User disassociated from system enterprise successfully.",
+          "disassociateFailure": "Failed to disassociate user from system enterprise."
+        }
+      }
     },
     "columns": {
       "id": "ID",

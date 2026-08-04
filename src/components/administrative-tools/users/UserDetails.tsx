@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Info, File, FileText, Wallet } from 'lucide-react';
+import { Info, File, FileText, Wallet, Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SidebarNav from '@/components/sidebar-nav';
 import { Spinner } from '@/components/shared';
@@ -58,6 +58,11 @@ export const UserDetails = ({ className, userId, children }: UserDetailsProps) =
       title: tUser('userManagement.detailmenu.overview'),
       icon: <Info size={18} />,
       href: `/administrative-tools/user-management/users/${userId}`
+    },
+    {
+      title: tUser('userManagement.detailmenu.systemEnterprises'),
+      icon: <Building2 size={18} />,
+      href: `/administrative-tools/user-management/users/${userId}/system-enterprises`
     },
     {
       title: tUser('userManagement.detailmenu.quotations'),

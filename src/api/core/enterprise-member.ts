@@ -38,6 +38,27 @@ const findPaginated = async (
   return response.data;
 };
 
+const findPaginatedByUser = async (
+  userId: string,
+  { page = '1', limit = '5', sort, filter = '', search = '' }: QueryParams
+): Promise<Paginated<ResponseEnterpriseMemberDto>> => {
+  const params: { [key: string]: string | undefined } = {
+    page,
+    limit,
+    sort
+  };
+
+  if (search) params.search = search;
+  if (filter) params.filter = filter;
+
+  const response = await axios.get<Paginated<ResponseEnterpriseMemberDto>>(
+    `/enterprise-member/user/${userId}/list`,
+    { params }
+  );
+
+  return response.data;
+};
+
 const findAvailableUsers = async (enterpriseId: number): Promise<ResponseUserDto[]> => {
   const response = await axios.get<ResponseUserDto[]>(
     `/enterprise-member/enterprise/${enterpriseId}/available-users`
@@ -68,6 +89,7 @@ const remove = async (id: number): Promise<ResponseEnterpriseMemberDto> => {
 export const enterpriseMember = {
   findByEnterprise,
   findPaginated,
+  findPaginatedByUser,
   findAvailableUsers,
   create,
   update,
