@@ -1,28 +1,53 @@
 import { z } from 'zod';
 
+const optionalUrl = z.preprocess(
+  (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+  z.string().url().optional()
+);
+
+const optionalNotes = z.preprocess((value) => {
+  if (value === undefined || value === null || value === '') {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  return JSON.stringify(value);
+}, z.string().optional());
+
+const optionalString = z.preprocess(
+  (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+  z.string().optional()
+);
+
 export const baseEnterpriseInformationValidationSchema = z.object({
   name: z
     .string({
       required_error: 'Name is required'
     })
     .min(1, 'Name is required'),
-  taxId: z.string().optional(),
-  phone: z.string().optional(),
-  notes: z.string().optional(),
-  website: z.string().url().optional(),
+  taxId: optionalString,
+  phone: optionalString,
+  notes: optionalNotes,
+  website: optionalUrl,
   particular: z.boolean(),
   activityId: z.number().optional(),
   currencyId: z.number().optional(),
-  paymentConditionsId: z.number().optional()
+  paymentConditionId: z.number().optional()
 });
 
+const requiresTaxId = (data: z.infer<typeof baseEnterpriseInformationValidationSchema>) => {
+  if (data.particular) {
+    return true;
+  }
+
+  return typeof data.taxId === 'string' && data.taxId.trim() !== '';
+};
+
 export const createEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(
-  (data) => {
-    if (data.particular) {
-      return true;
-    }
-    return data.taxId && data.taxId.trim() !== '';
-  },
+  requiresTaxId,
   {
     message: 'Tax ID Number is required for non-particular enterprises',
     path: ['taxId']
@@ -30,12 +55,7 @@ export const createEnterpriseValidationSchema = baseEnterpriseInformationValidat
 );
 
 export const updateEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(
-  (data) => {
-    if (data.particular) {
-      return true;
-    }
-    return data.taxId && data.taxId.trim() !== '';
-  },
+  requiresTaxId,
   {
     message: 'Tax ID Number is required for non-particular enterprises',
     path: ['taxId']

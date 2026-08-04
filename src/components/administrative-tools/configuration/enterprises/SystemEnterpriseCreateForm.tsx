@@ -22,7 +22,6 @@ import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
-import { Separator } from '@/components/ui/separator';
 import { defineStepper } from '@/components/ui/stepper';
 import { useFooter } from '@/context/FooterContext';
 
@@ -94,6 +93,7 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
 
   const enterpriseStore = useEnterpriseStore();
   const queryClient = useQueryClient();
+  const goToStepRef = React.useRef<(stepId: string) => void>(() => {});
 
   const { activities, isFetchActivitiesPending } = useActivities();
   const { currencies, isCurrenciesPending } = useCurrencies();
@@ -175,7 +175,28 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
   const handleSubmit = React.useCallback(() => {
     const result = createEnterpriseValidationSchema.safeParse(enterpriseStore.createDto);
     if (!result.success) {
-      enterpriseStore.set('errors', result.error.flatten().fieldErrors);
+      const fieldErrors = result.error.flatten().fieldErrors;
+      enterpriseStore.set('errors', fieldErrors);
+
+      const step1Fields = [
+        'name',
+        'taxId',
+        'phone',
+        'website',
+        'particular',
+        'activityId',
+        'currencyId',
+        'paymentConditionId'
+      ];
+
+      if (step1Fields.some((field) => fieldErrors[field as keyof typeof fieldErrors]?.length)) {
+        goToStepRef.current('1');
+      } else if (fieldErrors.notes?.length) {
+        goToStepRef.current('3');
+      } else {
+        goToStepRef.current('2');
+      }
+
       toast.error(tCommon('errors.validation'));
       return;
     }
@@ -193,6 +214,10 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
     payload.deliveryAddress = cleanAddress(payload.deliveryAddress);
     payload.invoicingAddress = cleanAddress(payload.invoicingAddress);
 
+    if (!payload.website?.trim()) {
+      delete payload.website;
+    }
+
     createEnterprise({
       ...payload,
       notes: JSON.stringify(payload.notes)
@@ -208,12 +233,14 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
   if (loading) return <Spinner className="h-screen" show={loading} />;
 
   return (
-    <div className={cn('flex flex-col flex-1', className)}>
-      <Stepper.Provider className="flex flex-col flex-1" variant="horizontal">
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
         {({ methods }) => {
+          goToStepRef.current = methods.goTo;
+
           return (
             <>
-              <Stepper.Navigation className="shrink">
+              <Stepper.Navigation className="shrink-0">
                 {methods.all.map((step) => (
                   <Stepper.Step key={step.id} of={step.id} onClick={() => methods.goTo(step.id)}>
                     <Stepper.Title>{step.title}</Stepper.Title>
@@ -221,17 +248,11 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
                 ))}
               </Stepper.Navigation>
 
-              <div className="flex flex-col flex-1 my-4">
-                <div className="flex flex-col flex-1 p-2">
-                  <div className="space-y-1 mb-4">
-                    <h1 className="text-lg font-bold">{methods.current.title}</h1>
-                    <p className="text-xs">{methods.current.description}</p>
-                    <Separator className="mt-2" />
-                  </div>
-
+              <div className="flex flex-col flex-1 min-h-0 overflow-auto my-4">
+                <div className="flex flex-col p-2">
                   {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
                   {methods.current.id === '2' && (
-                    <div className="flex flex-col flex-1 gap-8">
+                    <div className="flex flex-col gap-8">
                       <FormBuilder structure={deliveryAddressInformation} />
                       <FormBuilder structure={invoicingAddressInformation} />
                     </div>

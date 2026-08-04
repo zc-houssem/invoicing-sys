@@ -5,3 +5,7 @@ export const createEnterpriseMemberSchema = z.object({
   isOwner: z.boolean().optional(),
   enterpriseId: z.number().optional()
 });
+
+export const createUserSystemEnterpriseMemberSchema = createEnterpriseMemberSchema.extend({
+  enterpriseId: z.number({ message: 'Enterprise is required' })
+});

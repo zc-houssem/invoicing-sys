@@ -17,6 +17,7 @@ import { getErrorMessage } from '@/utils/errors';
 import { useUserSystemEnterpriseColumns } from './userSystemEnterpriseColumns';
 import { useUserSystemEnterpriseDisassociateDialog } from './modals/UserSystemEnterpriseDisassociateDialog';
 import { useUserSystemEnterpriseRemoveDialog } from './modals/UserSystemEnterpriseRemoveDialog';
+import { useUserSystemEnterpriseAddSheet } from './modals/UserSystemEnterpriseAddSheet';
 
 interface UserSystemEnterprisesTableProps {
   className?: string;
@@ -143,9 +144,16 @@ export const UserSystemEnterprisesTable = ({
     reset: () => setSelectedMembership(null)
   });
 
+  const { addSystemEnterpriseSheet, openAddSystemEnterpriseSheet } =
+    useUserSystemEnterpriseAddSheet({
+      userId,
+      onSuccess: () => refetchMemberships()
+    });
+
   const context: DataTableConfig<ResponseEnterpriseMemberDto> = {
     singularName: tUser('userManagement.details.systemEnterprises.singular'),
     pluralName: tUser('userManagement.details.systemEnterprises.plural'),
+    createCallback: () => openAddSystemEnterpriseSheet(),
     inspectCallback: (entity) => {
       if (entity.enterprise?.id) {
         router.push(`/contacts/enterprise/${entity.enterprise.id}`);
@@ -241,6 +249,7 @@ export const UserSystemEnterprisesTable = ({
       />
       {disassociateDialog}
       {removeDialog}
+      {addSystemEnterpriseSheet}
     </div>
   );
 };

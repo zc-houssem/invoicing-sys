@@ -51,6 +51,18 @@
           "owner": "Owner",
           "memberSince": "Member Since"
         },
+        "form": {
+          "enterprise": "System Enterprise",
+          "enterprisePlaceholder": "Select a system enterprise",
+          "enterpriseDescription": "Select the system enterprise to add this user to.",
+          "noAvailableEnterprises": "No system enterprises available to add."
+        },
+        "sheets": {
+          "create": {
+            "title": "Add to System Enterprise",
+            "description": "Add this user to an existing system enterprise."
+          }
+        },
         "dialogs": {
           "disassociate": {
             "title": "Disassociate from",
@@ -62,6 +74,8 @@
           }
         },
         "messages": {
+          "addSuccess": "User added to system enterprise successfully.",
+          "addFailure": "Failed to add user to system enterprise.",
           "disassociateSuccess": "User disassociated from system enterprise successfully.",
           "disassociateFailure": "Failed to disassociate user from system enterprise."
         }

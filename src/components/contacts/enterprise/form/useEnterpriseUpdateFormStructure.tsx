@@ -72,6 +72,7 @@ export const useEnterpriseUpdateFormStructure = ({
     id: 'taxIdNumber',
     label: tContact('enterprise.form.taxId'),
     variant: FieldVariant.TEXT,
+    required: !store.updateDto?.particular,
     error: store.errors?.taxId?.[0],
     description: tContact('enterprise.form.descriptions.taxId'),
     placeholder: tContact('enterprise.form.placeholders.taxId'),
@@ -114,8 +115,8 @@ export const useEnterpriseUpdateFormStructure = ({
         store.setNested('errors.taxId', []);
       },
       options: [
-        { label: 'Yes', value: 'true' },
-        { label: 'No', value: 'false' }
+        { label: tContact('enterprise.form.particular.positive'), value: 'true' },
+        { label: tContact('enterprise.form.particular.negative'), value: 'false' }
       ],
       spread: 'horizontal'
     }

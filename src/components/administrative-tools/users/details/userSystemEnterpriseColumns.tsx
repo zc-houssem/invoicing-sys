@@ -23,7 +23,7 @@ export const useUserSystemEnterpriseColumns = (
   return React.useMemo(
     () => [
       {
-        accessorKey: 'enterprise.name',
+        accessorKey: tContacts('enterprise.table.columns.name'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.name'),
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.name,
@@ -44,7 +44,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.phone',
+        accessorKey: tContacts('enterprise.table.columns.phone'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.phone'),
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.phone,
@@ -71,7 +71,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.website',
+        accessorKey: tContacts('enterprise.table.columns.website'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.website'),
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.website,
@@ -107,7 +107,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.taxId',
+        accessorKey: tContacts('enterprise.table.columns.taxId'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.taxId'),
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.taxId,
@@ -134,7 +134,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.particular',
+        accessorKey: tContacts('enterprise.table.columns.particular.noun'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.particular.noun'),
           exportValue: (row: ResponseEnterpriseMemberDto) =>
@@ -173,7 +173,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.activity',
+        accessorKey: tContacts('enterprise.attributes.activity'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.activity'),
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.activity?.label,
@@ -202,7 +202,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'isOwner',
+        accessorKey: tUser('userManagement.details.systemEnterprises.columns.owner'),
         meta: {
           exportLabel: tUser('userManagement.details.systemEnterprises.columns.owner'),
           exportValue: (row: ResponseEnterpriseMemberDto) =>
@@ -226,7 +226,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.createdAt',
+        accessorKey: tContacts('enterprise.table.columns.createdAt'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.createdAt'),
           exportValue: (row: ResponseEnterpriseMemberDto) =>
@@ -253,7 +253,7 @@ export const useUserSystemEnterpriseColumns = (
         enableHiding: true
       },
       {
-        accessorKey: 'enterprise.updatedAt',
+        accessorKey: tContacts('enterprise.table.columns.updatedAt'),
         meta: {
           exportLabel: tContacts('enterprise.table.columns.updatedAt'),
           exportValue: (row: ResponseEnterpriseMemberDto) =>

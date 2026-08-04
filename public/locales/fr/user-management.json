@@ -51,6 +51,18 @@
           "owner": "Propriétaire",
           "memberSince": "Membre depuis"
         },
+        "form": {
+          "enterprise": "Entreprise Système",
+          "enterprisePlaceholder": "Sélectionner une entreprise système",
+          "enterpriseDescription": "Sélectionnez l'entreprise système à laquelle ajouter cet utilisateur.",
+          "noAvailableEnterprises": "Aucune entreprise système disponible à ajouter."
+        },
+        "sheets": {
+          "create": {
+            "title": "Ajouter à une Entreprise Système",
+            "description": "Ajouter cet utilisateur à une entreprise système existante."
+          }
+        },
         "dialogs": {
           "disassociate": {
             "title": "Dissocier de",
@@ -62,6 +74,8 @@
           }
         },
         "messages": {
+          "addSuccess": "Utilisateur ajouté à l'entreprise système avec succès.",
+          "addFailure": "Échec de l'ajout de l'utilisateur à l'entreprise système.",
           "disassociateSuccess": "Utilisateur dissocié de l'entreprise système avec succès.",
           "disassociateFailure": "Échec de la dissociation de l'utilisateur de l'entreprise système."
         }

@@ -2,6 +2,7 @@ import {
   CreateEnterpriseMemberDto,
   Paginated,
   QueryParams,
+  ResponseEnterpriseDto,
   ResponseEnterpriseMemberDto,
   ResponseUserDto,
   UpdateEnterpriseMemberDto
@@ -35,6 +36,15 @@ const findPaginated = async (
     { params }
   );
 
+  return response.data;
+};
+
+const findAvailableSystemEnterprises = async (
+  userId: string
+): Promise<ResponseEnterpriseDto[]> => {
+  const response = await axios.get<ResponseEnterpriseDto[]>(
+    `/enterprise-member/user/${userId}/available-system-enterprises`
+  );
   return response.data;
 };
 
@@ -90,6 +100,7 @@ export const enterpriseMember = {
   findByEnterprise,
   findPaginated,
   findPaginatedByUser,
+  findAvailableSystemEnterprises,
   findAvailableUsers,
   create,
   update,
