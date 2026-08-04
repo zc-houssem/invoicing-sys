@@ -125,15 +125,16 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
     interlocutorOptions: []
   });
 
-  const { addressInformation } = useEnterpriseAddressFormStructure({
-    store: enterpriseStore,
-    countryOptions: mapToSelectOptions({
-      data: countries,
-      labelKey: 'label',
-      valueKey: 'id',
-      labelKeyTransformer: (label) => tCountry(label)
-    })
-  });
+  const { deliveryAddressInformation, invoicingAddressInformation } =
+    useEnterpriseAddressFormStructure({
+      store: enterpriseStore,
+      countryOptions: mapToSelectOptions({
+        data: countries,
+        labelKey: 'label',
+        valueKey: 'id',
+        labelKeyTransformer: (label) => tCountry(label)
+      })
+    });
 
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
@@ -220,7 +221,12 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
                   </div>
 
                   {methods.current.id === '1' && <FormBuilder structure={enterpriseInformation} />}
-                  {methods.current.id === '2' && <FormBuilder structure={addressInformation} />}
+                  {methods.current.id === '2' && (
+                    <div className="flex flex-col flex-1 gap-8">
+                      <FormBuilder structure={deliveryAddressInformation} />
+                      <FormBuilder structure={invoicingAddressInformation} />
+                    </div>
+                  )}
                   {methods.current.id === '3' && <FormBuilder structure={additionalInformation} />}
                 </div>
               </div>

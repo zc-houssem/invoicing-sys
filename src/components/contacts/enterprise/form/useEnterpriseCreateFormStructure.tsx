@@ -206,20 +206,32 @@ export const useEnterpriseCreateFormStructure = ({
     description: 'Check this to create a new interlocutor. Uncheck to select an existing one.',
     props: {
       checked: store.createDto.interlocutors?.[0]?.interlocutor !== undefined,
-      onCheckedChange: (checked: any) => {
+      onCheckedChange: (checked) => {
         const isNew = checked === true;
+        const current = store.createDto.interlocutors?.[0];
+
         if (isNew) {
-          store.setNested('createDto.interlocutors.0.interlocutorId', undefined);
-          store.setNested('createDto.interlocutors.0.interlocutor', {
-            title: SocialTitles.MR,
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: ''
+          store.setNested('createDto.interlocutors.0', {
+            ...current,
+            main: current?.main ?? true,
+            position: current?.position ?? '',
+            interlocutorId: undefined,
+            interlocutor: {
+              title: SocialTitles.MR,
+              firstName: '',
+              lastName: '',
+              email: '',
+              phone: ''
+            }
           });
         } else {
-          store.setNested('createDto.interlocutors.0.interlocutorId', undefined);
-          store.setNested('createDto.interlocutors.0.interlocutor', undefined);
+          store.setNested('createDto.interlocutors.0', {
+            ...current,
+            main: current?.main ?? true,
+            position: current?.position ?? '',
+            interlocutorId: undefined,
+            interlocutor: undefined
+          });
         }
       }
     }
