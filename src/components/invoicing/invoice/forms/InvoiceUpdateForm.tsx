@@ -28,7 +28,7 @@ import {
 import { UpdateInvoiceArticleDto, UpdateInvoiceDto } from '@/types/core/invoicing/invoice';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useInvoiceWorkflow } from '@/hooks/content/core/useInvoiceWorkflow';
-import { DocumentMetaHeader } from '../../CreatedByDisplay';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
 import { InvoiceActions } from './InvoiceActions';
 import { useTranslation } from 'react-i18next';
 import { useTaxWithholdings } from '@/hooks/content/core/useTaxWithhodlings';
@@ -95,7 +95,9 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       'uploads',
       'uploads.upload',
       'quotation',
-      'createdBy'
+      'createdBy',
+      'payments',
+      'payments.payment'
     ]
   });
 
@@ -310,11 +312,16 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       sidebar={
         <>
           <DocumentMetaHeader
-            status={workflow?.status || '-'}
+            status={
+              workflow?.status
+                ? tInvoicing(`invoice.status.${workflow.status}`, workflow.status)
+                : '-'
+            }
+            statusLabel={tInvoicing('invoice.table.columns.status', 'Statut')}
             createdByLabel={tInvoicing('invoice.form.createdBy')}
             user={invoiceStore.response?.createdBy}
-            extraRows={
-              invoiceStore.response?.quotationId
+            extraRows={[
+              ...(invoiceStore.response?.quotationId
                 ? [
                     {
                       label: tInvoicing('invoice.form.fromQuotation', 'Generated from quotation'),
@@ -329,8 +336,35 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
                       )
                     }
                   ]
-                : []
-            }
+                : []),
+              ...(invoiceStore.response?.payments && invoiceStore.response.payments.length > 0
+                ? [
+                    {
+                      label: tInvoicing('invoice.form.payments', 'Payments'),
+                      value: (
+                        <div className="flex flex-col gap-1.5">
+                          {invoiceStore.response.payments.map((entry) => {
+                            const symbol = selectedCurrency?.extras?.symbol || '';
+                            const digits = Number(selectedCurrency?.extras?.digitsAfterComma ?? 3);
+                            return (
+                              <div key={entry.id} className="flex items-center justify-between text-xs gap-2">
+                                <a
+                                  href={`/selling/payments/${entry.paymentId}`}
+                                  className="font-medium text-primary hover:underline">
+                                  #{entry.payment?.sequence || entry.payment?.id || entry.paymentId}
+                                </a>
+                                <span className="font-semibold text-emerald-600">
+                                  {`${Number(entry.amount || 0).toFixed(digits)} ${symbol}`}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )
+                    }
+                  ]
+                : [])
+            ]}
           />
           <InvoiceActions
             className="my-4"

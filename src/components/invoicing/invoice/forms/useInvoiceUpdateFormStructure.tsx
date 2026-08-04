@@ -358,6 +358,10 @@ export const useInvoiceUpdateFormStructure = ({
             onTaxWithholdingExcludeTaxesChange={(excludeTaxes) => {
               store.setNested('updateDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
+            amountPaid={(store.response as any)?.amountPaid}
+            payments={store.response?.payments}
+            showPaymentSummary={true}
+            status={store.response?.status || (store.updateDto as any)?.status}
           />
         </div>
       )

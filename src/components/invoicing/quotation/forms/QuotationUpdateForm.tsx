@@ -28,7 +28,7 @@ import {
 } from '@/types';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { useQuotationWorkflow } from '@/hooks/content/core/useQuotationWorkflow';
-import { DocumentMetaHeader } from '../../CreatedByDisplay';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
 import { QuotationActions } from './QuotationActions';
 import { useTranslation } from 'react-i18next';
 
@@ -288,7 +288,12 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       sidebar={
         <>
           <DocumentMetaHeader
-            status={workflow?.status || '-'}
+            status={
+              workflow?.status
+                ? tInvoicing(`quotation.status.${workflow.status}`, workflow.status)
+                : '-'
+            }
+            statusLabel={tInvoicing('quotation.table.columns.status', 'Statut')}
             createdByLabel={tInvoicing('quotation.form.createdBy')}
             user={quotationStore.response?.createdBy}
             extraRows={

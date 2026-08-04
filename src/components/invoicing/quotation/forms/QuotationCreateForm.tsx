@@ -34,7 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
 import { Button } from '@/components/ui/button';
 import { Repeat2, Save } from 'lucide-react';
-import { DocumentMetaHeader } from '../../CreatedByDisplay';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 

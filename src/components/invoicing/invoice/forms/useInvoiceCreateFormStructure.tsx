@@ -320,6 +320,8 @@ export const useInvoiceCreateFormStructure = ({
             onTaxWithholdingExcludeTaxesChange={(excludeTaxes) => {
               store.setNested('createDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
+            showPaymentSummary={true}
+            status={(store.createDto as any).status || 'Draft'}
           />
         </div>
       )

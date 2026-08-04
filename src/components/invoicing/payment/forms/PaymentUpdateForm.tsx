@@ -14,7 +14,7 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { DocumentMetaHeader } from '../../CreatedByDisplay';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
 import { usePaymentStore } from '@/hooks/stores/usePaymentStore';
 import { PaymentActions } from './PaymentActions';
 import { UpdatePaymentDto } from '@/types/core/invoicing/payment';

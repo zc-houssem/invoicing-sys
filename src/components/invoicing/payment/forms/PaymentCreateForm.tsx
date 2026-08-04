@@ -14,7 +14,7 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { DocumentMetaTable } from '../../CreatedByDisplay';
+import { DocumentMetaTable } from '../../DocumentMetaTable';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';

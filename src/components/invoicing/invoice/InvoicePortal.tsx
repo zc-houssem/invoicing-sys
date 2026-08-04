@@ -103,7 +103,9 @@ export const InvoicePortal = ({ className, enterpriseId }: InvoicePortalProps) =
           'taxWithholding',
           'createdBy',
           'invoiceArticles',
-          'invoiceArticles.taxes'
+          'invoiceArticles.taxes',
+          'payments',
+          'payments.payment'
         ].join(','),
         filter:
           [
