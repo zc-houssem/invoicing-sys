@@ -49,11 +49,11 @@ export const DefaultConditionPortal = ({ className }: DefaultConditionPortalProp
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: tCommon('submenu.system') },
+      { title: tCommon('menu.settings.title') },
+      { title: tCommon('menu.settings.subs.account') },
       { title: tCommon('settings.system.default_condition') }
     ]);
-  }, [router.locale]);
+  }, [router.locale, setRoutes, tCommon]);
 
   const { activeCompanyId } = useActiveCompanyContext();
   const defaultConditionsStore = useDefaultConditionManager((state) => state.defaultConditions);
