@@ -24,6 +24,7 @@ export const InvoiceActions = ({
   reset
 }: InvoiceActionsProps) => {
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
   const router = useRouter();
 
   const { mutate: next, isPending: isNextPending } = useMutation({
@@ -178,7 +179,7 @@ export const InvoiceActions = ({
           className="w-full"
           disabled={isNextPending}
           onClick={() => next(step.label)}>
-          {step.label}
+          {tInvoicing(`invoice.actions.${step.label.toLowerCase().replace(/ /g, '_')}`, step.label)}
         </Button>
       ))}
       <Button

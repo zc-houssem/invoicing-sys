@@ -63,7 +63,8 @@
       "Converted": "Converti",
       "Invoiced": "Facturé",
       "Cancelled": "Annulé",
-      "Canceled": "Annulé"
+      "Canceled": "Annulé",
+      "Validated": "Validé"
     },
     "dialogs": {
       "delete": {
@@ -72,6 +73,17 @@
         "confirm": "Oui, supprimez-le",
         "cancel": "Non, conservez-le"
       }
+    },
+    "actions": {
+      "send": "Envoyer",
+      "accept": "Accepter",
+      "reject": "Refuser",
+      "cancel": "Annuler",
+      "validate": "Valider",
+      "invalidate": "Invalider",
+      "to_invoice": "Facturer",
+      "roll_back": "Revenir en arrière",
+      "revive": "Réactiver"
     }
   },
   "invoice": {
@@ -156,6 +168,13 @@
         "confirm": "Oui, supprimez-le",
         "cancel": "Non, conservez-le"
       }
+    },
+    "actions": {
+      "validate": "Valider",
+      "send": "Envoyer",
+      "cancel": "Annuler",
+      "invalidate": "Invalider",
+      "refund": "Rembourser"
     }
   },
   "article": {
@@ -269,6 +288,12 @@
         "confirm": "Oui, supprimez-le",
         "cancel": "Non, conservez-le"
       }
+    },
+    "actions": {
+      "validate": "Valider",
+      "cancel": "Annuler",
+      "invalidate": "Invalider",
+      "back_to_draft": "Retour au brouillon"
     }
   }
 }
