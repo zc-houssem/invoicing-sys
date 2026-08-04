@@ -87,6 +87,7 @@ export function ArticleManagement({
             <SortableLinks
               key={item.id}
               id={{ id: item.id }}
+              disabled={disabled}
               onDelete={!disabled ? () => handleDelete(item.clientId) : undefined}>
               {renderArticleItem(item, !disabled, index)}
             </SortableLinks>

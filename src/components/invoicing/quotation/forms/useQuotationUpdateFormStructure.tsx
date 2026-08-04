@@ -293,10 +293,12 @@ export const useQuotationUpdateFormStructure = ({
     variant: FieldVariant.FILES,
     props: {
       files: store.files,
+      disabled: isUpdatePending,
       onFilesChange: (files) => {
+        if (isUpdatePending) return;
         store.set('files', files);
       },
-      onUpload: onAttachmentsUpload,
+      onUpload: isUpdatePending ? undefined : onAttachmentsUpload,
       onFileOpen: (file) => {
         api.core.storage.openFileById(file.serverId as number, '*/*');
       },
@@ -311,7 +313,9 @@ export const useQuotationUpdateFormStructure = ({
     variant: FieldVariant.EDITOR,
     props: {
       value: store.updateDto?.notes,
+      disabled: isUpdatePending,
       onChange: (value) => {
+        if (isUpdatePending) return;
         store.setNested('updateDto.notes', value);
         store.setNested('updateDtoErrors.notes', []);
       }

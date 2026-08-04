@@ -14,6 +14,7 @@ interface InvoiceActionsProps {
   save: () => void;
   reload: () => void;
   reset: () => void;
+  isSavePending?: boolean;
 }
 
 export const InvoiceActions = ({
@@ -21,7 +22,8 @@ export const InvoiceActions = ({
   workflow,
   save,
   reload,
-  reset
+  reset,
+  isSavePending
 }: InvoiceActionsProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
@@ -145,7 +147,7 @@ export const InvoiceActions = ({
       <Button
         variant={'default'}
         className="w-full"
-        disabled={!workflow?.isUpdatable || isNextPending}
+        disabled={isNextPending || isSavePending}
         onClick={save}>
         <Save />
         <span>{t('commands.save')}</span>

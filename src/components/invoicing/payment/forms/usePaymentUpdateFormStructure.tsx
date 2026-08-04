@@ -12,13 +12,12 @@ import {
   EditorFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { ResponseEnterpriseDto, ResponseRefParamDto } from '@/types';
+import { ResponseEnterpriseDto } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { PAYMENT_MODE } from '@/types/core/invoicing/payment';
 import { PaymentStore } from '@/hooks/stores/usePaymentStore';
 import { PaymentInvoiceManagement } from './PaymentInvoiceManagement';
 import { PaymentFinancialInformation } from './PaymentFinancialInformation';
-import { FieldBuilder } from '@/components/shared/form-builder/FieldBuilder';
 
 interface usePaymentUpdateFormStructureProps {
   store: PaymentStore;
@@ -184,6 +183,7 @@ export const usePaymentUpdateFormStructure = ({
     label: tInvoicing('payment.form.files'),
     props: {
       files: store.files,
+      disabled: loading,
       onFilesChange: (files) => {
         store.set('files', files);
       }

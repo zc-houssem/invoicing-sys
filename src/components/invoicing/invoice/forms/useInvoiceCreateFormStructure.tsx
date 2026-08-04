@@ -269,6 +269,7 @@ export const useInvoiceCreateFormStructure = ({
     variant: FieldVariant.FILES,
     props: {
       files: store.files,
+      disabled: isCreationPending,
       onFilesChange: (files) => {
         store.set('files', files);
       },
@@ -317,7 +318,9 @@ export const useInvoiceCreateFormStructure = ({
             currency={selectedCurrency}
             taxWithholding={selectedTaxWithholding}
             taxWithholdingExcludeTaxes={store.createDto.taxWithholdingExcludeTaxes ?? false}
+            disabled={isCreationPending}
             onTaxWithholdingExcludeTaxesChange={(excludeTaxes) => {
+              if (isCreationPending) return;
               store.setNested('createDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
             showPaymentSummary={true}

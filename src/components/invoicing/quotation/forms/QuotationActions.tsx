@@ -24,6 +24,7 @@ interface QuotationActionsProps {
   save: () => void;
   reload: () => void;
   reset: () => void;
+  isSavePending?: boolean;
 }
 
 export const QuotationActions = ({
@@ -31,7 +32,8 @@ export const QuotationActions = ({
   workflow,
   save,
   reload,
-  reset
+  reset,
+  isSavePending
 }: QuotationActionsProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
@@ -194,7 +196,7 @@ export const QuotationActions = ({
       <Button
         variant={'default'}
         className="w-full"
-        disabled={!workflow?.isUpdatable || isNextPending}
+        disabled={isNextPending || isSavePending}
         onClick={save}>
         <Save />
         <span>{t('commands.save')}</span>

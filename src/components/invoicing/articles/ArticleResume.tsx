@@ -15,6 +15,11 @@ interface ArticleResumeProps {
   taxWithholding?: ResponseRefParamDto<TaxWithholdingPayload>;
   taxWithholdingExcludeTaxes?: boolean;
   onTaxWithholdingExcludeTaxesChange?: (excludeTaxes: boolean) => void;
+  amountPaid?: number;
+  payments?: any[];
+  showPaymentSummary?: boolean;
+  status?: string;
+  disabled?: boolean;
 }
 
 export function ArticleResume({
@@ -23,7 +28,12 @@ export function ArticleResume({
   includeHeader,
   taxWithholding,
   taxWithholdingExcludeTaxes = true,
-  onTaxWithholdingExcludeTaxesChange
+  onTaxWithholdingExcludeTaxesChange,
+  amountPaid,
+  payments,
+  showPaymentSummary,
+  status,
+  disabled
 }: ArticleResumeProps) {
   const articleStore = useArticleStore();
   const { t } = useTranslation('invoicing');
@@ -31,6 +41,12 @@ export function ArticleResume({
   const { taxRates, isTaxRatesPending } = useTaxRates({
     join: ['currency']
   });
+
+  const isDraftOrValidated = React.useMemo(() => {
+    if (!status) return false;
+    const s = String(status).toLowerCase().replace(/[^a-z]/g, '');
+    return s === 'draft' || s === 'validated';
+  }, [status]);
 
   const totalPriceExcludingTax = React.useMemo(() => {
     if (articleStore.articles.length === 0) return 0;
@@ -147,6 +163,8 @@ export function ArticleResume({
       }
     ];
 
+    const netToPay = totalPriceIncludingTax - taxWithholdingAmount;
+
     if (taxWithholding && taxWithholding.extras?.rate) {
       items.push({
         label: `${t('invoice.form.taxWithholding', { defaultValue: 'Tax Withholding' })} (${taxWithholding.extras.rate}%)`,
@@ -156,7 +174,31 @@ export function ArticleResume({
       });
       items.push({
         label: t('article.form.netToPay', { defaultValue: 'Net to Pay' }),
-        value: `${(totalPriceIncludingTax - taxWithholdingAmount).toFixed(digits)} ${symbol}`
+        value: `${netToPay.toFixed(digits)} ${symbol}`
+      });
+    }
+
+    if (
+      !isDraftOrValidated &&
+      (showPaymentSummary || amountPaid !== undefined || (payments && payments.length > 0))
+    ) {
+      let paidVal = 0;
+      if (typeof amountPaid === 'number') {
+        paidVal = amountPaid;
+      } else if (Array.isArray(payments) && payments.length > 0) {
+        paidVal = payments.reduce((acc: number, p: any) => acc + Number(p.amount || 0), 0);
+      }
+
+      const effectiveNet = taxWithholding && taxWithholding.extras?.rate ? netToPay : totalPriceIncludingTax;
+      const remainingVal = Math.max(0, effectiveNet - paidVal);
+
+      items.push({
+        label: t('invoice.form.amountPaid', { defaultValue: 'Amount Paid' }),
+        value: `${paidVal.toFixed(digits)} ${symbol}`
+      });
+      items.push({
+        label: t('invoice.remaining', { defaultValue: 'Remaining' }),
+        value: `${remainingVal.toFixed(digits)} ${symbol}`
       });
     }
 
@@ -169,7 +211,11 @@ export function ArticleResume({
     currency,
     t,
     taxWithholding,
-    taxWithholdingAmount
+    taxWithholdingAmount,
+    showPaymentSummary,
+    amountPaid,
+    payments,
+    isDraftOrValidated
   ]);
 
   if (isTaxRatesPending) return <Spinner />;
@@ -189,13 +235,19 @@ export function ArticleResume({
         </tbody>
       </table>
       {taxWithholding && (
-        <div className="flex items-center gap-2 mt-2">
+        <div className={cn('flex items-center gap-2 mt-2', disabled && 'opacity-50')}>
           <Checkbox
             id="apply-to-ht"
             checked={!taxWithholdingExcludeTaxes}
-            onCheckedChange={(checked) => onTaxWithholdingExcludeTaxesChange?.(checked !== true)}
+            disabled={disabled}
+            onCheckedChange={(checked) => {
+              if (disabled) return;
+              onTaxWithholdingExcludeTaxesChange?.(checked !== true);
+            }}
           />
-          <Label htmlFor="apply-to-ht" className="text-xs">
+          <Label
+            htmlFor="apply-to-ht"
+            className={cn('text-xs', disabled && 'cursor-not-allowed')}>
             {t('article.form.applyTaxWithholdingToHT', { defaultValue: 'Calculate from Price HT' })}
           </Label>
         </div>

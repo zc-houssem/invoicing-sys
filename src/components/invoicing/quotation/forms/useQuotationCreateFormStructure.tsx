@@ -268,6 +268,7 @@ export const useQuotationCreateFormStructure = ({
     variant: FieldVariant.FILES,
     props: {
       files: store.files,
+      disabled: isCreationPending,
       onFilesChange: (files) => {
         store.set('files', files);
       },

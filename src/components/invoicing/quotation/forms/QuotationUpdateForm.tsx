@@ -324,6 +324,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             save={handleSubmit}
             reload={handleReload}
             reset={handleReload}
+            isSavePending={isUpdatePending}
           />
           <FormBuilder structure={sidebarFormStructure} />
         </>

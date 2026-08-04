@@ -372,6 +372,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
             save={handleSubmit}
             reload={handleReload}
             reset={handleReload}
+            isSavePending={isUpdatePending}
           />
           <FormBuilder structure={sidebarFormStructure} />
         </>
