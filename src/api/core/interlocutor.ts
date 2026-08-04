@@ -55,6 +55,15 @@ const findByEnterprise = async (enterpriseId: number): Promise<ResponseInterlocu
   return response.data;
 };
 
+const findAvailableByEnterprise = async (
+  enterpriseId: number
+): Promise<ResponseInterlocutorDto[]> => {
+  const response = await axios.get<ResponseInterlocutorDto[]>(
+    `/interlocutor/enterprise/${enterpriseId}/available`
+  );
+  return response.data;
+};
+
 const findById = async (id: number): Promise<ResponseInterlocutorDto> => {
   const response = await axios.get<ResponseInterlocutorDto>(`/interlocutor/${id}`);
   return response.data;
@@ -82,6 +91,7 @@ export const interlocutor = {
   findPaginated,
   findAll,
   findByEnterprise,
+  findAvailableByEnterprise,
   findById,
   create,
   update,

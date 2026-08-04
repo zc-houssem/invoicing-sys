@@ -20,7 +20,7 @@ import { useInterlocutorDisassociateDialog } from './modals/InterlocutorDisassoc
 import { Unlink } from 'lucide-react';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 
 interface InterlocutorPortalProps {
@@ -52,6 +52,7 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
   }, [router.locale, enterpriseId, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
 
   const interlocutorStore = useInterlocutorStore();
+  const queryClient = useQueryClient();
 
     const {
     page, setPage,
@@ -134,6 +135,11 @@ export const InterlocutorPortal = ({ className, enterpriseId }: InterlocutorPort
     onSuccess: () => {
       toast.success(tContacts('interlocutor.action_disassociate_success'));
       refetchInterlocutors();
+      if (enterpriseId) {
+        queryClient.invalidateQueries({
+          queryKey: ['enterprise-available-interlocutors', enterpriseId]
+        });
+      }
     },
     onError: (error) => {
       toast.error(

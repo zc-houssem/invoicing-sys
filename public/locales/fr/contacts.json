@@ -103,6 +103,8 @@
     "edit": "Modifier l'entreprise",
     "action_edit_success": "Entreprise mise à jour avec succès",
     "action_edit_failure": "Échec de la mise à jour de l'entreprise",
+    "delete_prompt": "Voulez-vous vraiment supprimer l'entreprise",
+    "delete_dialog_description": "Cette action est irréversible et supprimera définitivement cette entreprise.",
     "details": {
       "general_information": "Informations générales",
       "name": "Nom",
@@ -167,13 +169,17 @@
       "email": "Email",
       "phone": "Téléphone",
       "position": "Poste",
+      "associateExisting": "Associer un interlocuteur existant",
+      "existingInterlocutor": "Interlocuteur",
+      "noAvailableInterlocutors": "Aucun interlocuteur disponible à ajouter.",
       "placeholders": {
         "socialTitle": "Sélectionnez la civilité",
         "firstName": "Entrez le prénom de l'interlocuteur",
         "lastName": "Entrez le nom de l'interlocuteur",
         "email": "Entrez l'email de l'interlocuteur",
         "phone": "Entrez le téléphone de l'interlocuteur",
-        "position": "Entrez le poste de l'interlocuteur"
+        "position": "Entrez le poste de l'interlocuteur",
+        "existingInterlocutor": "Sélectionnez un interlocuteur"
       },
       "descriptions": {
         "socialTitle": "La civilité de l'interlocuteur.",
@@ -181,7 +187,8 @@
         "lastName": "Le nom de l'interlocuteur.",
         "email": "L'adresse email de l'interlocuteur.",
         "phone": "Le numéro de téléphone de l'interlocuteur.",
-        "position": "Le poste de l'interlocuteur."
+        "position": "Le poste de l'interlocuteur.",
+        "existingInterlocutor": "Sélectionnez un interlocuteur pas encore lié à cette entreprise."
       }
     },
     "table": {

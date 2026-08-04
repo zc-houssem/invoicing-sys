@@ -29,7 +29,8 @@ export const InterlocutorCreateForm = ({
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
   const interlocutorStore = useInterlocutorStore();
-  const { interlocutorInformation } = useInterlocutorCreateFormStructure({
+  const { interlocutorInformation, isInterlocutorsPending, hasAvailableInterlocutors } =
+    useInterlocutorCreateFormStructure({
     store: interlocutorStore,
     enterpriseId
   });
@@ -40,6 +41,11 @@ export const InterlocutorCreateForm = ({
     onSuccess: () => {
       toast.success(tContacts('interlocutor.action_add_success'));
       queryClient.invalidateQueries({ queryKey: ['interlocutors'] });
+      if (enterpriseId) {
+        queryClient.invalidateQueries({
+          queryKey: ['enterprise-available-interlocutors', enterpriseId]
+        });
+      }
       interlocutorStore.reset();
       onSuccess?.();
     },
@@ -53,6 +59,11 @@ export const InterlocutorCreateForm = ({
     onSuccess: () => {
       toast.success(tContacts('interlocutor.action_add_success'));
       queryClient.invalidateQueries({ queryKey: ['interlocutors'] });
+      if (enterpriseId) {
+        queryClient.invalidateQueries({
+          queryKey: ['enterprise-available-interlocutors', enterpriseId]
+        });
+      }
       interlocutorStore.reset();
       onSuccess?.();
     },
@@ -62,6 +73,11 @@ export const InterlocutorCreateForm = ({
   });
 
   const isPending = isCreateInterlocutorPending || isCreateEnterpriseInterlocutorPending;
+  const isAssociateExisting = !!enterpriseId && !!interlocutorStore.createDto.associateExisting;
+  const isSaveDisabled =
+    isPending ||
+    (isAssociateExisting &&
+      (isInterlocutorsPending || !hasAvailableInterlocutors || !interlocutorStore.createDto.interlocutorId));
 
   const handleSubmit = () => {
     if (!interlocutorStore.createDto.associateExisting) {
@@ -117,7 +133,7 @@ export const InterlocutorCreateForm = ({
       </div>
 
       <div className="flex gap-2 justify-end mt-auto pt-4 border-t">
-        <Button onClick={handleSubmit} disabled={isPending}>
+        <Button onClick={handleSubmit} disabled={isSaveDisabled}>
           {tCommon('commands.save')}
           <Spinner show={isPending} />
         </Button>

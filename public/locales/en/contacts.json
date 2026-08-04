@@ -103,6 +103,8 @@
     "edit": "Edit Enterprise",
     "action_edit_success": "Enterprise successfully updated",
     "action_edit_failure": "Failed to update enterprise",
+    "delete_prompt": "Are you sure you want to delete the enterprise",
+    "delete_dialog_description": "This action is irreversible and will permanently delete this enterprise.",
     "details": {
       "general_information": "General Information",
       "name": "Name",
@@ -167,13 +169,17 @@
       "email": "Email",
       "phone": "Phone",
       "position": "Position",
+      "associateExisting": "Associate an existing interlocutor",
+      "existingInterlocutor": "Interlocutor",
+      "noAvailableInterlocutors": "No interlocutors available to add.",
       "placeholders": {
         "socialTitle": "Select the social title",
         "firstName": "Enter the first name",
         "lastName": "Enter the last name",
         "email": "Enter the email",
         "phone": "Enter the phone number",
-        "position": "Enter the position"
+        "position": "Enter the position",
+        "existingInterlocutor": "Select an interlocutor"
       },
       "descriptions": {
         "socialTitle": "The social title of the interlocutor.",
@@ -181,7 +187,8 @@
         "lastName": "The last name of the interlocutor.",
         "email": "The email address of the interlocutor.",
         "phone": "The phone number of the interlocutor.",
-        "position": "The position of the interlocutor within the enterprise."
+        "position": "The position of the interlocutor within the enterprise.",
+        "existingInterlocutor": "Select an interlocutor not yet linked to this enterprise."
       }
     },
     "table": {

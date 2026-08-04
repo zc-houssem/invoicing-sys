@@ -25,43 +25,53 @@ export const useInterlocutorCreateFormStructure = ({
   const { t: tContact } = useTranslation('contacts');
   const { t: tSocial } = useTranslation('social-title');
 
-  const { data: existingInterlocutors } = useQuery({
-    queryKey: ['all-interlocutors'],
-    queryFn: () => api.core.interlocutor.findAll({}),
+  const { data: availableInterlocutors = [], isPending: isInterlocutorsPending } = useQuery({
+    queryKey: ['enterprise-available-interlocutors', enterpriseId],
+    queryFn: () => api.core.interlocutor.findAvailableByEnterprise(enterpriseId as number),
     enabled: !!enterpriseId && !!store.createDto.associateExisting
   });
+
+  const interlocutorOptions =
+    availableInterlocutors.map((i) => ({
+      label: `${i.firstName} ${i.lastName} (${i.email || ''})`,
+      value: i.id.toString()
+    })) || [];
 
   const associateExistingField: Field<CheckboxFieldProps> = {
     id: 'associate-existing',
     variant: FieldVariant.CHECKBOX,
-    description: tContact(
-      'interlocutor.form.associateExisting',
-      'Associer un interlocuteur existant'
-    ),
+    description: tContact('interlocutor.form.associateExisting'),
     props: {
       checked: store.createDto.associateExisting || false,
       onCheckedChange: (checked: boolean | string) => {
         store.setNested('createDto.associateExisting', !!checked);
+        if (!checked) {
+          store.setNested('createDto.interlocutorId', undefined);
+          store.setNested('errors.interlocutorId', undefined);
+        }
       }
     }
   };
 
   const existingInterlocutorField: Field<SelectFieldProps> = {
     id: 'existing-interlocutor',
-    label: tContact('interlocutor.form.existingInterlocutor', 'Interlocuteur'),
+    label: tContact('interlocutor.form.existingInterlocutor'),
     variant: FieldVariant.SELECT,
+    description: isInterlocutorsPending
+      ? undefined
+      : interlocutorOptions.length === 0
+        ? tContact('interlocutor.form.noAvailableInterlocutors')
+        : tContact('interlocutor.form.descriptions.existingInterlocutor'),
+    placeholder: tContact('interlocutor.form.placeholders.existingInterlocutor'),
     error: store.errors?.interlocutorId?.[0],
     props: {
       value: store.createDto.interlocutorId?.toString() || '',
+      disabled: isInterlocutorsPending || interlocutorOptions.length === 0,
       onValueChange: (value: string) => {
         store.setNested('createDto.interlocutorId', parseInt(value));
         store.setNested?.('errors.interlocutorId', undefined);
       },
-      options:
-        existingInterlocutors?.map((i) => ({
-          label: `${i.firstName} ${i.lastName} (${i.email || ''})`,
-          value: i.id.toString()
-        })) || []
+      options: interlocutorOptions
     }
   };
 
@@ -199,5 +209,9 @@ export const useInterlocutorCreateFormStructure = ({
     ]
   };
 
-  return { interlocutorInformation };
+  return {
+    interlocutorInformation,
+    isInterlocutorsPending,
+    hasAvailableInterlocutors: interlocutorOptions.length > 0
+  };
 };
