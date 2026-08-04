@@ -196,7 +196,10 @@ export const InvoicePortal = ({ className, enterpriseId, interlocutorId }: Invoi
     }
   };
 
-  const columns = useSellingInvoiceColumns(context);
+  const columns = useSellingInvoiceColumns(context, {
+    hideEnterprise: !!enterpriseId,
+    hideInterlocutor: !!interlocutorId
+  });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
 

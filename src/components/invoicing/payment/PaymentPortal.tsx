@@ -57,7 +57,9 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+    columnVisibility,
+    setColumnVisibility
   } = useDataTableState('paymentportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -145,6 +147,8 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
       openDeletePaymentDialog();
     },
     additionalActions: {},
+    columnVisibility,
+    setColumnVisibility,
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
@@ -161,7 +165,10 @@ export const PaymentPortal = ({ className, enterpriseId, interlocutorId }: Payme
     }
   };
 
-  const columns = usePaymentColumns(context);
+  const columns = usePaymentColumns(context, {
+    hideEnterprise: !!enterpriseId,
+    hideInterlocutor: !!interlocutorId
+  });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting;
 

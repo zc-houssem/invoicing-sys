@@ -10,12 +10,13 @@ import { useTranslation } from 'react-i18next';
 import { CreatedByDisplay } from '../CreatedByDisplay';
 
 export const useSellingQuotationColumns = (
-  context: DataTableConfig<ResponseQuotationDto>
+  context: DataTableConfig<ResponseQuotationDto>,
+  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean }
 ): ColumnDef<ResponseQuotationDto>[] => {
   const { t } = useTranslation('invoicing');
   const { t: tCurrency } = useTranslation('currency');
 
-  return [
+  const columns: ColumnDef<ResponseQuotationDto>[] = [
     {
       accessorKey: t('quotation.table.columns.sequence', 'Sequence'),
       header: ({ column }) => (
@@ -223,4 +224,10 @@ export const useSellingQuotationColumns = (
       )
     }
   ];
+
+  return columns.filter((col) => {
+    if (options?.hideEnterprise && (col as any).accessorKey === t('quotation.table.columns.enterprise')) return false;
+    if (options?.hideInterlocutor && (col as any).accessorKey === t('quotation.table.columns.interlocutor')) return false;
+    return true;
+  });
 };

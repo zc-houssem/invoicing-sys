@@ -59,7 +59,9 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+    columnVisibility,
+    setColumnVisibility
   } = useDataTableState('quotationportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -163,6 +165,8 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
         }
       ]
     },
+    columnVisibility,
+    setColumnVisibility,
     //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
@@ -179,7 +183,10 @@ export const QuotationPortal = ({ className, enterpriseId, interlocutorId }: Quo
     }
   };
 
-  const columns = useSellingQuotationColumns(context);
+  const columns = useSellingQuotationColumns(context, {
+    hideEnterprise: !!enterpriseId,
+    hideInterlocutor: !!interlocutorId
+  });
 
   const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
 

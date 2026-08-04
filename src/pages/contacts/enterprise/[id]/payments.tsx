@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { EnterpriseDetails } from '@/components/contacts/enterprise/EnterpriseDetails';
-import { ComingSoon } from '@/components/shared';
+import { PaymentPortal } from '@/components/invoicing/payment/PaymentPortal';
 
 export default function Page() {
   const router = useRouter();
@@ -9,7 +9,7 @@ export default function Page() {
 
   return (
     <EnterpriseDetails enterpriseId={Number(id)}>
-      <ComingSoon />
+      <PaymentPortal enterpriseId={Number(id)} />
     </EnterpriseDetails>
   );
 }

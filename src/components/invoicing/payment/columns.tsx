@@ -10,11 +10,12 @@ import { ResponsePaymentDto } from '@/types';
 import { CreatedByDisplay } from '../CreatedByDisplay';
 
 export const usePaymentColumns = (
-  context: DataTableConfig<ResponsePaymentDto>
+  context: DataTableConfig<ResponsePaymentDto>,
+  options?: { hideEnterprise?: boolean; hideInterlocutor?: boolean }
 ): ColumnDef<ResponsePaymentDto>[] => {
   const { t } = useTranslation('invoicing');
 
-  return [
+  const columns: ColumnDef<ResponsePaymentDto>[] = [
     {
       accessorKey: t('payment.table.columns.sequence', 'Sequence'),
       header: ({ column }) => (
@@ -225,4 +226,10 @@ export const usePaymentColumns = (
       )
     }
   ];
+
+  return columns.filter((col) => {
+    if (options?.hideEnterprise && (col as any).accessorKey === t('payment.table.columns.enterprise', 'Enterprise')) return false;
+    if (options?.hideInterlocutor && (col as any).accessorKey === t('payment.table.columns.interlocutor', 'Interlocutor')) return false;
+    return true;
+  });
 };
