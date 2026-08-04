@@ -38,6 +38,10 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
         </>
       )}
 
+      {fieldset.component && !fieldset.includeHeader && !structure.toggleableFieldsets && (
+        <div className="flex justify-end">{fieldset.component}</div>
+      )}
+
       {fieldset.rows.map((row, rowIndex) => {
         const fieldCount = row.fields.length;
 

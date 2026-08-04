@@ -203,16 +203,35 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         />
       );
     case 'checkbox':
+      if (field.props?.selectOptions?.length) {
+        return (
+          <div className="flex flex-col gap-2 my-1">
+            {field.props.selectOptions.map((option: SelectOption) => (
+              <div key={option.label} className="flex items-center gap-2">
+                <Checkbox
+                  id={option.label}
+                  className={field?.className}
+                  checked={field.props?.value as CheckedState}
+                  onCheckedChange={(value: CheckedState) => field?.props?.onCheckedChange?.(value)}
+                />
+                <Label className="text-sm font-semibold">{option.label}</Label>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
       return (
         <div className="flex items-center gap-2 h-8">
           <Checkbox
-            {...field.props}
-            id={field.label}
-            checked={field?.props?.value ?? false}
+            id={field.id}
+            className={field?.className}
+            disabled={field?.props?.disabled}
+            checked={field?.props?.checked ?? field?.props?.value ?? false}
             defaultChecked={field?.props?.defaultChecked}
             onCheckedChange={(value) => field?.props?.onCheckedChange?.(value)}
           />
-          <Label className={cn('text-xs')} htmlFor={field.label}>
+          <Label className={cn('text-xs')} htmlFor={field.id}>
             {field.description}
           </Label>
         </div>
@@ -285,22 +304,6 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
     case 'editor': {
       return <EditorWrapper props={field.props} />;
     }
-    case 'checkbox':
-      return (
-        <div className="flex flex-col gap-2 my-1">
-          {field.props?.selectOptions?.map((option: SelectOption) => (
-            <div key={option.label} className="flex items-center gap-2">
-              <Checkbox
-                id={option.label}
-                className={field?.className}
-                checked={field.props?.value as CheckedState}
-                onCheckedChange={(value: CheckedState) => field?.props?.onCheckedChange?.(value)}
-              />
-              <Label className="text-sm font-semibold">{option.label}</Label>
-            </div>
-          ))}
-        </div>
-      );
     case 'file':
       return (
         <div className={cn('flex flex-col', field?.wrapperClassName)}>
