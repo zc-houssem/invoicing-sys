@@ -72,6 +72,7 @@ export const AuthenticationLayout = () => {
           className="absolute inset-0 h-full w-full object-cover grayscale"
           draggable="false"
           fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </div>
     </div>
