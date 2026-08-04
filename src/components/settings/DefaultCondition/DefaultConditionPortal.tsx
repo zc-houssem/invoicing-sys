@@ -50,7 +50,7 @@ export const DefaultConditionPortal = ({ className }: DefaultConditionPortalProp
   React.useEffect(() => {
     setRoutes?.([
       { title: tCommon('menu.settings.title') },
-      { title: tCommon('menu.settings.subs.account') },
+      { title: tCommon('menu.enterprise.title') },
       { title: tCommon('settings.system.default_condition') }
     ]);
   }, [router.locale, setRoutes, tCommon]);
@@ -138,20 +138,16 @@ export const DefaultConditionPortal = ({ className }: DefaultConditionPortalProp
 
   return (
     <div className={cn('flex flex-col flex-1', className)}>
-      <div className="mt-5 px-2">
-        <div className="flex flex-col gap-4 mt-4 pb-10">
-          {defaultConditionsStore?.map((condition) => {
-            return (
-              <MemoizedConditionItemWrapper
-                key={condition.id}
-                condition={condition}
-                handleItemChange={handleItemChange}
-                tSettings={tSettings}
-              />
-            );
-          })}
-        </div>
-      </div>
+        {defaultConditionsStore?.map((condition) => {
+          return (
+            <MemoizedConditionItemWrapper
+              key={condition.id}
+              condition={condition}
+              handleItemChange={handleItemChange}
+              tSettings={tSettings}
+            />
+          );
+        })}
     </div>
   );
 };

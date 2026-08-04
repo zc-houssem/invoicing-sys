@@ -24,8 +24,8 @@ export const SequencePortal = ({ className }: SequencePortalProps) => {
   const { setRoutes } = useBreadcrumb();
   React.useEffect(() => {
     setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: tCommon('submenu.system') },
+      { title: tCommon('menu.settings.title') },
+      { title: tCommon('menu.enterprise.title') },
       { title: tCommon('settings.system.sequence') }
     ]);
   }, [router.locale, setRoutes, tCommon]);

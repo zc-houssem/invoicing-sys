@@ -3,61 +3,53 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import SidebarNav from '../sidebar-nav';
-import { Building, Landmark, User, MapPin, HashIcon, MessageCircle } from 'lucide-react';
+import { Building, Landmark, MapPin, HashIcon, MessageCircle } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
 import { useUI } from '@/context/UIContext';
 
-interface InformationalSettingsProps {
+interface EnterpriseSettingsProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-export const InformationalSettings: React.FC<InformationalSettingsProps> = ({
-  className,
-  children
-}) => {
-  //next-router
+export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ className, children }) => {
   const router = useRouter();
-
-  //translations
   const { t: tCommon } = useTranslation('common');
   const { t: tSettings } = useTranslation('settings');
-
   const { setIntro, clearIntro } = useIntro();
   const { setEnableMainOverflow, clearEnableMainOverflow } = useUI();
 
   const getPageIntro = React.useCallback(() => {
     switch (router.pathname) {
-      case '/settings/account/my-enterprise':
+      case '/settings/enterprise/my-enterprise':
         return {
           title: tCommon('settings.account.my_enterprise'),
           description: 'Manage your active enterprise configuration details.'
         };
-      case '/settings/account/my-addresses':
+      case '/settings/enterprise/my-addresses':
         return {
           title: tCommon('menu.contacts.subs.addresses'),
           description: 'Manage enterprise delivery and invoicing addresses.'
         };
-      case '/settings/account/banks':
+      case '/settings/enterprise/banks':
         return {
           title: tCommon('settings.account.bank_accounts'),
           description: 'Manage your bank accounts and payment details.'
         };
-      case '/settings/account/sequence':
+      case '/settings/enterprise/sequence':
         return {
           title: tCommon('settings.system.sequence'),
           description: tSettings('sequence.card_description')
         };
-      case '/settings/account/conditions':
+      case '/settings/enterprise/conditions':
         return {
           title: tCommon('settings.system.default_condition'),
           description: 'Manage default conditions for invoicing.'
         };
-      case '/settings/account/profile':
       default:
         return {
-          title: tCommon('settings.account.my_profile'),
-          description: tSettings('account.description')
+          title: tCommon('menu.enterprise.title'),
+          description: ''
         };
     }
   }, [router.pathname, tCommon, tSettings]);
@@ -70,39 +62,33 @@ export const InformationalSettings: React.FC<InformationalSettingsProps> = ({
       clearIntro?.();
       clearEnableMainOverflow?.();
     };
-  }, [router.pathname, router.locale, getPageIntro]);
+  }, [router.pathname, router.locale, getPageIntro, setIntro, clearIntro, setEnableMainOverflow, clearEnableMainOverflow]);
 
-  //menu items
   const sidebarNavItems = [
-    {
-      title: tCommon('settings.account.my_profile'),
-      icon: <User size={18} />,
-      href: '/settings/account/profile'
-    },
     {
       title: tCommon('settings.account.my_enterprise'),
       icon: <Building size={18} />,
-      href: '/settings/account/my-enterprise'
+      href: '/settings/enterprise/my-enterprise'
     },
     {
       title: tCommon('menu.contacts.subs.addresses'),
       icon: <MapPin size={18} />,
-      href: '/settings/account/my-addresses'
+      href: '/settings/enterprise/my-addresses'
     },
     {
       title: tCommon('settings.account.bank_accounts'),
       icon: <Landmark size={18} />,
-      href: '/settings/account/banks'
+      href: '/settings/enterprise/banks'
     },
     {
       title: tCommon('settings.system.sequence'),
       icon: <HashIcon size={18} />,
-      href: '/settings/account/sequence'
+      href: '/settings/enterprise/sequence'
     },
     {
       title: tCommon('settings.system.default_condition'),
       icon: <MessageCircle size={18} />,
-      href: '/settings/account/conditions'
+      href: '/settings/enterprise/conditions'
     }
   ];
 

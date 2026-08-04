@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { SystemEnterpriseCreateForm } from '@/components/administrative-tools/configuration/enterprises/SystemEnterpriseCreateForm';
 
 export default function Page() {

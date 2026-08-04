@@ -1,11 +1,11 @@
 import React from 'react';
-import { InformationalSettings } from '@/components/settings/InformationalSettings';
+import { EnterpriseSettings } from '@/components/settings/EnterpriseSettings';
 import { ActiveEnterpriseEditForm } from '@/components/administrative-tools/configuration/enterprises/ActiveEnterpriseEditForm';
 
 export default function Page() {
   return (
-    <InformationalSettings>
+    <EnterpriseSettings>
       <ActiveEnterpriseEditForm />
-    </InformationalSettings>
+    </EnterpriseSettings>
   );
 }

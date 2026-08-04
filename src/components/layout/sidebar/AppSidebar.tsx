@@ -5,7 +5,6 @@ import {
   Building2,
   Cpu,
   File,
-  FileCog,
   FileText,
   Landmark,
   LayoutDashboard,
@@ -19,8 +18,7 @@ import {
   Table,
   UserCog,
   Users,
-  Wallet,
-  Wrench
+  Wallet
 } from 'lucide-react';
 
 import {
@@ -202,9 +200,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Settings,
         items: [
           {
-            title: t('menu.settings.subs.account'),
+            title: t('menu.account.title'),
             url: '/settings/account/profile',
             icon: UserCog
+          },
+          {
+            title: t('menu.enterprise.title'),
+            url: '/settings/enterprise/my-enterprise',
+            icon: Building2
           }
         ]
       }

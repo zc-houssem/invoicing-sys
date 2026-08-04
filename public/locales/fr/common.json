@@ -62,6 +62,12 @@
         "account": "Compte",
         "system": "Système"
       }
+    },
+    "account": {
+      "title": "Compte"
+    },
+    "enterprise": {
+      "title": "Entreprise"
     }
   },
   "general": {

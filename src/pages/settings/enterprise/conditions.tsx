@@ -1,10 +1,10 @@
-import { InformationalSettings } from '@/components/settings/InformationalSettings';
+import { EnterpriseSettings } from '@/components/settings/EnterpriseSettings';
 import { DefaultConditionPortal } from '@/components/settings/DefaultCondition/DefaultConditionPortal';
 
 export default function Page() {
   return (
-    <InformationalSettings>
+    <EnterpriseSettings>
       <DefaultConditionPortal />
-    </InformationalSettings>
+    </EnterpriseSettings>
   );
 }

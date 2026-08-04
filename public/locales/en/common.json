@@ -62,6 +62,12 @@
         "account": "Account",
         "system": "System"
       }
+    },
+    "account": {
+      "title": "Account"
+    },
+    "enterprise": {
+      "title": "Enterprise"
     }
   },
   "general": {
