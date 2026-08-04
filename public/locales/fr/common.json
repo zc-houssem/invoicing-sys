@@ -132,6 +132,7 @@
     "multiple_files_max_size_sentence": "Vous pouvez télécharger {{count}} fichiers (jusqu'à {{size}} chacun)",
     "single_file_max_size_sentence": "Vous pouvez télécharger un fichier d'une taille maximale de {{size}}",
     "no_selected_file": "Aucun fichier sélectionné",
+    "no_files_exist": "Aucun fichier",
     "drop_image": "Faites glisser l'image",
     "select_image": "Cliquez pour sélectionner",
     "rejected_empty_file_warning": "Le fichier {{name}} est vide et a été rejeté.",

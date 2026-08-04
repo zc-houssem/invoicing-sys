@@ -13,10 +13,11 @@ interface SortableLinkCardProps {
   id: Item;
   className?: string;
   onDelete?: (id: string) => void;
+  disabled?: boolean;
   children?: ReactNode;
 }
 
-const SortableLinks: FC<SortableLinkCardProps> = ({ id, className, onDelete, children }) => {
+const SortableLinks: FC<SortableLinkCardProps> = ({ id, className, onDelete, disabled, children }) => {
   const uniqueId = id.id;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: uniqueId,
@@ -37,25 +38,29 @@ const SortableLinks: FC<SortableLinkCardProps> = ({ id, className, onDelete, chi
   return (
     <div ref={setNodeRef} style={style} key={uniqueId}>
       <Card className={cn('p-3 relative flex justify-between gap-2 group', className)}>
-        <div className="w-full">{children}</div>
-        <div className="flex flex-col items-center">
-          {onDelete && (
-            <button className="mb-auto" onClick={handleButtonClick}>
-              <X className="hover:text-red-400 h-5 w-5" />
-            </button>
-          )}
-          <button
-            type="button"
-            {...attributes}
-            {...listeners}
-            className={cn(
-              onDelete ? 'mt-auto' : 'my-auto',
-              ` ${isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`
+        <div className="w-full min-w-0">{children}</div>
+        {(!disabled || onDelete) && (
+          <div className="flex flex-col items-center">
+            {onDelete && (
+              <button className="mb-auto" onClick={handleButtonClick}>
+                <X className="hover:text-red-400 h-5 w-5" />
+              </button>
             )}
-            aria-describedby={`DndContext-${uniqueId}`}>
-            <Grip className="h-5 w-5" />
-          </button>
-        </div>
+            {!disabled && (
+              <button
+                type="button"
+                {...attributes}
+                {...listeners}
+                className={cn(
+                  onDelete ? 'mt-auto' : 'my-auto',
+                  ` ${isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`
+                )}
+                aria-describedby={`DndContext-${uniqueId}`}>
+                <Grip className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );

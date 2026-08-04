@@ -341,6 +341,7 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         <MultipleFilesUploader
           {...field.props}
           className={cn(field?.className)}
+          disabled={field?.props?.disabled}
           files={field.props.files}
           accept={field.props?.accept}
           progress={field.props?.progress}

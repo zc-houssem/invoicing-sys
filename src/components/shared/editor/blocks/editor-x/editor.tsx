@@ -79,6 +79,7 @@ export function Editor({
     <div
       className={cn(
         'bg-background overflow-hidden rounded-lg border shadow',
+        disabled && 'opacity-50 pointer-events-none',
         isFullscreen &&
           'fixed inset-0 z-50 flex flex-col rounded-none p-4 animate-in fade-in zoom-in-95'
       )}>
@@ -89,6 +90,7 @@ export function Editor({
           ...(validSerializedState ? { editorState: JSON.stringify(validSerializedState) } : {})
         }}>
         <TooltipProvider>
+          <EditableSyncPlugin disabled={disabled} />
           <EditorUpdateHandler
             editorSerializedState={validSerializedState}
             lastEmittedStringRef={lastEmittedStringRef}
@@ -115,6 +117,16 @@ export function Editor({
       </LexicalComposer>
     </div>
   );
+}
+
+function EditableSyncPlugin({ disabled }: { disabled?: boolean }) {
+  const [editor] = useLexicalComposerContext();
+
+  React.useEffect(() => {
+    editor.setEditable(!disabled);
+  }, [editor, disabled]);
+
+  return null;
 }
 
 function EditorUpdateHandler({

@@ -3,13 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 
-import { 
-  Download, 
-  ExternalLink, 
-  FileIcon, 
-  Upload, 
-  X
-} from 'lucide-react';
+import { Download, ExternalLink, Upload, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import { ManipulatedFile } from './types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MultipleFilesUploaderProps {
   className?: string;
@@ -45,6 +40,7 @@ interface MultipleFilesUploaderProps {
   ) => Promise<void> | void;
   onFileOpen?: (file: ManipulatedFile) => void;
   onFileDownload?: (file: ManipulatedFile) => void;
+  disabled?: boolean;
 }
 
 const UploadedFileIcon = ({ mf }: { mf: ManipulatedFile }) => {
@@ -67,8 +63,78 @@ const UploadedFileIcon = ({ mf }: { mf: ManipulatedFile }) => {
     );
   }
 
-  return getFileIcon(mf.name, undefined, "size-5");
+  return getFileIcon(mf.name, undefined, 'size-5');
 };
+
+interface UploadedFileRowProps {
+  mf: ManipulatedFile;
+  disabled?: boolean;
+  onFileOpen?: (file: ManipulatedFile) => void;
+  onFileDownload?: (file: ManipulatedFile) => void;
+  onOpen?: (url: string) => void;
+  onDownload?: (url: string) => void;
+  onRemove?: (id: string) => void;
+}
+
+const UploadedFileRow = ({
+  mf,
+  disabled,
+  onFileOpen,
+  onFileDownload,
+  onOpen,
+  onDownload,
+  onRemove
+}: UploadedFileRowProps) => (
+  <div className="relative flex items-center gap-2.5 rounded-md border p-3">
+    <div className="flex size-10 shrink-0 items-center justify-center rounded-md border overflow-hidden">
+      <UploadedFileIcon mf={mf} />
+    </div>
+    <div className="flex flex-1 flex-col gap-0.5 min-w-0">
+      <p className="text-sm font-medium truncate">{mf.name}</p>
+      {mf.url && (
+        <a
+          href={mf.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-muted-foreground hover:underline truncate">
+          {mf.url}
+        </a>
+      )}
+    </div>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className="size-7 shrink-0"
+      onClick={() => {
+        if (onFileOpen) onFileOpen(mf);
+        else if (mf.url) onOpen?.(mf.url);
+      }}>
+      <ExternalLink className="size-4" />
+    </Button>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className="size-7 shrink-0"
+      onClick={() => {
+        if (onFileDownload) onFileDownload(mf);
+        else if (mf.url) onDownload?.(mf.url);
+      }}>
+      <Download className="size-4" />
+    </Button>
+    {!disabled && onRemove ? (
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="size-7 shrink-0"
+        onClick={() => onRemove(mf.id)}>
+        <X className="size-4" />
+      </Button>
+    ) : null}
+  </div>
+);
 
 export const MultipleFilesUploader = ({
   className,
@@ -79,10 +145,14 @@ export const MultipleFilesUploader = ({
   onFilesChange: setFiles,
   onUpload,
   onFileOpen,
-  onFileDownload
+  onFileDownload,
+  disabled
 }: MultipleFilesUploaderProps) => {
+  const { t: tCommon } = useTranslation('common');
   const filesRef = React.useRef(files);
   filesRef.current = files;
+
+  const hasFiles = files.length > 0;
 
   // Native File objects for FileUpload (new / in-progress uploads)
   const nativeFiles = React.useMemo(
@@ -95,9 +165,8 @@ export const MultipleFilesUploader = ({
 
   const handleValueChange = React.useCallback(
     (newNativeFiles: File[]) => {
-      if (!setFiles) return;
+      if (!setFiles || disabled) return;
       const current = filesRef.current;
-      const newNativeSet = new Set(newNativeFiles);
 
       // Keep url-only entries unchanged
       const urlOnlyFiles = current.filter((mf) => !mf.file);
@@ -112,7 +181,6 @@ export const MultipleFilesUploader = ({
           const existing = existingNativeFiles.find((mf) => mf.file === nativeFile);
           if (existing) updatedNativeFiles.push(existing);
         } else {
-          // Brand-new file dropped / selected by the user
           updatedNativeFiles.push({
             id: crypto.randomUUID(),
             file: nativeFile,
@@ -125,7 +193,7 @@ export const MultipleFilesUploader = ({
 
       setFiles([...urlOnlyFiles, ...updatedNativeFiles]);
     },
-    [setFiles]
+    [setFiles, disabled]
   );
 
   const handleOpen = React.useCallback((url: string) => {
@@ -143,11 +211,70 @@ export const MultipleFilesUploader = ({
 
   const handleRemoveUploaded = React.useCallback(
     (id: string) => {
-      if (!setFiles) return;
+      if (!setFiles || disabled) return;
       setFiles(filesRef.current.filter((f) => f.id !== id));
     },
-    [setFiles]
+    [setFiles, disabled]
   );
+
+  const renderNativeFileList = (readOnly: boolean) =>
+    nativeFiles.length > 0 ? (
+      <FileUpload
+        maxFiles={maxFiles}
+        maxSize={maxSize}
+        className="flex flex-col"
+        value={nativeFiles}
+        onValueChange={handleValueChange}
+        onUpload={onUpload}
+        multiple={multiple}
+        disabled={readOnly || disabled}>
+        <FileUploadList>
+          {nativeFiles.map((file, index) => (
+            <FileUploadItem key={index} value={file}>
+              <FileUploadItemPreview />
+              <div className="flex flex-1 flex-col gap-1">
+                <FileUploadItemMetadata />
+                <FileUploadItemProgress variant="linear" />
+              </div>
+              {!readOnly ? (
+                <FileUploadItemDelete asChild>
+                  <Button variant="ghost" size="icon" className="size-7">
+                    <X className="size-4" />
+                  </Button>
+                </FileUploadItemDelete>
+              ) : null}
+            </FileUploadItem>
+          ))}
+        </FileUploadList>
+      </FileUpload>
+    ) : null;
+
+  if (disabled && !hasFiles) {
+    return (
+      <div className={cn('w-full', className)}>
+        <p className="text-sm text-muted-foreground">{tCommon('files.no_files_exist')}</p>
+      </div>
+    );
+  }
+
+  if (disabled && hasFiles) {
+    return (
+      <div className={cn('w-full flex flex-col gap-2', className)}>
+        {renderNativeFileList(true)}
+        {uploadedFiles.map((mf) => (
+          <UploadedFileRow
+            key={mf.id}
+            mf={mf}
+            disabled
+            onFileOpen={onFileOpen}
+            onFileDownload={onFileDownload}
+            onOpen={handleOpen}
+            onDownload={handleDownload}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={cn('w-full flex flex-col gap-2', className)}>
@@ -158,7 +285,8 @@ export const MultipleFilesUploader = ({
         value={nativeFiles}
         onValueChange={handleValueChange}
         onUpload={onUpload}
-        multiple={multiple}>
+        multiple={multiple}
+        disabled={disabled}>
         <FileUploadDropzone className="flex-1">
           <div className="flex flex-col items-center gap-1 text-center">
             <div className="flex items-center justify-center rounded-full border p-2.5">
@@ -194,53 +322,15 @@ export const MultipleFilesUploader = ({
       {uploadedFiles.length > 0 && (
         <div className="flex flex-col gap-2">
           {uploadedFiles.map((mf) => (
-            <div key={mf.id} className="relative flex items-center gap-2.5 rounded-md border p-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-md border overflow-hidden">
-                <UploadedFileIcon mf={mf} />
-              </div>
-              <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-                <p className="text-sm font-medium truncate">{mf.name}</p>
-                {mf.url && (
-                  <a
-                    href={mf.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-muted-foreground hover:underline truncate">
-                    {mf.url}
-                  </a>
-                )}
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-7 shrink-0"
-                onClick={() => {
-                  if (onFileOpen) onFileOpen(mf);
-                  else if (mf.url) handleOpen?.(mf.url);
-                }}>
-                <ExternalLink className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-7 shrink-0"
-                onClick={() => {
-                  if (onFileDownload) onFileDownload(mf);
-                  else if (mf.url) handleDownload?.(mf.url);
-                }}>
-                <Download className="size-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-7 shrink-0"
-                onClick={() => handleRemoveUploaded(mf.id)}>
-                <X className="size-4" />
-              </Button>
-            </div>
+            <UploadedFileRow
+              key={mf.id}
+              mf={mf}
+              onFileOpen={onFileOpen}
+              onFileDownload={onFileDownload}
+              onOpen={handleOpen}
+              onDownload={handleDownload}
+              onRemove={handleRemoveUploaded}
+            />
           ))}
         </div>
       )}

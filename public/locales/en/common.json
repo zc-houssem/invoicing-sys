@@ -132,6 +132,7 @@
     "multiple_files_max_size_sentence": "You can upload {{count}} files (up to {{size}} each)",
     "single_file_max_size_sentence": "You can upload a file with size up to {{size}}",
     "no_selected_file": "No Selected Files",
+    "no_files_exist": "No files exist",
     "drop_image": "Drop the image",
     "select_image": "Click to Select",
     "rejected_empty_file_warning": "File {{name}} is empty and has been rejected.",
