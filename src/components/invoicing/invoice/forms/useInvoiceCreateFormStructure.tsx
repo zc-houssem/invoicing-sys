@@ -340,6 +340,11 @@ export const useInvoiceCreateFormStructure = ({
               if (isCreationPending) return;
               store.setNested('createDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
+            taxStamp={store.createDto.taxStamp ?? 0}
+            onTaxStampChange={(value) => {
+              if (isCreationPending) return;
+              store.setNested('createDto.taxStamp', value);
+            }}
             showPaymentSummary={true}
             status={(store.createDto as any).status || 'Draft'}
           />

@@ -218,6 +218,7 @@
       "netToPay": "Net à payer",
       "totalTax": "Total taxe",
       "totalDiscount": "Total remise",
+      "taxStamp": "Timbre fiscal",
       "taxRates": "Taux de taxe",
       "applyTaxWithholdingToHT": "Calculer la retenue à la source à partir du Prix HT",
       "discountType": {

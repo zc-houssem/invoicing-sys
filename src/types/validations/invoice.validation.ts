@@ -22,7 +22,8 @@ export const baseInvoiceSchema = z
     }),
     bankAccountId: z.number({
       errorMap: () => ({ message: 'Bank account is required' })
-    })
+    }),
+    taxStamp: z.coerce.number().min(0, 'Tax stamp must be zero or positive').optional()
   })
   .refine((data) => new Date(data.dueDate) >= new Date(data.date), {
     message: 'Due date must be the same or after the date',

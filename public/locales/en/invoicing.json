@@ -218,6 +218,7 @@
       "netToPay": "Net to Pay",
       "totalTax": "Total tax",
       "totalDiscount": "Total discount",
+      "taxStamp": "Tax stamp",
       "taxRates": "Tax rates",
       "applyTaxWithholdingToHT": "Calculate tax withholding from Price HT",
       "discountType": {

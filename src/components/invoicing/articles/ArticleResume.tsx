@@ -1,4 +1,5 @@
 import { Spinner } from '@/components/shared';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTaxRates } from '@/hooks/content/core/useTaxRates';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
@@ -20,6 +21,8 @@ interface ArticleResumeProps {
   showPaymentSummary?: boolean;
   status?: string;
   disabled?: boolean;
+  taxStamp?: number;
+  onTaxStampChange?: (value: number) => void;
 }
 
 export function ArticleResume({
@@ -33,7 +36,9 @@ export function ArticleResume({
   payments,
   showPaymentSummary,
   status,
-  disabled
+  disabled,
+  taxStamp = 0,
+  onTaxStampChange
 }: ArticleResumeProps) {
   const articleStore = useArticleStore();
   const { t } = useTranslation('invoicing');
@@ -44,7 +49,9 @@ export function ArticleResume({
 
   const isDraftOrValidated = React.useMemo(() => {
     if (!status) return false;
-    const s = String(status).toLowerCase().replace(/[^a-z]/g, '');
+    const s = String(status)
+      .toLowerCase()
+      .replace(/[^a-z]/g, '');
     return s === 'draft' || s === 'validated';
   }, [status]);
 
@@ -129,18 +136,28 @@ export function ArticleResume({
     }, 0);
   }, [articleStore.articles, taxRates]);
 
+  const taxStampValue = Number(taxStamp) || 0;
+  const currencyDigits = Number(currency?.extras?.digitsAfterComma ?? 3);
+  const currencySymbol = currency?.extras?.symbol || '';
+  const formattedTaxStampValue = taxStampValue
+    ? `${taxStampValue.toFixed(currencyDigits)} ${currencySymbol}`.trim()
+    : undefined;
+
   const taxWithholdingAmount = React.useMemo(() => {
     if (!taxWithholding || !taxWithholding.extras?.rate) return 0;
     const base = !taxWithholdingExcludeTaxes ? totalPriceExcludingTax : totalPriceIncludingTax;
     return base * (taxWithholding.extras.rate / 100);
   }, [taxWithholding, taxWithholdingExcludeTaxes, totalPriceExcludingTax, totalPriceIncludingTax]);
 
-  const data = React.useMemo(() => {
-    if (articleStore.articles.length === 0) return [];
+  const { baseSummary, afterStampSummary } = React.useMemo(() => {
+    if (articleStore.articles.length === 0) {
+      return { baseSummary: [], afterStampSummary: [] };
+    }
+
     const digits = Number(currency?.extras?.digitsAfterComma ?? 3);
     const symbol = currency?.extras?.symbol || '';
 
-    const items: Array<{ label: string; value?: string }> = [
+    const base: Array<{ label: string; value?: string }> = [
       {
         label: t('article.form.priceExcludingTax'),
         value: totalPriceExcludingTax
@@ -163,16 +180,21 @@ export function ArticleResume({
       }
     ];
 
-    const netToPay = totalPriceIncludingTax - taxWithholdingAmount;
+    const after: Array<{ label: string; value?: string }> = [];
+    const totalWithStamp = totalPriceIncludingTax + taxStampValue;
+    const netToPay = totalWithStamp - taxWithholdingAmount;
 
     if (taxWithholding && taxWithholding.extras?.rate) {
-      items.push({
+      after.push({
         label: `${t('invoice.form.taxWithholding', { defaultValue: 'Tax Withholding' })} (${taxWithholding.extras.rate}%)`,
         value: taxWithholdingAmount
           ? `-${taxWithholdingAmount.toFixed(digits)} ${symbol}`
           : undefined
       });
-      items.push({
+    }
+
+    if ((taxWithholding && taxWithholding.extras?.rate) || taxStampValue > 0 || onTaxStampChange) {
+      after.push({
         label: t('article.form.netToPay', { defaultValue: 'Net to Pay' }),
         value: `${netToPay.toFixed(digits)} ${symbol}`
       });
@@ -189,21 +211,23 @@ export function ArticleResume({
         paidVal = payments.reduce((acc: number, p: any) => acc + Number(p.amount || 0), 0);
       }
 
-      const effectiveNet = taxWithholding && taxWithholding.extras?.rate ? netToPay : totalPriceIncludingTax;
+      const effectiveNet =
+        taxWithholding && taxWithholding.extras?.rate ? netToPay : totalWithStamp;
       const remainingVal = Math.max(0, effectiveNet - paidVal);
 
-      items.push({
+      after.push({
         label: t('invoice.form.amountPaid', { defaultValue: 'Amount Paid' }),
         value: `${paidVal.toFixed(digits)} ${symbol}`
       });
-      items.push({
+      after.push({
         label: t('invoice.remaining', { defaultValue: 'Remaining' }),
         value: `${remainingVal.toFixed(digits)} ${symbol}`
       });
     }
 
-    return items;
+    return { baseSummary: base, afterStampSummary: after };
   }, [
+    articleStore.articles.length,
     totalPriceExcludingTax,
     discountValue,
     taxValue,
@@ -212,6 +236,8 @@ export function ArticleResume({
     t,
     taxWithholding,
     taxWithholdingAmount,
+    taxStampValue,
+    onTaxStampChange,
     showPaymentSummary,
     amountPaid,
     payments,
@@ -224,8 +250,44 @@ export function ArticleResume({
       {includeHeader && <span className="font-bold text-xl">{t('common.financialResume')}</span>}
       <table className="w-full mt-2">
         <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
+          {baseSummary.map((item, index) => (
+            <tr key={`base-${index}`}>
+              <td className="text-start">
+                <Label className="text-xs font-thin">{item.label}</Label>
+              </td>
+              <td className="text-muted-foreground text-end text-xs">{item.value || '-'}</td>
+            </tr>
+          ))}
+          {onTaxStampChange && (
+            <tr>
+              <td className="text-start">
+                <Label className="text-xs font-thin">{t('article.form.taxStamp')}</Label>
+              </td>
+              <td className={cn('text-end', disabled ? 'text-muted-foreground text-xs' : 'py-1')}>
+                {disabled ? (
+                  formattedTaxStampValue || '-'
+                ) : (
+                  <div className="ml-auto flex max-w-[180px] items-center justify-end gap-1.5">
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.001"
+                      value={taxStampValue}
+                      onChange={(event) => {
+                        onTaxStampChange(Number(event.target.value) || 0);
+                      }}
+                      className="h-8 max-w-[120px] text-end text-xs"
+                    />
+                    {currencySymbol && (
+                      <span className="text-xs text-muted-foreground">{currencySymbol}</span>
+                    )}
+                  </div>
+                )}
+              </td>
+            </tr>
+          )}
+          {afterStampSummary.map((item, index) => (
+            <tr key={`after-${index}`}>
               <td className="text-start">
                 <Label className="text-xs font-thin">{item.label}</Label>
               </td>
@@ -245,9 +307,7 @@ export function ArticleResume({
               onTaxWithholdingExcludeTaxesChange?.(checked !== true);
             }}
           />
-          <Label
-            htmlFor="apply-to-ht"
-            className={cn('text-xs', disabled && 'cursor-not-allowed')}>
+          <Label htmlFor="apply-to-ht" className={cn('text-xs', disabled && 'cursor-not-allowed')}>
             {t('article.form.applyTaxWithholdingToHT', { defaultValue: 'Calculate from Price HT' })}
           </Label>
         </div>

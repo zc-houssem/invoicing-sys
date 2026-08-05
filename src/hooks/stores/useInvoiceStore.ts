@@ -33,6 +33,7 @@ const initialState: InvoiceData = {
     currencyId: undefined,
     bankAccountId: undefined,
     ...DEFAULT_INVOICE_INCLUDE_FLAGS,
+    taxStamp: 0,
     invoiceArticles: [],
     uploads: []
   },

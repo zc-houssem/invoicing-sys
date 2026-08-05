@@ -153,6 +153,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         showDeliveryAddress: workflow?.invoice.showDeliveryAddress,
         hasGeneralConditions: workflow?.invoice.hasGeneralConditions,
         hasTaxStamp: workflow?.invoice.hasTaxStamp,
+        taxStamp: workflow?.invoice.taxStamp ?? 0,
         invoiceArticles: [],
         uploads: []
       });

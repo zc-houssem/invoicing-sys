@@ -51,6 +51,7 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   showDeliveryAddress?: boolean;
   hasGeneralConditions?: boolean;
   hasTaxStamp?: boolean;
+  taxStamp?: number;
   notes?: string;
   createdById?: string;
   createdBy?: ResponseUserDto;
@@ -85,6 +86,7 @@ export interface CreateInvoiceDto {
   showDeliveryAddress?: boolean;
   hasGeneralConditions?: boolean;
   hasTaxStamp?: boolean;
+  taxStamp?: number;
   notes?: string;
   quotationId?: number;
   invoiceArticles: CreateInvoiceArticleDto[];

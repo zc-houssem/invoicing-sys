@@ -376,6 +376,11 @@ export const useInvoiceUpdateFormStructure = ({
               if (isUpdatePending || !isUpdatable) return;
               store.setNested('updateDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
+            taxStamp={store.updateDto?.taxStamp ?? store.response?.taxStamp ?? 0}
+            onTaxStampChange={(value) => {
+              if (isUpdatePending || !isUpdatable) return;
+              store.setNested('updateDto.taxStamp', value);
+            }}
             amountPaid={(store.response as any)?.amountPaid}
             payments={store.response?.payments}
             showPaymentSummary={true}
