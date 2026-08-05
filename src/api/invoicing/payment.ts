@@ -24,7 +24,7 @@ const findPaginated = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<Paginated<ResponsePaymentDto>>(`/_payment/list`, {
+  const response = await axios.get<Paginated<ResponsePaymentDto>>(`/payment/list`, {
     params
   });
 
@@ -32,17 +32,17 @@ const findPaginated = async ({
 };
 
 const findAll = async (): Promise<ResponsePaymentDto[]> => {
-  const response = await axios.get<ResponsePaymentDto[]>(`/_payment/all`);
+  const response = await axios.get<ResponsePaymentDto[]>(`/payment/all`);
   return response.data;
 };
 
 const findById = async (id: number, join?: string): Promise<ResponsePaymentDto> => {
-  const response = await axios.get<ResponsePaymentDto>(`/_payment/${id}`, { params: { join } });
+  const response = await axios.get<ResponsePaymentDto>(`/payment/${id}`, { params: { join } });
   return response.data;
 };
 
 const create = async (payment: CreatePaymentDto): Promise<ResponsePaymentDto> => {
-  const response = await axios.post('/_payment', payment);
+  const response = await axios.post('/payment', payment);
   return response.data;
 };
 
@@ -50,12 +50,12 @@ const update = async (
   id?: number,
   payment?: UpdatePaymentDto
 ): Promise<ResponsePaymentDto> => {
-  const response = await axios.put(`/_payment/${id}`, payment);
+  const response = await axios.put(`/payment/${id}`, payment);
   return response.data;
 };
 
 const remove = async (id?: number): Promise<ResponsePaymentDto> => {
-  const response = await axios.delete(`/_payment/${id}`);
+  const response = await axios.delete(`/payment/${id}`);
   return response.data;
 };
 

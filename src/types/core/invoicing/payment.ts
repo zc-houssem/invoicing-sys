@@ -48,7 +48,7 @@ export interface CreatePaymentDto {
 }
 
 export interface UpdatePaymentDto extends Partial<CreatePaymentDto> {
-  status?: PAYMENT_STATUS | string;
+  status?: string;
 }
 
 export interface ResponsePaymentInvoiceEntryDto {

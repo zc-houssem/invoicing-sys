@@ -25,20 +25,28 @@ const findPaginated = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<Paginated<ResponseInvoiceDto>>(`/_invoice/list`, {
+  const response = await axios.get<Paginated<ResponseInvoiceDto>>(`/invoice/list`, {
     params
   });
 
   return response.data;
 };
 
-const findAll = async (): Promise<ResponseInvoiceDto[]> => {
-  const response = await axios.get<ResponseInvoiceDto[]>(`/_invoice/all`);
+const findAll = async (params?: QueryParams): Promise<ResponseInvoiceDto[]> => {
+  const queryParams: { [key: string]: string | undefined } = {};
+  if (params?.sort) queryParams.sort = params.sort;
+  if (params?.search) queryParams.search = params.search;
+  if (params?.filter) queryParams.filter = params.filter;
+  if (params?.join) queryParams.join = params.join;
+
+  const response = await axios.get<ResponseInvoiceDto[]>(`/invoice/all`, {
+    params: queryParams
+  });
   return response.data;
 };
 
 const findById = async (id: number, join?: string): Promise<ResponseInvoiceDto> => {
-  const response = await axios.get<ResponseInvoiceDto>(`/_invoice/${id}`, { params: { join } });
+  const response = await axios.get<ResponseInvoiceDto>(`/invoice/${id}`, { params: { join } });
   return response.data;
 };
 
@@ -53,7 +61,7 @@ const findWorkflowById = async (
 };
 
 const create = async (invoice: CreateInvoiceDto): Promise<ResponseInvoiceDto> => {
-  const response = await axios.post('/_invoice', invoice);
+  const response = await axios.post('/invoice', invoice);
   return response.data;
 };
 
@@ -61,7 +69,7 @@ const update = async (
   id?: number,
   invoice?: UpdateInvoiceDto
 ): Promise<ResponseInvoiceDto> => {
-  const response = await axios.put(`/_invoice/${id}`, invoice);
+  const response = await axios.put(`/invoice/${id}`, invoice);
   return response.data;
 };
 
@@ -71,17 +79,17 @@ const next = async (id: number, event: string): Promise<ResponseInvoiceWorkflowD
 };
 
 const remove = async (id?: number): Promise<ResponseInvoiceDto> => {
-  const response = await axios.delete(`/_invoice/${id}`);
+  const response = await axios.delete(`/invoice/${id}`);
   return response.data;
 };
 
 const fromQuotation = async (id: number): Promise<ResponseInvoiceDto> => {
-  const response = await axios.post(`/_invoice/from-quotation/${id}`);
+  const response = await axios.post(`/invoice/from-quotation/${id}`);
   return response.data;
 };
 
 const duplicate = async (id: number): Promise<ResponseInvoiceDto> => {
-  const response = await axios.post(`/_invoice/duplicate/${id}`);
+  const response = await axios.post(`/invoice/duplicate/${id}`);
   return response.data;
 };
 

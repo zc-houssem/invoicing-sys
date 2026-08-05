@@ -25,7 +25,7 @@ const findPaginated = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<Paginated<ResponseQuotationDto>>(`/_quotation/list`, {
+  const response = await axios.get<Paginated<ResponseQuotationDto>>(`/quotation/list`, {
     params
   });
 
@@ -33,12 +33,12 @@ const findPaginated = async ({
 };
 
 const findAll = async (): Promise<ResponseQuotationDto[]> => {
-  const response = await axios.get<ResponseQuotationDto[]>(`/_quotation/all`);
+  const response = await axios.get<ResponseQuotationDto[]>(`/quotation/all`);
   return response.data;
 };
 
 const findById = async (id: number, join?: string): Promise<ResponseQuotationDto> => {
-  const response = await axios.get<ResponseQuotationDto>(`/_quotation/${id}`, { params: { join } });
+  const response = await axios.get<ResponseQuotationDto>(`/quotation/${id}`, { params: { join } });
   return response.data;
 };
 
@@ -53,7 +53,7 @@ const findWorkflowById = async (
 };
 
 const create = async (quotation: CreateQuotationDto): Promise<ResponseQuotationDto> => {
-  const response = await axios.post('/_quotation', quotation);
+  const response = await axios.post('/quotation', quotation);
   return response.data;
 };
 
@@ -61,7 +61,7 @@ const update = async (
   id?: number,
   quotation?: UpdateQuotationDto
 ): Promise<ResponseQuotationDto> => {
-  const response = await axios.put(`/_quotation/${id}`, quotation);
+  const response = await axios.put(`/quotation/${id}`, quotation);
   return response.data;
 };
 
@@ -71,12 +71,12 @@ const next = async (id: number, event: string): Promise<ResponseQuotationWorkflo
 };
 
 const remove = async (id?: number): Promise<ResponseQuotationDto> => {
-  const response = await axios.delete(`/_quotation/${id}`);
+  const response = await axios.delete(`/quotation/${id}`);
   return response.data;
 };
 
 const duplicate = async (id: number): Promise<ResponseQuotationDto> => {
-  const response = await axios.post(`/_quotation/duplicate/${id}`);
+  const response = await axios.post(`/quotation/duplicate/${id}`);
   return response.data;
 };
 

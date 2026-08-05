@@ -20,7 +20,7 @@ const findPaginated = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<Paginated<ResponseArticleDto>>(`/article-family/list`, {
+  const response = await axios.get<Paginated<ResponseArticleDto>>(`/article/list`, {
     params
   });
 
@@ -41,29 +41,29 @@ const findAll = async ({
   if (filter) params.filter = filter;
   if (join) params.join = join;
 
-  const response = await axios.get<ResponseArticleDto[]>(`/article-family/all`, {
+  const response = await axios.get<ResponseArticleDto[]>(`/article/all`, {
     params
   });
   return response.data;
 };
 
 const findById = async (id: number): Promise<ResponseArticleDto> => {
-  const response = await axios.get<ResponseArticleDto>(`/article-family/${id}`);
+  const response = await axios.get<ResponseArticleDto>(`/article/${id}`);
   return response.data;
 };
 
 const create = async (article: CreateArticleDto): Promise<ResponseArticleDto> => {
-  const response = await axios.post('/article-family', article);
+  const response = await axios.post('/article', article);
   return response.data;
 };
 
 const update = async (id?: number, article?: UpdateArticleDto): Promise<ResponseArticleDto> => {
-  const response = await axios.put(`/article-family/${id}`, article);
+  const response = await axios.put(`/article/${id}`, article);
   return response.data;
 };
 
 const remove = async (id?: number): Promise<ResponseArticleDto> => {
-  const response = await axios.delete(`/article-family/${id}`);
+  const response = await axios.delete(`/article/${id}`);
   return response.data;
 };
 
