@@ -76,6 +76,7 @@
       },
       "emptyCells": {
         "phone": "Aucun téléphone",
+        "email": "Aucun email",
         "website": "Aucun site web",
         "taxId": "Aucun numéro d'identification fiscale",
         "activity": "Aucune activité"
@@ -112,6 +113,7 @@
       "general_information": "Informations générales",
       "name": "Nom",
       "phone": "Téléphone",
+      "email": "Email",
       "website": "Site Web",
       "tax_id": "Numéro d'identification fiscale",
       "type": "Type",
