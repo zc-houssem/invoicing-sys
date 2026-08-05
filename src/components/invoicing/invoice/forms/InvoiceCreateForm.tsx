@@ -1,5 +1,6 @@
 import { useInvoiceCreateFormStructure } from './useInvoiceCreateFormStructure';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
 import { Sequences } from '@/types/sequence';
 import { useSequence } from '@/hooks/useSequence';
 import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
@@ -131,6 +132,11 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
   const { activeCompanyId } = useActiveCompanyContext();
+  const { systemEnterprises } = useSystemEnterprises();
+  const activeSystemEnterprise = React.useMemo(
+    () => systemEnterprises.find((enterprise) => enterprise.id === activeCompanyId),
+    [systemEnterprises, activeCompanyId]
+  );
   useSequence(activeCompanyId, Sequences.INVOICE, (preview: string) => invoiceStore.set('sequencePreview', preview));
 
   const { mutate: createInvoice, isPending: isCreationPending } = useMutation({
@@ -243,6 +249,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
             statusLabel={tInvoicing('invoice.table.columns.status')}
             createdByLabel={tInvoicing('invoice.form.creatingAs')}
             user={currentUser}
+            systemEnterpriseLabel={tInvoicing('invoice.form.issuingAs')}
+            systemEnterprise={activeSystemEnterprise}
             extraRows={
               invoiceStore.createDto?.quotationId
                 ? [

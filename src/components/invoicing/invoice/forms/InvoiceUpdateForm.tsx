@@ -96,6 +96,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       'uploads.upload',
       'quotation',
       'createdBy',
+      'systemEnterprise',
       'payments',
       'payments.payment'
     ]
@@ -327,6 +328,8 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
             statusLabel={tInvoicing('invoice.table.columns.status', 'Statut')}
             createdByLabel={tInvoicing('invoice.form.createdBy')}
             user={invoiceStore.response?.createdBy}
+            systemEnterpriseLabel={tInvoicing('invoice.form.systemEnterprise')}
+            systemEnterprise={invoiceStore.response?.systemEnterprise}
             extraRows={[
               ...(invoiceStore.response?.quotationId
                 ? [

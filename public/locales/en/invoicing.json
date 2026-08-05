@@ -15,6 +15,8 @@
       "invoices": "Invoices",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
       "includeOnQuotation": {
         "title": "Include on quotation",
         "bankingDetails": "Banking details",
@@ -44,7 +46,9 @@
         "bankAccount": "Select the bank account to be used for this quotation.",
         "sequence": "Auto-generated sequence based on the company's configuration.",
         "createdBy": "User who created this quotation.",
-        "creatingAs": "You will be recorded as the creator of this quotation."
+        "creatingAs": "You will be recorded as the creator of this quotation.",
+        "systemEnterprise": "System enterprise that issued this quotation.",
+        "issuingAs": "This quotation will be issued under the active system enterprise."
       }
     },
     "table": {
@@ -112,6 +116,8 @@
       "amountPaid": "Amount Paid",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
       "includeOnInvoice": {
         "bankingDetails": "Banking details",
         "articlesDescription": "Articles description",
@@ -143,7 +149,9 @@
         "taxWithholding": "Select the tax withholding to be applied to this invoice.",
         "sequence": "Auto-generated sequence based on the company's configuration.",
         "createdBy": "User who created this invoice.",
-        "creatingAs": "You will be recorded as the creator of this invoice."
+        "creatingAs": "You will be recorded as the creator of this invoice.",
+        "systemEnterprise": "System enterprise that issued this invoice.",
+        "issuingAs": "This invoice will be issued under the active system enterprise."
       }
     },
     "table": {

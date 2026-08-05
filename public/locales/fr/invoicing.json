@@ -15,6 +15,8 @@
       "invoices": "Factures liées",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Émission en tant que",
       "includeOnQuotation": {
         "title": "Inclure sur le devis",
         "bankingDetails": "Coordonnées bancaires",
@@ -44,7 +46,9 @@
         "bankAccount": "Sélectionnez le compte bancaire à utiliser pour ce devis.",
         "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
         "createdBy": "Utilisateur ayant créé ce devis.",
-        "creatingAs": "Vous serez enregistré comme créateur de ce devis."
+        "creatingAs": "Vous serez enregistré comme créateur de ce devis.",
+        "systemEnterprise": "Entreprise système ayant émis ce devis.",
+        "issuingAs": "Ce devis sera émis au nom de l'entreprise système active."
       }
     },
     "table": {
@@ -112,6 +116,8 @@
       "amountPaid": "Montant payé",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Émission en tant que",
       "includeOnInvoice": {
         "bankingDetails": "Coordonnées bancaires",
         "articlesDescription": "Description des articles",
@@ -143,7 +149,9 @@
         "taxWithholding": "Sélectionnez la retenue à la source à appliquer à cette facture.",
         "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
         "createdBy": "Utilisateur ayant créé cette facture.",
-        "creatingAs": "Vous serez enregistré comme créateur de cette facture."
+        "creatingAs": "Vous serez enregistré comme créateur de cette facture.",
+        "systemEnterprise": "Entreprise système ayant émis cette facture.",
+        "issuingAs": "Cette facture sera émise au nom de l'entreprise système active."
       }
     },
     "table": {

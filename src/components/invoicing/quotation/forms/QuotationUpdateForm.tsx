@@ -94,6 +94,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       'uploads',
       'uploads.upload',
       'createdBy',
+      'systemEnterprise',
       'invoices'
     ]
   });
@@ -302,6 +303,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             statusLabel={tInvoicing('quotation.table.columns.status', 'Statut')}
             createdByLabel={tInvoicing('quotation.form.createdBy')}
             user={quotationStore.response?.createdBy}
+            systemEnterpriseLabel={tInvoicing('quotation.form.systemEnterprise')}
+            systemEnterprise={quotationStore.response?.systemEnterprise}
             extraRows={
               quotationStore.response?.invoices && quotationStore.response.invoices.length > 0
                 ? [

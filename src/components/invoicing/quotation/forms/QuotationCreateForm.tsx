@@ -18,6 +18,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
 import { Sequences } from '@/types/sequence';
 import { useArticleStore } from '@/hooks/stores/useArticleStore';
 import {
@@ -120,6 +121,11 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
 
   const { bankAccounts, isBankAccountsPending } = useBankAccounts();
   const { activeCompanyId } = useActiveCompanyContext();
+  const { systemEnterprises } = useSystemEnterprises();
+  const activeSystemEnterprise = React.useMemo(
+    () => systemEnterprises.find((enterprise) => enterprise.id === activeCompanyId),
+    [systemEnterprises, activeCompanyId]
+  );
   useSequence(activeCompanyId, Sequences.QUOTATION, (preview: string) =>
     quotationStore.set('sequencePreview', preview)
   );
@@ -224,6 +230,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
             statusLabel={tInvoicing('quotation.table.columns.status')}
             createdByLabel={tInvoicing('quotation.form.creatingAs')}
             user={currentUser}
+            systemEnterpriseLabel={tInvoicing('quotation.form.issuingAs')}
+            systemEnterprise={activeSystemEnterprise}
           />
           <Separator />
           <div className="flex flex-col gap-2 w-full">
