@@ -2,10 +2,9 @@ import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-table/types';
 
-import { Trans } from '@/components/shared/Trans';
+import { LogHtmlContent } from '@/components/administrative-tools/logger/LogHtmlContent';
 import { ResponseLogDto } from '@/types';
 import { ColumnDef } from '@tanstack/react-table';
-import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
 export const useLoggerColumns = (
@@ -24,8 +23,7 @@ export const useLoggerColumns = (
         />
       ),
       cell: ({ row }) => {
-        const event = row?.original?.event;
-        return <Trans ns="logs" i18nKey={`titles.${event.toUpperCase()}`} />;
+        return <span>{row.original.title ?? row.original.event}</span>;
       },
       enableSorting: true,
       enableHiding: true
@@ -37,31 +35,15 @@ export const useLoggerColumns = (
         <DataTableColumnHeader
           column={column}
           title={t('logger.columns.description')}
-          attribute="event"
+          attribute="description"
           context={context}
         />
       ),
       cell: ({ row }) => {
-        const event = row?.original?.event;
         return (
-          <Trans
-            ns="logs"
-            i18nKey={`descriptions.${event.toUpperCase()}`}
-            values={{
-              ...row.original.logInfo,
-              user: {
-                id: row?.original?.user?.id,
-                username: row?.original?.user?.username
-              }
-            }}
-            components={{
-              a: (
-                <Link
-                  href={`/user-management/users/${row?.original?.user?.id}`}
-                  className="hover:underline"
-                />
-              )
-            }}
+          <LogHtmlContent
+            html={row.original.description ?? ''}
+            className="[&_a]:hover:underline [&_a]:text-primary [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mt-1"
           />
         );
       },
