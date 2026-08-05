@@ -190,6 +190,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select {
+    box-shadow: none;
+  }
 }
 
 @layer base {
