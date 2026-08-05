@@ -3,7 +3,8 @@ import React from 'react';
 import type { Template } from '@pdfme/common';
 import { BLANK_PDF } from '@pdfme/common';
 import { Designer } from '@pdfme/ui';
-import { text, image, date, table } from '@pdfme/schemas';
+import { text, image, date, table, multiVariableText } from '@pdfme/schemas';
+import { loadFonts } from './loadFonts';
 import { cn } from '@/lib/utils';
 import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
@@ -86,10 +87,11 @@ export const PDFEditor = ({
         text,
         image,
         date,
-        table
+        table,
+        multiVariableText
       };
 
-      // const fonts = await loadFonts();
+      const fonts = await loadFonts();
 
       if (cancelled) return;
 
@@ -98,8 +100,8 @@ export const PDFEditor = ({
         template,
         options: {
           zoomLevel: 1,
-          sidebarOpen: true
-          // font: fonts
+          sidebarOpen: true,
+          font: fonts
         },
         plugins
       });
