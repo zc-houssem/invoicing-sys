@@ -114,6 +114,22 @@ export const useEnterpriseUpdateFormStructure = ({
     }
   };
 
+  const enterpriseEmailField: Field<TextFieldProps> = {
+    id: 'email',
+    label: tContact('enterprise.form.email'),
+    variant: FieldVariant.EMAIL,
+    error: store.errors?.email?.[0],
+    description: tContact('enterprise.form.descriptions.email'),
+    placeholder: tContact('enterprise.form.placeholders.email'),
+    props: {
+      value: store.updateDto?.email,
+      onChange: (value) => {
+        store.setNested('updateDto.email', value);
+        store.setNested('errors.email', []);
+      }
+    }
+  };
+
   const particularField: Field<RadioFieldProps> = {
     id: 'particular',
     label: tContact('enterprise.form.particular.noun'),
@@ -210,7 +226,10 @@ export const useEnterpriseUpdateFormStructure = ({
             ]
           },
           {
-            fields: [phoneField, websiteField]
+            fields: [phoneField, enterpriseEmailField]
+          },
+          {
+            fields: [websiteField]
           },
           {
             fields: [activityField, currencyField, paymentConditionField]
@@ -270,7 +289,7 @@ export const useEnterpriseUpdateFormStructure = ({
     }
   };
 
-  const emailField: Field<TextFieldProps> = {
+  const interlocutorEmailField: Field<TextFieldProps> = {
     id: 'interlocutor-email',
     label: tContact('interlocutor.form.email'),
     variant: FieldVariant.EMAIL,
@@ -323,7 +342,7 @@ export const useEnterpriseUpdateFormStructure = ({
             fields: [socialTitleField, firstNameField, lastNameField]
           },
           {
-            fields: [emailField, phoneFieldInterlocutor]
+            fields: [interlocutorEmailField, phoneFieldInterlocutor]
           },
           {
             fields: [positionField]

@@ -9,6 +9,7 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
   id: number;
   name: string;
   phone: string;
+  email?: string;
   website?: string;
   particular: boolean;
   taxId?: string;
@@ -31,6 +32,7 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
 export interface CreateEnterpriseDto {
   name: string;
   phone: string;
+  email?: string;
   website?: string;
   particular?: boolean;
   taxId: string;

@@ -22,6 +22,11 @@ const optionalString = z.preprocess(
   z.string().optional()
 );
 
+const optionalEmail = z.preprocess(
+  (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+  z.string().email().optional()
+);
+
 export const baseEnterpriseInformationValidationSchema = z.object({
   name: z
     .string({
@@ -30,6 +35,7 @@ export const baseEnterpriseInformationValidationSchema = z.object({
     .min(1, 'Name is required'),
   taxId: optionalString,
   phone: optionalString,
+  email: optionalEmail,
   notes: optionalNotes,
   website: optionalUrl,
   particular: z.boolean(),

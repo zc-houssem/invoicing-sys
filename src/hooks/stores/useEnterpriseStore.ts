@@ -23,6 +23,7 @@ const initialState: EnterpriseData = {
   createDto: {
     name: '',
     phone: '',
+    email: '',
     taxId: '',
     notes: '',
     website: '',

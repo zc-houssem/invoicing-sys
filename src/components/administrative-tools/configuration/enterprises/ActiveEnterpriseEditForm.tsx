@@ -65,6 +65,7 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
       enterpriseStore.set('updateDto', {
         name: enterprise.name,
         phone: enterprise.phone,
+        email: enterprise.email || '',
         website: enterprise.website || '',
         particular: enterprise.particular,
         taxId: enterprise.taxId || '',

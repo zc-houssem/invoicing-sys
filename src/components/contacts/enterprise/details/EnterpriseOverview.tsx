@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Spinner } from '@/components/shared';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Building2, Phone, Globe, FileText, MapPin, Banknote, CalendarClock } from 'lucide-react';
+import { Building2, Phone, Globe, FileText, MapPin, Banknote, CalendarClock, Mail } from 'lucide-react';
 import { EnterpriseLogo } from '../EnterpriseLogo';
 
 interface EnterpriseOverviewProps {
@@ -64,6 +64,11 @@ export const EnterpriseOverview = ({ className, id }: EnterpriseOverviewProps) =
             label={tContacts('enterprise.details.phone')}
             value={enterprise.phone}
             icon={<Phone size={14} className="text-muted-foreground" />}
+          />
+          <InfoItem
+            label={tContacts('enterprise.details.email')}
+            value={enterprise.email}
+            icon={<Mail size={14} className="text-muted-foreground" />}
           />
           <InfoItem
             label={tContacts('enterprise.details.website')}

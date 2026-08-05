@@ -117,6 +117,22 @@ export const useEnterpriseCreateFormStructure = ({
     }
   };
 
+  const enterpriseEmailField: Field<TextFieldProps> = {
+    id: 'email',
+    label: tContact('enterprise.form.email'),
+    variant: FieldVariant.EMAIL,
+    error: store.errors?.email?.[0],
+    description: tContact('enterprise.form.descriptions.email'),
+    placeholder: tContact('enterprise.form.placeholders.email'),
+    props: {
+      value: store.createDto.email,
+      onChange: (value) => {
+        store.setNested('createDto.email', value);
+        store.setNested('errors.email', []);
+      }
+    }
+  };
+
   const particularField: Field<RadioFieldProps> = {
     id: 'particular',
     label: tContact('enterprise.form.particular.noun'),
@@ -206,7 +222,10 @@ export const useEnterpriseCreateFormStructure = ({
             ]
           },
           {
-            fields: [phoneField, websiteField]
+            fields: [phoneField, enterpriseEmailField]
+          },
+          {
+            fields: [websiteField]
           },
           {
             fields: [activityField, currencyField, paymentConditionField]

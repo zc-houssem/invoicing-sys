@@ -131,6 +131,7 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
       enterpriseStore.set('updateDto', {
         name: enterprise.name,
         phone: enterprise.phone,
+        email: enterprise.email || '',
         website: enterprise.website || '',
         particular: enterprise.particular,
         taxId: enterprise.taxId || '',

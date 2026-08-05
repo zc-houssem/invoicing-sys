@@ -91,6 +91,35 @@ export const useEnterpriseColumns = (
       enableHiding: true
     },
     {
+      accessorKey: t('enterprise.table.columns.email'),
+      meta: {
+        exportLabel: t('enterprise.table.columns.email'),
+        exportKey: 'email',
+        filterKey: 'email',
+        filterField: 'email',
+        filterType: 'string'
+      },
+      header: ({ column, table }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={(table.options.meta as any)?.context}
+          title={t('enterprise.table.columns.email')}
+          attribute={'email'}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">
+          {row.original.email ? (
+            row.original.email
+          ) : (
+            <span className="opacity-50">{t('enterprise.table.emptyCells.email')}</span>
+          )}
+        </div>
+      ),
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
       accessorKey: t('enterprise.table.columns.website'),
       meta: {
         exportLabel: t('enterprise.table.columns.website'),
