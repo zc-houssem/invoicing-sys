@@ -1,6 +1,7 @@
 import { CreateQuotationDto, ResponseQuotationDto, UpdateQuotationDto } from '@/types';
 import { BaseActions, createBaseStore } from './useBaseStore';
 import { ManipulatedFile } from '@/components/shared/form-builder/types';
+import { DEFAULT_QUOTATION_INCLUDE_FLAGS } from '@/components/invoicing/quotation/forms/QuotationIncludeOnTable';
 
 interface QuotationData {
   response: ResponseQuotationDto | null;
@@ -31,6 +32,7 @@ const initialState: QuotationData = {
     interlocutorId: undefined,
     currencyId: undefined,
     bankAccountId: undefined,
+    ...DEFAULT_QUOTATION_INCLUDE_FLAGS,
     quotationArticles: [],
     uploads: []
   },

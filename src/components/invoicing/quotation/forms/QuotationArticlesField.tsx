@@ -7,12 +7,14 @@ interface QuotationArticlesFieldProps {
   className?: string;
   currency?: ResponseRefParamDto<CurrencyPayload>;
   disabled?: boolean;
+  showArticleDescription?: boolean;
 }
 
 export const QuotationArticlesField = ({
   className,
   currency,
-  disabled
+  disabled,
+  showArticleDescription = true
 }: QuotationArticlesFieldProps) => {
   const articleStore = useArticleStore();
   return (
@@ -24,7 +26,12 @@ export const QuotationArticlesField = ({
         deleteArticle={articleStore.deleteArticle}
         disabled={disabled}
         renderArticleItem={(item, edit, index) => (
-          <ArticleItem index={index} currency={currency} disabled={disabled} />
+          <ArticleItem
+            index={index}
+            currency={currency}
+            disabled={disabled}
+            showDescription={showArticleDescription}
+          />
         )}
       />
     </div>

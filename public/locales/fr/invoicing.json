@@ -15,6 +15,14 @@
       "invoices": "Factures liées",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
+      "includeOnQuotation": {
+        "title": "Inclure sur le devis",
+        "bankingDetails": "Coordonnées bancaires",
+        "articlesDescription": "Description des articles",
+        "invoicingAddress": "Adresse de facturation",
+        "deliveryAddress": "Adresse de livraison",
+        "generalConditions": "Conditions générales"
+      },
       "placeholders": {
         "date": "Sélectionnez une date",
         "dueDate": "Sélectionnez une date d'échéance",
@@ -103,6 +111,14 @@
       "amountPaid": "Montant payé",
       "createdBy": "Créé par",
       "creatingAs": "Création en tant que",
+      "includeOnInvoice": {
+        "bankingDetails": "Coordonnées bancaires",
+        "articlesDescription": "Description des articles",
+        "invoicingAddress": "Adresse de facturation",
+        "deliveryAddress": "Adresse de livraison",
+        "generalConditions": "Conditions générales",
+        "taxStamp": "Timbre fiscal"
+      },
       "placeholders": {
         "date": "Sélectionnez une date",
         "dueDate": "Sélectionnez une date d'échéance",

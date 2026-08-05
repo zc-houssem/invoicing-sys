@@ -1,6 +1,7 @@
 import { CreateInvoiceDto, ResponseInvoiceDto, UpdateInvoiceDto } from '@/types/core/invoicing/invoice';
 import { BaseActions, createBaseStore } from './useBaseStore';
 import { ManipulatedFile } from '@/components/shared/form-builder/types';
+import { DEFAULT_INVOICE_INCLUDE_FLAGS } from '@/components/invoicing/invoice/forms/InvoiceIncludeOnTable';
 
 interface InvoiceData {
   response: ResponseInvoiceDto | null;
@@ -31,6 +32,7 @@ const initialState: InvoiceData = {
     interlocutorId: undefined,
     currencyId: undefined,
     bankAccountId: undefined,
+    ...DEFAULT_INVOICE_INCLUDE_FLAGS,
     invoiceArticles: [],
     uploads: []
   },

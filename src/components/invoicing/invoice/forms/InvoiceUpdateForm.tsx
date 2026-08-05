@@ -146,6 +146,12 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         taxWithholdingExcludeTaxes: workflow?.invoice.taxWithholdingExcludeTaxes,
         bankAccountId: workflow?.invoice.bankAccountId,
         notes: workflow?.invoice.notes,
+        hasBankingDetails: workflow?.invoice.hasBankingDetails,
+        showArticleDescription: workflow?.invoice.showArticleDescription,
+        showInvoiceAddress: workflow?.invoice.showInvoiceAddress,
+        showDeliveryAddress: workflow?.invoice.showDeliveryAddress,
+        hasGeneralConditions: workflow?.invoice.hasGeneralConditions,
+        hasTaxStamp: workflow?.invoice.hasTaxStamp,
         invoiceArticles: [],
         uploads: []
       });
@@ -249,7 +255,8 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
     refetchBankAccounts();
   };
 
-  const { mainFormStructure, sidebarFormStructure } = useInvoiceUpdateFormStructure({
+  const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
+    useInvoiceUpdateFormStructure({
     store: invoiceStore,
     enterprises,
     interlocutorOptions: mapToSelectOptions({
@@ -375,6 +382,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
             isSavePending={isUpdatePending}
           />
           <FormBuilder structure={sidebarFormStructure} />
+          <FormBuilder structure={sidebarIncludeOnFormStructure} />
         </>
       }
     />

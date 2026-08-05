@@ -7,12 +7,14 @@ interface InvoiceArticlesFieldProps {
   className?: string;
   currency?: ResponseRefParamDto<CurrencyPayload>;
   disabled?: boolean;
+  showArticleDescription?: boolean;
 }
 
 export const InvoiceArticlesField = ({
   className,
   currency,
-  disabled
+  disabled,
+  showArticleDescription = true
 }: InvoiceArticlesFieldProps) => {
   const articleStore = useArticleStore();
   return (
@@ -24,7 +26,12 @@ export const InvoiceArticlesField = ({
         deleteArticle={articleStore.deleteArticle}
         disabled={disabled}
         renderArticleItem={(item, edit, index) => (
-          <ArticleItem index={index} currency={currency} disabled={disabled} />
+          <ArticleItem
+            index={index}
+            currency={currency}
+            disabled={disabled}
+            showDescription={showArticleDescription}
+          />
         )}
       />
     </div>

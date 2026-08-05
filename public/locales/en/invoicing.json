@@ -15,6 +15,14 @@
       "invoices": "Invoices",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
+      "includeOnQuotation": {
+        "title": "Include on quotation",
+        "bankingDetails": "Banking details",
+        "articlesDescription": "Articles description",
+        "invoicingAddress": "Invoicing address",
+        "deliveryAddress": "Delivery address",
+        "generalConditions": "General conditions"
+      },
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",
@@ -103,6 +111,14 @@
       "amountPaid": "Amount Paid",
       "createdBy": "Created by",
       "creatingAs": "Creating as",
+      "includeOnInvoice": {
+        "bankingDetails": "Banking details",
+        "articlesDescription": "Articles description",
+        "invoicingAddress": "Invoicing address",
+        "deliveryAddress": "Delivery address",
+        "generalConditions": "General conditions",
+        "taxStamp": "Tax stamp"
+      },
       "placeholders": {
         "date": "Select a date",
         "dueDate": "Select a due date",

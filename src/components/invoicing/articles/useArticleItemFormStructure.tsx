@@ -17,13 +17,15 @@ interface useArticleItemFormStructureProps {
   disabled?: boolean;
   taxRateOptions: SelectOption[];
   index: number;
+  showDescription?: boolean;
 }
 
 export const useArticleItemFormStructure = ({
   store,
   disabled,
   taxRateOptions,
-  index
+  index,
+  showDescription = true
 }: useArticleItemFormStructureProps): FormStructure => {
   const { t } = useTranslation('invoicing');
 
@@ -73,6 +75,7 @@ export const useArticleItemFormStructure = ({
     id: `article-${index}-description`,
     label: t('article.form.description'),
     variant: FieldVariant.TEXTAREA,
+    hidden: !showDescription,
     placeholder: t('article.form.placeholders.description'),
     props: {
       disabled,

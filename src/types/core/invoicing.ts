@@ -30,6 +30,11 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   currencyId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
+  hasBankingDetails?: boolean;
+  showArticleDescription?: boolean;
+  showInvoiceAddress?: boolean;
+  showDeliveryAddress?: boolean;
+  hasGeneralConditions?: boolean;
   notes?: string;
   createdById?: string;
   createdBy?: ResponseUserDto;
@@ -54,6 +59,11 @@ export interface CreateQuotationDto {
   interlocutorId?: number;
   currencyId?: number;
   bankAccountId?: number;
+  hasBankingDetails?: boolean;
+  showArticleDescription?: boolean;
+  showInvoiceAddress?: boolean;
+  showDeliveryAddress?: boolean;
+  hasGeneralConditions?: boolean;
   notes?: string;
   quotationArticles: CreateQuotationArticleDto[];
   uploads: CreateQuotationUploadDto[];

@@ -29,6 +29,7 @@ import { api } from '@/api';
 import { DefaultConditionActions } from '@/components/invoicing-commons/DefaultConditionActions';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { Sequences } from '@/types/sequence';
+import { InvoiceIncludeOnTable } from './InvoiceIncludeOnTable';
 import { toast } from 'sonner';
 
 interface useInvoiceUpdateFormStructureProps {
@@ -69,6 +70,11 @@ export const useInvoiceUpdateFormStructure = ({
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
+
+  const showInvoiceAddress = store.updateDto?.showInvoiceAddress ?? true;
+  const showDeliveryAddress = store.updateDto?.showDeliveryAddress ?? true;
+  const showArticleDescription = store.updateDto?.showArticleDescription ?? true;
+  const hasGeneralConditions = store.updateDto?.hasGeneralConditions ?? true;
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -201,6 +207,7 @@ export const useInvoiceUpdateFormStructure = ({
     id: 'generalConditions',
     label: t('invoice.form.generalConditions'),
     variant: FieldVariant.EDITOR,
+    hidden: !hasGeneralConditions,
     required: true,
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('invoice.form.placeholders.generalConditions'),
@@ -243,7 +250,7 @@ export const useInvoiceUpdateFormStructure = ({
   const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
     id: 'defaultGeneralConditionsActions',
     variant: FieldVariant.CUSTOM,
-    hidden: !isUpdatable,
+    hidden: !hasGeneralConditions || !isUpdatable,
     props: {
       children: (
         <DefaultConditionActions
@@ -257,6 +264,7 @@ export const useInvoiceUpdateFormStructure = ({
   const invoicingAddressPseudoField: Field<CustomFieldProps> = {
     id: 'invoicing-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showInvoiceAddress,
     pending: !enterpriseStore.response?.invoicingAddress,
     props: {
       children: (
@@ -272,6 +280,7 @@ export const useInvoiceUpdateFormStructure = ({
   const deliveryAddressPseudoField: Field<CustomFieldProps> = {
     id: 'delivery-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showDeliveryAddress,
     pending: !enterpriseStore.response?.deliveryAddress,
     props: {
       children: (
@@ -291,6 +300,7 @@ export const useInvoiceUpdateFormStructure = ({
         <InvoiceArticlesField
           currency={selectedCurrency}
           disabled={isUpdatePending || !isUpdatable}
+          showArticleDescription={showArticleDescription}
         />
       )
     }
@@ -336,24 +346,26 @@ export const useInvoiceUpdateFormStructure = ({
     props: {
       children: (
         <div className="flex flex-col 2xl:flex-row gap-6">
-          <FormBuilder
-            className="w-full 2xl:w-2/3"
-            structure={{
-              orientation: 'horizontal',
-              fieldsets: [
-                {
-                  rows: [
-                    {
-                      fields: [generalConditionsField]
-                    },
-                    {
-                      fields: [defaultGeneralConditionsActionsField]
-                    }
-                  ]
-                }
-              ]
-            }}
-          />
+          {hasGeneralConditions && (
+            <FormBuilder
+              className="w-full 2xl:w-2/3"
+              structure={{
+                orientation: 'horizontal',
+                fieldsets: [
+                  {
+                    rows: [
+                      {
+                        fields: [generalConditionsField]
+                      },
+                      {
+                        fields: [defaultGeneralConditionsActionsField]
+                      }
+                    ]
+                  }
+                ]
+              }}
+            />
+          )}
           <ArticleResume
             className="w-full 2xl:w-1/3"
             currency={selectedCurrency}
@@ -399,9 +411,16 @@ export const useInvoiceUpdateFormStructure = ({
           {
             fields: [enterpriseField, interlocutorField]
           },
-          {
-            fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
-          }
+          ...(showInvoiceAddress || showDeliveryAddress
+            ? [
+                {
+                  fields: [
+                    ...(showInvoiceAddress ? [invoicingAddressPseudoField] : []),
+                    ...(showDeliveryAddress ? [deliveryAddressPseudoField] : [])
+                  ]
+                }
+              ]
+            : [])
         ]
       },
       {
@@ -536,8 +555,40 @@ export const useInvoiceUpdateFormStructure = ({
     ]
   };
 
+  const sidebarIncludeOnFormStructure: FormStructure = {
+    title: {
+      value: 'Sidebar Include'
+    },
+    orientation: 'horizontal',
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [
+              {
+                id: 'includeOnInvoice',
+                variant: FieldVariant.CUSTOM,
+                wrapperClassName: 'gap-0 [&>label:first-child]:hidden',
+                props: {
+                  children: (
+                    <InvoiceIncludeOnTable
+                      store={store}
+                      dtoPrefix="updateDto"
+                      disabled={isUpdatePending || !isUpdatable}
+                    />
+                  )
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
   return {
     mainFormStructure,
-    sidebarFormStructure
+    sidebarFormStructure,
+    sidebarIncludeOnFormStructure
   };
 };

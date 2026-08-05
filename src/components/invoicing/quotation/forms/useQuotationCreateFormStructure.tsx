@@ -25,6 +25,7 @@ import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { api } from '@/api';
 import { Sequences } from '@/types/sequence';
 import { toast } from 'sonner';
+import { QuotationIncludeOnTable } from './QuotationIncludeOnTable';
 
 interface useQuotationCreateFormStructureProps {
   store: QuotationStore;
@@ -59,6 +60,11 @@ export const useQuotationCreateFormStructure = ({
 
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
+
+  const showInvoiceAddress = store.createDto.showInvoiceAddress ?? true;
+  const showDeliveryAddress = store.createDto.showDeliveryAddress ?? true;
+  const showArticleDescription = store.createDto.showArticleDescription ?? true;
+  const hasGeneralConditions = store.createDto.hasGeneralConditions ?? true;
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -177,6 +183,7 @@ export const useQuotationCreateFormStructure = ({
     id: 'generalConditions',
     label: t('quotation.form.generalConditions'),
     variant: FieldVariant.EDITOR,
+    hidden: !hasGeneralConditions,
     required: true,
     error: store.createDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
@@ -216,6 +223,7 @@ export const useQuotationCreateFormStructure = ({
   const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
     id: 'defaultGeneralConditionsActions',
     variant: FieldVariant.CUSTOM,
+    hidden: !hasGeneralConditions,
     props: {
       children: (
         <DefaultConditionActions
@@ -229,6 +237,7 @@ export const useQuotationCreateFormStructure = ({
   const invoicingAddressPseudoField: Field<CustomFieldProps> = {
     id: 'invoicing-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showInvoiceAddress,
     pending: !enterpriseStore.response?.invoicingAddress,
     props: {
       children: (
@@ -244,6 +253,7 @@ export const useQuotationCreateFormStructure = ({
   const deliveryAddressPseudoField: Field<CustomFieldProps> = {
     id: 'delivery-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showDeliveryAddress,
     pending: !enterpriseStore.response?.deliveryAddress,
     props: {
       children: (
@@ -259,7 +269,12 @@ export const useQuotationCreateFormStructure = ({
     id: 'articles',
     variant: FieldVariant.CUSTOM,
     props: {
-      children: <QuotationArticlesField currency={selectedCurrency} />
+      children: (
+        <QuotationArticlesField
+          currency={selectedCurrency}
+          showArticleDescription={showArticleDescription}
+        />
+      )
     }
   };
 
@@ -294,24 +309,26 @@ export const useQuotationCreateFormStructure = ({
     props: {
       children: (
         <div className="flex flex-col 2xl:flex-row gap-6">
-          <FormBuilder
-            className="w-full 2xl:w-2/3"
-            structure={{
-              orientation: 'horizontal',
-              fieldsets: [
-                {
-                  rows: [
-                    {
-                      fields: [generalConditionsField]
-                    },
-                    {
-                      fields: [defaultGeneralConditionsActionsField]
-                    }
-                  ]
-                }
-              ]
-            }}
-          />
+          {hasGeneralConditions && (
+            <FormBuilder
+              className="w-full 2xl:w-2/3"
+              structure={{
+                orientation: 'horizontal',
+                fieldsets: [
+                  {
+                    rows: [
+                      {
+                        fields: [generalConditionsField]
+                      },
+                      {
+                        fields: [defaultGeneralConditionsActionsField]
+                      }
+                    ]
+                  }
+                ]
+              }}
+            />
+          )}
           <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} />
         </div>
       )
@@ -357,9 +374,16 @@ export const useQuotationCreateFormStructure = ({
           {
             fields: [enterpriseField, interlocutorField]
           },
-          {
-            fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
-          }
+          ...(showInvoiceAddress || showDeliveryAddress
+            ? [
+                {
+                  fields: [
+                    ...(showInvoiceAddress ? [invoicingAddressPseudoField] : []),
+                    ...(showDeliveryAddress ? [deliveryAddressPseudoField] : [])
+                  ]
+                }
+              ]
+            : [])
         ]
       },
       {
@@ -468,8 +492,40 @@ export const useQuotationCreateFormStructure = ({
     ]
   };
 
+  const sidebarIncludeOnFormStructure: FormStructure = {
+    title: {
+      value: 'Sidebar Include'
+    },
+    orientation: 'horizontal',
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [
+              {
+                id: 'includeOnQuotation',
+                variant: FieldVariant.CUSTOM,
+                wrapperClassName: 'gap-0 [&>label:first-child]:hidden',
+                props: {
+                  children: (
+                    <QuotationIncludeOnTable
+                      store={store}
+                      dtoPrefix="createDto"
+                      disabled={isCreationPending}
+                    />
+                  )
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
   return {
     mainFormStructure,
-    sidebarFormStructure
+    sidebarFormStructure,
+    sidebarIncludeOnFormStructure
   };
 };

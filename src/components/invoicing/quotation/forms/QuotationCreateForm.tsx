@@ -170,7 +170,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
     }
   };
 
-  const { mainFormStructure, sidebarFormStructure } = useQuotationCreateFormStructure({
+  const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
+    useQuotationCreateFormStructure({
     store: quotationStore,
     enterprises,
     interlocutorOptions: mapToSelectOptions({
@@ -249,8 +250,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               <span>{t('commands.reset')}</span>
             </Button>
           </div>
-          <Separator />
           <FormBuilder structure={sidebarFormStructure} />
+          <FormBuilder structure={sidebarIncludeOnFormStructure} />
         </>
       }
     />

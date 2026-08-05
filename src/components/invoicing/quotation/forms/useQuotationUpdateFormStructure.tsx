@@ -25,6 +25,7 @@ import { DefaultConditionActions } from '@/components/invoicing-commons/DefaultC
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
 import { Sequences } from '@/types/sequence';
 import { toast } from 'sonner';
+import { QuotationIncludeOnTable } from './QuotationIncludeOnTable';
 
 interface useQuotationUpdateFormStructureProps {
   store: QuotationStore;
@@ -60,6 +61,11 @@ export const useQuotationUpdateFormStructure = ({
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('invoicing');
   const { t: tContacts } = useTranslation('contacts');
+
+  const showInvoiceAddress = store.updateDto?.showInvoiceAddress ?? true;
+  const showDeliveryAddress = store.updateDto?.showDeliveryAddress ?? true;
+  const showArticleDescription = store.updateDto?.showArticleDescription ?? true;
+  const hasGeneralConditions = store.updateDto?.hasGeneralConditions ?? true;
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -193,6 +199,7 @@ export const useQuotationUpdateFormStructure = ({
     id: 'generalConditions',
     label: t('quotation.form.generalConditions'),
     variant: FieldVariant.EDITOR,
+    hidden: !hasGeneralConditions,
     required: true,
     error: store.updateDtoErrors.generalConditions?.[0],
     placeholder: t('quotation.form.placeholders.generalConditions'),
@@ -235,7 +242,7 @@ export const useQuotationUpdateFormStructure = ({
   const defaultGeneralConditionsActionsField: Field<CustomFieldProps> = {
     id: 'defaultGeneralConditionsActions',
     variant: FieldVariant.CUSTOM,
-    hidden: !isUpdatable,
+    hidden: !hasGeneralConditions || !isUpdatable,
     props: {
       children: (
         <DefaultConditionActions
@@ -249,6 +256,7 @@ export const useQuotationUpdateFormStructure = ({
   const invoicingAddressPseudoField: Field<CustomFieldProps> = {
     id: 'invoicing-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showInvoiceAddress,
     pending: !enterpriseStore.response?.invoicingAddress,
     props: {
       children: (
@@ -264,6 +272,7 @@ export const useQuotationUpdateFormStructure = ({
   const deliveryAddressPseudoField: Field<CustomFieldProps> = {
     id: 'delivery-address',
     variant: FieldVariant.CUSTOM,
+    hidden: !showDeliveryAddress,
     pending: !enterpriseStore.response?.deliveryAddress,
     props: {
       children: (
@@ -283,6 +292,7 @@ export const useQuotationUpdateFormStructure = ({
         <QuotationArticlesField
           currency={selectedCurrency}
           disabled={isUpdatePending || !isUpdatable}
+          showArticleDescription={showArticleDescription}
         />
       )
     }
@@ -328,24 +338,26 @@ export const useQuotationUpdateFormStructure = ({
     props: {
       children: (
         <div className="flex flex-col 2xl:flex-row gap-6">
-          <FormBuilder
-            className="w-full 2xl:w-2/3"
-            structure={{
-              orientation: 'horizontal',
-              fieldsets: [
-                {
-                  rows: [
-                    {
-                      fields: [generalConditionsField]
-                    },
-                    {
-                      fields: [defaultGeneralConditionsActionsField]
-                    }
-                  ]
-                }
-              ]
-            }}
-          />
+          {hasGeneralConditions && (
+            <FormBuilder
+              className="w-full 2xl:w-2/3"
+              structure={{
+                orientation: 'horizontal',
+                fieldsets: [
+                  {
+                    rows: [
+                      {
+                        fields: [generalConditionsField]
+                      },
+                      {
+                        fields: [defaultGeneralConditionsActionsField]
+                      }
+                    ]
+                  }
+                ]
+              }}
+            />
+          )}
           <ArticleResume className="w-full 2xl:w-1/3" currency={selectedCurrency} />
         </div>
       )
@@ -377,9 +389,16 @@ export const useQuotationUpdateFormStructure = ({
           {
             fields: [enterpriseField, interlocutorField]
           },
-          {
-            fields: [invoicingAddressPseudoField, deliveryAddressPseudoField]
-          }
+          ...(showInvoiceAddress || showDeliveryAddress
+            ? [
+                {
+                  fields: [
+                    ...(showInvoiceAddress ? [invoicingAddressPseudoField] : []),
+                    ...(showDeliveryAddress ? [deliveryAddressPseudoField] : [])
+                  ]
+                }
+              ]
+            : [])
         ]
       },
       {
@@ -489,8 +508,40 @@ export const useQuotationUpdateFormStructure = ({
     ]
   };
 
+  const sidebarIncludeOnFormStructure: FormStructure = {
+    title: {
+      value: 'Sidebar Include'
+    },
+    orientation: 'horizontal',
+    fieldsets: [
+      {
+        rows: [
+          {
+            fields: [
+              {
+                id: 'includeOnQuotation',
+                variant: FieldVariant.CUSTOM,
+                wrapperClassName: 'gap-0 [&>label:first-child]:hidden',
+                props: {
+                  children: (
+                    <QuotationIncludeOnTable
+                      store={store}
+                      dtoPrefix="updateDto"
+                      disabled={isUpdatePending || !isUpdatable}
+                    />
+                  )
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
   return {
     mainFormStructure,
-    sidebarFormStructure
+    sidebarFormStructure,
+    sidebarIncludeOnFormStructure
   };
 };

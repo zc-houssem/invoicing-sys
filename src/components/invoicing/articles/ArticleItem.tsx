@@ -14,9 +14,10 @@ interface ArticleItemProps {
   disabled?: boolean;
   currency?: ResponseRefParamDto<CurrencyPayload>;
   index: number;
+  showDescription?: boolean;
 }
 
-export function ArticleItem({ className, index, currency, disabled }: ArticleItemProps) {
+export function ArticleItem({ className, index, currency, disabled, showDescription = true }: ArticleItemProps) {
   const { t } = useTranslation('invoicing');
   const articleStore = useArticleStore();
   const { taxRates, isTaxRatesPending } = useTaxRates({
@@ -32,7 +33,8 @@ export function ArticleItem({ className, index, currency, disabled }: ArticleIte
         `${label} (${item.value}${item.type === 'rate' ? '%' : item.currency?.extras.symbol || ''})`
     }),
     index,
-    disabled
+    disabled,
+    showDescription
   });
 
   const totalPriceExcludingTax = React.useMemo(() => {

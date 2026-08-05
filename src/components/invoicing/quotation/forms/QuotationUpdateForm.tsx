@@ -133,6 +133,11 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
         currencyId: workflow?.quotation.currencyId,
         bankAccountId: workflow?.quotation.bankAccountId,
         notes: workflow?.quotation.notes,
+        hasBankingDetails: workflow?.quotation.hasBankingDetails,
+        showArticleDescription: workflow?.quotation.showArticleDescription,
+        showInvoiceAddress: workflow?.quotation.showInvoiceAddress,
+        showDeliveryAddress: workflow?.quotation.showDeliveryAddress,
+        hasGeneralConditions: workflow?.quotation.hasGeneralConditions,
         quotationArticles: [],
         uploads: []
       });
@@ -237,7 +242,8 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
     refetchBankAccounts();
   };
 
-  const { mainFormStructure, sidebarFormStructure } = useQuotationUpdateFormStructure({
+  const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
+    useQuotationUpdateFormStructure({
     store: quotationStore,
     enterprises,
     interlocutorOptions: mapToSelectOptions({
@@ -327,6 +333,7 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
             isSavePending={isUpdatePending}
           />
           <FormBuilder structure={sidebarFormStructure} />
+          <FormBuilder structure={sidebarIncludeOnFormStructure} />
         </>
       }
     />

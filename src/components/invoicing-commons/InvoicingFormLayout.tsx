@@ -83,8 +83,10 @@ export const InvoicingFormLayout = ({
         )}>
         <div className="min-w-0 flex-1 w-full rounded-lg border p-4 sm:p-6">{main}</div>
         {!isMobile && (
-          <aside className="sticky top-4 w-full lg:w-96 xl:w-120 shrink-0 self-start rounded-lg border bg-card p-4 sm:p-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
-            {sidebarContent}
+          <aside className="sticky top-4 flex w-full shrink-0 flex-col self-start rounded-lg border bg-card lg:w-96 xl:w-120 max-h-[calc(100dvh-5rem)] lg:max-h-[calc(100dvh-7rem)]">
+            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-y-contain p-4 sm:p-6 pb-8">
+              {sidebarContent}
+            </div>
           </aside>
         )}
       </div>

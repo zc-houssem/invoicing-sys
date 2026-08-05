@@ -8,6 +8,7 @@ import { ResponseWorkflowDto } from '../../response/workflow';
 import { ResponseStorageDto } from '../storage';
 import { ResponseQuotationDto } from '../invoicing';
 import { ResponseUserDto } from '../user-management';
+import { ResponsePaymentInvoiceEntryDto } from './payment';
 
 export enum INVOICE_STATUS {
   Draft = 'Draft',
@@ -44,6 +45,12 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   taxWithholdingId: number;
   bankAccount: ResponseBankAccountDto;
   bankAccountId: number;
+  hasBankingDetails?: boolean;
+  showArticleDescription?: boolean;
+  showInvoiceAddress?: boolean;
+  showDeliveryAddress?: boolean;
+  hasGeneralConditions?: boolean;
+  hasTaxStamp?: boolean;
   notes?: string;
   createdById?: string;
   createdBy?: ResponseUserDto;
@@ -51,6 +58,7 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   quotation?: ResponseQuotationDto;
   invoiceArticles: ResponseInvoiceArticleDto[];
   uploads: ResponseInvoiceUploadDto[];
+  payments?: ResponsePaymentInvoiceEntryDto[];
 }
 
 export interface ResponseInvoiceWorkflowDto extends ResponseWorkflowDto {
@@ -71,6 +79,12 @@ export interface CreateInvoiceDto {
   taxWithholdingId?: number;
   taxWithholdingExcludeTaxes?: boolean;
   bankAccountId?: number;
+  hasBankingDetails?: boolean;
+  showArticleDescription?: boolean;
+  showInvoiceAddress?: boolean;
+  showDeliveryAddress?: boolean;
+  hasGeneralConditions?: boolean;
+  hasTaxStamp?: boolean;
   notes?: string;
   quotationId?: number;
   invoiceArticles: CreateInvoiceArticleDto[];

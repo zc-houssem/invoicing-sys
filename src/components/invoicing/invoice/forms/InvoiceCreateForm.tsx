@@ -177,7 +177,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     }
   };
 
-  const { mainFormStructure, sidebarFormStructure } = useInvoiceCreateFormStructure({
+  const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
+    useInvoiceCreateFormStructure({
     store: invoiceStore,
     enterprises,
     interlocutorOptions: mapToSelectOptions({
@@ -284,8 +285,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
               <span>{t('commands.reset')}</span>
             </Button>
           </div>
-          <Separator />
           <FormBuilder structure={sidebarFormStructure} />
+          <FormBuilder structure={sidebarIncludeOnFormStructure} />
         </>
       }
     />
