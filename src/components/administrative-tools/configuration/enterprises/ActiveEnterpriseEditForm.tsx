@@ -14,6 +14,7 @@ import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { useTranslation } from 'react-i18next';
 import { ResponseRefParamDto, UpdateEnterpriseDto } from '@/types';
 import { useEnterpriseUpdateFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseUpdateFormStructure';
+import { useEnterpriseLogoUpload } from '@/components/contacts/enterprise/form/useEnterpriseLogoUpload';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
@@ -53,6 +54,10 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
   const { currencies, isCurrenciesPending } = useCurrencies();
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
+  const { logoImage, uploadLogo, isLogoUploadPending } = useEnterpriseLogoUpload(
+    enterpriseStore,
+    'updateDto'
+  );
 
   React.useEffect(() => {
     if (enterprise) {
@@ -74,6 +79,7 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
         activityId: enterprise.activityId,
         currencyId: enterprise.currencyId,
         paymentConditionId: enterprise.paymentConditionId,
+        logoId: enterprise.logoId,
         deliveryAddress: {
           address: enterprise.deliveryAddress?.address || '',
           address2: enterprise.deliveryAddress?.address2 || '',
@@ -131,7 +137,10 @@ export const ActiveEnterpriseEditForm = ({ className }: ActiveEnterpriseEditForm
       labelKey: 'label',
       valueKey: 'id',
       labelKeyTransformer: (label) => tCountry(label)
-    })
+    }),
+    logoImage,
+    uploadLogo,
+    isLogoUploadPending
   });
 
   const queryClient = useQueryClient();

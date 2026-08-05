@@ -18,6 +18,7 @@ import { useIntro } from '@/context/IntroContext';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useEnterpriseCreateFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseCreateFormStructure';
 import { useEnterpriseAddressFormStructure } from '@/components/contacts/enterprise/form/useEnterpriseAddressFormStructure';
+import { useEnterpriseLogoUpload } from '@/components/contacts/enterprise/form/useEnterpriseLogoUpload';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
@@ -100,6 +101,10 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const { setContent } = useFooter();
+  const { logoImage, uploadLogo, isLogoUploadPending } = useEnterpriseLogoUpload(
+    enterpriseStore,
+    'createDto'
+  );
 
   React.useEffect(() => {
     setIntro?.(tSettings('enterprise.new.title'), tSettings('enterprise.new.description'));
@@ -145,7 +150,10 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
       valueKey: 'id',
       labelKeyTransformer: (label) => tCountry(label)
     }),
-    interlocutorOptions: []
+    interlocutorOptions: [],
+    logoImage,
+    uploadLogo,
+    isLogoUploadPending
   });
 
   const { deliveryAddressInformation, invoicingAddressInformation } =
@@ -186,7 +194,8 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
         'particular',
         'activityId',
         'currencyId',
-        'paymentConditionId'
+        'paymentConditionId',
+        'logoId'
       ];
 
       if (step1Fields.some((field) => fieldErrors[field as keyof typeof fieldErrors]?.length)) {

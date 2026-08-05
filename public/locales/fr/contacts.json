@@ -20,6 +20,7 @@
       "website": "Site Web",
       "taxId": "Numéro d'identification fiscale",
       "notes": "Notes",
+      "logo": "Logo",
       "particular": {
         "noun": "Particulier",
         "positive": "Particulier",
@@ -48,6 +49,7 @@
         "website": "Le site web de l'entreprise.",
         "taxId": "Le numéro d'identification fiscale de l'entreprise.",
         "notes": "Des notes supplémentaires sur l'entreprise.",
+        "logo": "Le logo de l'entreprise.",
         "particular": "Indique si l'entreprise est un particulier ou non.",
         "activity": "L'activité de l'entreprise.",
         "currency": "La devise utilisée par l'entreprise.",
@@ -58,6 +60,7 @@
     },
     "table": {
       "columns": {
+        "logo": "Logo",
         "name": "Nom",
         "email": "Email",
         "phone": "Téléphone",

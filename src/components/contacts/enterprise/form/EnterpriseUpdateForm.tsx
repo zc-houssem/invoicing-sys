@@ -20,8 +20,8 @@ import { useUI } from '@/context/UIContext';
 import { useFooter } from '@/context/FooterContext';
 import { useEnterpriseUpdateFormStructure } from './useEnterpriseUpdateFormStructure';
 import { useEnterpriseAddressFormStructure } from './useEnterpriseAddressFormStructure';
+import { useEnterpriseLogoUpload } from './useEnterpriseLogoUpload';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import { Separator } from '@/components/ui/separator';
 import { updateEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
@@ -119,6 +119,10 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
   const { currencies, isCurrenciesPending } = useCurrencies();
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
+  const { logoImage, uploadLogo, isLogoUploadPending } = useEnterpriseLogoUpload(
+    enterpriseStore,
+    'updateDto'
+  );
 
   // Populate store with fetched enterprise data
   React.useEffect(() => {
@@ -141,6 +145,7 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
         activityId: enterprise.activityId,
         currencyId: enterprise.currencyId,
         paymentConditionId: enterprise.paymentConditionId,
+        logoId: enterprise.logoId,
         deliveryAddress: {
           address: enterprise.deliveryAddress?.address || '',
           address2: enterprise.deliveryAddress?.address2 || '',
@@ -187,7 +192,10 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
         labelKey: 'label',
         valueKey: 'id',
         labelKeyTransformer: (label) => tCountry(label)
-      })
+      }),
+      logoImage,
+      uploadLogo,
+      isLogoUploadPending
     });
 
   const { deliveryAddressInformation, invoicingAddressInformation } =

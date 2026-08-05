@@ -3,7 +3,6 @@ import {
   Field,
   FieldVariant,
   FormStructure,
-  NumberFieldProps,
   RadioFieldProps,
   SelectFieldProps,
   SelectOption,
@@ -12,11 +11,11 @@ import {
   CheckboxFieldProps
 } from '@/components/shared/form-builder/types';
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
-import { Button } from '@/components/ui/button';
 import { EnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { SocialTitles } from '@/types/core/enterprise';
-import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useUploadMutation } from '@/hooks/useUploadMutation';
+import { useEnterpriseLogoField } from './useEnterpriseLogoField';
 
 interface useEnterpriseCreateFormStructureProps {
   store: EnterpriseStore;
@@ -25,6 +24,9 @@ interface useEnterpriseCreateFormStructureProps {
   paymentConditionOptions: SelectOption[];
   countryOptions: SelectOption[];
   interlocutorOptions: SelectOption[];
+  logoImage?: File | string | null;
+  uploadLogo: ReturnType<typeof useUploadMutation>['uploadFiles'];
+  isLogoUploadPending?: boolean;
 }
 
 export const useEnterpriseCreateFormStructure = ({
@@ -33,10 +35,21 @@ export const useEnterpriseCreateFormStructure = ({
   currencyOptions,
   paymentConditionOptions,
   countryOptions,
-  interlocutorOptions
+  interlocutorOptions,
+  logoImage,
+  uploadLogo,
+  isLogoUploadPending
 }: useEnterpriseCreateFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
   // enterprise information ****************************************************************************
+
+  const logoField = useEnterpriseLogoField({
+    store,
+    logoImage,
+    uploadLogo,
+    isLogoUploadPending,
+    t: tContact
+  });
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
@@ -180,6 +193,9 @@ export const useEnterpriseCreateFormStructure = ({
     fieldsets: [
       {
         rows: [
+          {
+            fields: [logoField]
+          },
           {
             fields: [nameField]
           },

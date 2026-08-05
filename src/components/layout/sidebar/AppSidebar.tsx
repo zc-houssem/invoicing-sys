@@ -47,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     teams: systemEnterprises.map((enterprise) => ({
       id: enterprise.id,
       name: enterprise.name,
-      logo: Building2,
+      logoId: enterprise.logoId,
       plan: enterprise.system ? t('company.system_company') : t('company.workspace')
     })),
     navMain: [

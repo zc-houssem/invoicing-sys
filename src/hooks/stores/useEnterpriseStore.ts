@@ -3,7 +3,6 @@ import { BaseActions, createBaseStore } from './useBaseStore';
 import {
   CreateEnterpriseDto,
   ResponseEnterpriseDto,
-  SocialTitles,
   UpdateEnterpriseDto
 } from '@/types/core/enterprise';
 
@@ -12,6 +11,8 @@ interface EnterpriseData {
   createDto: CreateEnterpriseDto;
   updateDto?: UpdateEnterpriseDto;
   errors?: Record<string, any>;
+  logo?: File;
+  progress?: number;
 }
 
 interface IEnterpriseStore extends EnterpriseData {}
@@ -49,8 +50,11 @@ const initialState: EnterpriseData = {
         main: true,
         position: ''
       }
-    ]
-  }
+    ],
+    logoId: undefined
+  },
+  logo: undefined,
+  progress: 0
 };
 
 export const useEnterpriseStore = createBaseStore<IEnterpriseStore>({

@@ -20,6 +20,7 @@
       "website": "Website",
       "taxId": "Tax ID Number",
       "notes": "Notes",
+      "logo": "Logo",
       "particular": {
         "noun": "Particular",
         "positive": "Particular",
@@ -48,6 +49,7 @@
         "website": "The website of the enterprise.",
         "taxId": "The tax ID number of the enterprise.",
         "notes": "Additional notes about the enterprise.",
+        "logo": "The logo of the enterprise.",
         "particular": "Indicates whether the enterprise is a particular or not.",
         "activity": "The activity of the enterprise.",
         "currency": "The currency used by the enterprise.",
@@ -58,6 +60,7 @@
     },
     "table": {
       "columns": {
+        "logo": "Logo",
         "name": "Name",
         "email": "Email",
         "phone": "Phone",

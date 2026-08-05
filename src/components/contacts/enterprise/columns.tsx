@@ -8,6 +8,7 @@ import { DataTableCellVariant, DataTableColumnFilterOption, DataTableConfig } fr
 import { useTranslation } from 'react-i18next';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 import { ResponseEnterpriseDto } from '@/types/core/enterprise';
+import { EnterpriseLogo } from './EnterpriseLogo';
 
 export const useEnterpriseColumns = (
   context: DataTableConfig<ResponseEnterpriseDto>,
@@ -17,6 +18,28 @@ export const useEnterpriseColumns = (
   const { t: tCurrency } = useTranslation('currency');
 
   return React.useMemo(() => [
+    {
+      accessorKey: 'logo',
+      meta: { skipExport: true },
+      header: ({ column, table }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={(table.options.meta as any)?.context}
+          title={t('enterprise.table.columns.logo')}
+          attribute={'logoId'}
+        />
+      ),
+      cell: ({ row }) => (
+        <EnterpriseLogo
+          logoId={row.original.logoId}
+          name={row.original.name}
+          className="size-8 rounded-md border"
+          fallbackClassName="rounded-md text-xs font-medium"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: true
+    },
     {
       accessorKey: t('enterprise.table.columns.name'),
       meta: {

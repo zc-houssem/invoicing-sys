@@ -3,7 +3,6 @@ import {
   Field,
   FieldVariant,
   FormStructure,
-  NumberFieldProps,
   RadioFieldProps,
   SelectFieldProps,
   SelectOption,
@@ -11,11 +10,11 @@ import {
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { fieldBuilderFactory } from '@/components/shared/form-builder/utils/fieldBuilderFactory';
-import { Button } from '@/components/ui/button';
 import { EnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
 import { SocialTitles } from '@/types/core/enterprise';
-import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useUploadMutation } from '@/hooks/useUploadMutation';
+import { useEnterpriseLogoField } from './useEnterpriseLogoField';
 
 interface useEnterpriseUpdateFormStructureProps {
   store: EnterpriseStore;
@@ -23,6 +22,9 @@ interface useEnterpriseUpdateFormStructureProps {
   currencyOptions: SelectOption[];
   paymentConditionOptions: SelectOption[];
   countryOptions: SelectOption[];
+  logoImage?: File | string | null;
+  uploadLogo: ReturnType<typeof useUploadMutation>['uploadFiles'];
+  isLogoUploadPending?: boolean;
 }
 
 export const useEnterpriseUpdateFormStructure = ({
@@ -30,10 +32,21 @@ export const useEnterpriseUpdateFormStructure = ({
   activityOptions,
   currencyOptions,
   paymentConditionOptions,
-  countryOptions
+  countryOptions,
+  logoImage,
+  uploadLogo,
+  isLogoUploadPending
 }: useEnterpriseUpdateFormStructureProps) => {
   const { t: tContact } = useTranslation('contacts');
   // enterprise information ****************************************************************************
+
+  const logoField = useEnterpriseLogoField({
+    store,
+    logoImage,
+    uploadLogo,
+    isLogoUploadPending,
+    t: tContact
+  });
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
@@ -184,6 +197,9 @@ export const useEnterpriseUpdateFormStructure = ({
     fieldsets: [
       {
         rows: [
+          {
+            fields: [logoField]
+          },
           {
             fields: [nameField]
           },

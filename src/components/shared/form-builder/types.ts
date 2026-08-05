@@ -169,6 +169,7 @@ export interface ImageFieldProps extends BaseFieldProps {
   progress?: number;
   placeholder?: string;
   fallback?: string;
+  fallbackClassName?: string;
   onFileChange?: (e: File) => void;
   onUpload?: (file: File, onProgress: (percent: number) => void) => void;
 }

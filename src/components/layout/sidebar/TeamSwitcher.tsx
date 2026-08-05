@@ -20,11 +20,12 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { EnterpriseLogo } from '@/components/contacts/enterprise/EnterpriseLogo';
 
 type Team = {
   id: number;
   name: string;
-  logo: React.ElementType;
+  logoId?: number;
   plan: string;
 };
 
@@ -56,11 +57,14 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
-              </div>
+              <EnterpriseLogo
+                logoId={activeTeam.logoId}
+                name={activeTeam.name}
+                className="size-8"
+                fallbackClassName="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground text-xs font-medium"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
+                <span className="truncate text-xs font-medium">{activeTeam.name}</span>
                 <span className="truncate text-xs">{activeTeam.plan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -77,10 +81,13 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
                 key={team.id}
                 onClick={() => setActiveCompanyId(team.id)}
                 className="gap-2 p-2">
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
+                <EnterpriseLogo
+                  logoId={team.logoId}
+                  name={team.name}
+                  className="size-6 rounded-md"
+                  fallbackClassName="rounded-md bg-muted text-[10px] font-medium"
+                />
+                <span className="text-xs">{team.name}</span>
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}

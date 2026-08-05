@@ -7,6 +7,7 @@ import { Spinner } from '@/components/shared';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Phone, Globe, FileText, MapPin, Banknote, CalendarClock } from 'lucide-react';
+import { EnterpriseLogo } from '../EnterpriseLogo';
 
 interface EnterpriseOverviewProps {
   className?: string;
@@ -32,6 +33,23 @@ export const EnterpriseOverview = ({ className, id }: EnterpriseOverviewProps) =
 
   return (
     <div className={cn('space-y-6', className)}>
+      <div className="flex items-center gap-4">
+        <EnterpriseLogo
+          logoId={enterprise.logoId}
+          name={enterprise.name}
+          className="size-20 rounded-lg border"
+          fallbackClassName="rounded-lg text-lg font-medium"
+        />
+        <div>
+          <h2 className="text-2xl font-semibold">{enterprise.name}</h2>
+          <p className="text-sm text-muted-foreground">
+            {enterprise.particular
+              ? tContacts('enterprise.details.particular')
+              : tContacts('enterprise.details.company')}
+          </p>
+        </div>
+      </div>
+
       {/* General Information */}
       <Card>
         <CardHeader>

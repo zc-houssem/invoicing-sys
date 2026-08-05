@@ -33,6 +33,7 @@ export const baseEnterpriseInformationValidationSchema = z.object({
   notes: optionalNotes,
   website: optionalUrl,
   particular: z.boolean(),
+  logoId: z.number().optional(),
   activityId: z.number().optional(),
   currencyId: z.number().optional(),
   paymentConditionId: z.number().optional()

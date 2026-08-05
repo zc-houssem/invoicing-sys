@@ -21,12 +21,12 @@ import { useUI } from '@/context/UIContext';
 import { useFooter } from '@/context/FooterContext';
 import { useEnterpriseCreateFormStructure } from './useEnterpriseCreateFormStructure';
 import { useEnterpriseAddressFormStructure } from './useEnterpriseAddressFormStructure';
+import { useEnterpriseLogoUpload } from './useEnterpriseLogoUpload';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { createEnterpriseValidationSchema } from '@/types/validations/enterprise.validation';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { CreateEnterpriseDto } from '@/types/core/enterprise';
-import { Separator } from '@/components/ui/separator';
 import { defineStepper } from '@/components/ui/stepper';
 
 const steps = [
@@ -110,6 +110,10 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
   const { countries, isFetchCountriesPending } = useCountries();
   const { paymentConditions, isFetchPaymentConditionsPending } = usePaymentCondition();
   const { interlocutors, isInterlocutorsPending } = useInterlocutors();
+  const { logoImage, uploadLogo, isLogoUploadPending } = useEnterpriseLogoUpload(
+    enterpriseStore,
+    'createDto'
+  );
 
   const { enterpriseInformation, interlocutorInformation, additionalInformation } =
     useEnterpriseCreateFormStructure({
@@ -142,7 +146,10 @@ export const EnterpriseCreateForm = ({ className }: EnterpriseFormProps) => {
         labelKey: 'firstName',
         valueKey: 'id',
         labelKeyTransformer: (firstName, entity) => `${firstName} ${entity.lastName}`
-      })
+      }),
+      logoImage,
+      uploadLogo,
+      isLogoUploadPending
     });
 
   const { deliveryAddressInformation, invoicingAddressInformation } =

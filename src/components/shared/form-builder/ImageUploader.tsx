@@ -7,6 +7,7 @@ interface ImageUploaderProps extends React.InputHTMLAttributes<HTMLInputElement>
   wrapperClassName?: string;
   image?: File | string | null;
   fallback?: string;
+  fallbackClassName?: string;
   accept?: string;
   progress?: number;
   disabled?: boolean;
@@ -18,6 +19,7 @@ export const ImageUploader = ({
   className,
   wrapperClassName,
   fallback,
+  fallbackClassName,
   image,
   accept,
   progress,
@@ -56,9 +58,10 @@ export const ImageUploader = ({
         )}
         onClick={() => fileInputRef.current?.click()}>
         <AvatarImage
+          className="object-cover"
           src={image ? (typeof image === 'string' ? image : URL.createObjectURL(image)) : undefined}
         />
-        <AvatarFallback>{fallback || '?'}</AvatarFallback>
+        <AvatarFallback className={fallbackClassName}>{fallback || '?'}</AvatarFallback>
       </Avatar>
     </div>
   );

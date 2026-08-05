@@ -1,6 +1,8 @@
 import { DatabaseEntity } from '../response/database-entity';
 import { CreateAddressDto, ResponseAddressDto } from './address';
 import { ResponseRefParamDto } from './reference-types';
+import { ResponseInvoiceDto } from './invoicing/invoice';
+import { ResponseUserDto } from './user-management';
 
 // enterprise *******************************************************
 export interface ResponseEnterpriseDto extends DatabaseEntity {
@@ -18,10 +20,12 @@ export interface ResponseEnterpriseDto extends DatabaseEntity {
   currency?: ResponseRefParamDto;
   paymentConditionId?: number;
   paymentCondition?: ResponseRefParamDto;
+  logoId?: number;
   deliveryAddress?: ResponseAddressDto;
   deliveryAddressId?: number;
   invoicingAddress?: ResponseAddressDto;
   invoicingAddressId?: number;
+  invoices?: ResponseInvoiceDto[];
 }
 
 export interface CreateEnterpriseDto {
@@ -35,6 +39,7 @@ export interface CreateEnterpriseDto {
   activityId?: number;
   currencyId?: number;
   paymentConditionId?: number;
+  logoId?: number;
   deliveryAddress: CreateAddressDto;
   invoicingAddress: CreateAddressDto;
   interlocutors?: CreateEnterpriseInterlocutorDto[];
@@ -95,3 +100,22 @@ export interface CreateEnterpriseInterlocutorDto {
 export interface UpdateEnterpriseInterlocutorDto extends Partial<CreateEnterpriseInterlocutorDto> {
   interlocutors?: UpdateInterlocutorDto;
 }
+
+// enterprise-member *******************************************************
+
+export interface ResponseEnterpriseMemberDto extends DatabaseEntity {
+  id: number;
+  enterpriseId: number;
+  userId: string;
+  enterprise?: ResponseEnterpriseDto;
+  user?: ResponseUserDto;
+  isOwner: boolean;
+}
+
+export interface CreateEnterpriseMemberDto {
+  enterpriseId?: number;
+  userId: string;
+  isOwner?: boolean;
+}
+
+export interface UpdateEnterpriseMemberDto extends Partial<CreateEnterpriseMemberDto> {}
