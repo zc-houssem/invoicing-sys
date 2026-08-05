@@ -239,7 +239,8 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
       sidebar={
         <>
           <DocumentMetaHeader
-            status="New"
+            status={tInvoicing('invoice.status.New')}
+            statusLabel={tInvoicing('invoice.table.columns.status')}
             createdByLabel={tInvoicing('invoice.form.creatingAs')}
             user={currentUser}
             extraRows={

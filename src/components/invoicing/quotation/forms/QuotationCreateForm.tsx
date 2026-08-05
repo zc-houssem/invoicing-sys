@@ -220,7 +220,8 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
       sidebar={
         <>
           <DocumentMetaHeader
-            status="New"
+            status={tInvoicing('quotation.status.New')}
+            statusLabel={tInvoicing('quotation.table.columns.status')}
             createdByLabel={tInvoicing('quotation.form.creatingAs')}
             user={currentUser}
           />

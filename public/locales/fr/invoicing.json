@@ -63,6 +63,7 @@
       }
     },
     "status": {
+      "New": "Nouveau",
       "Draft": "Brouillon",
       "Sent": "Envoyé",
       "Accepted": "Accepté",
@@ -166,6 +167,7 @@
       }
     },
     "status": {
+      "New": "Nouvelle",
       "Draft": "Brouillon",
       "Validated": "Validée",
       "Sent": "Envoyée",
@@ -280,7 +282,13 @@
       "CreditCard": "Carte bancaire",
       "Other": "Autre"
     },
+    "table": {
+      "columns": {
+        "status": "Statut"
+      }
+    },
     "status": {
+      "New": "Nouveau",
       "Draft": "Brouillon",
       "Validated": "Validé",
       "Cancelled": "Annulé",

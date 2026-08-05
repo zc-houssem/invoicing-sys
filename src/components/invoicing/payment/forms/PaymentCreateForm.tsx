@@ -138,7 +138,15 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <DocumentMetaTable className="mx-auto" rows={[{ label: 'Status', value: 'New' }]} />
+          <DocumentMetaTable
+            className="mx-auto"
+            rows={[
+              {
+                label: tInvoicing('payment.table.columns.status'),
+                value: tInvoicing('payment.status.New')
+              }
+            ]}
+          />
           <Separator />
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs font-bold">Actions</Label>

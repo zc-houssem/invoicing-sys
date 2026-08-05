@@ -63,6 +63,7 @@
       }
     },
     "status": {
+      "New": "New",
       "Draft": "Draft",
       "Sent": "Sent",
       "Accepted": "Accepted",
@@ -166,6 +167,7 @@
       }
     },
     "status": {
+      "New": "New",
       "Draft": "Draft",
       "Validated": "Validated",
       "Sent": "Sent",
@@ -279,7 +281,13 @@
       "CreditCard": "Credit Card",
       "Other": "Other"
     },
+    "table": {
+      "columns": {
+        "status": "Status"
+      }
+    },
     "status": {
+      "New": "New",
       "Draft": "Draft",
       "Validated": "Validated",
       "Cancelled": "Cancelled",
