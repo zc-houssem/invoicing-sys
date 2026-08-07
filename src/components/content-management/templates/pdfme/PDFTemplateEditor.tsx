@@ -5,6 +5,7 @@ import { BLANK_PDF } from '@pdfme/common';
 import { Designer } from '@pdfme/ui';
 import { text, image, date, table, multiVariableText } from '@pdfme/schemas';
 import { loadFonts } from './loadFonts';
+import { DEFAULT_ITEMS_TABLE_SCHEMA } from './pdfGeneration';
 import { cn } from '@/lib/utils';
 import { ApplyPDFTemplateEditorStyles } from './ApplyPDFTemplateEditoStyles';
 import { PDFTemplateEditorFieldActions } from './PDFTemplateEditorFieldActions';
@@ -149,49 +150,20 @@ export const PDFEditor = ({
       if (variableKey === 'items') {
         newSchemas[0].push({
           type: 'table',
-          position: { x: 10, y: 10 + index * 10 },
-          width: 150,
-          height: 50,
+          position: { x: 10, y: 60 + index * 10 },
+          width: 190,
+          height: 40,
           name: variableKey,
-          showHead: true,
-          head: ['Description', 'Qty', 'Price', 'Total'],
-          headWidthPercentages: [40, 20, 20, 20],
-          tableStyles: { borderColor: '#000000', borderWidth: 0.1 },
-          headStyles: {
-            fontName: undefined,
-            alignment: 'left',
-            verticalAlignment: 'middle',
-            fontSize: 13,
-            lineHeight: 1,
-            characterSpacing: 0,
-            fontColor: '#000000',
-            backgroundColor: '#e5e5e5',
-            borderColor: '#888888',
-            borderWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 },
-            padding: { top: 5, right: 5, bottom: 5, left: 5 }
-          },
-          bodyStyles: {
-            fontName: undefined,
-            alignment: 'left',
-            verticalAlignment: 'middle',
-            fontSize: 13,
-            lineHeight: 1,
-            characterSpacing: 0,
-            fontColor: '#000000',
-            backgroundColor: '',
-            alternateBackgroundColor: '#f5f5f5',
-            borderColor: '#888888',
-            borderWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 },
-            padding: { top: 5, right: 5, bottom: 5, left: 5 }
-          },
-          columnStyles: {
-            alignment: {
-              0: 'left',
-              1: 'center',
-              2: 'right',
-              3: 'right'
-            }
-          }
+          ...DEFAULT_ITEMS_TABLE_SCHEMA
+        } as any);
+      } else if (variableKey.includes('logo')) {
+        newSchemas[0].push({
+          type: 'image',
+          position: { x: 10, y: 10 + index * 10 },
+          width: 50,
+          height: 30,
+          name: variableKey,
+          content: ''
         } as any);
       } else {
         newSchemas[0].push({

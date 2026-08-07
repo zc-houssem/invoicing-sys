@@ -158,8 +158,34 @@ const getUploadBySlug = async (slug: string) => {
 
 const getUploadById = async (id: number) => {
   const url = `/storage/view/id/${id}`;
-  const { data } = await axios.get(url, { responseType: 'blob' });
-  return URL.createObjectURL(data);
+  console.log(`[getUploadById] fetching ${url}`);
+  try {
+    const { data } = await axios.get(url, { responseType: 'blob' });
+    return URL.createObjectURL(data);
+  } catch (error: any) {
+    console.warn(`[getUploadById] failed to fetch ${url}`, error.response?.data);
+    return '';
+  }
+};
+
+/**
+ * Fetches an upload by ID and returns it as a base64 data URI string.
+ * This is required for pdfme image schemas which cannot resolve blob: URLs.
+ */
+const getUploadAsBase64ById = async (id: number): Promise<string> => {
+  const url = `/storage/view/id/${id}`;
+  try {
+    const { data } = await axios.get(url, { responseType: 'blob' });
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(data);
+    });
+  } catch (error: any) {
+    console.warn(`[getUploadAsBase64ById] failed to fetch ${url}`, error.response?.data);
+    return '';
+  }
 };
 
 const getFileById = async (id: number): Promise<File> => {
@@ -187,5 +213,6 @@ export const storage = {
   openFileById,
   getUploadBySlug,
   getUploadById,
+  getUploadAsBase64ById,
   getFileById
 };

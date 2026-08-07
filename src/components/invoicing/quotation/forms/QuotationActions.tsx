@@ -8,6 +8,9 @@ import { Copy, Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import { generatePdfDocument, openPdfInNewTab } from '@/components/content-management/templates/pdfme/pdfGeneration';
+import { loadLogoAsBase64 } from '@/components/content-management/templates/pdfme/pdfLogoLoader';
+import { buildQuotationPdfInputMapping } from '@/components/invoicing/quotation/utils/quotationPdfInputMapping';
 import { useInvoiceStore } from '@/hooks/stores/useInvoiceStore';
 import {
   Dialog,
@@ -37,9 +40,11 @@ export const QuotationActions = ({
 }: QuotationActionsProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
+  const { t: tCountry } = useTranslation('country');
   const router = useRouter();
   const invoiceStore = useInvoiceStore();
   const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = React.useState(false);
+  const [isAdditionalInvoiceDialogOpen, setIsAdditionalInvoiceDialogOpen] = React.useState(false);
 
   const { mutate: next, isPending: isNextPending } = useMutation({
     mutationFn: async (event: string) =>
@@ -47,7 +52,7 @@ export const QuotationActions = ({
     onSuccess: () => {
       reload();
       toast.success(
-        t('quotation.messages.status_updated', 'Quotation status updated successfully')
+        tInvoicing('quotation.messages.status_updated', 'Quotation status updated successfully')
       );
     }
   });
@@ -55,23 +60,25 @@ export const QuotationActions = ({
   const { mutate: duplicateQuotation, isPending: isDuplicatePending } = useMutation({
     mutationFn: async () => api.invoicing.quotation.duplicate(workflow?.quotation?.id!),
     onSuccess: (data) => {
-      toast.success(t('quotation.messages.duplicate_success', 'Quotation duplicated successfully'));
+      toast.success(tInvoicing('quotation.messages.duplicate_success', 'Quotation duplicated successfully'));
       router.push(`/selling/quotations/${data.id}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message || t('quotation.messages.duplicate_failed', 'Failed to duplicate quotation'));
+      toast.error(
+        error.message || tInvoicing('quotation.messages.duplicate_failed', 'Failed to duplicate quotation')
+      );
     }
   });
 
   const { mutate: createInvoice, isPending: isCreateInvoicePending } = useMutation({
     mutationFn: async (id: number) => api.invoicing.invoice.fromQuotation(id),
     onSuccess: (data) => {
-      toast.success(t('quotation.messages.invoice_created', 'Invoice created successfully'));
+      toast.success(tInvoicing('quotation.messages.invoice_created', 'Invoice created successfully'));
       router.push(`/selling/invoices/${data.id}`);
     },
     onError: (error: Error) => {
       toast.error(
-        error.message || t('quotation.messages.invoice_failed', 'Failed to create invoice')
+        error.message || tInvoicing('quotation.messages.invoice_failed', 'Failed to create invoice')
       );
     }
   });
@@ -109,84 +116,38 @@ export const QuotationActions = ({
         throw new Error('The quotation template does not have a PDF document attached.');
       }
 
-      const { generate } = await import('@pdfme/generator');
-      const { text, image, date, table } = await import('@pdfme/schemas');
-
-      // Fetch the base PDF file from storage
       const file = await api.core.storage.getFileById(template.documentId);
-      const basePdf = await file.arrayBuffer();
-
-      // Build the pdfme template from stored variables
-      const pdfTemplate = template.variables
-        ? {
-            basePdf,
-            ...(template.variables as object)
-          }
-        : {
-            basePdf,
-            schemas: [[]]
-          };
+      const letterheadBuffer = await file.arrayBuffer();
 
       const q = workflow?.quotation;
-      const inputMapping: Record<string, string> = {
-        object: q?.object || '',
-        date: q?.date ? new Date(q.date).toLocaleDateString() : '',
-        dueDate: q?.dueDate ? new Date(q.dueDate).toLocaleDateString() : '',
-        status: q?.status || '',
-        generalConditions: q?.generalConditions || '',
-        notes: q?.notes || '',
-        enterpriseName: q?.enterprise?.name || '',
-        enterpriseEmail: '',
-        enterprisePhone: q?.enterprise?.phone || '',
-        interlocutorName:
-          `${q?.interlocutor?.firstName || ''} ${q?.interlocutor?.lastName || ''}`.trim(),
-        interlocutorEmail: q?.interlocutor?.email || '',
-        interlocutorPhone: q?.interlocutor?.phone || ''
-      };
 
-      // Generate inputs from the template schemas
-      const schemas = (pdfTemplate as any).schemas || [[]];
-      const inputs = schemas.map((pageSchemas: any[]) => {
-        const pageInput: Record<string, any> = {};
-        if (Array.isArray(pageSchemas)) {
-          pageSchemas.forEach((field: any) => {
-            if (field.name) {
-              if (field.type === 'table') {
-                const articles = q?.quotationArticles || [];
-                const tableData = articles.map((a) => [
-                  a.article?.title || '',
-                  a.quantity?.toString() || '0',
-                  a.unitPrice?.toString() || '0',
-                  ((a.quantity || 0) * (a.unitPrice || 0)).toString()
-                ]);
-                // If table is empty, provide empty row so pdfme doesn't error
-                pageInput[field.name] = tableData.length > 0 ? tableData : [['', '', '', '']];
-              } else {
-                pageInput[field.name] = inputMapping[field.name] ?? field.content ?? '';
-              }
-            }
-          });
-        }
-        return pageInput;
+      const [systemEnterpriseLogoUrl, clientLogoUrl] = await Promise.all([
+        loadLogoAsBase64(q?.systemEnterprise),
+        loadLogoAsBase64(q?.enterprise)
+      ]);
+
+      const inputMapping = buildQuotationPdfInputMapping(
+        q,
+        tCountry,
+        systemEnterpriseLogoUrl,
+        clientLogoUrl
+      );
+
+      const pdf = await generatePdfDocument({
+        templateVariables: template.variables as Record<string, any> | undefined,
+        letterheadBuffer,
+        inputMapping,
+        articles: q?.quotationArticles || []
       });
 
-      const pdf = await generate({
-        template: pdfTemplate as any,
-        inputs: inputs.length > 0 ? inputs : [{}],
-        plugins: { text, image, date, table }
-      });
-
-      const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      openPdfInNewTab(pdf);
     },
     onSuccess: () => {
-      toast.success(t('quotation.messages.print_success', 'Quotation PDF generated successfully'));
+      toast.success(tInvoicing('quotation.messages.print_success', 'Quotation PDF generated successfully'));
     },
     onError: (error: Error) => {
       toast.error(
-        error.message || t('quotation.messages.print_failed', 'Failed to generate quotation PDF')
+        error.message || tInvoicing('quotation.messages.print_failed', 'Failed to generate quotation PDF')
       );
     }
   });
@@ -230,7 +191,10 @@ export const QuotationActions = ({
           className="w-full"
           disabled={isNextPending}
           onClick={() => handleNext(step.label)}>
-          {tInvoicing(`quotation.actions.${step.label.toLowerCase().replace(/ /g, '_')}`, step.label)}
+          {tInvoicing(
+            `quotation.actions.${step.label.toLowerCase().replace(/ /g, '_')}`,
+            step.label
+          )}
         </Button>
       ))}
 
@@ -239,8 +203,8 @@ export const QuotationActions = ({
           variant={'outline'}
           className="w-full"
           disabled={isCreateInvoicePending}
-          onClick={() => handleCreateInvoice()}>
-          {t('quotation.invoice_dialog.create_additional', 'Create additional invoice')}
+          onClick={() => setIsAdditionalInvoiceDialogOpen(true)}>
+          {tInvoicing('quotation.invoice_dialog.create_additional', 'Create additional invoice')}
         </Button>
       )}
 
@@ -256,9 +220,9 @@ export const QuotationActions = ({
       <Dialog open={isInvoiceDialogOpen} onOpenChange={setIsInvoiceDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('quotation.invoice_dialog.title', 'Create Invoice')}</DialogTitle>
+            <DialogTitle>{tInvoicing('quotation.invoice_dialog.title', 'Create Invoice')}</DialogTitle>
             <DialogDescription>
-              {t(
+              {tInvoicing(
                 'quotation.invoice_dialog.description',
                 'Do you want to create an invoice using the information of the quotation?'
               )}
@@ -272,14 +236,44 @@ export const QuotationActions = ({
                 setIsInvoiceDialogOpen(false);
                 next('To Invoice');
               }}>
-              {t('quotation.invoice_dialog.no', 'No, just update status')}
+              {tInvoicing('quotation.invoice_dialog.no', 'No, just update status')}
             </Button>
             <Button
               disabled={isCreateInvoicePending || isNextPending}
               onClick={() => {
                 handleCreateInvoiceAndUpdateStatus();
               }}>
-              {t('quotation.invoice_dialog.yes', 'Yes, create invoice')}
+              {tInvoicing('quotation.invoice_dialog.yes', 'Yes, create invoice')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAdditionalInvoiceDialogOpen} onOpenChange={setIsAdditionalInvoiceDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{tInvoicing('quotation.invoice_dialog.title', 'Create Invoice')}</DialogTitle>
+            <DialogDescription>
+              {tInvoicing(
+                'quotation.invoice_dialog.create_additional_description',
+                'Are you sure you want to create an additional invoice for this quotation?'
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={isCreateInvoicePending}
+              onClick={() => setIsAdditionalInvoiceDialogOpen(false)}>
+              {t('commands.cancel')}
+            </Button>
+            <Button
+              disabled={isCreateInvoicePending}
+              onClick={() => {
+                setIsAdditionalInvoiceDialogOpen(false);
+                handleCreateInvoice();
+              }}>
+              {tInvoicing('quotation.invoice_dialog.yes', 'Yes, create invoice')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -97,6 +97,14 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
       'quotation',
       'createdBy',
       'systemEnterprise',
+      'systemEnterprise.invoicingAddress',
+      'systemEnterprise.invoicingAddress.country',
+      'enterprise',
+      'enterprise.invoicingAddress',
+      'enterprise.invoicingAddress.country',
+      'interlocutor',
+      'bankAccount',
+      'currency',
       'payments',
       'payments.payment'
     ]

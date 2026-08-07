@@ -39,7 +39,13 @@ export const useAuthPersistStore = create<AuthPersistStore>()(
       setRefreshToken: (token) => set({ refreshToken: token }),
       setAuthenticated: (isAuth) => set({ isAuthenticated: isAuth }),
 
-      logout: () => set({ ...initialState, _ready: true })
+      logout: () => {
+        if (isClient) {
+          const keys = Object.keys(localStorage).filter(key => key.startsWith('datatable-'));
+          keys.forEach(key => localStorage.removeItem(key));
+        }
+        set({ ...initialState, _ready: true });
+      }
     }),
     {
       name: 'auth-storage',

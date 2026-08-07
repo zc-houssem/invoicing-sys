@@ -113,7 +113,10 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
       toast.info('Generating PDF preview...');
 
       const { generate } = await import('@pdfme/generator');
-      const { text, image, date, table } = await import('@pdfme/schemas');
+      const { text, image, date, table, multiVariableText } = await import('@pdfme/schemas');
+      const { loadFonts } = await import('./pdfme/loadFonts');
+
+      const fonts = await loadFonts();
 
       // Fetch the base PDF file from storage
       const file = await api.core.storage.getFileById(template.documentId);
@@ -146,8 +149,9 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
 
       const pdf = await generate({
         template: pdfTemplate as any,
-        inputs: inputs.length > 0 ? inputs : [{}],
-        plugins: { text, image, date, table }
+        inputs: [{}],
+        plugins: { text, image, date, table, multiVariableText },
+        options: { font: fonts }
       });
 
       const blob = new Blob([pdf.buffer], { type: 'application/pdf' });

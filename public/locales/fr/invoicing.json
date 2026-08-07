@@ -97,6 +97,23 @@
       "to_invoice": "Facturer",
       "roll_back": "Revenir en arrière",
       "revive": "Réactiver"
+    },
+    "invoice_dialog": {
+      "title": "Facturer",
+      "description": "Voulez-vous créer une facture en utilisant les informations du devis ?",
+      "create_additional": "Facturer",
+      "create_additional_description": "Êtes-vous sûr de vouloir créer une facture supplémentaire pour ce devis ?",
+      "yes": "Oui, créer la facture",
+      "no": "Non, juste mettre à jour le statut"
+    },
+    "messages": {
+      "status_updated": "Statut du devis mis à jour avec succès",
+      "duplicate_success": "Devis dupliqué avec succès",
+      "duplicate_failed": "Échec de la duplication du devis",
+      "invoice_created": "Facture créée avec succès",
+      "invoice_failed": "Échec de la création de la facture",
+      "print_success": "PDF du devis généré avec succès",
+      "print_failed": "Échec de la génération du PDF du devis"
     }
   },
   "invoice": {

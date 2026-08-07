@@ -95,6 +95,14 @@ export const QuotationUpdateForm = ({ id, className }: QuotationUpdateFormProps)
       'uploads.upload',
       'createdBy',
       'systemEnterprise',
+      'systemEnterprise.invoicingAddress',
+      'systemEnterprise.invoicingAddress.country',
+      'enterprise',
+      'enterprise.invoicingAddress',
+      'enterprise.invoicingAddress.country',
+      'interlocutor',
+      'bankAccount',
+      'currency',
       'invoices'
     ]
   });

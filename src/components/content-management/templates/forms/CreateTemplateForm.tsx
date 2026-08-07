@@ -5,7 +5,12 @@ import { useIntro } from '@/context/IntroContext';
 import { defineStepper } from '@/components/ui/stepper';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
-import { PDFEditor } from '../pdfme/PDFTemplateEditor';
+import dynamic from 'next/dynamic';
+
+const PDFEditor = dynamic(
+  () => import('../pdfme/PDFTemplateEditor').then((mod) => mod.PDFEditor),
+  { ssr: false }
+);
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
 import { templateSchema } from '@/types/validations/template.validation';

@@ -97,6 +97,23 @@
       "to_invoice": "To Invoice",
       "roll_back": "Roll back",
       "revive": "Revive"
+    },
+    "invoice_dialog": {
+      "title": "To Invoice",
+      "description": "Do you want to create an invoice using the information of the quotation?",
+      "create_additional": "To invoice",
+      "create_additional_description": "Are you sure you want to create an additional invoice for this quotation?",
+      "yes": "Yes, create invoice",
+      "no": "No, just update status"
+    },
+    "messages": {
+      "status_updated": "Quotation status updated successfully",
+      "duplicate_success": "Quotation duplicated successfully",
+      "duplicate_failed": "Failed to duplicate quotation",
+      "invoice_created": "Invoice created successfully",
+      "invoice_failed": "Failed to create invoice",
+      "print_success": "Quotation PDF generated successfully",
+      "print_failed": "Failed to generate quotation PDF"
     }
   },
   "invoice": {

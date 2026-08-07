@@ -7,6 +7,12 @@ import { Copy, Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import {
+  generatePdfDocument,
+  openPdfInNewTab
+} from '@/components/content-management/templates/pdfme/pdfGeneration';
+import { loadLogoAsBase64 } from '@/components/content-management/templates/pdfme/pdfLogoLoader';
+import { buildInvoicePdfInputMapping } from '@/components/invoicing/invoice/utils/invoicePdfInputMapping';
 
 interface InvoiceActionsProps {
   className?: string;
@@ -27,6 +33,7 @@ export const InvoiceActions = ({
 }: InvoiceActionsProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
+  const { t: tCountry } = useTranslation('countries');
   const router = useRouter();
 
   const { mutate: next, isPending: isNextPending } = useMutation({
@@ -62,77 +69,31 @@ export const InvoiceActions = ({
         throw new Error('The invoice template does not have a PDF document attached.');
       }
 
-      const { generate } = await import('@pdfme/generator');
-      const { text, image, date, table } = await import('@pdfme/schemas');
-
-      // Fetch the base PDF file from storage
       const file = await api.core.storage.getFileById(template.documentId);
-      const basePdf = await file.arrayBuffer();
-
-      // Build the pdfme template from stored variables
-      const pdfTemplate = template.variables
-        ? {
-            basePdf,
-            ...(template.variables as object)
-          }
-        : {
-            basePdf,
-            schemas: [[]]
-          };
+      const letterheadBuffer = await file.arrayBuffer();
 
       const q = workflow?.invoice;
-      const inputMapping: Record<string, string> = {
-        object: q?.object || '',
-        date: q?.date ? new Date(q.date).toLocaleDateString() : '',
-        dueDate: q?.dueDate ? new Date(q.dueDate).toLocaleDateString() : '',
-        status: q?.status || '',
-        generalConditions: q?.generalConditions || '',
-        notes: q?.notes || '',
-        enterpriseName: q?.enterprise?.name || '',
-        enterpriseEmail: '',
-        enterprisePhone: q?.enterprise?.phone || '',
-        interlocutorName:
-          `${q?.interlocutor?.firstName || ''} ${q?.interlocutor?.lastName || ''}`.trim(),
-        interlocutorEmail: q?.interlocutor?.email || '',
-        interlocutorPhone: q?.interlocutor?.phone || ''
-      };
 
-      // Generate inputs from the template schemas
-      const schemas = (pdfTemplate as any).schemas || [[]];
-      const inputs = schemas.map((pageSchemas: any[]) => {
-        const pageInput: Record<string, any> = {};
-        if (Array.isArray(pageSchemas)) {
-          pageSchemas.forEach((field: any) => {
-            if (field.name) {
-              if (field.type === 'table') {
-                const articles = q?.invoiceArticles || [];
-                const tableData = articles.map((a) => [
-                  a.article?.title || '',
-                  a.quantity?.toString() || '0',
-                  a.unitPrice?.toString() || '0',
-                  ((a.quantity || 0) * (a.unitPrice || 0)).toString()
-                ]);
-                // If table is empty, provide empty row so pdfme doesn't error
-                pageInput[field.name] = tableData.length > 0 ? tableData : [['', '', '', '']];
-              } else {
-                pageInput[field.name] = inputMapping[field.name] ?? field.content ?? '';
-              }
-            }
-          });
-        }
-        return pageInput;
+      const [systemEnterpriseLogoUrl, clientLogoUrl] = await Promise.all([
+        loadLogoAsBase64(q?.systemEnterprise),
+        loadLogoAsBase64(q?.enterprise)
+      ]);
+
+      const inputMapping = buildInvoicePdfInputMapping(
+        q,
+        tCountry,
+        systemEnterpriseLogoUrl,
+        clientLogoUrl
+      );
+
+      const pdf = await generatePdfDocument({
+        templateVariables: template.variables as Record<string, any> | undefined,
+        letterheadBuffer,
+        inputMapping,
+        articles: q?.invoiceArticles || []
       });
 
-      const pdf = await generate({
-        template: pdfTemplate as any,
-        inputs: inputs.length > 0 ? inputs : [{}],
-        plugins: { text, image, date, table }
-      });
-
-      const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      openPdfInNewTab(pdf);
     },
     onSuccess: () => {
       toast.success('Invoice PDF generated successfully');

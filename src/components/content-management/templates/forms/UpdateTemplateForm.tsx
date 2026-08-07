@@ -12,7 +12,12 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { templateSchema } from '@/types/validations/template.validation';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import { PDFEditor } from '../pdfme/PDFTemplateEditor';
+import dynamic from 'next/dynamic';
+
+const PDFEditor = dynamic(
+  () => import('../pdfme/PDFTemplateEditor').then((mod) => mod.PDFEditor),
+  { ssr: false }
+);
 import { Button } from '@/components/ui/button';
 import { useTemplate } from '@/hooks/content/core/useTemplate';
 import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
@@ -107,8 +112,6 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
       api.core.template.update(templateStore?.response?.id, updateDto),
     onSuccess() {
       toast.success('Template updated successfully');
-      templateStore.reset();
-      router.push('/content-management/templates');
     },
     onError(error: ServerErrorResponse) {
       toast.error(error.response?.data?.message || 'Failed to create template');
