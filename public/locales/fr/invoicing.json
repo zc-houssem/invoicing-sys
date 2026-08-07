@@ -279,6 +279,10 @@
       "fee": "Frais",
       "notes": "Notes / Remarques",
       "files": "Documents rattachés",
+      "createdBy": "Créé par",
+      "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Enregistrement en tant que",
       "placeholders": {
         "date": "Sélectionnez la date du paiement",
         "enterprise": "Sélectionnez une entreprise",
@@ -298,7 +302,11 @@
         "mode": "Choisissez le mode de paiement (virement, chèque, espèce, etc.).",
         "amount": "Saisissez le montant total du paiement.",
         "fee": "Saisissez les frais bancaires ou annexes associés.",
-        "notes": "Saisissez toute remarque ou instruction spécifique."
+        "notes": "Saisissez toute remarque ou instruction spécifique.",
+        "createdBy": "Utilisateur ayant créé ce paiement.",
+        "creatingAs": "Vous serez enregistré comme créateur de ce paiement.",
+        "systemEnterprise": "Entreprise système ayant enregistré ce paiement.",
+        "issuingAs": "Ce paiement sera enregistré au nom de l'entreprise système active."
       }
     },
     "modes": {
@@ -326,10 +334,10 @@
       "available": "Montant disponible"
     },
     "invoice_item": {
-      "already_paid": "Déjà payé",
-      "already_remaining": "Reste déjà",
-      "new_paid": "Nouveau payé",
-      "new_remaining": "Nouveau reste"
+      "already_paid": "Total des paiements antérieurs",
+      "already_remaining": "Solde dû avant opération",
+      "new_paid": "Montant du règlement saisi",
+      "new_remaining": "Nouveau solde dû"
     },
     "dialogs": {
       "delete": {

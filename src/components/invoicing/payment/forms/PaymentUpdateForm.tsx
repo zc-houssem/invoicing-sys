@@ -45,7 +45,7 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
     queryFn: () =>
       api.invoicing.payment.findById(
         parseInt(paymentId),
-        'enterprise,currency,interlocutor,createdBy,uploads.upload,invoices.invoice'
+        'enterprise,currency,interlocutor,createdBy,systemEnterprise,systemEnterprise.invoicingAddress,systemEnterprise.invoicingAddress.country,uploads.upload,invoices.invoice'
       )
   });
 
@@ -180,8 +180,10 @@ export const PaymentUpdateForm = ({ className, paymentId }: PaymentFormProps) =>
               payment?.status || 'Draft'
             )}
             statusLabel={tInvoicing('payment.table.columns.status', 'Statut')}
-            createdByLabel={tCommon('menu.created_by', { defaultValue: 'Created by' })}
+            createdByLabel={tInvoicing('payment.form.createdBy')}
             user={payment?.createdBy}
+            systemEnterpriseLabel={tInvoicing('payment.form.systemEnterprise')}
+            systemEnterprise={payment?.systemEnterprise}
           />
           <PaymentActions
             className="my-2"

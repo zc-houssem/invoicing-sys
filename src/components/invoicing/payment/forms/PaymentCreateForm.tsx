@@ -14,7 +14,9 @@ import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoic
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { Spinner } from '@/components/shared';
-import { DocumentMetaTable } from '../../DocumentMetaTable';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
+import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -39,6 +41,12 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
   const { setRoutes, clearRoutes } = useBreadcrumb();
   const store = usePaymentStore();
   const { activeCompanyId } = useActiveCompanyContext();
+  const { user: currentUser } = useCurrentUser();
+  const { systemEnterprises } = useSystemEnterprises();
+  const activeSystemEnterprise = React.useMemo(
+    () => systemEnterprises.find((enterprise) => enterprise.id === activeCompanyId),
+    [systemEnterprises, activeCompanyId]
+  );
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useSequence(activeCompanyId, Sequences.PAYMENT, (preview: string) =>
@@ -138,14 +146,14 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
       main={<FormBuilder structure={mainFormStructure} />}
       sidebar={
         <>
-          <DocumentMetaTable
+          <DocumentMetaHeader
             className="mx-auto"
-            rows={[
-              {
-                label: tInvoicing('payment.table.columns.status'),
-                value: tInvoicing('payment.status.New')
-              }
-            ]}
+            status={tInvoicing('payment.status.New')}
+            statusLabel={tInvoicing('payment.table.columns.status')}
+            createdByLabel={tInvoicing('payment.form.creatingAs')}
+            user={currentUser}
+            systemEnterpriseLabel={tInvoicing('payment.form.issuingAs')}
+            systemEnterprise={activeSystemEnterprise}
           />
           <Separator />
           <div className="flex flex-col gap-2 w-full">

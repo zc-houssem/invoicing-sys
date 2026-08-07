@@ -55,7 +55,6 @@ export const PaymentInvoiceItem = ({
   );
   const alreadyRemaining = Math.max(0, netToPay - alreadyPaid);
   const currentAllocated = Number(entry.amount || 0);
-  const newPaid = alreadyPaid + currentAllocated;
   const newRemaining = Math.max(0, alreadyRemaining - currentAllocated);
 
   // Calculate max range for this slider
@@ -115,7 +114,7 @@ export const PaymentInvoiceItem = ({
                   <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
                     {tInvoicing('payment.invoice_item.already_paid', {
-                      defaultValue: 'Already Paid'
+                      defaultValue: 'Total of previous payments'
                     })}
                     :
                   </span>
@@ -128,7 +127,7 @@ export const PaymentInvoiceItem = ({
                   <span className="size-2 rounded-full bg-amber-500 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
                     {tInvoicing('payment.invoice_item.already_remaining', {
-                      defaultValue: 'Already Remaining'
+                      defaultValue: 'Balance due before operation'
                     })}
                     :
                   </span>
@@ -140,10 +139,13 @@ export const PaymentInvoiceItem = ({
                 <div className="flex items-center gap-2">
                   <span className="size-2 rounded-full bg-emerald-600 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
-                    {tInvoicing('payment.invoice_item.new_paid', { defaultValue: 'New Paid' })}:
+                    {tInvoicing('payment.invoice_item.new_paid', {
+                      defaultValue: 'Entered payment amount'
+                    })}
+                    :
                   </span>
                 </div>
-                <span className="text-xs text-foreground font-normal">{`${newPaid.toFixed(invDigits)} ${invSymbol}`}</span>
+                <span className="text-xs text-foreground font-normal">{`${currentAllocated.toFixed(invDigits)} ${invSymbol}`}</span>
               </div>
 
               <div className="flex items-center justify-between">
@@ -151,7 +153,7 @@ export const PaymentInvoiceItem = ({
                   <span className="size-2 rounded-full bg-sky-500 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
                     {tInvoicing('payment.invoice_item.new_remaining', {
-                      defaultValue: 'New Remaining'
+                      defaultValue: 'New balance due'
                     })}
                     :
                   </span>

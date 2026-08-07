@@ -278,6 +278,10 @@
       "fee": "Fee",
       "notes": "Notes / Remarks",
       "files": "Attached documents",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
       "placeholders": {
         "date": "Select payment date",
         "enterprise": "Select an enterprise",
@@ -297,7 +301,11 @@
         "mode": "Choose the payment method (transfer, check, cash, etc.).",
         "amount": "Enter total payment amount.",
         "fee": "Enter bank or transaction fees.",
-        "notes": "Enter any specific notes or instructions."
+        "notes": "Enter any specific notes or instructions.",
+        "createdBy": "User who created this payment.",
+        "creatingAs": "You will be recorded as the creator of this payment.",
+        "systemEnterprise": "System enterprise that recorded this payment.",
+        "issuingAs": "This payment will be recorded under the active system enterprise."
       }
     },
     "modes": {
@@ -325,10 +333,10 @@
       "available": "Available Amount"
     },
     "invoice_item": {
-      "already_paid": "Already Paid",
-      "already_remaining": "Already Remaining",
-      "new_paid": "New Paid",
-      "new_remaining": "New Remaining"
+      "already_paid": "Total of previous payments",
+      "already_remaining": "Balance due before operation",
+      "new_paid": "Entered payment amount",
+      "new_remaining": "New balance due"
     },
     "dialogs": {
       "delete": {
