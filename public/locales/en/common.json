@@ -42,6 +42,7 @@
         "taxRates": "Tax Rates",
         "refTypes": "Reference Types",
         "refParams": "Reference Parameters",
+        "pdf": "PDF Settings",
         "templates": "Templates"
       }
     },

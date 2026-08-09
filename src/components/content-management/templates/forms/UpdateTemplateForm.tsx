@@ -67,7 +67,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
       api.core.template.update(templateStore?.response?.id, updateDto),
     onSuccess() {
       toast.success('Template updated successfully');
-      router.push('/content-management/templates');
+      router.push('/content-management/pdf/templates');
     },
     onError(error: ServerErrorResponse) {
       toast.error(error.response?.data?.message || 'Failed to update template');

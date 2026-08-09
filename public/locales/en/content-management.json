@@ -254,6 +254,10 @@
     }
   },
   "template": {
+    "page": {
+      "title": "Templates",
+      "description": "Here you can manage your document templates."
+    },
     "form": {
       "file": "Template File",
       "name": "Template Name",
@@ -314,6 +318,21 @@
     },
     "groups": {
       "count": "({{count}})"
+    }
+  },
+  "pdf": {
+    "menu": {
+      "templates": "Templates",
+      "headers": "Headers",
+      "footers": "Footers"
+    },
+    "headers": {
+      "title": "Headers",
+      "coming_soon": "Header management coming soon."
+    },
+    "footers": {
+      "title": "Footers",
+      "coming_soon": "Footer management coming soon."
     }
   }
 }

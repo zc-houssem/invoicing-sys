@@ -51,7 +51,7 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     onSuccess() {
       toast.success('Template created successfully');
       templateStore.reset();
-      router.push('/content-management/templates');
+      router.push('/content-management/pdf/templates');
     },
     onError(error: ServerErrorResponse) {
       toast.error(error.response?.data?.message || 'Failed to create template');

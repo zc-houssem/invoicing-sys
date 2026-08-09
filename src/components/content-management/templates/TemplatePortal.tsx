@@ -24,32 +24,42 @@ interface TemplatePortalProps {
 export const TemplatePortal = ({ className }: TemplatePortalProps) => {
   const router = useRouter();
 
-  const { t: tCommon } = useTranslation('common');
+  const { t: tCommon, i18n } = useTranslation('common');
   const { t: tContentManagement } = useTranslation('content-management');
 
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
-    setIntro?.('Templates', 'Here you can manage your document templates.');
+    setIntro?.(
+      tContentManagement('template.page.title', { defaultValue: 'Templates' }),
+      tContentManagement('template.page.description', {
+        defaultValue: 'Here you can manage your document templates.'
+      })
+    );
     setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: tCommon('submenu.content_management') },
-      { title: tCommon('settings.content_management.templates') }
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
+      { title: tCommon('menu.contentManagement.subs.templates') }
     ]);
     return () => {
       clearIntro?.();
       clearRoutes?.();
     };
-  }, [router.locale]);
+  }, [router.locale, i18n.language, tCommon, tContentManagement, setIntro, clearIntro, setRoutes, clearRoutes]);
 
   const templateStore = useTemplateStore();
 
-    const {
-    page, setPage,
-    size, setSize,
-    sortDetails, setSortDetails,
-    searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters,
+  const {
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters,
     tableReset
   } = useDataTableState('templateportal-table', { order: true, sortKey: 'id' });
 
@@ -116,10 +126,10 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     singularName: 'Template',
     pluralName: 'Templates',
     createCallback: () => {
-      router.push('/content-management/templates/new');
+      router.push('/content-management/pdf/templates/new');
     },
     updateCallback: (target: ResponseTemplateDto) => {
-      router.push(`/content-management/templates/${target.id}`);
+      router.push(`/content-management/pdf/templates/${target.id}`);
     },
     deleteCallback: () => {
       openDeleteTemplateDialog();

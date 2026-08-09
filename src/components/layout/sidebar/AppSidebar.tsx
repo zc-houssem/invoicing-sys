@@ -154,8 +154,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: Table
           },
           {
-            title: t('menu.contentManagement.subs.templates'),
-            url: '/content-management/templates',
+            title: t('menu.contentManagement.subs.pdf'),
+            url: '/content-management/pdf',
             icon: Printer
           }
         ]

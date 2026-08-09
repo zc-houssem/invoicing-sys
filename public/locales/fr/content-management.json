@@ -250,6 +250,10 @@
     }
   },
   "template": {
+    "page": {
+      "title": "Modèles",
+      "description": "Ici, vous pouvez gérer vos modèles de documents."
+    },
     "form": {
       "file": "Fichier du modèle",
       "name": "Nom du modèle",
@@ -310,6 +314,21 @@
     },
     "groups": {
       "count": "({{count}})"
+    }
+  },
+  "pdf": {
+    "menu": {
+      "templates": "Modèles",
+      "headers": "En-têtes",
+      "footers": "Pieds de page"
+    },
+    "headers": {
+      "title": "En-têtes",
+      "coming_soon": "Gestion des en-têtes à venir."
+    },
+    "footers": {
+      "title": "Pieds de page",
+      "coming_soon": "Gestion des pieds de page à venir."
     }
   }
 }
