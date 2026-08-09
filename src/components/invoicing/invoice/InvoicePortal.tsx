@@ -68,7 +68,8 @@ export const InvoicePortal = ({
     columnFilters,
     setColumnFilters,
     columnVisibility,
-    setColumnVisibility
+    setColumnVisibility,
+    tableReset
   } = useDataTableState('invoiceportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -201,6 +202,7 @@ export const InvoicePortal = ({
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (entity) => {
       invoiceStore.set('response', entity);
     }

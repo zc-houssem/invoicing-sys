@@ -1,7 +1,7 @@
 import { Table } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, FilterX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Toggle } from '@/components/ui/toggle';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,16 @@ export function DataTablePagination<TData>({
         </div>
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
+        {context.clearFiltersAndSort && context.hasActiveFiltersOrSort && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-1.5 px-2 text-xs"
+            onClick={context.clearFiltersAndSort}>
+            <FilterX className="h-3.5 w-3.5" />
+            <span>{t('datatable.clearCriterias')}</span>
+          </Button>
+        )}
         <div className="flex items-center justify-center text-xs font-medium">
           {t('datatable.paginationPhrase', { page: context.page, total: context.totalPageCount })}
         </div>

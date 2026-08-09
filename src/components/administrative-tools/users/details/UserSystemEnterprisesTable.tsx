@@ -45,7 +45,9 @@ export const UserSystemEnterprisesTable = ({
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+
+    tableReset
   } = useDataTableState('user-system-enterprises-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -169,6 +171,7 @@ export const UserSystemEnterprisesTable = ({
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     columnFilters,
     setColumnFilter: (filterKey, filterParam) => {
       setPage(1);

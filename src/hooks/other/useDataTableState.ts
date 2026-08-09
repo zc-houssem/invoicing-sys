@@ -84,6 +84,18 @@ export function useDataTableState(
     localStorage.setItem(`datatable-${id}-visibility`, JSON.stringify(columnVisibility));
   }, [id, columnVisibility]);
 
+  const hasActiveFiltersOrSort =
+    JSON.stringify(columnFilters) !== JSON.stringify(defaultColumnFilters) ||
+    sortDetails.order !== defaultSortDetails.order ||
+    sortDetails.sortKey !== defaultSortDetails.sortKey;
+
+  const resetFiltersAndSort = React.useCallback(() => {
+    setPage(1);
+    setSearchTerm('');
+    setSortDetails(defaultSortDetails);
+    setColumnFilters(defaultColumnFilters);
+  }, [defaultColumnFilters, defaultSortDetails]);
+
   return {
     page,
     setPage,
@@ -96,6 +108,10 @@ export function useDataTableState(
     columnFilters,
     setColumnFilters,
     columnVisibility,
-    setColumnVisibility
+    setColumnVisibility,
+    tableReset: {
+      clearFiltersAndSort: resetFiltersAndSort,
+      hasActiveFiltersOrSort
+    }
   };
 }

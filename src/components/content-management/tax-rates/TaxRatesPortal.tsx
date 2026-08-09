@@ -56,7 +56,8 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('taxrates-table', { order: true, sortKey: 'label' }, 5);
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -193,6 +194,7 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (entity) => {
       taxRateStore.set('response', entity);
       taxRateStore.set('updateDto', {

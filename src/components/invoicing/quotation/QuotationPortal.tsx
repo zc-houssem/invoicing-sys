@@ -67,7 +67,9 @@ export const QuotationPortal = ({
     columnFilters,
     setColumnFilters,
     columnVisibility,
-    setColumnVisibility
+    setColumnVisibility,
+
+    tableReset
   } = useDataTableState('quotationportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -188,6 +190,7 @@ export const QuotationPortal = ({
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (entity) => {
       quotationStore.set('response', entity);
     }

@@ -52,6 +52,8 @@ export interface DataTableConfig<T> {
   setSearchTerm?: (searchTerm: string) => void;
   columnFilters?: Record<string, string>;
   setColumnFilter?: (filterKey: string, filterParam: string | null) => void;
+  clearFiltersAndSort?: () => void;
+  hasActiveFiltersOrSort?: boolean;
   //actions
   createCallback?: () => void;
   inspectCallback?: (entity: T) => void;

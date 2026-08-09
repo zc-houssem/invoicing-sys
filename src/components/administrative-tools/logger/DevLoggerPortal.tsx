@@ -41,7 +41,8 @@ export const DevLoggerPortal = ({ className }: DevLoggerPortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('devlogger-table', { order: false, sortKey: 'createdAt' }, 10);
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -92,6 +93,7 @@ export const DevLoggerPortal = ({ className }: DevLoggerPortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     searchTerm,
     setSearchTerm
   };

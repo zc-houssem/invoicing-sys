@@ -55,7 +55,8 @@ export const RefTypePortal = ({ className }: RefTypePortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('reftypeportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -185,6 +186,7 @@ export const RefTypePortal = ({ className }: RefTypePortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (refType: ResponseRefTypeDto) => {
       referenceTypesStore.set('refType', refType);
       referenceTypesStore.set<UpdateRefTypeDto>('refTypeUpdateDto', {

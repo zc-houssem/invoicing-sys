@@ -58,7 +58,14 @@ export function DataTable<TData, TValue>({
     return () => {
       setContent?.(null);
     };
-  }, [footerPagination, context.totalPageCount, context.size, context.page]);
+  }, [
+    footerPagination,
+    context.totalPageCount,
+    context.size,
+    context.page,
+    context.hasActiveFiltersOrSort,
+    context.clearFiltersAndSort
+  ]);
 
   const [rowSelection, setRowSelection] = React.useState({});
   const initialDefaultVisibility = React.useMemo(

@@ -57,7 +57,9 @@ export default function Roles({ className }: RolesProps) {
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+
+    tableReset
   } = useDataTableState('roles-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -214,6 +216,7 @@ export default function Roles({ className }: RolesProps) {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (role: ResponseRoleDto) => {
       roleStore.set('response', role);
       roleStore.set<UpdateRoleDto>('updateDto', {

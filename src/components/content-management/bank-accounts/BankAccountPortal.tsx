@@ -56,7 +56,8 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('bankaccountportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -212,6 +213,7 @@ export const BankAccountPortal = ({ className }: BankAccountPortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (entity) => {
       bankAccountStore.set('response', entity);
       bankAccountStore.set('updateDto', {

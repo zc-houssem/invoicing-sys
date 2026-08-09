@@ -50,7 +50,8 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('enterprise-table');
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -153,6 +154,7 @@ export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     columnFilters,
     setColumnFilter: (filterKey, filterParam) => {
       setPage(1);

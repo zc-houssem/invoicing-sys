@@ -44,7 +44,8 @@ export const LoggerPortal = ({ className, userId }: LoggePortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('logger-table', { order: false, sortKey: 'createdAt' }, 10);
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -96,6 +97,7 @@ export const LoggerPortal = ({ className, userId }: LoggePortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     searchTerm,
     setSearchTerm
   };

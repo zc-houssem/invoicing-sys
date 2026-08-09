@@ -40,7 +40,9 @@ export const EnterpriseMemberPortal = ({ className }: EnterpriseMemberPortalProp
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+
+    tableReset
   } = useDataTableState('enterprise-member-portal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -148,6 +150,7 @@ export const EnterpriseMemberPortal = ({ className }: EnterpriseMemberPortalProp
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     columnFilters,
     setColumnFilter: (filterKey, filterParam) => {
       setPage(1);

@@ -57,7 +57,9 @@ export const Users = ({ className }: UsersProps) => {
     searchTerm,
     setSearchTerm,
     columnFilters,
-    setColumnFilters
+    setColumnFilters,
+
+    tableReset
   } = useDataTableState('users-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -232,6 +234,7 @@ export const Users = ({ className }: UsersProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (user: ResponseUserDto) => {
       userStore.set('response', user);
       userStore.set<UpdateUserDto>('updateDto', {
