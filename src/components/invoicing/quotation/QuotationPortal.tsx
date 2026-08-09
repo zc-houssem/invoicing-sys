@@ -15,8 +15,9 @@ import { toast } from 'sonner';
 import { useQuotationDeleteDialog } from './modals/QuotationDeleteDialog';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
-import { Copy } from 'lucide-react';
+import { Copy, Printer } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useQuotationPrint } from '@/hooks/content/core/useQuotationPrint';
 
 interface QuotationPortalProps {
   className?: string;
@@ -58,6 +59,7 @@ export const QuotationPortal = ({
   }, [router.locale, enterpriseId, interlocutorId, createdById, tInvoicing, t]);
 
   const quotationStore = useQuotationStore();
+  const { printTemplateDialog, openPrint, isPrintPending } = useQuotationPrint();
 
   const {
     page,
@@ -175,6 +177,12 @@ export const QuotationPortal = ({
     additionalActions: {
       1: [
         {
+          actionCallback: (q) => openPrint(q.id),
+          actionLabel: t('commands.print', 'Print'),
+          actionIcon: <Printer className="h-4 w-4" />,
+          isActionVisible: (q) => q.isPrintable
+        },
+        {
           actionCallback: (q) => duplicateQuotation(q.id),
           actionLabel: t('commands.duplicate', 'Duplicate'),
           actionIcon: <Copy className="h-4 w-4" />
@@ -206,7 +214,14 @@ export const QuotationPortal = ({
     hideCreatedBy: !!createdById
   });
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
+  const isPending =
+    isFetchPending ||
+    paging ||
+    resizing ||
+    searching ||
+    sorting ||
+    isDuplicatePending ||
+    isPrintPending;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
@@ -219,6 +234,7 @@ export const QuotationPortal = ({
         isPending={isPending}
       />
       {deleteQuotationDialog}
+      {printTemplateDialog}
     </div>
   );
 };

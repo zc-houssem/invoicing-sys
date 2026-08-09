@@ -8,9 +8,7 @@ import { Copy, Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
-import { openPdfBlob } from '@/utils/pdf.utils';
-import { useDocumentTemplates } from '@/hooks/content/core/useDocumentTemplates';
-import { PrintTemplateDialog } from '../../shared/PrintTemplateDialog';
+import { useQuotationPrint } from '@/hooks/content/core/useQuotationPrint';
 import {
   Dialog,
   DialogContent,
@@ -40,9 +38,8 @@ export const QuotationActions = ({
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
   const router = useRouter();
-  const [isPrintDialogOpen, setIsPrintDialogOpen] = React.useState(false);
-  const { data: templates = [], isLoading: isTemplatesLoading } =
-    useDocumentTemplates('quotation');
+  const { printTemplateDialog, openPrint, isPrintPending, isTemplatesLoading } =
+    useQuotationPrint(workflow?.quotation?.id);
   const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = React.useState(false);
   const [isAdditionalInvoiceDialogOpen, setIsAdditionalInvoiceDialogOpen] = React.useState(false);
 
@@ -103,37 +100,6 @@ export const QuotationActions = ({
     handleCreateInvoice();
   };
 
-  const { mutate: printQuotation, isPending: isPrintPending } = useMutation({
-    mutationFn: async (templateId: string) => {
-      const id = workflow?.quotation?.id;
-      if (!id) throw new Error('Quotation not found');
-      return api.invoicing.quotation.downloadPdf(id, templateId);
-    },
-    onSuccess: (pdf) => {
-      openPdfBlob(pdf);
-      setIsPrintDialogOpen(false);
-      toast.success(tInvoicing('quotation.messages.print_success', 'Quotation PDF generated successfully'));
-    },
-    onError: (error: Error) => {
-      toast.error(
-        error.message || tInvoicing('quotation.messages.print_failed', 'Failed to generate quotation PDF')
-      );
-    }
-  });
-
-  const handlePrintClick = () => {
-    if (templates.length === 0 && !isTemplatesLoading) {
-      toast.error(
-        tInvoicing(
-          'quotation.print_dialog.no_templates',
-          'No templates are available for this document type.'
-        )
-      );
-      return;
-    }
-    setIsPrintDialogOpen(true);
-  };
-
   return (
     <div className={cn('flex flex-col gap-2 items-start justify-center w-full', className)}>
       <Button
@@ -148,7 +114,7 @@ export const QuotationActions = ({
         variant={'outline'}
         className="w-full"
         disabled={!workflow?.isPrintable || isNextPending || isPrintPending || isTemplatesLoading}
-        onClick={handlePrintClick}>
+        onClick={() => openPrint()}>
         <Printer />
         <span>
           {isPrintPending ? t('commands.printing') : t('commands.print')}
@@ -261,16 +227,7 @@ export const QuotationActions = ({
         </DialogContent>
       </Dialog>
 
-      <PrintTemplateDialog
-        open={isPrintDialogOpen}
-        onOpenChange={setIsPrintDialogOpen}
-        documentType="quotation"
-        documentId={workflow?.quotation?.id}
-        templates={templates}
-        isLoading={isTemplatesLoading}
-        isPrinting={isPrintPending}
-        onConfirm={printQuotation}
-      />
+      {printTemplateDialog}
     </div>
   );
 };

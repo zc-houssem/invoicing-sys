@@ -15,6 +15,7 @@ export interface ResponseQuotationDto extends DatabaseEntity {
   totalExcludingTaxes?: number;
   totalIncludingTaxes?: number;
   status: string;
+  isPrintable: boolean;
   direction: 'incoming' | 'outgoing';
   date: Date;
   dueDate: Date;

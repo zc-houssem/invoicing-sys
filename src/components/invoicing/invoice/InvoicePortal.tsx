@@ -16,8 +16,9 @@ import { useInvoiceDeleteDialog } from './modals/InvoiceDeleteDialog';
 import { ServerErrorResponse } from '@/types';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
-import { Copy } from 'lucide-react';
+import { Copy, Printer } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useInvoicePrint } from '@/hooks/content/core/useInvoicePrint';
 
 interface InvoicePortalProps {
   className?: string;
@@ -59,6 +60,7 @@ export const InvoicePortal = ({
   }, [router.locale, enterpriseId, interlocutorId, createdById, tInvoicing, t]);
 
   const invoiceStore = useInvoiceStore();
+  const { printTemplateDialog, openPrint, isPrintPending } = useInvoicePrint();
 
   const {
     page,
@@ -186,6 +188,12 @@ export const InvoicePortal = ({
     additionalActions: {
       1: [
         {
+          actionCallback: (inv) => openPrint(inv.id),
+          actionLabel: t('commands.print', 'Print'),
+          actionIcon: <Printer className="h-4 w-4" />,
+          isActionVisible: (inv) => inv.isPrintable
+        },
+        {
           actionCallback: (inv) => duplicateInvoice(inv.id),
           actionLabel: t('commands.duplicate', 'Duplicate'),
           actionIcon: <Copy className="h-4 w-4" />
@@ -218,7 +226,14 @@ export const InvoicePortal = ({
     hideCreatedBy: !!createdById
   });
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting || isDuplicatePending;
+  const isPending =
+    isFetchPending ||
+    paging ||
+    resizing ||
+    searching ||
+    sorting ||
+    isDuplicatePending ||
+    isPrintPending;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
@@ -231,6 +246,7 @@ export const InvoicePortal = ({
         isPending={isPending}
       />
       {deleteInvoiceDialog}
+      {printTemplateDialog}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } f
 import { cn } from '@/utils/tailwind';
 
 interface UseDialogOptions {
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((isOpen: boolean) => React.ReactNode);
   title?: React.ReactNode;
   description?: React.ReactNode;
   className?: string;
@@ -17,6 +17,7 @@ interface UseDialogReturn {
   DialogFragment: React.ReactNode;
   openDialog: () => void;
   closeDialog: () => void;
+  isOpen: boolean;
 }
 
 export function useDialog({
@@ -36,6 +37,8 @@ export function useDialog({
   };
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const resolvedChildren =
+    typeof children === 'function' ? children(isOpen) : children;
 
   const DialogFragment = ReactDOM.createPortal(
     <React.Fragment>
@@ -48,7 +51,7 @@ export function useDialog({
                 {description && <DialogDescription>{description}</DialogDescription>}
               </DialogHeader>
             )}
-            {children}
+            {resolvedChildren}
           </DialogContent>
         </Dialog>
       ) : (
@@ -58,7 +61,7 @@ export function useDialog({
               <DrawerTitle>{title}</DrawerTitle>
               <DrawerDescription>{description}</DrawerDescription>
             </DrawerHeader>
-            {children}
+            {resolvedChildren}
           </DrawerContent>
         </Drawer>
       )}
@@ -66,5 +69,5 @@ export function useDialog({
     document.body
   );
 
-  return { DialogFragment, openDialog, closeDialog };
+  return { DialogFragment, openDialog, closeDialog, isOpen };
 }

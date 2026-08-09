@@ -1,14 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -32,29 +25,29 @@ import { Check, Expand, FileText, X } from 'lucide-react';
 const PDF_PAGE_WIDTH = 794;
 const PDF_PAGE_HEIGHT = 1123;
 
-interface PrintTemplateDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+export interface PrintTemplateDialogContentProps {
+  isOpen: boolean;
   documentType: 'invoice' | 'quotation';
   documentId?: number;
   templates: ResponseTemplateDto[];
   isLoading?: boolean;
   isPrinting?: boolean;
   onConfirm: (templateId: string) => void;
+  onCancel: () => void;
   className?: string;
 }
 
-export const PrintTemplateDialog = ({
-  open,
-  onOpenChange,
+export const PrintTemplateDialogContent = ({
+  isOpen,
   documentType,
   documentId,
   templates,
   isLoading,
   isPrinting,
   onConfirm,
+  onCancel,
   className
-}: PrintTemplateDialogProps) => {
+}: PrintTemplateDialogContentProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
   const [selectedTemplateId, setSelectedTemplateId] = React.useState<string>('');
@@ -94,21 +87,21 @@ export const PrintTemplateDialog = ({
   }, []);
 
   React.useEffect(() => {
-    if (!open) {
+    if (!isOpen) {
       revokePreview();
       setPreviewError(null);
       setIsPreviewLoading(false);
       setSelectedTemplateId('');
     }
-  }, [open, revokePreview]);
+  }, [isOpen, revokePreview]);
 
   React.useEffect(() => {
-    if (open || !isFullscreen) return;
+    if (isOpen || !isFullscreen) return;
     toggleFullscreen();
-  }, [open, isFullscreen, toggleFullscreen]);
+  }, [isOpen, isFullscreen, toggleFullscreen]);
 
   React.useEffect(() => {
-    if (!open || templates.length === 0) return;
+    if (!isOpen || templates.length === 0) return;
 
     setSelectedTemplateId((current) => {
       if (current && templates.some((template) => template.id === current)) {
@@ -116,10 +109,10 @@ export const PrintTemplateDialog = ({
       }
       return templates[0].id;
     });
-  }, [open, templates]);
+  }, [isOpen, templates]);
 
   React.useEffect(() => {
-    if (!open || !selectedTemplateId || !documentId) {
+    if (!isOpen || !selectedTemplateId || !documentId) {
       revokePreview();
       return;
     }
@@ -159,7 +152,7 @@ export const PrintTemplateDialog = ({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [open, selectedTemplateId, documentId, documentType, revokePreview, tInvoicing, dialogNs]);
+  }, [isOpen, selectedTemplateId, documentId, documentType, revokePreview, tInvoicing, dialogNs]);
 
   React.useEffect(() => () => revokePreview(), [revokePreview]);
 
@@ -274,8 +267,7 @@ export const PrintTemplateDialog = ({
   return (
     <>
       {fullscreenOverlay}
-      <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-5xl', className)}>
+      <div className={cn('flex max-h-[90vh] flex-col gap-0', className)}>
         <DialogHeader className="shrink-0 border-b px-6 py-4">
           <DialogTitle>{tInvoicing(titleKey)}</DialogTitle>
           <DialogDescription>{tInvoicing(descriptionKey)}</DialogDescription>
@@ -357,7 +349,7 @@ export const PrintTemplateDialog = ({
         )}
 
         <DialogFooter className="shrink-0 border-t px-6 py-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPrinting}>
+          <Button variant="outline" onClick={onCancel} disabled={isPrinting}>
             {t('commands.cancel')}
           </Button>
           <Button
@@ -366,8 +358,7 @@ export const PrintTemplateDialog = ({
             {isPrinting ? t('commands.printing') : t('commands.print')}
           </Button>
         </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </div>
     </>
   );
 };

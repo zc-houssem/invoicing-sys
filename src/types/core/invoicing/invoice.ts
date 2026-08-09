@@ -28,6 +28,7 @@ export interface ResponseInvoiceDto extends DatabaseEntity {
   taxWithholdingAmount?: number;
   amountToPay?: number;
   status: string;
+  isPrintable: boolean;
   direction: 'incoming' | 'outgoing';
   date: Date;
   dueDate: Date;
