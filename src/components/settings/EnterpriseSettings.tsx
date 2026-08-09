@@ -29,37 +29,37 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
 
   const getPageMeta = React.useCallback((): EnterprisePageMeta => {
     switch (router.pathname) {
-      case '/settings/enterprise/my-enterprise':
+      case '/settings/account/my-enterprise':
         return {
           title: tCommon('settings.account.my_enterprise'),
           description: tSettings('enterprise.my_enterprise.description'),
           breadcrumbTitle: tCommon('settings.account.my_enterprise')
         };
-      case '/settings/enterprise/my-addresses':
+      case '/settings/account/my-addresses':
         return {
           title: tCommon('menu.contacts.subs.addresses'),
           description: tSettings('enterprise.my_addresses.description'),
           breadcrumbTitle: tCommon('menu.contacts.subs.addresses')
         };
-      case '/settings/enterprise/members':
+      case '/settings/account/members':
         return {
           title: tCommon('settings.account.members'),
           description: tSettings('members.page.description'),
           breadcrumbTitle: tCommon('settings.account.members')
         };
-      case '/settings/enterprise/banks':
+      case '/settings/account/banks':
         return {
           title: tCommon('settings.account.bank_accounts'),
           description: tSettings('enterprise.banks.description'),
           breadcrumbTitle: tCommon('settings.account.bank_accounts')
         };
-      case '/settings/enterprise/sequence':
+      case '/settings/account/sequence':
         return {
           title: tCommon('settings.system.sequence'),
           description: tSettings('sequence.card_description'),
           breadcrumbTitle: tCommon('settings.system.sequence')
         };
-      case '/settings/enterprise/conditions':
+      case '/settings/account/conditions':
         return {
           title: tCommon('settings.system.default_condition'),
           description: tSettings('default_condition.page_description'),
@@ -82,7 +82,7 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
       { title: tCommon('menu.settings.title') },
       {
         title: tCommon('menu.enterprise.title'),
-        href: '/settings/enterprise/my-enterprise'
+        href: '/settings/account/my-enterprise'
       },
       { title: meta.breadcrumbTitle }
     ]);
@@ -110,32 +110,32 @@ export const EnterpriseSettings: React.FC<EnterpriseSettingsProps> = ({ classNam
     {
       title: tCommon('settings.account.my_enterprise'),
       icon: <Building size={18} />,
-      href: '/settings/enterprise/my-enterprise'
+      href: '/settings/account/my-enterprise'
     },
     {
       title: tCommon('menu.contacts.subs.addresses'),
       icon: <MapPin size={18} />,
-      href: '/settings/enterprise/my-addresses'
+      href: '/settings/account/my-addresses'
     },
     {
       title: tCommon('settings.account.members'),
       icon: <Users size={18} />,
-      href: '/settings/enterprise/members'
+      href: '/settings/account/members'
     },
     {
       title: tCommon('settings.account.bank_accounts'),
       icon: <Landmark size={18} />,
-      href: '/settings/enterprise/banks'
+      href: '/settings/account/banks'
     },
     {
       title: tCommon('settings.system.sequence'),
       icon: <HashIcon size={18} />,
-      href: '/settings/enterprise/sequence'
+      href: '/settings/account/sequence'
     },
     {
       title: tCommon('settings.system.default_condition'),
       icon: <MessageCircle size={18} />,
-      href: '/settings/enterprise/conditions'
+      href: '/settings/account/conditions'
     }
   ];
 

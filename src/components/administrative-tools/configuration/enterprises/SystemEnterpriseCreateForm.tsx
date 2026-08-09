@@ -112,7 +112,7 @@ export const SystemEnterpriseCreateForm = ({ className }: SystemEnterpriseCreate
       { title: tCommon('menu.settings.title') },
       {
         title: tCommon('menu.enterprise.title'),
-        href: '/settings/enterprise/my-enterprise'
+        href: '/settings/account/my-enterprise'
       },
       { title: tSettings('enterprise.new.title') }
     ]);

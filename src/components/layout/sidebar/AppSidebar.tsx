@@ -206,7 +206,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: t('menu.enterprise.title'),
-            url: '/settings/enterprise/my-enterprise',
+            url: '/settings/account/my-enterprise',
             icon: Building2
           }
         ]

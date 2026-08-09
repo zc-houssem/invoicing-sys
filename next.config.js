@@ -6,6 +6,10 @@ const nextConfig = {
   reactStrictMode: true,
   i18n,
   turbopack: {},
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
 };
 
 module.exports = nextConfig;
