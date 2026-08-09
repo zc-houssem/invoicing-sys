@@ -1,6 +1,3 @@
-import React from 'react';
-import DisconnectComponent from '@/components/auth/DisconnectComponent';
-
-export default function page() {
-  return <DisconnectComponent />;
+export default function Page() {
+  return null;
 }

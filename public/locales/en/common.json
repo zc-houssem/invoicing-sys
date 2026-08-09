@@ -51,6 +51,7 @@
         "users": "Users",
         "roles": "Roles",
         "permissions": "Permissions",
+        "configuration": "Configurations",
         "logger": "Logger",
         "devLogger": "Technical Logger",
         "system": "System"
@@ -123,6 +124,8 @@
     "send": "Send",
     "shrink": "Shrink",
     "print": "Print",
+    "printing": "Printing...",
+    "duplicating": "Duplicating...",
     "promote": "Promote",
     "reset": "Reset",
     "validate": "Validate",
@@ -219,6 +222,7 @@
   },
   "datatable": {
     "paginationPhrase": "Showing Page {{page}} of {{total}}",
+    "clearCriterias": "Clear criterias",
     "search": "Search {{entity}}...",
     "noResults": "No results",
     "visibleColumns": "Visible Columns",

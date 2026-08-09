@@ -15,7 +15,6 @@ import { DataTableConfig } from '@/components/shared/data-table/types';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTemplateDeleteDialog } from './modals/TemplateDeleteDialog';
 import { ResponseTemplateDto } from '@/types';
-import { Printer } from 'lucide-react';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 
 interface TemplatePortalProps {
@@ -50,7 +49,8 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     size, setSize,
     sortDetails, setSortDetails,
     searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters
+    columnFilters, setColumnFilters,
+    tableReset
   } = useDataTableState('templateportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
@@ -102,69 +102,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     }
   });
 
-  // print template preview
-  const handlePrintTemplate = React.useCallback(async (template: ResponseTemplateDto) => {
-    try {
-      if (!template.documentId) {
-        toast.error('No document attached to this template');
-        return;
-      }
-
-      toast.info('Generating PDF preview...');
-
-      const { generate } = await import('@pdfme/generator');
-      const { text, image, date, table, multiVariableText } = await import('@pdfme/schemas');
-      const { loadFonts } = await import('./pdfme/loadFonts');
-
-      const fonts = await loadFonts();
-
-      // Fetch the base PDF file from storage
-      const file = await api.core.storage.getFileById(template.documentId);
-      const basePdf = await file.arrayBuffer();
-
-      // Build the pdfme template from stored variables
-      const pdfTemplate = template.variables
-        ? {
-            basePdf,
-            ...(template.variables as object)
-          }
-        : {
-            basePdf,
-            schemas: [[]]
-          };
-
-      // Generate placeholder inputs from the template schemas
-      const schemas = (pdfTemplate as any).schemas || [[]];
-      const inputs = schemas.map((pageSchemas: any[]) => {
-        const pageInput: Record<string, string> = {};
-        if (Array.isArray(pageSchemas)) {
-          pageSchemas.forEach((field: any) => {
-            if (field.name) {
-              pageInput[field.name] = field.content || field.name;
-            }
-          });
-        }
-        return pageInput;
-      });
-
-      const pdf = await generate({
-        template: pdfTemplate as any,
-        inputs: [{}],
-        plugins: { text, image, date, table, multiVariableText },
-        options: { font: fonts }
-      });
-
-      const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => URL.revokeObjectURL(url), 30000);
-
-      toast.success('PDF preview generated successfully');
-    } catch (error) {
-      console.error('PDF generation error:', error);
-      toast.error('Failed to generate PDF preview');
-    }
-  }, []);
+  // print removed — PDFs are generated on the server when printing invoices/quotations
 
   const { deleteTemplateDialog, openDeleteTemplateDialog, closeDeleteTemplateDialog } =
     useTemplateDeleteDialog({
@@ -186,18 +124,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     deleteCallback: () => {
       openDeleteTemplateDialog();
     },
-    additionalActions: {
-      0: [
-        {
-          actionLabel: tCommon('commands.print') || 'Print',
-          actionIcon: <Printer className="size-4" />,
-          actionCallback: (entity: ResponseTemplateDto) => {
-            handlePrintTemplate(entity);
-          },
-          isActionVisible: (entity: ResponseTemplateDto) => !!entity.documentId
-        }
-      ]
-    },
+    additionalActions: {},
     searchTerm,
     setSearchTerm,
     page,
@@ -208,6 +135,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     order: sortDetails.order,
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
     targetEntity: (entity) => {
       templateStore.set('response', entity);
       templateStore.set('updateDto', {

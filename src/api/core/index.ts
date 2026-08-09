@@ -9,6 +9,7 @@ import { taxRate } from './tax-rate';
 import { template } from './template';
 import { storage } from './storage';
 import { templateType } from './template-type';
+import { documentPdf } from './document-pdf';
 
 export const core = {
   article,
@@ -21,5 +22,6 @@ export const core = {
   taxRate,
   template,
   templateType,
-  storage
+  storage,
+  documentPdf
 };

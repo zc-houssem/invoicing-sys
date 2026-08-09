@@ -4,24 +4,20 @@ import {
   FormStructure,
   SelectFieldProps,
   SelectOption,
-  SingleFileFieldProps,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTranslation } from 'react-i18next';
 
 interface useCreateTemplateFormStructureProps {
   store: TemplateStore;
   templateTypes: SelectOption[];
-  uploadDocument: ReturnType<typeof useUploadMutation>['uploadFiles'];
 }
 
 export const useCreateTemplateFormStructure = ({
   store,
-  templateTypes,
-  uploadDocument
+  templateTypes
 }: useCreateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
 
@@ -63,7 +59,8 @@ export const useCreateTemplateFormStructure = ({
     label: t('template.form.type'),
     variant: FieldVariant.SELECT,
     placeholder: t('template.form.placeholders.type'),
-    description: t('template.form.descriptions.type'),
+    description:
+      'PDF layout is configured on the server for each document type (header, footer, body elements).',
     error: store.createDtoErrors?.templateTypeId?.[0],
     props: {
       value: store.createDto.templateTypeId,
@@ -75,33 +72,6 @@ export const useCreateTemplateFormStructure = ({
     }
   };
 
-  const fileField: Field<SingleFileFieldProps> = {
-    id: 'file',
-    label: t('template.form.file'),
-    variant: FieldVariant.FILE,
-    placeholder: t('template.form.placeholders.file'),
-    description: t('template.form.descriptions.file'),
-    error: store.createDtoErrors?.documentId?.[0],
-    props: {
-      file: store.document,
-      progress: store.progress,
-      onFileChange: (value) => {
-        store.set('document', value);
-        store.setNested('createDtoErrors.documentId', []);
-      },
-      onUpload: (file, onProgress) => {
-        store.set('progress', 0);
-        uploadDocument({
-          files: [file],
-          onProgress: (progress: number) => {
-            store.set('progress', progress);
-            onProgress(progress);
-          }
-        });
-      }
-    }
-  };
-
   const formStructure: FormStructure = {
     title: {
       value: 'Create Template'
@@ -110,18 +80,9 @@ export const useCreateTemplateFormStructure = ({
     fieldsets: [
       {
         rows: [
-          {
-            fields: [nameField]
-          },
-          {
-            fields: [typeField]
-          },
-          {
-            fields: [descriptionField]
-          },
-          {
-            fields: [fileField]
-          }
+          { fields: [nameField] },
+          { fields: [typeField] },
+          { fields: [descriptionField] }
         ]
       }
     ]

@@ -1,9 +1,7 @@
-import { defineStepper } from '@/components/ui/stepper';
 import { useIntro } from '@/context/IntroContext';
-import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { cn } from '@/lib/utils';
-import { ServerErrorResponse, UpdateTemplateDto, Upload } from '@/types';
+import { ServerErrorResponse, UpdateTemplateDto } from '@/types';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'sonner';
@@ -12,60 +10,32 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { templateSchema } from '@/types/validations/template.validation';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
-import dynamic from 'next/dynamic';
-
-const PDFEditor = dynamic(
-  () => import('../pdfme/PDFTemplateEditor').then((mod) => mod.PDFEditor),
-  { ssr: false }
-);
 import { Button } from '@/components/ui/button';
 import { useTemplate } from '@/hooks/content/core/useTemplate';
 import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
 import { Spinner } from '@/components/shared';
-import { useUploadedFile } from '@/hooks/content/core/useUploadedFile';
-import { v4 as uuidv4 } from 'uuid';
-import { Separator } from '@/components/ui/separator';
-import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
+import { TemplatePdfPreview } from '../TemplatePdfPreview';
+import { Separator } from '@/components/ui/separator';
 
 interface UpdateTemplateFormProps {
   id: string;
   className?: string;
 }
 
-const steps = [
-  {
-    id: '1',
-    title: 'Template Details',
-    description: 'Fill out the template details.'
-  },
-  {
-    id: '2',
-    title: 'Template Editor',
-    description: 'Design your template.'
-  }
-];
-
-const { Stepper } = defineStepper(...steps);
-
 export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) => {
-  const [key, setKey] = React.useState(uuidv4());
   const router = useRouter();
-  const { template, isTemplatePending } = useTemplate({ id });
-  const { file, isFilePending } = useUploadedFile({
-    id: template?.documentId,
-    enabled: !!template?.documentId
-  });
+  const { template, isTemplatePending } = useTemplate({ id, join: ['templateType'] });
   const templateStore = useTemplateStore();
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
-  const selectedTemplateType = React.useMemo(() => {
-    return templateTypes?.find((type) => type.id === templateStore.updateDto?.templateTypeId);
-  }, [templateTypes, templateStore.updateDto?.templateTypeId]);
-
   React.useEffect(() => {
-    setIntro?.('Update Template', 'Fill out the form below to update the document template.');
+    setIntro?.(
+      'Update Template',
+      'Update template metadata and preview PDF output with a real quotation or invoice.'
+    );
     return () => {
       templateStore.reset();
       clearIntro?.();
@@ -73,29 +43,15 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
   }, []);
 
   React.useEffect(() => {
-    if (template && file) {
+    if (template) {
       templateStore.set('response', template);
       templateStore.set('updateDto', {
         name: template.name,
         description: template.description,
-        templateTypeId: template.templateTypeId || template.templateType?.id,
-        documentId: template.documentId
+        templateTypeId: template.templateTypeId || template.templateType?.id
       });
-      templateStore.set('document', file);
-      templateStore.set('progress', 100);
-      templateStore.set('variables', template.variables);
-      templateStore.set('backupVariables', template.backupVariables);
     }
-  }, [template, file]);
-
-  const { uploadFiles: uploadDocument, isUploadPending } = useUploadMutation({
-    onSuccess: (response: Upload[]) => {
-      templateStore.setNested('updateDto.documentId', response[0].id);
-    },
-    onError: (error: ServerErrorResponse) => {
-      toast.error(error.response?.data?.message || 'Failed to upload document');
-    }
-  });
+  }, [template]);
 
   const { formStructure } = useUpdateTemplateFormStructure({
     store: templateStore,
@@ -103,8 +59,7 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
       data: templateTypes || [],
       valueKey: 'id',
       labelKey: 'name'
-    }),
-    uploadDocument
+    })
   });
 
   const { mutate: updateTemplate, isPending: isUpdateTemplatePending } = useMutation({
@@ -112,151 +67,67 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
       api.core.template.update(templateStore?.response?.id, updateDto),
     onSuccess() {
       toast.success('Template updated successfully');
+      router.push('/content-management/templates');
     },
     onError(error: ServerErrorResponse) {
-      toast.error(error.response?.data?.message || 'Failed to create template');
+      toast.error(error.response?.data?.message || 'Failed to update template');
     }
   });
 
-  // Simple validation: require a name (customize as needed)
-  const validateStep = (stepId: string) => {
-    if (stepId === '1') {
-      const result = templateSchema.safeParse(templateStore.updateDto);
-      if (!result.success) {
-        templateStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
-        return false;
-      }
-      return true;
-    }
-    return true;
-  };
-
   const handleSubmit = () => {
-    updateTemplate({
-      ...templateStore.updateDto,
-      variables: JSON.stringify(templateStore.variables),
-      backupVariables: JSON.stringify(templateStore.backupVariables)
-    });
-  };
-
-  const exportVariables = () => {
-    templateStore.set('backupVariables', templateStore?.variables);
-    toast.success('Variables exported successfully');
-  };
-
-  const importVariables = () => {
-    if (!templateStore?.backupVariables) {
-      toast.error('No backup variables found to import');
+    const result = templateSchema.safeParse(templateStore.updateDto);
+    if (!result.success) {
+      templateStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
       return;
     }
-    templateStore.set('variables', templateStore?.backupVariables);
-    setKey(uuidv4());
-    toast.success('Variables imported successfully');
+    updateTemplate(templateStore.updateDto!);
   };
 
-  if (isTemplatePending || isFilePending) return <Spinner />;
+  const templateTypeCode =
+    template?.templateType?.code ||
+    templateTypes?.find((t) => t.id === templateStore.updateDto?.templateTypeId)?.code;
+
+  if (isTemplatePending || isTemplateTypePending) return <Spinner />;
+
   return (
-    <div className={cn('flex flex-col flex-1 overflow-hidden pb-4', className)}>
-      <Stepper.Provider className="flex flex-col flex-1 overflow-hidden" variant="horizontal">
-        {({ methods }) => {
-          const activeIndex = steps.findIndex((step) => step.id === methods.current.id);
+    <div className={cn('flex flex-col flex-1 overflow-hidden lg:flex-row gap-4 p-4', className)}>
+      <div className="flex flex-col gap-4 lg:w-[min(420px,100%)] shrink-0 overflow-auto">
+        <div className="space-y-1">
+          <h2 className="text-lg font-semibold">Template details</h2>
+          <p className="text-sm text-muted-foreground">
+            Layout is configured via EJS templates on the server. Use the preview panel to test
+            with live data.
+          </p>
+        </div>
+        <FormBuilder structure={formStructure} />
+        <div className="flex justify-end pb-2">
+          <Button onClick={handleSubmit} disabled={isUpdateTemplatePending}>
+            <Save className="size-4 mr-2" />
+            Update
+          </Button>
+        </div>
+      </div>
 
-          const handleNext = () => {
-            const valid = validateStep(methods.current.id);
-            if (!valid) return;
-            if (methods.isLast) {
-              handleSubmit();
-            } else {
-              methods.next();
-            }
-          };
+      <Separator orientation="vertical" className="hidden lg:block h-auto" />
+      <Separator orientation="horizontal" className="lg:hidden" />
 
-          return (
-            <>
-              {/* Stepper Navigation */}
-              <Stepper.Navigation className="shrink">
-                {methods.all.map((step, index) => (
-                  <Stepper.Step
-                    key={step.id}
-                    of={step.id}
-                    onClick={() => {
-                      if (index > activeIndex) {
-                        let valid = true;
-                        for (let i = 0; i <= activeIndex; i++) {
-                          valid = valid && validateStep(steps[i].id);
-                        }
-                        if (!valid) return;
-                      }
-                      methods.goTo(step.id);
-                    }}
-                    disabled={false}>
-                    <Stepper.Title>{step.title}</Stepper.Title>
-                  </Stepper.Step>
-                ))}
-              </Stepper.Navigation>
-
-              {/* Step Content */}
-              <div className="flex flex-col flex-1 h-full overflow-hidden my-4">
-                {methods.current.id === '1' && (
-                  <div className="flex flex-col flex-1 overflow-auto p-2">
-                    <div className="space-y-1 mb-4">
-                      <h1 className="text-lg font-bold">{methods.current.title}</h1>
-                      <p className="text-xs">{methods.current.description}</p>
-                      <Separator className="mt-2" />
-                    </div>
-                    <div className="my-auto">
-                      <FormBuilder structure={formStructure} />
-                    </div>
-                  </div>
-                )}
-                {methods.current.id === '2' && (
-                  <PDFEditor
-                    key={key}
-                    className="border rounded-lg"
-                    file={templateStore.document}
-                    variables={templateStore?.variables}
-                    setVariables={(variables) => templateStore.set('variables', variables)}
-                    exportCallback={exportVariables}
-                    importCallback={importVariables}
-                    templateType={selectedTemplateType}
-                  />
-                )}
-              </div>
-
-              {/* Controls */}
-              <Stepper.Controls className="shrink-0 flex items-center justify-end gap-2 px-4">
-                {!methods.isFirst && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={methods.prev}
-                    disabled={isUploadPending || isUpdateTemplatePending}>
-                    <div className="flex items-center gap-2">
-                      <ChevronLeft /> <span>Previous</span>
-                    </div>
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  onClick={handleNext}
-                  disabled={isUploadPending || isUpdateTemplatePending}>
-                  {methods.isLast ? (
-                    <div className="flex items-center gap-2">
-                      <span>Update</span>
-                      <Save />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <span>Next</span>
-                      <ChevronRight />
-                    </div>
-                  )}
-                </Button>
-              </Stepper.Controls>
-            </>
-          );
-        }}
-      </Stepper.Provider>
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        <div className="shrink-0 mb-3">
+          <h2 className="text-lg font-semibold">PDF preview</h2>
+          <p className="text-sm text-muted-foreground">
+            {templateTypeCode === 'quotation'
+              ? 'Pick a quotation to see how this template renders.'
+              : templateTypeCode === 'invoice'
+                ? 'Pick an invoice to see how this template renders.'
+                : 'Preview is available for invoice and quotation templates.'}
+          </p>
+        </div>
+        <TemplatePdfPreview
+          className="flex-1 min-h-0"
+          templateId={id}
+          templateTypeCode={templateTypeCode}
+        />
+      </div>
     </div>
   );
 };

@@ -170,7 +170,7 @@ const getUploadById = async (id: number) => {
 
 /**
  * Fetches an upload by ID and returns it as a base64 data URI string.
- * This is required for pdfme image schemas which cannot resolve blob: URLs.
+ * This is required for PDF image elements which cannot resolve blob: URLs.
  */
 const getUploadAsBase64ById = async (id: number): Promise<string> => {
   const url = `/storage/view/id/${id}`;

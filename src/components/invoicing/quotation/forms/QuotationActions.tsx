@@ -8,10 +8,9 @@ import { Copy, Printer, Repeat2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
-import { generatePdfDocument, openPdfInNewTab } from '@/components/content-management/templates/pdfme/pdfGeneration';
-import { loadLogoAsBase64 } from '@/components/content-management/templates/pdfme/pdfLogoLoader';
-import { buildQuotationPdfInputMapping } from '@/components/invoicing/quotation/utils/quotationPdfInputMapping';
-import { useInvoiceStore } from '@/hooks/stores/useInvoiceStore';
+import { openPdfBlob } from '@/utils/pdf.utils';
+import { useDocumentTemplates } from '@/hooks/content/core/useDocumentTemplates';
+import { PrintTemplateDialog } from '../../shared/PrintTemplateDialog';
 import {
   Dialog,
   DialogContent,
@@ -40,9 +39,10 @@ export const QuotationActions = ({
 }: QuotationActionsProps) => {
   const { t } = useTranslation('common');
   const { t: tInvoicing } = useTranslation('invoicing');
-  const { t: tCountry } = useTranslation('country');
   const router = useRouter();
-  const invoiceStore = useInvoiceStore();
+  const [isPrintDialogOpen, setIsPrintDialogOpen] = React.useState(false);
+  const { data: templates = [], isLoading: isTemplatesLoading } =
+    useDocumentTemplates('quotation');
   const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = React.useState(false);
   const [isAdditionalInvoiceDialogOpen, setIsAdditionalInvoiceDialogOpen] = React.useState(false);
 
@@ -104,45 +104,14 @@ export const QuotationActions = ({
   };
 
   const { mutate: printQuotation, isPending: isPrintPending } = useMutation({
-    mutationFn: async () => {
-      const templates = await api.core.template.findAll({
-        filter: 'templateType.code||$eq||quotation'
-      });
-      if (!templates || templates.length === 0) {
-        throw new Error('No quotation template found. Please create one in Content Management.');
-      }
-      const template = templates[0];
-      if (!template.documentId) {
-        throw new Error('The quotation template does not have a PDF document attached.');
-      }
-
-      const file = await api.core.storage.getFileById(template.documentId);
-      const letterheadBuffer = await file.arrayBuffer();
-
-      const q = workflow?.quotation;
-
-      const [systemEnterpriseLogoUrl, clientLogoUrl] = await Promise.all([
-        loadLogoAsBase64(q?.systemEnterprise),
-        loadLogoAsBase64(q?.enterprise)
-      ]);
-
-      const inputMapping = buildQuotationPdfInputMapping(
-        q,
-        tCountry,
-        systemEnterpriseLogoUrl,
-        clientLogoUrl
-      );
-
-      const pdf = await generatePdfDocument({
-        templateVariables: template.variables as Record<string, any> | undefined,
-        letterheadBuffer,
-        inputMapping,
-        articles: q?.quotationArticles || []
-      });
-
-      openPdfInNewTab(pdf);
+    mutationFn: async (templateId: string) => {
+      const id = workflow?.quotation?.id;
+      if (!id) throw new Error('Quotation not found');
+      return api.invoicing.quotation.downloadPdf(id, templateId);
     },
-    onSuccess: () => {
+    onSuccess: (pdf) => {
+      openPdfBlob(pdf);
+      setIsPrintDialogOpen(false);
       toast.success(tInvoicing('quotation.messages.print_success', 'Quotation PDF generated successfully'));
     },
     onError: (error: Error) => {
@@ -151,6 +120,19 @@ export const QuotationActions = ({
       );
     }
   });
+
+  const handlePrintClick = () => {
+    if (templates.length === 0 && !isTemplatesLoading) {
+      toast.error(
+        tInvoicing(
+          'quotation.print_dialog.no_templates',
+          'No templates are available for this document type.'
+        )
+      );
+      return;
+    }
+    setIsPrintDialogOpen(true);
+  };
 
   return (
     <div className={cn('flex flex-col gap-2 items-start justify-center w-full', className)}>
@@ -165,11 +147,11 @@ export const QuotationActions = ({
       <Button
         variant={'outline'}
         className="w-full"
-        disabled={!workflow?.isPrintable || isNextPending || isPrintPending}
-        onClick={() => printQuotation()}>
+        disabled={!workflow?.isPrintable || isNextPending || isPrintPending || isTemplatesLoading}
+        onClick={handlePrintClick}>
         <Printer />
         <span>
-          {isPrintPending ? t('commands.printing') || 'Printing...' : t('commands.print')}
+          {isPrintPending ? t('commands.printing') : t('commands.print')}
         </span>
       </Button>
       <Button
@@ -278,6 +260,17 @@ export const QuotationActions = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <PrintTemplateDialog
+        open={isPrintDialogOpen}
+        onOpenChange={setIsPrintDialogOpen}
+        documentType="quotation"
+        documentId={workflow?.quotation?.id}
+        templates={templates}
+        isLoading={isTemplatesLoading}
+        isPrinting={isPrintPending}
+        onConfirm={printQuotation}
+      />
     </div>
   );
 };

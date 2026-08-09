@@ -51,6 +51,7 @@
         "users": "Utilisateurs",
         "roles": "Rôles",
         "permissions": "Permissions",
+        "configuration": "Configurations",
         "logger": "Journal",
         "devLogger": "Journal Technique",
         "system": "Système"
@@ -123,6 +124,8 @@
     "send": "Envoyer",
     "shrink": "Réduire",
     "print": "Imprimer",
+    "printing": "Impression...",
+    "duplicating": "Duplication...",
     "promote": "Promouvoir",
     "reset": "Réinitialiser",
     "validate": "Valider",
@@ -216,6 +219,7 @@
   },
   "datatable": {
     "paginationPhrase": "Affichage de la page {{page}} sur {{total}}",
+    "clearCriterias": "Effacer les critères",
     "search": "Rechercher {{entity}}...",
     "noResults": "Aucun résultat",
     "visibleColumns": "Colonnes Visibles",

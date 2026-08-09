@@ -4,24 +4,20 @@ import {
   FormStructure,
   SelectFieldProps,
   SelectOption,
-  SingleFileFieldProps,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { useUploadMutation } from '@/hooks/content/core/useUploadMutation';
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTranslation } from 'react-i18next';
 
 interface useUpdateTemplateFormStructureProps {
   store: TemplateStore;
   templateTypes: SelectOption[];
-  uploadDocument: ReturnType<typeof useUploadMutation>['uploadFiles'];
 }
 
 export const useUpdateTemplateFormStructure = ({
   store,
-  templateTypes,
-  uploadDocument
+  templateTypes
 }: useUpdateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
 
@@ -63,7 +59,8 @@ export const useUpdateTemplateFormStructure = ({
     label: t('template.form.type'),
     variant: FieldVariant.SELECT,
     placeholder: t('template.form.placeholders.type'),
-    description: t('template.form.descriptions.type'),
+    description:
+      'PDF layout is configured on the server for each document type (header, footer, body elements).',
     error: store.updateDtoErrors?.templateTypeId?.[0],
     props: {
       value: store.updateDto?.templateTypeId,
@@ -75,34 +72,6 @@ export const useUpdateTemplateFormStructure = ({
     }
   };
 
-  const fileField: Field<SingleFileFieldProps> = {
-    id: 'file',
-    label: t('template.form.file'),
-    variant: FieldVariant.FILE,
-    placeholder: t('template.form.placeholders.file'),
-    description: t('template.form.descriptions.file'),
-    error: store.updateDtoErrors?.documentId?.[0],
-    pending: !store.document,
-    props: {
-      file: store.document,
-      progress: store.progress,
-      onFileChange: (value) => {
-        store.set('document', value);
-        store.setNested('updateDtoErrors.documentId', []);
-      },
-      onUpload: (file, onProgress) => {
-        store.set('progress', 0);
-        uploadDocument({
-          files: [file],
-          onProgress: (progress: number) => {
-            store.set('progress', progress);
-            onProgress(progress);
-          }
-        });
-      }
-    }
-  };
-
   const formStructure: FormStructure = {
     title: {
       value: 'Update Template'
@@ -111,18 +80,9 @@ export const useUpdateTemplateFormStructure = ({
     fieldsets: [
       {
         rows: [
-          {
-            fields: [nameField]
-          },
-          {
-            fields: [typeField]
-          },
-          {
-            fields: [descriptionField]
-          },
-          {
-            fields: [fileField]
-          }
+          { fields: [nameField] },
+          { fields: [typeField] },
+          { fields: [descriptionField] }
         ]
       }
     ]

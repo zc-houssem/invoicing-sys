@@ -80,6 +80,14 @@ const duplicate = async (id: number): Promise<ResponseQuotationDto> => {
   return response.data;
 };
 
+const downloadPdf = async (id: number, templateId?: string): Promise<Blob> => {
+  const response = await axios.get(`/quotation/${id}/pdf`, {
+    responseType: 'blob',
+    params: templateId ? { templateId } : undefined
+  });
+  return response.data;
+};
+
 export const quotation = {
   findPaginated,
   findAll,
@@ -88,6 +96,7 @@ export const quotation = {
   update,
   remove,
   duplicate,
+  downloadPdf,
   workflow: {
     findById: findWorkflowById,
     next

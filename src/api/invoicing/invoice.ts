@@ -93,6 +93,14 @@ const duplicate = async (id: number): Promise<ResponseInvoiceDto> => {
   return response.data;
 };
 
+const downloadPdf = async (id: number, templateId?: string): Promise<Blob> => {
+  const response = await axios.get(`/invoice/${id}/pdf`, {
+    responseType: 'blob',
+    params: templateId ? { templateId } : undefined
+  });
+  return response.data;
+};
+
 export const invoice = {
   findPaginated,
   findAll,
@@ -102,6 +110,7 @@ export const invoice = {
   remove,
   fromQuotation,
   duplicate,
+  downloadPdf,
   workflow: {
     findById: findWorkflowById,
     next
