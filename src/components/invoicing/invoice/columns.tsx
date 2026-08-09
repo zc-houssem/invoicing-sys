@@ -116,7 +116,7 @@ export const useSellingInvoiceColumns = (
       enableHiding: true
     },
     {
-      accessorKey: 'source',
+      accessorKey: t('invoice.table.columns.source', 'Source'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -190,8 +190,7 @@ export const useSellingInvoiceColumns = (
       enableHiding: true
     },
     {
-      id: 'totalIncludingTaxes',
-      accessorKey: 'totalIncludingTaxes',
+      accessorKey: t('invoice.table.columns.total', 'Total TTC'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -210,8 +209,7 @@ export const useSellingInvoiceColumns = (
       enableHiding: true
     },
     {
-      id: 'taxWithholding',
-      accessorKey: 'taxWithholding',
+      accessorKey: t('invoice.table.columns.taxWithholding', 'Retenue à la source'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
@@ -233,8 +231,7 @@ export const useSellingInvoiceColumns = (
       enableHiding: true
     },
     {
-      id: 'amountToPay',
-      accessorKey: 'amountToPay',
+      accessorKey: t('invoice.table.columns.amountToPay', 'Montant à payer'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}

@@ -41,7 +41,7 @@ export const PaymentPortal = ({
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
     if (!enterpriseId && !interlocutorId && !createdById) {
-      setIntro?.(tInvoicing('payment.plural'), 'Here you can manage your payments.');
+      setIntro?.(tInvoicing('payment.intro.title'), tInvoicing('payment.intro.description'));
       setRoutes?.([
         { title: tCommon('menu.selling.title'), href: '/selling' },
         { title: tInvoicing('payment.plural') }
@@ -51,7 +51,7 @@ export const PaymentPortal = ({
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId, createdById]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById, tInvoicing, tCommon]);
 
   const {
     page,

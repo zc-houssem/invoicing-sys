@@ -34,6 +34,7 @@ export const QuotationPortal = ({
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -41,17 +42,20 @@ export const QuotationPortal = ({
   React.useEffect(() => {
     if (!enterpriseId && !interlocutorId && !createdById) {
       setIntro?.(
-        'Selling Quotations',
-        'Here you can manage your selling quotations, which will be used for sales and invoicing.'
+        tInvoicing('quotation.intro.title'),
+        tInvoicing('quotation.intro.description')
       );
-      setRoutes?.([{ title: 'Selling' }, { title: 'Quotation' }]);
+      setRoutes?.([
+        { title: t('menu.selling.title'), href: '/selling' },
+        { title: tInvoicing('quotation.plural') }
+      ]);
 
       return () => {
         clearIntro?.();
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId, createdById]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById, tInvoicing, t]);
 
   const quotationStore = useQuotationStore();
 

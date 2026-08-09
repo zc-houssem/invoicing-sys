@@ -3,6 +3,12 @@
     "financialResume": "Financial Resume"
   },
   "quotation": {
+    "plural": "Quotations",
+    "singular": "Quotation",
+    "intro": {
+      "title": "Selling Quotations",
+      "description": "Here you can manage your selling quotations, which will be used for sales and invoicing."
+    },
     "form": {
       "date": "Date",
       "dueDate": "Due date",
@@ -129,6 +135,12 @@
     }
   },
   "invoice": {
+    "plural": "Invoices",
+    "singular": "Invoice",
+    "intro": {
+      "title": "Selling Invoices",
+      "description": "Here you can manage your selling invoices, which will be used for sales and invoicing."
+    },
     "form": {
       "date": "Date",
       "dueDate": "Due date",
@@ -286,6 +298,10 @@
     }
   },
   "payment": {
+    "intro": {
+      "title": "Payments",
+      "description": "Here you can manage your payments."
+    },
     "plural": "Payments",
     "singular": "Payment",
     "new": "New payment",

@@ -35,6 +35,7 @@ export const InvoicePortal = ({
   const router = useRouter();
   const { activeCompanyId } = useActiveCompanyContext();
   const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
 
   //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
@@ -42,17 +43,20 @@ export const InvoicePortal = ({
   React.useEffect(() => {
     if (!enterpriseId && !interlocutorId && !createdById) {
       setIntro?.(
-        'Selling Invoices',
-        'Here you can manage your selling invoices, which will be used for sales and invoicing.'
+        tInvoicing('invoice.intro.title'),
+        tInvoicing('invoice.intro.description')
       );
-      setRoutes?.([{ title: 'Selling' }, { title: 'Invoice' }]);
+      setRoutes?.([
+        { title: t('menu.selling.title'), href: '/selling' },
+        { title: tInvoicing('invoice.plural') }
+      ]);
 
       return () => {
         clearIntro?.();
         clearRoutes?.();
       };
     }
-  }, [router.locale, enterpriseId, interlocutorId, createdById]);
+  }, [router.locale, enterpriseId, interlocutorId, createdById, tInvoicing, t]);
 
   const invoiceStore = useInvoiceStore();
 

@@ -3,6 +3,12 @@
     "financialResume": "Résumé financier"
   },
   "quotation": {
+    "plural": "Devis",
+    "singular": "Devis",
+    "intro": {
+      "title": "Devis de vente",
+      "description": "Ici, vous pouvez gérer vos devis de vente, qui seront utilisés pour les ventes et la facturation."
+    },
     "form": {
       "date": "Date",
       "dueDate": "Échéance",
@@ -129,6 +135,12 @@
     }
   },
   "invoice": {
+    "plural": "Factures",
+    "singular": "Facture",
+    "intro": {
+      "title": "Factures de vente",
+      "description": "Ici, vous pouvez gérer vos factures de vente, qui seront utilisées pour les ventes et la facturation."
+    },
     "form": {
       "date": "Date",
       "dueDate": "Échéance",
@@ -287,6 +299,10 @@
     }
   },
   "payment": {
+    "intro": {
+      "title": "Paiements",
+      "description": "Ici, vous pouvez gérer vos paiements."
+    },
     "plural": "Paiements",
     "singular": "Paiement",
     "new": "Nouveau paiement",

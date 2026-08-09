@@ -162,8 +162,7 @@ export const useSellingQuotationColumns = (
       enableHiding: true
     },
     {
-      id: 'totalIncludingTaxes',
-      accessorKey: 'totalIncludingTaxes',
+      accessorKey: t('invoice.table.columns.total', 'Total TTC'),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
