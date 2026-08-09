@@ -57,6 +57,11 @@ export const PaymentInvoiceItem = ({
   const currentAllocated = Number(entry.amount || 0);
   const newRemaining = Math.max(0, alreadyRemaining - currentAllocated);
 
+  const rateAvant = netToPay > 0 ? (alreadyPaid / netToPay) * 100 : 0;
+  const ratePaid = netToPay > 0 ? (currentAllocated / netToPay) * 100 : 0;
+  const rateAfter = netToPay > 0 ? ((alreadyPaid + currentAllocated) / netToPay) * 100 : 0;
+  const rateRemaining = netToPay > 0 ? (newRemaining / netToPay) * 100 : 0;
+
   // Calculate max range for this slider
   // If total payment is specified, max is min(invoice remaining, allocated + unallocated remaining budget)
   const maxVal =
@@ -124,6 +129,19 @@ export const PaymentInvoiceItem = ({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-emerald-500/50 shrink-0" />
+                  <span className="text-xs text-muted-foreground font-normal">
+                    {tInvoicing('payment.invoice_item.rate_avant', {
+                      defaultValue: 'Rate before'
+                    })}
+                    :
+                  </span>
+                </div>
+                <span className="text-xs text-foreground font-medium">{`${rateAvant.toFixed(2)}%`}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <span className="size-2 rounded-full bg-amber-500 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
                     {tInvoicing('payment.invoice_item.already_remaining', {
@@ -135,7 +153,7 @@ export const PaymentInvoiceItem = ({
                 <span className="text-xs text-foreground font-normal">{`${alreadyRemaining.toFixed(invDigits)} ${invSymbol}`}</span>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-1 pt-1 border-t border-border/30">
                 <div className="flex items-center gap-2">
                   <span className="size-2 rounded-full bg-emerald-600 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
@@ -150,6 +168,19 @@ export const PaymentInvoiceItem = ({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-emerald-600/50 shrink-0" />
+                  <span className="text-xs text-muted-foreground font-normal">
+                    {tInvoicing('payment.invoice_item.rate_paid', {
+                      defaultValue: 'Payment rate'
+                    })}
+                    :
+                  </span>
+                </div>
+                <span className="text-xs text-foreground font-medium">{`${ratePaid.toFixed(2)}%`}</span>
+              </div>
+
+              <div className="flex items-center justify-between mt-1 pt-1 border-t border-border/30">
+                <div className="flex items-center gap-2">
                   <span className="size-2 rounded-full bg-sky-500 shrink-0" />
                   <span className="text-xs text-muted-foreground font-normal">
                     {tInvoicing('payment.invoice_item.new_remaining', {
@@ -159,6 +190,32 @@ export const PaymentInvoiceItem = ({
                   </span>
                 </div>
                 <span className="text-xs text-foreground font-normal">{`${newRemaining.toFixed(invDigits)} ${invSymbol}`}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-sky-500/50 shrink-0" />
+                  <span className="text-xs text-muted-foreground font-normal">
+                    {tInvoicing('payment.invoice_item.rate_remaining', {
+                      defaultValue: 'Remaining rate'
+                    })}
+                    :
+                  </span>
+                </div>
+                <span className="text-xs text-foreground font-medium">{`${rateRemaining.toFixed(2)}%`}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-sky-600/50 shrink-0" />
+                  <span className="text-xs text-muted-foreground font-normal">
+                    {tInvoicing('payment.invoice_item.rate_after', {
+                      defaultValue: 'Rate after'
+                    })}
+                    :
+                  </span>
+                </div>
+                <span className="text-xs text-foreground font-medium">{`${rateAfter.toFixed(2)}%`}</span>
               </div>
             </div>
           </div>

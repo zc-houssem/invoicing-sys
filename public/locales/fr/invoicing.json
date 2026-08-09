@@ -106,6 +106,18 @@
       "yes": "Oui, créer la facture",
       "no": "Non, juste mettre à jour le statut"
     },
+    "print_dialog": {
+      "title": "Imprimer le document",
+      "description": "Choisissez un modèle et prévisualisez le PDF avant l'impression.",
+      "select_template": "Modèle",
+      "preview": "Aperçu",
+      "preview_loading": "Génération de l'aperçu…",
+      "preview_error": "Échec de la génération de l'aperçu",
+      "preview_unavailable": "Enregistrez le document avant de prévisualiser.",
+      "fullscreen": "Plein écran",
+      "exit_fullscreen": "Quitter le plein écran",
+      "no_templates": "Aucun modèle n'est disponible pour les devis."
+    },
     "messages": {
       "status_updated": "Statut du devis mis à jour avec succès",
       "duplicate_success": "Devis dupliqué avec succès",
@@ -218,6 +230,22 @@
       "cancel": "Annuler",
       "invalidate": "Invalider",
       "refund": "Rembourser"
+    },
+    "print_dialog": {
+      "title": "Imprimer le document",
+      "description": "Choisissez un modèle et prévisualisez le PDF avant l'impression.",
+      "select_template": "Modèle",
+      "preview": "Aperçu",
+      "preview_loading": "Génération de l'aperçu…",
+      "preview_error": "Échec de la génération de l'aperçu",
+      "preview_unavailable": "Enregistrez le document avant de prévisualiser.",
+      "fullscreen": "Plein écran",
+      "exit_fullscreen": "Quitter le plein écran",
+      "no_templates": "Aucun modèle n'est disponible pour les factures."
+    },
+    "messages": {
+      "print_success": "PDF de la facture généré avec succès",
+      "print_failed": "Échec de la génération du PDF de la facture"
     }
   },
   "article": {
@@ -337,7 +365,11 @@
       "already_paid": "Total des paiements antérieurs",
       "already_remaining": "Solde dû avant opération",
       "new_paid": "Montant du règlement saisi",
-      "new_remaining": "Nouveau solde dû"
+      "new_remaining": "Nouveau solde dû",
+      "rate_avant": "Taux avant",
+      "rate_paid": "Taux payé",
+      "rate_after": "Taux après",
+      "rate_remaining": "Taux restant"
     },
     "dialogs": {
       "delete": {

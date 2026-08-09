@@ -106,6 +106,18 @@
       "yes": "Yes, create invoice",
       "no": "No, just update status"
     },
+    "print_dialog": {
+      "title": "Print document",
+      "description": "Choose a template and preview the PDF before printing.",
+      "select_template": "Template",
+      "preview": "Preview",
+      "preview_loading": "Generating preview…",
+      "preview_error": "Failed to generate preview",
+      "preview_unavailable": "Save the document before previewing.",
+      "fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "no_templates": "No templates are available for quotations."
+    },
     "messages": {
       "status_updated": "Quotation status updated successfully",
       "duplicate_success": "Quotation duplicated successfully",
@@ -218,6 +230,22 @@
       "cancel": "Cancel",
       "invalidate": "Invalidate",
       "refund": "Refund"
+    },
+    "print_dialog": {
+      "title": "Print document",
+      "description": "Choose a template and preview the PDF before printing.",
+      "select_template": "Template",
+      "preview": "Preview",
+      "preview_loading": "Generating preview…",
+      "preview_error": "Failed to generate preview",
+      "preview_unavailable": "Save the document before previewing.",
+      "fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "no_templates": "No templates are available for invoices."
+    },
+    "messages": {
+      "print_success": "Invoice PDF generated successfully",
+      "print_failed": "Failed to generate invoice PDF"
     }
   },
   "article": {
@@ -336,7 +364,11 @@
       "already_paid": "Total of previous payments",
       "already_remaining": "Balance due before operation",
       "new_paid": "Entered payment amount",
-      "new_remaining": "New balance due"
+      "new_remaining": "New balance due",
+      "rate_avant": "Rate before",
+      "rate_paid": "Payment rate",
+      "rate_after": "Rate after",
+      "rate_remaining": "Remaining rate"
     },
     "dialogs": {
       "delete": {
