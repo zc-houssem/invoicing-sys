@@ -14,12 +14,14 @@ import { useApproveUserDialog } from './modals/UserApproveDialog';
 import { useDisapproveUserDialog } from './modals/UserDisapproveDialog';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
 import { useUserStore } from '@/hooks/stores/useUserStore';
 import { useDebounce } from '@/hooks/other/useDebounce';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useRoles } from '@/hooks/content/useRoles';
 
 interface UsersProps {
   className?: string;
@@ -71,6 +73,15 @@ export const Users = ({ className }: UsersProps) => {
   );
 
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<Record<string, string>>(
+    columnFilters,
+    500
+  );
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString('', debouncedColumnFilters),
+    [debouncedColumnFilters]
+  );
 
   const {
     data: usersResponse,
@@ -83,14 +94,16 @@ export const Users = ({ className }: UsersProps) => {
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      debouncedColumnFilters
     ],
     queryFn: () =>
       api.admin.user.findPaginated({
         page: debouncedPage.toString(),
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
-        search: debouncedSearchTerm
+        search: debouncedSearchTerm,
+        filter: filterString
       })
   });
 
@@ -235,6 +248,17 @@ export const Users = ({ className }: UsersProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     ...tableReset,
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
     targetEntity: (user: ResponseUserDto) => {
       userStore.set('response', user);
       userStore.set<UpdateUserDto>('updateDto', {
@@ -252,9 +276,20 @@ export const Users = ({ className }: UsersProps) => {
     }
   };
 
-  const columns = useUserColumns(context, t);
+  const { roles } = useRoles();
+  const roleFilterOptions: DataTableColumnFilterOption[] = React.useMemo(
+    () =>
+      roles.map((role) => ({
+        label: role.label,
+        filter: `roleId||$eq||${role.id}`
+      })),
+    [roles]
+  );
 
-  const isPending = isUsersPending || paging || resizing || searching || sorting;
+  const columns = useUserColumns(context, t, roleFilterOptions);
+
+  const isPending =
+    isUsersPending || paging || resizing || searching || sorting || filtering;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
