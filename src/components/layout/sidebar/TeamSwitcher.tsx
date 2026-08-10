@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 
 import {
   DropdownMenu,
@@ -33,6 +34,7 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
   const router = useRouter();
   const { isMobile } = useSidebar();
   const { activeCompanyId, setActiveCompanyId } = useActiveCompanyContext();
+  const { t } = useTranslation('common');
 
   const activeTeam = React.useMemo(() => {
     if (teams.length === 0) return undefined;
@@ -76,7 +78,7 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}>
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Enterprises
+              {t('menu.contacts.subs.enterprises')}
             </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
@@ -100,7 +102,7 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
               <div className="flex size-6 items-center justify-center rounded-md border bg-card">
                 <Plus className="size-4" />
               </div>
-              <div className="text-xs font-medium">Add enterprise</div>
+              <div className="text-xs font-medium">{t('menu.enterprise.add')}</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

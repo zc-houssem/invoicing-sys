@@ -69,7 +69,8 @@
       "title": "Compte"
     },
     "enterprise": {
-      "title": "Entreprise"
+      "title": "Entreprise",
+      "add": "Ajouter une entreprise"
     }
   },
   "general": {

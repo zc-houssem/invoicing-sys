@@ -69,7 +69,8 @@
       "title": "Account"
     },
     "enterprise": {
-      "title": "Enterprise"
+      "title": "Enterprise",
+      "add": "Add enterprise"
     }
   },
   "general": {
