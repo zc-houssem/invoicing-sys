@@ -334,5 +334,17 @@
       "title": "Footers",
       "coming_soon": "Footer management coming soon."
     }
+  },
+  "templateHeader": {
+    "page": {
+      "title": "Headers",
+      "description": "Here you can manage your document headers."
+    }
+  },
+  "templateFooter": {
+    "page": {
+      "title": "Footers",
+      "description": "Here you can manage your document footers."
+    }
   }
 }

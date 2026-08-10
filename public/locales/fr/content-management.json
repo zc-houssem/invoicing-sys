@@ -330,5 +330,17 @@
       "title": "Pieds de page",
       "coming_soon": "Gestion des pieds de page à venir."
     }
+  },
+  "templateHeader": {
+    "page": {
+      "title": "En-têtes",
+      "description": "Ici, vous pouvez gérer les en-têtes de vos documents."
+    }
+  },
+  "templateFooter": {
+    "page": {
+      "title": "Pieds de page",
+      "description": "Ici, vous pouvez gérer les pieds de page de vos documents."
+    }
   }
 }
