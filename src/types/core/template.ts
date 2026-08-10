@@ -11,6 +11,8 @@ export interface ResponseTemplateDto extends DatabaseEntity {
   documentId?: number;
   variables?: object;
   backupVariables?: object;
+  previewPictureId?: number;
+  previewPicture?: ResponseStorageDto;
 }
 
 export interface CreateTemplateDto {
@@ -20,9 +22,46 @@ export interface CreateTemplateDto {
   documentId?: number;
   variables?: string;
   backupVariables?: string;
+  previewPictureId?: number;
 }
 
 export interface UpdateTemplateDto extends Partial<CreateTemplateDto> {}
+
+export interface ResponseTemplateHeaderDto extends DatabaseEntity {
+  id: string;
+  name: string;
+  description?: string;
+  ejsCode?: string;
+  previewPicture?: ResponseStorageDto;
+  previewPictureId?: number;
+}
+
+export interface CreateTemplateHeaderDto {
+  name: string;
+  description?: string;
+  ejsCode?: string;
+  previewPictureId?: number;
+}
+
+export interface UpdateTemplateHeaderDto extends Partial<CreateTemplateHeaderDto> {}
+
+export interface ResponseTemplateFooterDto extends DatabaseEntity {
+  id: string;
+  name: string;
+  description?: string;
+  ejsCode?: string;
+  previewPicture?: ResponseStorageDto;
+  previewPictureId?: number;
+}
+
+export interface CreateTemplateFooterDto {
+  name: string;
+  description?: string;
+  ejsCode?: string;
+  previewPictureId?: number;
+}
+
+export interface UpdateTemplateFooterDto extends Partial<CreateTemplateFooterDto> {}
 
 export interface ResponseTemplateTypeDto extends DatabaseEntity {
   id: string;

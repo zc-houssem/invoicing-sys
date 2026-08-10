@@ -9,6 +9,8 @@ import { taxRate } from './tax-rate';
 import { template } from './template';
 import { storage } from './storage';
 import { templateType } from './template-type';
+import { templateHeader } from './template-header';
+import { templateFooter } from './template-footer';
 import { documentPdf } from './document-pdf';
 
 export const core = {
@@ -22,6 +24,8 @@ export const core = {
   taxRate,
   template,
   templateType,
+  templateHeader,
+  templateFooter,
   storage,
   documentPdf
 };

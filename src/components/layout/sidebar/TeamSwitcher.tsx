@@ -75,7 +75,9 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             align="start"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}>
-            <DropdownMenuLabel className="text-xs text-muted-foreground">Teams</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              Enterprises
+            </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.id}
@@ -95,10 +97,10 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             <DropdownMenuItem
               className="gap-2 p-2"
               onClick={() => router.push('/settings/account/enterprise/new')}>
-              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+              <div className="flex size-6 items-center justify-center rounded-md border bg-card">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add enterprise</div>
+              <div className="text-xs font-medium">Add enterprise</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

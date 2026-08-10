@@ -10,26 +10,26 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useRouter } from 'next/router';
 import { useIntro } from '@/context/IntroContext';
 import { DataTable } from '@/components/shared/data-table/data-table';
-import { useTemplateColumns } from './columns';
+import { useTemplateFooterColumns } from './columns';
 import { DataTableConfig } from '@/components/shared/data-table/types';
-import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
-import { useTemplateDeleteDialog } from './modals/TemplateDeleteDialog';
-import { ResponseTemplateDto } from '@/types';
+import { useTemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
+import { useTemplateFooterDeleteDialog } from './modals/TemplateFooterDeleteDialog';
+import { ResponseTemplateFooterDto } from '@/types';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { LayoutGrid, List } from 'lucide-react';
 import { CardView, CommonCard } from '@/components/shared/data-table/card-view';
 import { useUpload } from '@/hooks/useUpload';
 
-interface TemplatePortalProps {
+interface TemplateFooterPortalProps {
   className?: string;
 }
 
-const TemplateCard = ({
+const TemplateFooterCard = ({
   item,
   onClick
 }: {
-  item: ResponseTemplateDto;
+  item: ResponseTemplateFooterDto;
   onClick: () => void;
 }) => {
   const { url } = useUpload({ uploadId: item.previewPictureId });
@@ -44,27 +44,27 @@ const TemplateCard = ({
   );
 };
 
-export const TemplatePortal = ({ className }: TemplatePortalProps) => {
+export const TemplateFooterPortal = ({ className }: TemplateFooterPortalProps) => {
   const router = useRouter();
 
   const { t: tCommon, i18n } = useTranslation('common');
   const { t: tContentManagement } = useTranslation('content-management');
+  const { setRoutes, clearRoutes } = useBreadcrumb();
 
   const { setIntro, clearIntro, setFloating, clearFloating } = useIntro();
-  const { setRoutes, clearRoutes } = useBreadcrumb();
   const [viewMode, setViewMode] = React.useState<'table' | 'card'>('table');
 
   React.useEffect(() => {
     setIntro?.(
-      tContentManagement('template.page.title', { defaultValue: 'Templates' }),
-      tContentManagement('template.page.description', {
-        defaultValue: 'Here you can manage your document templates.'
+      tContentManagement('templateFooter.page.title', { defaultValue: 'Footers' }),
+      tContentManagement('templateFooter.page.description', {
+        defaultValue: 'Here you can manage your document footers.'
       })
     );
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tCommon('menu.contentManagement.subs.templates') }
+      { title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }) }
     ]);
 
     setFloating?.(
@@ -100,7 +100,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     clearFloating
   ]);
 
-  const templateStore = useTemplateStore();
+  const templateFooterStore = useTemplateFooterStore();
 
   const {
     page,
@@ -111,10 +111,8 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     setSortDetails,
     searchTerm,
     setSearchTerm,
-    columnFilters,
-    setColumnFilters,
     tableReset
-  } = useDataTableState('templateportal-table', { order: true, sortKey: 'id' });
+  } = useDataTableState('templateFooterportal-table', { order: true, sortKey: 'id' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
@@ -127,12 +125,12 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
 
   const {
-    data: templatesResp,
+    data: templateFootersResp,
     isPending: isFetchPending,
-    refetch: refetchTemplates
+    refetch: refetchTemplateFooters
   } = useQuery({
     queryKey: [
-      'templates',
+      'templateFooters',
       debouncedPage,
       debouncedSize,
       debouncedSortDetails.order,
@@ -140,7 +138,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
       debouncedSearchTerm
     ],
     queryFn: () =>
-      api.core.template.findPaginated({
+      api.core.templateFooter.findPaginated({
         page: debouncedPage.toString(),
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'asc' : 'desc'}`,
@@ -148,50 +146,49 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
       })
   });
 
-  const templates = React.useMemo(() => {
-    return templatesResp?.data || [];
-  }, [templatesResp]);
+  const templateFooters = React.useMemo(() => {
+    return templateFootersResp?.data || [];
+  }, [templateFootersResp]);
 
-  // remove template
-  const { mutate: removeTemplate, isPending: isDeletePending } = useMutation({
-    mutationFn: (id?: string) => api.core.template.remove(id),
+  const { mutate: removeTemplateFooter, isPending: isDeletePending } = useMutation({
+    mutationFn: (id?: string) => api.core.templateFooter.remove(id),
     onSuccess: () => {
-      if (templates?.length == 1 && page > 1) setPage(page - 1);
-      toast.success(tContentManagement('template.action_remove_success'));
-      refetchTemplates();
+      if (templateFooters?.length == 1 && page > 1) setPage(page - 1);
+      toast.success(tContentManagement('templateFooter.action_remove_success'));
+      refetchTemplateFooters();
     },
     onError: (error) => {
-      toast.error(getErrorMessage('content-management', error, 'template.action_remove_failure'));
+      toast.error(
+        getErrorMessage('content-management', error, 'templateFooter.action_remove_failure')
+      );
     }
   });
 
-  // print removed — PDFs are generated on the server when printing invoices/quotations
-
-  const { deleteTemplateDialog, openDeleteTemplateDialog, closeDeleteTemplateDialog } =
-    useTemplateDeleteDialog({
-      representation: templateStore?.response?.name,
-      deleteTemplate: () => removeTemplate(templateStore?.response?.id),
+  const { deleteTemplateFooterDialog, openDeleteTemplateFooterDialog } =
+    useTemplateFooterDeleteDialog({
+      representation: templateFooterStore?.response?.name,
+      deleteTemplateFooter: () => removeTemplateFooter(templateFooterStore?.response?.id),
       isDeletionPending: isDeletePending,
-      reset: templateStore.reset
+      reset: templateFooterStore.reset
     });
 
-  const context: DataTableConfig<ResponseTemplateDto> = {
-    singularName: 'Template',
-    pluralName: 'Templates',
+  const context: DataTableConfig<ResponseTemplateFooterDto> = {
+    singularName: 'Footer',
+    pluralName: 'Footers',
     createCallback: () => {
-      router.push('/content-management/pdf/templates/new');
+      router.push('/content-management/pdf/footers/new');
     },
-    updateCallback: (target: ResponseTemplateDto) => {
-      router.push(`/content-management/pdf/templates/${target.id}`);
+    updateCallback: (target: ResponseTemplateFooterDto) => {
+      router.push(`/content-management/pdf/footers/${target.id}`);
     },
     deleteCallback: () => {
-      openDeleteTemplateDialog();
+      openDeleteTemplateFooterDialog();
     },
     additionalActions: {},
     searchTerm,
     setSearchTerm,
     page,
-    totalPageCount: templatesResp?.meta.pageCount || 1,
+    totalPageCount: templateFootersResp?.meta.pageCount || 1,
     setPage,
     size,
     setSize,
@@ -200,17 +197,17 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     ...tableReset,
     targetEntity: (entity) => {
-      templateStore.set('response', entity);
-      templateStore.set('updateDto', {
+      templateFooterStore.set('response', entity);
+      templateFooterStore.set('updateDto', {
         name: entity.name,
         description: entity.description,
-        documentId: entity.document?.id,
-        variables: JSON.stringify(entity.variables)
+        ejsCode: entity.ejsCode,
+        previewPictureId: entity.previewPictureId
       });
     }
   };
 
-  const columns = useTemplateColumns(context);
+  const columns = useTemplateFooterColumns(context);
 
   const isPending = isFetchPending || isDeletePending || paging || resizing || searching || sorting;
 
@@ -220,7 +217,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
         <DataTable
           className="flex flex-col flex-1 overflow-hidden p-1"
           containerClassName="overflow-auto"
-          data={templates}
+          data={templateFooters}
           columns={columns}
           context={context}
           isPending={isPending}
@@ -228,9 +225,9 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
       ) : (
         <div className="flex-1 overflow-auto">
           <CardView
-            data={templates}
+            data={templateFooters}
             renderCard={(item) => (
-              <TemplateCard
+              <TemplateFooterCard
                 key={item.id}
                 item={item}
                 onClick={() => context.updateCallback?.(item)}
@@ -239,7 +236,7 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
           />
         </div>
       )}
-      {deleteTemplateDialog}
+      {deleteTemplateFooterDialog}
     </div>
   );
 };

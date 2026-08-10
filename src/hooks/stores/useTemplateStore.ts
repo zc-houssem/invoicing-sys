@@ -4,11 +4,12 @@ import { BaseActions, createBaseStore } from './useBaseStore';
 interface TemplateData {
   response: ResponseTemplateDto | null;
   createDto: CreateTemplateDto;
-  createDtoErrors: Record<string, string[]>;
+  createDtoErrors?: Partial<Record<keyof CreateTemplateDto, string[]>>;
   updateDto?: UpdateTemplateDto;
-  updateDtoErrors: Record<string, string[]>;
+  updateDtoErrors?: Partial<Record<keyof UpdateTemplateDto, string[]>>;
 
   document?: File | null;
+  previewPicture?: File | string | null;
   progress: number;
 
   variables?: object;
@@ -17,7 +18,10 @@ interface TemplateData {
 
 interface ITemplateStore extends TemplateData {}
 
-export interface TemplateStore extends ITemplateStore, BaseActions<ITemplateStore> {}
+export interface TemplateStore extends ITemplateStore, BaseActions<ITemplateStore> {
+  setProgress: (progress: number) => void;
+  setPreviewPicture: (file: File | string | null) => void;
+}
 
 const initialState: TemplateData = {
   response: null,

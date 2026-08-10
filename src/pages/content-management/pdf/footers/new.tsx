@@ -1,10 +1,10 @@
-import { TemplateHeaderPortal } from '@/components/content-management/pdf/headers/TemplateHeaderPortal';
+import { CreateTemplateFooterForm } from '@/components/content-management/pdf/footers/forms/CreateTemplateFooterForm';
 import { PdfSettingsLayout } from '@/components/content-management/pdf/PdfSettingsLayout';
 
 export default function Page() {
   return (
     <PdfSettingsLayout>
-      <TemplateHeaderPortal />
+      <CreateTemplateFooterForm />
     </PdfSettingsLayout>
   );
 }

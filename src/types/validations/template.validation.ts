@@ -11,3 +11,24 @@ export const templateSchema = z.object({
   documentId: z.number().optional(),
   variables: z.record(z.any()).optional()
 });
+
+export const updateTemplateSchema = templateSchema.partial();
+
+export const templateHeaderSchema = z.object({
+  name: z
+    .string({ required_error: 'Name is required' })
+    .min(3, { message: 'Name must be at least 3 characters' }),
+  description: z.string().optional()
+});
+
+export const updateTemplateHeaderSchema = templateHeaderSchema.partial();
+
+export const templateFooterSchema = z.object({
+  name: z
+    .string({ required_error: 'Name is required' })
+    .min(3, { message: 'Name must be at least 3 characters' }),
+  description: z.string().optional()
+});
+
+export const updateTemplateFooterSchema = templateFooterSchema.partial();
+

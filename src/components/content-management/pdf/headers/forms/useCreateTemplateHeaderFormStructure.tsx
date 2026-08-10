@@ -4,33 +4,29 @@ import {
   FieldVariant,
   FormStructure,
   ImageFieldProps,
-  SelectFieldProps,
-  SelectOption,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
-import { TemplateStore } from '@/hooks/stores/useTemplateStore';
+import { TemplateHeaderStore } from '@/hooks/stores/useTemplateHeaderStore';
 import { useTranslation } from 'react-i18next';
 
 
-interface useCreateTemplateFormStructureProps {
-  store: TemplateStore;
-  templateTypes: SelectOption[];
+interface useCreateTemplateHeaderFormStructureProps {
+  store: TemplateHeaderStore;
 }
 
-export const useCreateTemplateFormStructure = ({
-  store,
-  templateTypes
-}: useCreateTemplateFormStructureProps) => {
+export const useCreateTemplateHeaderFormStructure = ({
+  store
+}: useCreateTemplateHeaderFormStructureProps) => {
   const { t } = useTranslation('content-management');
   const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
-    label: t('template.form.name'),
+    label: t('templateHeader.form.name', { defaultValue: 'Name' }),
     variant: FieldVariant.TEXT,
-    placeholder: t('template.form.placeholders.name'),
-    description: t('template.form.descriptions.name'),
+    placeholder: t('templateHeader.form.placeholders.name', { defaultValue: 'Enter name' }),
+    description: t('templateHeader.form.descriptions.name', { defaultValue: 'The name of the header' }),
     error: store.createDtoErrors?.name?.[0],
     props: {
       value: store.createDto.name,
@@ -43,10 +39,10 @@ export const useCreateTemplateFormStructure = ({
 
   const descriptionField: Field<TextareaFieldProps> = {
     id: 'description',
-    label: t('template.form.description'),
+    label: t('templateHeader.form.description', { defaultValue: 'Description' }),
     variant: FieldVariant.TEXTAREA,
-    placeholder: t('template.form.placeholders.description'),
-    description: t('template.form.descriptions.description'),
+    placeholder: t('templateHeader.form.placeholders.description', { defaultValue: 'Enter description' }),
+    description: t('templateHeader.form.descriptions.description', { defaultValue: 'Optional description' }),
     error: store.createDtoErrors?.description?.[0],
     props: {
       value: store.createDto.description,
@@ -58,35 +54,16 @@ export const useCreateTemplateFormStructure = ({
     }
   };
 
-  const typeField: Field<SelectFieldProps> = {
-    id: 'type',
-    label: t('template.form.type'),
-    variant: FieldVariant.SELECT,
-    placeholder: t('template.form.placeholders.type'),
-    description:
-      'PDF layout is configured on the server for each document type (header, footer, body elements).',
-    error: store.createDtoErrors?.templateTypeId?.[0],
-    props: {
-      value: store.createDto.templateTypeId,
-      onValueChange: (value) => {
-        store.setNested('createDto.templateTypeId', value);
-        store.setNested('createDtoErrors.templateTypeId', []);
-      },
-      options: templateTypes
-    }
-  };
-
 
   const formStructure: FormStructure = {
     title: {
-      value: 'Create Template'
+      value: 'Create Header'
     },
     includeHeader: false,
     fieldsets: [
       {
         rows: [
           { fields: [nameField] },
-          { fields: [typeField] },
           { fields: [descriptionField] }
         ]
       }

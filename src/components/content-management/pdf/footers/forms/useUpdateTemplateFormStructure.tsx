@@ -1,9 +1,7 @@
-import React from 'react';
 import {
   Field,
   FieldVariant,
   FormStructure,
-  ImageFieldProps,
   SelectFieldProps,
   SelectOption,
   TextareaFieldProps,
@@ -12,18 +10,16 @@ import {
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTranslation } from 'react-i18next';
 
-
-interface useCreateTemplateFormStructureProps {
+interface useUpdateTemplateFormStructureProps {
   store: TemplateStore;
   templateTypes: SelectOption[];
 }
 
-export const useCreateTemplateFormStructure = ({
+export const useUpdateTemplateFormStructure = ({
   store,
   templateTypes
-}: useCreateTemplateFormStructureProps) => {
+}: useUpdateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
@@ -31,12 +27,12 @@ export const useCreateTemplateFormStructure = ({
     variant: FieldVariant.TEXT,
     placeholder: t('template.form.placeholders.name'),
     description: t('template.form.descriptions.name'),
-    error: store.createDtoErrors?.name?.[0],
+    error: store.updateDtoErrors?.name?.[0],
     props: {
-      value: store.createDto.name,
+      value: store.updateDto?.name,
       onChange: (value) => {
-        store.setNested('createDto.name', value);
-        store.setNested('createDtoErrors.name', []);
+        store.setNested('updateDto.name', value);
+        store.setNested('updateDtoErrors.name', []);
       }
     }
   };
@@ -47,12 +43,12 @@ export const useCreateTemplateFormStructure = ({
     variant: FieldVariant.TEXTAREA,
     placeholder: t('template.form.placeholders.description'),
     description: t('template.form.descriptions.description'),
-    error: store.createDtoErrors?.description?.[0],
+    error: store.updateDtoErrors?.description?.[0],
     props: {
-      value: store.createDto.description,
+      value: store.updateDto?.description,
       onChange: (value) => {
-        store.setNested('createDto.description', value);
-        store.setNested('createDtoErrors.description', []);
+        store.setNested('updateDto.description', value);
+        store.setNested('updateDtoErrors.description', []);
       },
       rows: 4
     }
@@ -65,21 +61,20 @@ export const useCreateTemplateFormStructure = ({
     placeholder: t('template.form.placeholders.type'),
     description:
       'PDF layout is configured on the server for each document type (header, footer, body elements).',
-    error: store.createDtoErrors?.templateTypeId?.[0],
+    error: store.updateDtoErrors?.templateTypeId?.[0],
     props: {
-      value: store.createDto.templateTypeId,
+      value: store.updateDto?.templateTypeId,
       onValueChange: (value) => {
-        store.setNested('createDto.templateTypeId', value);
-        store.setNested('createDtoErrors.templateTypeId', []);
+        store.setNested('updateDto.templateTypeId', value);
+        store.setNested('updateDtoErrors.templateTypeId', []);
       },
       options: templateTypes
     }
   };
 
-
   const formStructure: FormStructure = {
     title: {
-      value: 'Create Template'
+      value: 'Update Template'
     },
     includeHeader: false,
     fieldsets: [

@@ -1,9 +1,7 @@
-import React from 'react';
 import {
   Field,
   FieldVariant,
   FormStructure,
-  ImageFieldProps,
   SelectFieldProps,
   SelectOption,
   TextareaFieldProps,
@@ -11,7 +9,6 @@ import {
 } from '@/components/shared/form-builder/types';
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTranslation } from 'react-i18next';
-
 
 interface useCreateTemplateFormStructureProps {
   store: TemplateStore;
@@ -23,7 +20,6 @@ export const useCreateTemplateFormStructure = ({
   templateTypes
 }: useCreateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
@@ -75,7 +71,6 @@ export const useCreateTemplateFormStructure = ({
       options: templateTypes
     }
   };
-
 
   const formStructure: FormStructure = {
     title: {
