@@ -7,7 +7,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from '@/components/shared/data-table/data-table';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableConfig, DataTableColumnFilterOption } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 import { usePaymentColumns } from './columns';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errors';
@@ -79,6 +81,26 @@ export const PaymentPortal = ({
   );
 
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<Record<string, string>>(
+    columnFilters,
+    500
+  );
+
+  const baseFilters = React.useMemo(
+    () =>
+      [
+        activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
+        enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
+        interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : '',
+        createdById ? `createdById||$eq||${createdById}` : ''
+      ].filter(Boolean),
+    [activeCompanyId, enterpriseId, interlocutorId, createdById]
+  );
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString(baseFilters, debouncedColumnFilters),
+    [baseFilters, debouncedColumnFilters]
+  );
 
   const {
     data: paymentsResp,
@@ -93,6 +115,7 @@ export const PaymentPortal = ({
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
       debouncedSearchTerm,
+      debouncedColumnFilters,
       enterpriseId,
       interlocutorId,
       createdById
@@ -104,15 +127,7 @@ export const PaymentPortal = ({
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
         search: debouncedSearchTerm,
         join: ['enterprise', 'currency', 'createdBy'].join(','),
-        filter:
-          [
-            activeCompanyId ? `systemEnterpriseId||$eq||${activeCompanyId}` : '',
-            enterpriseId ? `enterpriseId||$eq||${enterpriseId}` : '',
-            interlocutorId ? `interlocutorId||$eq||${interlocutorId}` : '',
-            createdById ? `createdById||$eq||${createdById}` : ''
-          ]
-            .filter(Boolean)
-            .join(';') || undefined
+        filter: filterString || undefined
       })
   });
 
@@ -173,18 +188,39 @@ export const PaymentPortal = ({
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     ...tableReset,
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
     targetEntity: (entity) => {
       // not used
     }
   };
 
+  const { currencies } = useCurrencies();
+  const currencyFilterOptions: DataTableColumnFilterOption[] = React.useMemo(
+    () =>
+      currencies.map((currency) => ({
+        label: currency.label,
+        filter: `currencyId||$eq||${currency.id}`
+      })),
+    [currencies]
+  );
+
   const columns = usePaymentColumns(context, {
     hideEnterprise: !!enterpriseId,
     hideInterlocutor: !!interlocutorId,
     hideCreatedBy: !!createdById
-  });
+  }, currencyFilterOptions);
 
-  const isPending = isFetchPending || paging || resizing || searching || sorting;
+  const isPending = isFetchPending || paging || resizing || searching || sorting || filtering;
 
   return (
     <>
