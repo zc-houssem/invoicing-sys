@@ -23,6 +23,7 @@ import { PasswordField } from './PasswordField';
 import { Editor } from '@/components/shared/editor/blocks/editor-x/editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import MultipleSelector from '@/components/ui/multi-select';
+import { ComboboxMultiSelectField } from './ComboboxMultiSelectField';
 import { MultipleFilesUploader } from './MultipleFilesUploader';
 import { PhoneInput } from '@/components/ui/phone-input';
 
@@ -182,6 +183,21 @@ export const FieldBuilder = ({ field }: FieldBuilderProps) => {
         />
       );
     }
+    case 'combo_box':
+      return (
+        <ComboboxMultiSelectField
+          {...field.props}
+          className={cn(
+            field?.className,
+            field.error && 'border-destructive focus-within:ring-destructive/20'
+          )}
+          placeholder={field.placeholder}
+          options={field.props?.options}
+          value={field.props?.value}
+          disabled={field.props?.disabled}
+          onValueChange={field?.props?.onValueChange}
+        />
+      );
 
     case 'date':
       return (

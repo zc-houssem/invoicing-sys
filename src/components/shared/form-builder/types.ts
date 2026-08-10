@@ -44,6 +44,7 @@ export enum FieldVariant {
   DATE = 'date',
   SELECT = 'select',
   MULTI_SELECT = 'multi_select',
+  COMBO_BOX = 'combo_box',
   CHECKBOX = 'checkbox',
   RADIO = 'radio',
   SWITCH = 'switch',
@@ -127,6 +128,12 @@ export interface MultiSelectFieldProps extends BaseFieldProps {
   onValueChange?: (value: string[]) => void;
   options?: SelectOption[];
   hidePlaceholderWhenSelected?: boolean;
+}
+
+export interface ComboBoxFieldProps extends BaseFieldProps {
+  value?: string[];
+  onValueChange?: (value: string[]) => void;
+  options?: SelectOption[];
 }
 
 export interface RadioFieldProps extends BaseFieldProps {
