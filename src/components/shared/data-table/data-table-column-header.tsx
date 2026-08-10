@@ -29,6 +29,7 @@ interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes
   filterField?: string;
   filterType?: DataTableColumnFilterType;
   filterOptions?: DataTableColumnFilterOption[];
+  filterMultiSelect?: boolean;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
@@ -40,7 +41,8 @@ export function DataTableColumnHeader<TData, TValue>({
   filterKey,
   filterField,
   filterType,
-  filterOptions
+  filterOptions,
+  filterMultiSelect
 }: DataTableColumnHeaderProps<TData, TValue>) {
   const { t } = useTranslation('common');
   const meta = column.columnDef.meta;
@@ -48,6 +50,7 @@ export function DataTableColumnHeader<TData, TValue>({
   const resolvedFilterKey = filterKey ?? meta?.filterKey ?? attribute;
   const resolvedFilterField = filterField ?? meta?.filterField ?? resolvedFilterKey;
   const resolvedFilterOptions = filterOptions ?? meta?.filterOptions;
+  const resolvedFilterMultiSelect = filterMultiSelect ?? meta?.filterMultiSelect ?? false;
   const resolvedFilterType =
     filterType ?? meta?.filterType ?? (resolvedFilterOptions?.length ? 'options' : undefined);
 
@@ -117,11 +120,14 @@ export function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
-          className="w-56"
+          className={cn('w-56', canFilterSelect && resolvedFilterMultiSelect && 'w-72')}
           onInteractOutside={(e) => {
             const target = e.target as Element;
-            // Prevent closing if interacting with the date picker's popover (dialog)
-            if (target?.closest('[role="dialog"]') || target?.closest('.rdp')) {
+            if (
+              target?.closest('[role="dialog"]') ||
+              target?.closest('.rdp') ||
+              target?.closest('[data-slot="combobox-content"]')
+            ) {
               e.preventDefault();
             }
           }}>
@@ -181,6 +187,7 @@ export function DataTableColumnHeader<TData, TValue>({
                 filterKey={resolvedFilterKey}
                 activeFilter={activeFilter}
                 options={resolvedFilterOptions}
+                multiSelect={resolvedFilterMultiSelect}
                 onApply={context.setColumnFilter!}
                 onClose={() => setIsOpen(false)}
               />

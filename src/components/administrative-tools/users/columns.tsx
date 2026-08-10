@@ -157,6 +157,7 @@ export const useUserColumns = (
         meta: {
           filterKey: 'role',
           filterType: 'select',
+          filterMultiSelect: true,
           filterOptions: roleFilterOptions
         },
         header: ({ column }) => (

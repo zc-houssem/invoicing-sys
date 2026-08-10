@@ -231,6 +231,7 @@ export const useEnterpriseColumns = (
         exportValue: (row) => row.activity?.label.toLocaleString(),
         filterKey: 'activity',
         filterType: 'select',
+        filterMultiSelect: true,
         filterOptions: activityFilterOptions
       },
       header: ({ column, table }) => (

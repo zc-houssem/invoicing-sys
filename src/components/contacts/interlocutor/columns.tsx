@@ -25,6 +25,7 @@ export const useInterlocutorColumns = (
           exportKey: 'title',
           filterKey: 'title',
           filterType: 'select',
+          filterMultiSelect: true,
           filterOptions: Object.values(SOCIAL_TITLE).map((title) => ({
             label: tSocial(title),
             filter: `title||$eq||${title}`

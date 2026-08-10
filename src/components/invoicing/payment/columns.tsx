@@ -122,6 +122,7 @@ export const usePaymentColumns = (
         meta: {
           filterKey: 'currency',
           filterType: 'select',
+          filterMultiSelect: true,
           filterOptions: currencyFilterOptions
         },
         header: ({ column }) => (

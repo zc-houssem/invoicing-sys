@@ -27,6 +27,7 @@ export interface DataTableColumnMeta<T> {
   filterField?: string;
   filterType?: DataTableColumnFilterType;
   filterOptions?: DataTableColumnFilterOption[];
+  filterMultiSelect?: boolean;
 }
 
 declare module '@tanstack/react-table' {

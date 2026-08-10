@@ -179,6 +179,7 @@ export const useUserSystemEnterpriseColumns = (
           exportValue: (row: ResponseEnterpriseMemberDto) => row.enterprise?.activity?.label,
           filterKey: 'activity',
           filterType: 'select',
+          filterMultiSelect: true,
           filterOptions: activityFilterOptions
         },
         header: ({ column, table }) => (
