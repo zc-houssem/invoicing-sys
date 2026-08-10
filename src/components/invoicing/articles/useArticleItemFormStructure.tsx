@@ -1,8 +1,8 @@
 import {
+  ComboBoxFieldProps,
   Field,
   FieldVariant,
   FormStructure,
-  MultiSelectFieldProps,
   NumberFieldProps,
   SelectFieldProps,
   SelectOption,
@@ -121,10 +121,10 @@ export const useArticleItemFormStructure = ({
     }
   };
 
-  const taxRatesField: Field<MultiSelectFieldProps> = {
+  const taxRatesField: Field<ComboBoxFieldProps> = {
     id: `article-${index}-taxRates`,
     label: t('article.form.taxRates'),
-    variant: FieldVariant.MULTI_SELECT,
+    variant: FieldVariant.COMBO_BOX,
     placeholder: t('article.form.placeholders.taxRates'),
     props: {
       disabled,
@@ -132,8 +132,7 @@ export const useArticleItemFormStructure = ({
       onValueChange: (value) => {
         store.updateArticle(store.articles[index].clientId, { taxIds: value.map(Number) });
       },
-      options: taxRateOptions,
-      hidePlaceholderWhenSelected: true
+      options: taxRateOptions
     }
   };
 
