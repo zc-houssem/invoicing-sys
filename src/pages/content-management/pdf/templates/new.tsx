@@ -1,5 +1,5 @@
-import { CreateTemplateForm } from '@/components/content-management/templates/forms/CreateTemplateForm';
-import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
+import { CreateTemplateForm } from '@/components/content-management/templates/footers/forms/CreateTemplateForm';
+import { PdfSettingsLayout } from '@/components/content-management/templates/PdfSettingsLayout';
 
 export default function Page() {
   return (

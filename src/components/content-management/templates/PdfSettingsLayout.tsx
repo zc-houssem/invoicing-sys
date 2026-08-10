@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import SidebarNav from '@/components/sidebar-nav';
-import { Printer, Type, LayoutTemplate } from 'lucide-react';
+import { Type, LayoutTemplate } from 'lucide-react';
 
 interface PdfSettingsLayoutProps {
   className?: string;

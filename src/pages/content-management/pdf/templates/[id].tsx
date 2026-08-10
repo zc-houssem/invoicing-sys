@@ -1,10 +1,10 @@
 import React from 'react';
-import { UpdateTemplateForm } from '@/components/content-management/templates/forms/UpdateTemplateForm';
 import { useRouter } from 'next/router';
-import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
+import { PdfSettingsLayout } from '@/components/content-management/templates/PdfSettingsLayout';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
+import { UpdateTemplateForm } from '@/components/content-management/templates/footers/forms/UpdateTemplateForm';
 
 export default function Page() {
   const router = useRouter();

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useTemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
 import { UpdateTemplateFooterForm } from '@/components/content-management/templates/footers/forms/UpdateTemplateFooterForm';
-import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
+import { PdfSettingsLayout } from '@/components/content-management/templates/PdfSettingsLayout';
 
 export default function Page() {
   const router = useRouter();
