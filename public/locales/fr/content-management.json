@@ -181,6 +181,14 @@
     }
   },
   "taxRate": {
+    "page": {
+      "title": "Taux de taxe",
+      "description": "Ici, vous pouvez gérer vos taux de taxe, qui seront appliqués à vos produits et services."
+    },
+    "entity": {
+      "singular": "Taux de taxe",
+      "plural": "Taux de taxe"
+    },
     "sheets": {
       "create": {
         "title": "Créer un taux de taxe",
@@ -230,6 +238,9 @@
         "applicable_on_all": "Applicable sur toutes les devises",
         "createdAt": "Créé le",
         "updatedAt": "Mis à jour le"
+      },
+      "emptyCells": {
+        "currency": "Applicable sur toutes les devises"
       }
     },
     "dialogs": {

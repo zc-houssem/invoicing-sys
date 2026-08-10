@@ -1,11 +1,11 @@
 import {
+  CheckboxFieldProps,
   Field,
   FieldVariant,
   FormStructure,
   NumberFieldProps,
   SelectFieldProps,
   SelectOption,
-  SwitchFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { TaxRateStore } from '@/hooks/stores/useTaxRateStore';
@@ -77,11 +77,12 @@ export const useCreateTaxRateFormStructure = ({
     }
   };
 
-  const specialField: Field<SwitchFieldProps> = {
+  const specialField: Field<CheckboxFieldProps> = {
     id: 'special',
     label: t('taxRate.form.special'),
     description: t('taxRate.form.descriptions.special'),
-    variant: FieldVariant.SWITCH,
+    required: false,
+    variant: FieldVariant.CHECKBOX,
     props: {
       checked: store.createDto.special,
       onCheckedChange: (checked) => {
@@ -123,10 +124,7 @@ export const useCreateTaxRateFormStructure = ({
             fields: [valueField, typeField]
           },
           {
-            fields: [specialField]
-          },
-          {
-            fields: [currencyField]
+            fields: [currencyField, specialField]
           }
         ]
       }

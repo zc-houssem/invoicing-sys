@@ -12,36 +12,35 @@ import { useIntro } from '@/context/IntroContext';
 import { useTaxRateCreateSheet } from './modals/TaxRateCreateSheet';
 import { DataTable } from '@/components/shared/data-table/data-table';
 import { useTaxRateColumns } from './columns';
-import { DataTableConfig } from '@/components/shared/data-table/types';
+import { DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
 import { useTaxRateStore } from '@/hooks/stores/useTaxRateStore';
 import { useTaxRateUpdateSheet } from './modals/TaxRateUpdateSheet';
 import { ResponseTaxRateDto } from '@/types';
 import { useTaxRateDeleteDialog } from './modals/TaxRateDeleteDialog';
 import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
 
 interface TaxRatesPortalProps {
   className?: string;
 }
 
 export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
-  //next-router
   const router = useRouter();
 
   const { t: tCommon } = useTranslation('common');
   const { t: tContentManagement } = useTranslation('content-management');
 
-  //set page title in the breadcrumb
   const { setIntro, clearIntro } = useIntro();
   const { setRoutes, clearRoutes } = useBreadcrumb();
   React.useEffect(() => {
     setIntro?.(
-      'Tax Rates',
-      'Here you can manage your tax rates, which will be applied to your products and services.'
+      tContentManagement('taxRate.page.title'),
+      tContentManagement('taxRate.page.description')
     );
     setRoutes?.([
-      { title: tCommon('menu.settings') },
-      { title: tCommon('submenu.system') },
-      { title: tCommon('settings.system.tax') }
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.taxRates') }
     ]);
     return () => {
       clearIntro?.();
@@ -52,13 +51,18 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
   const taxRateStore = useTaxRateStore();
 
   const {
-    page, setPage,
-    size, setSize,
-    sortDetails, setSortDetails,
-    searchTerm, setSearchTerm,
-    columnFilters, setColumnFilters,
+    page,
+    setPage,
+    size,
+    setSize,
+    sortDetails,
+    setSortDetails,
+    searchTerm,
+    setSearchTerm,
+    columnFilters,
+    setColumnFilters,
     tableReset
-  } = useDataTableState('taxrates-table', { order: true, sortKey: 'label' }, 5);
+  } = useDataTableState('taxrates-table', { order: true, sortKey: 'label' });
 
   const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
   const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
@@ -69,6 +73,14 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
   );
 
   const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<
+    Record<string, string>
+  >(columnFilters, 500);
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString([], debouncedColumnFilters),
+    [debouncedColumnFilters]
+  );
 
   const {
     data: taxesResp,
@@ -81,7 +93,8 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
       debouncedSize,
       debouncedSortDetails.order,
       debouncedSortDetails.sortKey,
-      debouncedSearchTerm
+      debouncedSearchTerm,
+      debouncedColumnFilters
     ],
     queryFn: () =>
       api.core.taxRate.findPaginated({
@@ -89,7 +102,8 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'asc' : 'desc'}`,
         search: debouncedSearchTerm,
-        join: 'currency'
+        join: 'currency',
+        filter: filterString || undefined
       })
   });
 
@@ -97,7 +111,6 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     return taxesResp?.data || [];
   }, [taxesResp]);
 
-  //create tax rate
   const { mutate: createTaxRate, isPending: isCreatePending } = useMutation({
     mutationFn: () => api.core.taxRate.create(taxRateStore.createDto),
     onSuccess: () => {
@@ -116,7 +129,6 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     }
   });
 
-  //update tax rate
   const { mutate: updateTaxRate, isPending: isUpdatePending } = useMutation({
     mutationFn: () => api.core.taxRate.update(taxRateStore?.response?.id, taxRateStore.updateDto),
     onSuccess: () => {
@@ -135,7 +147,6 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     }
   });
 
-  //remove tax rate
   const { mutate: removeTaxRate, isPending: isDeletePending } = useMutation({
     mutationFn: (id: number) => api.core.taxRate.remove(id),
     onSuccess: () => {
@@ -171,9 +182,8 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     });
 
   const context: DataTableConfig<ResponseTaxRateDto> = {
-    singularName: 'Tax Rate',
-    pluralName: 'Tax Rates',
-    //dialogs
+    singularName: tContentManagement('taxRate.entity.singular'),
+    pluralName: tContentManagement('taxRate.entity.plural'),
     createCallback: () => {
       openCreateTaxRateSheet();
     },
@@ -183,7 +193,6 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     deleteCallback: () => {
       openDeleteTaxRateDialog();
     },
-    //search, filtering, sorting & paging
     searchTerm,
     setSearchTerm,
     page,
@@ -195,6 +204,17 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     sortKey: sortDetails.sortKey,
     setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
     ...tableReset,
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
     targetEntity: (entity) => {
       taxRateStore.set('response', entity);
       taxRateStore.set('updateDto', {
@@ -207,7 +227,17 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     }
   };
 
-  const columns = useTaxRateColumns(context);
+  const { currencies } = useCurrencies();
+  const currencyFilterOptions: DataTableColumnFilterOption[] = React.useMemo(
+    () =>
+      currencies.map((currency) => ({
+        label: `${currency.label} (${currency.extras.symbol})`,
+        filter: `currencyId||$eq||${currency.id}`
+      })),
+    [currencies]
+  );
+
+  const columns = useTaxRateColumns(context, currencyFilterOptions);
 
   const isPending =
     isFetchPending ||
@@ -217,7 +247,8 @@ export const TaxRatesPortal = ({ className }: TaxRatesPortalProps) => {
     paging ||
     resizing ||
     searching ||
-    sorting;
+    sorting ||
+    filtering;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>

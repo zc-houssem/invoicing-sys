@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { createTaxRateSchema } from '@/types/validations/tax.validation';
+import { Repeat2, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CreateTaxRateFormProps {
   className?: string;
@@ -18,6 +20,7 @@ export const CreateTaxRateForm = ({
   createTaxRate,
   isCreatePending
 }: CreateTaxRateFormProps) => {
+  const { t: tCommon } = useTranslation('common');
   const taxRateStore = useTaxRateStore();
 
   const { currencies, isCurrenciesPending } = useCurrencies();
@@ -46,11 +49,14 @@ export const CreateTaxRateForm = ({
       <FormBuilder className="flex flex-col flex-1 overflow-auto p-2" structure={structure} />
       <Separator className="mb-4 mt-2" />
       <div className="flex flex-row justify-end gap-2">
-        <Button onClick={handleSubmit} disabled={isCreatePending}>
-          Save
+        <Button
+          variant="secondary"
+          onClick={() => taxRateStore.reset()}
+          disabled={isCreatePending}>
+          <Repeat2 /> {tCommon('commands.reset')}
         </Button>
-        <Button variant={'outline'} onClick={() => taxRateStore.reset()}>
-          Reset
+        <Button onClick={handleSubmit} disabled={isCreatePending}>
+          <Save /> {tCommon('commands.save')}
         </Button>
       </div>
     </div>

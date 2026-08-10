@@ -7,6 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { updateTaxRateSchema } from '@/types/validations/tax.validation';
 import { useUpdateTaxRateFormStructure } from './useUpdateTaxRateFormStructure';
 import { CurrencyPayload, ResponseRefParamDto } from '@/types';
+import { Repeat2, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface UpdateTaxRateFormProps {
   className?: string;
@@ -19,6 +21,7 @@ export const UpdateTaxRateForm = ({
   updateTaxRate,
   isUpdatePending
 }: UpdateTaxRateFormProps) => {
+  const { t: tCommon } = useTranslation('common');
   const taxRateStore = useTaxRateStore();
 
   const { currencies, isCurrenciesPending } = useCurrencies();
@@ -47,11 +50,14 @@ export const UpdateTaxRateForm = ({
       <FormBuilder className="flex flex-col flex-1 overflow-auto p-2" structure={structure} />
       <Separator className="mb-4 mt-2" />
       <div className="flex flex-row justify-end gap-2">
-        <Button onClick={handleSubmit} disabled={isUpdatePending}>
-          Save
+        <Button
+          variant="secondary"
+          onClick={() => taxRateStore.reset()}
+          disabled={isUpdatePending}>
+          <Repeat2 /> {tCommon('commands.reset')}
         </Button>
-        <Button variant={'outline'} onClick={() => taxRateStore.reset()}>
-          Reset
+        <Button onClick={handleSubmit} disabled={isUpdatePending}>
+          <Save /> {tCommon('commands.save')}
         </Button>
       </div>
     </div>

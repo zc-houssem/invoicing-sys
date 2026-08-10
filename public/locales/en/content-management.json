@@ -185,6 +185,14 @@
     }
   },
   "taxRate": {
+    "page": {
+      "title": "Tax Rates",
+      "description": "Here you can manage your tax rates, which will be applied to your products and services."
+    },
+    "entity": {
+      "singular": "Tax Rate",
+      "plural": "Tax Rates"
+    },
     "sheets": {
       "create": {
         "title": "Create Tax Rate",
@@ -234,6 +242,9 @@
         "applicable_on_all": "Applicable on all currencies",
         "createdAt": "Created At",
         "updatedAt": "Updated At"
+      },
+      "emptyCells": {
+        "currency": "Applicable on all currencies"
       }
     },
     "dialogs": {
