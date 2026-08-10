@@ -70,6 +70,9 @@ export const InvoiceIncludeOnTable = ({
                 checked={dto?.[key] ?? true}
                 onCheckedChange={(checked) => {
                   store.setNested(`${dtoPrefix}.${key}`, checked);
+                  if (key === 'hasTaxStamp' && !checked) {
+                    store.setNested(`${dtoPrefix}.taxStamp`, 0);
+                  }
                 }}
               />
             </td>

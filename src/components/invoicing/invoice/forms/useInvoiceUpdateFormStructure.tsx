@@ -75,6 +75,7 @@ export const useInvoiceUpdateFormStructure = ({
   const showDeliveryAddress = store.updateDto?.showDeliveryAddress ?? true;
   const showArticleDescription = store.updateDto?.showArticleDescription ?? true;
   const hasGeneralConditions = store.updateDto?.hasGeneralConditions ?? true;
+  const hasTaxStamp = store.updateDto?.hasTaxStamp ?? store.response?.hasTaxStamp ?? true;
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -376,11 +377,20 @@ export const useInvoiceUpdateFormStructure = ({
               if (isUpdatePending || !isUpdatable) return;
               store.setNested('updateDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
-            taxStamp={store.updateDto?.taxStamp ?? store.response?.taxStamp ?? 0}
-            onTaxStampChange={(value) => {
-              if (isUpdatePending || !isUpdatable) return;
-              store.setNested('updateDto.taxStamp', value);
-            }}
+            hasTaxStamp={hasTaxStamp}
+            taxStamp={
+              hasTaxStamp
+                ? (store.updateDto?.taxStamp ?? store.response?.taxStamp ?? 0)
+                : 0
+            }
+            onTaxStampChange={
+              hasTaxStamp
+                ? (value) => {
+                    if (isUpdatePending || !isUpdatable) return;
+                    store.setNested('updateDto.taxStamp', value);
+                  }
+                : undefined
+            }
             amountPaid={(store.response as any)?.amountPaid}
             payments={store.response?.payments}
             showPaymentSummary={true}

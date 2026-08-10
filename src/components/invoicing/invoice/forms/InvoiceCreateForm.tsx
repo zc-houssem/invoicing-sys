@@ -160,6 +160,10 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     } else {
       createInvoice({
         ...invoiceStore.createDto,
+        taxStamp:
+          invoiceStore.createDto.hasTaxStamp === false
+            ? 0
+            : Number(invoiceStore.createDto.taxStamp) || 0,
         systemEnterpriseId: activeCompanyId ?? undefined,
         invoiceArticles: articleStore.articles.map(
           (article, order) =>

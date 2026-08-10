@@ -161,7 +161,7 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         showDeliveryAddress: workflow?.invoice.showDeliveryAddress,
         hasGeneralConditions: workflow?.invoice.hasGeneralConditions,
         hasTaxStamp: workflow?.invoice.hasTaxStamp,
-        taxStamp: workflow?.invoice.taxStamp ?? 0,
+        taxStamp: Number(workflow?.invoice.taxStamp) || 0,
         invoiceArticles: [],
         uploads: []
       });
@@ -232,6 +232,10 @@ export const InvoiceUpdateForm = ({ id, className }: InvoiceUpdateFormProps) => 
         id: invoiceStore.response?.id as number,
         data: {
           ...invoiceStore.updateDto,
+          taxStamp:
+            invoiceStore.updateDto?.hasTaxStamp === false
+              ? 0
+              : Number(invoiceStore.updateDto?.taxStamp) || 0,
           invoiceArticles: articleStore.articles.map(
             (article, order) =>
               ({

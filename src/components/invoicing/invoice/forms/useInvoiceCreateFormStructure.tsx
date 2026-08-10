@@ -69,6 +69,7 @@ export const useInvoiceCreateFormStructure = ({
   const showDeliveryAddress = store.createDto.showDeliveryAddress ?? true;
   const showArticleDescription = store.createDto.showArticleDescription ?? true;
   const hasGeneralConditions = store.createDto.hasGeneralConditions ?? true;
+  const hasTaxStamp = store.createDto.hasTaxStamp ?? true;
 
   const singleFileField: Field<SingleFileFieldProps> = {
     id: 'file',
@@ -340,11 +341,16 @@ export const useInvoiceCreateFormStructure = ({
               if (isCreationPending) return;
               store.setNested('createDto.taxWithholdingExcludeTaxes', excludeTaxes);
             }}
-            taxStamp={store.createDto.taxStamp ?? 0}
-            onTaxStampChange={(value) => {
-              if (isCreationPending) return;
-              store.setNested('createDto.taxStamp', value);
-            }}
+            hasTaxStamp={hasTaxStamp}
+            taxStamp={hasTaxStamp ? (store.createDto.taxStamp ?? 0) : 0}
+            onTaxStampChange={
+              hasTaxStamp
+                ? (value) => {
+                    if (isCreationPending) return;
+                    store.setNested('createDto.taxStamp', value);
+                  }
+                : undefined
+            }
             showPaymentSummary={true}
             status={(store.createDto as any).status || 'Draft'}
           />

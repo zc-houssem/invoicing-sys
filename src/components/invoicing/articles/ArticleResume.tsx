@@ -21,6 +21,7 @@ interface ArticleResumeProps {
   showPaymentSummary?: boolean;
   status?: string;
   disabled?: boolean;
+  hasTaxStamp?: boolean;
   taxStamp?: number;
   onTaxStampChange?: (value: number) => void;
 }
@@ -37,6 +38,7 @@ export function ArticleResume({
   showPaymentSummary,
   status,
   disabled,
+  hasTaxStamp = true,
   taxStamp = 0,
   onTaxStampChange
 }: ArticleResumeProps) {
@@ -136,7 +138,7 @@ export function ArticleResume({
     }, 0);
   }, [articleStore.articles, taxRates]);
 
-  const taxStampValue = Number(taxStamp) || 0;
+  const taxStampValue = hasTaxStamp ? Number(taxStamp) || 0 : 0;
   const currencyDigits = Number(currency?.extras?.digitsAfterComma ?? 3);
   const currencySymbol = currency?.extras?.symbol || '';
   const formattedTaxStampValue = taxStampValue
@@ -193,7 +195,7 @@ export function ArticleResume({
       });
     }
 
-    if ((taxWithholding && taxWithholding.extras?.rate) || taxStampValue > 0 || onTaxStampChange) {
+    if ((taxWithholding && taxWithholding.extras?.rate) || taxStampValue > 0 || (hasTaxStamp && onTaxStampChange)) {
       after.push({
         label: t('article.form.netToPay', { defaultValue: 'Net to Pay' }),
         value: `${netToPay.toFixed(digits)} ${symbol}`
@@ -237,6 +239,7 @@ export function ArticleResume({
     taxWithholding,
     taxWithholdingAmount,
     taxStampValue,
+    hasTaxStamp,
     onTaxStampChange,
     showPaymentSummary,
     amountPaid,
@@ -258,7 +261,7 @@ export function ArticleResume({
               <td className="text-muted-foreground text-end text-xs">{item.value || '-'}</td>
             </tr>
           ))}
-          {onTaxStampChange && (
+          {hasTaxStamp && onTaxStampChange && (
             <tr>
               <td className="text-start">
                 <Label className="text-xs font-thin">{t('article.form.taxStamp')}</Label>
