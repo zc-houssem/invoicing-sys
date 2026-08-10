@@ -25,15 +25,9 @@ interface TemplatePortalProps {
   className?: string;
 }
 
-const TemplateCard = ({
-  item,
-  onClick
-}: {
-  item: ResponseTemplateDto;
-  onClick: () => void;
-}) => {
+const TemplateCard = ({ item, onClick }: { item: ResponseTemplateDto; onClick: () => void }) => {
   const { url } = useUpload({ uploadId: item.previewPictureId });
-  
+
   return (
     <CommonCard
       title={item.name}

@@ -7,6 +7,13 @@ import {
 import axios from '../axios';
 import { Paginated, QueryParams } from '@/types/response';
 
+export interface PdfPreviewOptions {
+  includeHeader?: boolean;
+  includeFooter?: boolean;
+  headerId?: string;
+  footerId?: string;
+}
+
 const findPaginated = async ({
   page = '1',
   limit = '5',
@@ -93,12 +100,35 @@ const duplicate = async (id: number): Promise<ResponseInvoiceDto> => {
   return response.data;
 };
 
-const downloadPdf = async (id: number, templateId?: string): Promise<Blob> => {
+const downloadPdf = async (
+  id: number, 
+  templateId?: string,
+  options?: { includeHeader?: boolean; includeFooter?: boolean; headerId?: string; footerId?: string }
+): Promise<Blob> => {
   const response = await axios.get(`/invoice/${id}/pdf`, {
     responseType: 'blob',
-    params: templateId ? { templateId } : undefined
+    params: {
+      ...(templateId ? { templateId } : {}),
+      ...options
+    }
   });
   return response.data;
+};
+
+const previewPdf = async (
+  templateId: string,
+  id: number,
+  options?: PdfPreviewOptions
+): Promise<Blob> => {
+  const response = await axios.get(
+    `/invoice/${id}/pdf/${templateId}/preview`,
+    { 
+      responseType: 'arraybuffer',
+      headers: { Accept: 'application/pdf' },
+      params: options
+    }
+  );
+  return new Blob([response.data], { type: 'application/pdf' });
 };
 
 export const invoice = {
@@ -111,6 +141,7 @@ export const invoice = {
   fromQuotation,
   duplicate,
   downloadPdf,
+  previewPdf,
   workflow: {
     findById: findWorkflowById,
     next

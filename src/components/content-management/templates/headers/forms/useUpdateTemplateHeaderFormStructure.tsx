@@ -3,20 +3,22 @@ import {
   Field,
   FieldVariant,
   FormStructure,
-  ImageFieldProps,
+  SelectFieldProps,
+  SelectOption,
   TextareaFieldProps,
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { TemplateHeaderStore } from '@/hooks/stores/useTemplateHeaderStore';
 import { useTranslation } from 'react-i18next';
 
-
 interface useUpdateTemplateHeaderFormStructureProps {
   store: TemplateHeaderStore;
+  templateTypes: SelectOption[];
 }
 
 export const useUpdateTemplateHeaderFormStructure = ({
-  store
+  store,
+  templateTypes
 }: useUpdateTemplateHeaderFormStructureProps) => {
   const { t } = useTranslation('content-management');
   const [isUploadPending, setIsUploadPending] = React.useState(false);
@@ -26,7 +28,9 @@ export const useUpdateTemplateHeaderFormStructure = ({
     label: t('templateHeader.form.name', { defaultValue: 'Name' }),
     variant: FieldVariant.TEXT,
     placeholder: t('templateHeader.form.placeholders.name', { defaultValue: 'Enter name' }),
-    description: t('templateHeader.form.descriptions.name', { defaultValue: 'The name of the header' }),
+    description: t('templateHeader.form.descriptions.name', {
+      defaultValue: 'The name of the header'
+    }),
     error: store.updateDtoErrors?.name?.[0],
     props: {
       value: store.updateDto?.name,
@@ -41,8 +45,12 @@ export const useUpdateTemplateHeaderFormStructure = ({
     id: 'description',
     label: t('templateHeader.form.description', { defaultValue: 'Description' }),
     variant: FieldVariant.TEXTAREA,
-    placeholder: t('templateHeader.form.placeholders.description', { defaultValue: 'Enter description' }),
-    description: t('templateHeader.form.descriptions.description', { defaultValue: 'Optional description' }),
+    placeholder: t('templateHeader.form.placeholders.description', {
+      defaultValue: 'Enter description'
+    }),
+    description: t('templateHeader.form.descriptions.description', {
+      defaultValue: 'Optional description'
+    }),
     error: store.updateDtoErrors?.description?.[0],
     props: {
       value: store.updateDto?.description,
@@ -54,6 +62,26 @@ export const useUpdateTemplateHeaderFormStructure = ({
     }
   };
 
+  const typeField: Field<SelectFieldProps> = {
+    id: 'type',
+    label: t('templateHeader.form.type', { defaultValue: 'Template Type' }),
+    variant: FieldVariant.SELECT,
+    placeholder: t('templateHeader.form.placeholders.type', {
+      defaultValue: 'Select template type'
+    }),
+    description: t('templateHeader.form.descriptions.type', {
+      defaultValue: 'The document type this header applies to'
+    }),
+    error: store.updateDtoErrors?.templateTypeId?.[0],
+    props: {
+      value: store.updateDto?.templateTypeId,
+      onValueChange: (value) => {
+        store.setNested('updateDto.templateTypeId', value);
+        store.setNested('updateDtoErrors.templateTypeId', []);
+      },
+      options: templateTypes
+    }
+  };
 
   const formStructure: FormStructure = {
     title: {
@@ -62,10 +90,7 @@ export const useUpdateTemplateHeaderFormStructure = ({
     includeHeader: false,
     fieldsets: [
       {
-        rows: [
-          { fields: [nameField] },
-          { fields: [descriptionField] }
-        ]
+        rows: [{ fields: [nameField] }, { fields: [typeField] }, { fields: [descriptionField] }]
       }
     ]
   };

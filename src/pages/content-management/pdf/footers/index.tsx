@@ -1,5 +1,5 @@
-import { TemplateFooterPortal } from '@/components/content-management/pdf/footers/TemplateFooterPortal';
-import { PdfSettingsLayout } from '@/components/content-management/pdf/PdfSettingsLayout';
+import { TemplateFooterPortal } from '@/components/content-management/templates/footers/TemplateFooterPortal';
+import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
 
 export default function Page() {
   return (

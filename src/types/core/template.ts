@@ -1,6 +1,9 @@
 import { DatabaseEntity } from '../response/database-entity';
 import { ResponseStorageDto } from './storage';
 
+export const PDF_PAGE_WIDTH = 794;
+export const PDF_PAGE_HEIGHT = 1123;
+
 export interface ResponseTemplateDto extends DatabaseEntity {
   id: string;
   name: string;
@@ -13,6 +16,8 @@ export interface ResponseTemplateDto extends DatabaseEntity {
   backupVariables?: object;
   previewPictureId?: number;
   previewPicture?: ResponseStorageDto;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface CreateTemplateDto {
@@ -23,6 +28,8 @@ export interface CreateTemplateDto {
   variables?: string;
   backupVariables?: string;
   previewPictureId?: number;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface UpdateTemplateDto extends Partial<CreateTemplateDto> {}
@@ -30,17 +37,24 @@ export interface UpdateTemplateDto extends Partial<CreateTemplateDto> {}
 export interface ResponseTemplateHeaderDto extends DatabaseEntity {
   id: string;
   name: string;
+  templateType?: ResponseTemplateTypeDto;
+  templateTypeId?: string;
   description?: string;
   ejsCode?: string;
   previewPicture?: ResponseStorageDto;
   previewPictureId?: number;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface CreateTemplateHeaderDto {
   name: string;
+  templateTypeId?: string;
   description?: string;
   ejsCode?: string;
   previewPictureId?: number;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface UpdateTemplateHeaderDto extends Partial<CreateTemplateHeaderDto> {}
@@ -48,17 +62,24 @@ export interface UpdateTemplateHeaderDto extends Partial<CreateTemplateHeaderDto
 export interface ResponseTemplateFooterDto extends DatabaseEntity {
   id: string;
   name: string;
+  templateType?: ResponseTemplateTypeDto;
+  templateTypeId?: string;
   description?: string;
   ejsCode?: string;
   previewPicture?: ResponseStorageDto;
   previewPictureId?: number;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface CreateTemplateFooterDto {
   name: string;
+  templateTypeId?: string;
   description?: string;
   ejsCode?: string;
   previewPictureId?: number;
+  isAsset?: boolean;
+  assetName?: string;
 }
 
 export interface UpdateTemplateFooterDto extends Partial<CreateTemplateFooterDto> {}

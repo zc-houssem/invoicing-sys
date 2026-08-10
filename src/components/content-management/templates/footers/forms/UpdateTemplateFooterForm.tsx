@@ -1,44 +1,42 @@
 import React from 'react';
-import { useCreateTemplateFormStructure } from './useCreateTemplateFormStructure';
-import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
+import { useUpdateTemplateFooterFormStructure } from './useUpdateTemplateFooterFormStructure';
+import { useTemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
 import { useIntro } from '@/context/IntroContext';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
-import { templateSchema } from '@/types/validations/template.validation';
+import { updateTemplateFooterSchema } from '@/types/validations/template.validation';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/api';
 import { ServerErrorResponse } from '@/types';
 import { toast } from 'sonner';
-import { useRouter } from 'next/router';
 import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
 import { Spinner } from '@/components/shared';
 import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
-interface CreateTemplateFormProps {
+interface UpdateTemplateFooterFormProps {
   className?: string;
+  onSuccess?: () => void;
 }
 
-export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
-  const router = useRouter();
-  const templateStore = useTemplateStore();
+export const UpdateTemplateFooterForm = ({ className, onSuccess }: UpdateTemplateFooterFormProps) => {
+  const templateFooterStore = useTemplateFooterStore();
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
   React.useEffect(() => {
     setIntro?.(
-      'Create Template',
-      'Register a template record linked to a document type. PDF output uses EJS + Puppeteer on the server.'
+      'Update Footer',
+      'Update a template footer.'
     );
     return () => {
-      templateStore.reset();
       clearIntro?.();
     };
   }, []);
 
-  const { formStructure } = useCreateTemplateFormStructure({
-    store: templateStore,
+  const { formStructure } = useUpdateTemplateFooterFormStructure({
+    store: templateFooterStore,
     templateTypes: mapToSelectOptions({
       data: templateTypes || [],
       valueKey: 'id',
@@ -46,25 +44,25 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     })
   });
 
-  const { mutate: createTemplate, isPending: isCreateTemplatePending } = useMutation({
-    mutationFn: async () => api.core.template.create(templateStore.createDto),
+  const { mutate: updateTemplateFooter, isPending: isUpdateTemplateFooterPending } = useMutation({
+    mutationFn: async () =>
+      api.core.templateFooter.update(templateFooterStore.response?.id as string, templateFooterStore.updateDto as any),
     onSuccess() {
-      toast.success('Template created successfully');
-      templateStore.reset();
-      router.push('/content-management/pdf/templates');
+      toast.success('Footer updated successfully');
+      onSuccess?.();
     },
     onError(error: ServerErrorResponse) {
-      toast.error(error.response?.data?.message || 'Failed to create template');
+      toast.error(error.response?.data?.message || 'Failed to update footer');
     }
   });
 
   const handleSubmit = () => {
-    const result = templateSchema.safeParse(templateStore.createDto);
+    const result = updateTemplateFooterSchema.safeParse(templateFooterStore.updateDto);
     if (!result.success) {
-      templateStore.set('createDtoErrors', result.error.flatten().fieldErrors);
+      templateFooterStore.set('updateDtoErrors', result.error.flatten().fieldErrors);
       return;
     }
-    createTemplate();
+    updateTemplateFooter();
   };
 
   if (isTemplateTypePending) return <Spinner />;
@@ -72,15 +70,11 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
   return (
     <div className={cn('flex flex-col flex-1 overflow-auto p-4 gap-4', className)}>
       <div className="max-w-xl mx-auto w-full my-auto space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Templates link a name and document type to a server-side EJS template. PDF layout
-          is defined in backend template files — no file upload or visual editor required.
-        </p>
         <FormBuilder structure={formStructure} />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit} disabled={isCreateTemplatePending}>
+          <Button onClick={handleSubmit} disabled={isUpdateTemplateFooterPending}>
             <Save className="size-4 mr-2" />
-            Create
+            Update
           </Button>
         </div>
       </div>

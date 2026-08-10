@@ -1,5 +1,5 @@
-import { TemplateHeaderPortal } from '@/components/content-management/pdf/headers/TemplateHeaderPortal';
-import { PdfSettingsLayout } from '@/components/content-management/pdf/PdfSettingsLayout';
+import { TemplateHeaderPortal } from '@/components/content-management/templates/headers/TemplateHeaderPortal';
+import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
 
 export default function Page() {
   return (

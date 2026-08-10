@@ -11,7 +11,6 @@ import { storage } from './storage';
 import { templateType } from './template-type';
 import { templateHeader } from './template-header';
 import { templateFooter } from './template-footer';
-import { documentPdf } from './document-pdf';
 
 export const core = {
   article,
@@ -26,6 +25,5 @@ export const core = {
   templateType,
   templateHeader,
   templateFooter,
-  storage,
-  documentPdf
+  storage
 };

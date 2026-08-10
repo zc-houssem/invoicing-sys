@@ -12,6 +12,9 @@ import { api } from '@/api';
 import { ServerErrorResponse } from '@/types';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
+import { Spinner } from '@/components/shared';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
 interface CreateTemplateHeaderFormProps {
   className?: string;
@@ -21,12 +24,10 @@ export const CreateTemplateHeaderForm = ({ className }: CreateTemplateHeaderForm
   const router = useRouter();
   const templateHeaderStore = useTemplateHeaderStore();
   const { setIntro, clearIntro } = useIntro();
+  const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
   React.useEffect(() => {
-    setIntro?.(
-      'Create Header',
-      'Register a template header.'
-    );
+    setIntro?.('Create Header', 'Register a template header.');
     return () => {
       templateHeaderStore.reset();
       clearIntro?.();
@@ -35,6 +36,11 @@ export const CreateTemplateHeaderForm = ({ className }: CreateTemplateHeaderForm
 
   const { formStructure } = useCreateTemplateHeaderFormStructure({
     store: templateHeaderStore,
+    templateTypes: mapToSelectOptions({
+      data: templateTypes || [],
+      valueKey: 'id',
+      labelKey: 'name'
+    })
   });
 
   const { mutate: createTemplateHeader, isPending: isCreateTemplateHeaderPending } = useMutation({
@@ -57,6 +63,8 @@ export const CreateTemplateHeaderForm = ({ className }: CreateTemplateHeaderForm
     }
     createTemplateHeader();
   };
+
+  if (isTemplateTypePending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-auto p-4 gap-4', className)}>

@@ -18,7 +18,10 @@ export const templateHeaderSchema = z.object({
   name: z
     .string({ required_error: 'Name is required' })
     .min(3, { message: 'Name must be at least 3 characters' }),
-  description: z.string().optional()
+  description: z.string().optional(),
+  templateTypeId: z.string({
+    required_error: 'Template type is required'
+  })
 });
 
 export const updateTemplateHeaderSchema = templateHeaderSchema.partial();
@@ -27,7 +30,10 @@ export const templateFooterSchema = z.object({
   name: z
     .string({ required_error: 'Name is required' })
     .min(3, { message: 'Name must be at least 3 characters' }),
-  description: z.string().optional()
+  description: z.string().optional(),
+  templateTypeId: z.string({
+    required_error: 'Template type is required'
+  })
 });
 
 export const updateTemplateFooterSchema = templateFooterSchema.partial();

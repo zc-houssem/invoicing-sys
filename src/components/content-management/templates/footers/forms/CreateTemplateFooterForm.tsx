@@ -12,6 +12,9 @@ import { api } from '@/api';
 import { ServerErrorResponse } from '@/types';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import { useTemplateTypes } from '@/hooks/content/core/useTemplateTypes';
+import { Spinner } from '@/components/shared';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
 
 interface CreateTemplateFooterFormProps {
   className?: string;
@@ -21,6 +24,7 @@ export const CreateTemplateFooterForm = ({ className }: CreateTemplateFooterForm
   const router = useRouter();
   const templateFooterStore = useTemplateFooterStore();
   const { setIntro, clearIntro } = useIntro();
+  const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
   React.useEffect(() => {
     setIntro?.(
@@ -35,6 +39,11 @@ export const CreateTemplateFooterForm = ({ className }: CreateTemplateFooterForm
 
   const { formStructure } = useCreateTemplateFooterFormStructure({
     store: templateFooterStore,
+    templateTypes: mapToSelectOptions({
+      data: templateTypes || [],
+      valueKey: 'id',
+      labelKey: 'name'
+    })
   });
 
   const { mutate: createTemplateFooter, isPending: isCreateTemplateFooterPending } = useMutation({
@@ -57,6 +66,8 @@ export const CreateTemplateFooterForm = ({ className }: CreateTemplateFooterForm
     }
     createTemplateFooter();
   };
+
+  if (isTemplateTypePending) return <Spinner />;
 
   return (
     <div className={cn('flex flex-col flex-1 overflow-auto p-4 gap-4', className)}>

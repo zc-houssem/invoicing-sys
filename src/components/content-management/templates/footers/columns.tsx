@@ -3,22 +3,22 @@ import { DataTableCellVariant, DataTableConfig } from '@/components/shared/data-
 import { useTranslation } from 'react-i18next';
 import { DataTableColumnHeader } from '@/components/shared/data-table/data-table-column-header';
 import { DataTableRowActions } from '@/components/shared/data-table/data-table-row-actions';
-import { ResponseTemplateHeaderDto } from '@/types';
+import { ResponseTemplateFooterDto } from '@/types';
 import DataTableCell from '@/components/shared/data-table/core/data-table-cell';
 
-export const useTemplateHeaderColumns = (
-  context: DataTableConfig<ResponseTemplateHeaderDto>
-): ColumnDef<ResponseTemplateHeaderDto>[] => {
+export const useTemplateFooterColumns = (
+  context: DataTableConfig<ResponseTemplateFooterDto>
+): ColumnDef<ResponseTemplateFooterDto>[] => {
   const { t } = useTranslation('content-management');
 
   return [
     {
-      accessorKey: t('templateHeader.table.columns.name', { defaultValue: 'Name' }),
+      accessorKey: t('templateFooter.table.columns.name', { defaultValue: 'Name' }),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('templateHeader.table.columns.name', { defaultValue: 'Name' })}
+          title={t('templateFooter.table.columns.name', { defaultValue: 'Name' })}
           attribute={'name'}
         />
       ),
@@ -27,19 +27,19 @@ export const useTemplateHeaderColumns = (
       enableHiding: true
     },
     {
-      accessorKey: t('templateHeader.table.columns.description', { defaultValue: 'Description' }),
+      accessorKey: t('templateFooter.table.columns.description', { defaultValue: 'Description' }),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('templateHeader.table.columns.description', { defaultValue: 'Description' })}
+          title={t('templateFooter.table.columns.description', { defaultValue: 'Description' })}
           attribute={'description'}
         />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[300px] truncate">
+        <div className="max-w-75 truncate">
           {row.original.description || (
-            <span className="opacity-50">{t('templateHeader.table.emptyCells.description', { defaultValue: '-' })}</span>
+            <span className="opacity-50">{t('templateFooter.table.emptyCells.description', { defaultValue: '-' })}</span>
           )}
         </div>
       ),
@@ -47,12 +47,32 @@ export const useTemplateHeaderColumns = (
       enableHiding: true
     },
     {
-      accessorKey: t('templateHeader.table.columns.createdAt', { defaultValue: 'Created At' }),
+      accessorKey: t('templateFooter.table.columns.type', { defaultValue: 'Type' }),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('templateHeader.table.columns.createdAt', { defaultValue: 'Created At' })}
+          title={t('templateFooter.table.columns.type', { defaultValue: 'Type' })}
+          attribute={'templateType'}
+        />
+      ),
+      cell: ({ row }) => (
+        <div>
+          {row.original.templateType?.name || (
+            <span className="opacity-50">{t('templateFooter.table.emptyCells.type', { defaultValue: '-' })}</span>
+          )}
+        </div>
+      ),
+      enableSorting: true,
+      enableHiding: true
+    },
+    {
+      accessorKey: t('templateFooter.table.columns.createdAt', { defaultValue: 'Created At' }),
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          context={context}
+          title={t('templateFooter.table.columns.createdAt', { defaultValue: 'Created At' })}
           attribute={'createdAt'}
         />
       ),
@@ -64,12 +84,12 @@ export const useTemplateHeaderColumns = (
       enableHiding: true
     },
     {
-      accessorKey: t('templateHeader.table.columns.updatedAt', { defaultValue: 'Updated At' }),
+      accessorKey: t('templateFooter.table.columns.updatedAt', { defaultValue: 'Updated At' }),
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
           context={context}
-          title={t('templateHeader.table.columns.updatedAt', { defaultValue: 'Updated At' })}
+          title={t('templateFooter.table.columns.updatedAt', { defaultValue: 'Updated At' })}
           attribute={'updatedAt'}
         />
       ),

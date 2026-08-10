@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useTemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
-import { UpdateTemplateFooterForm } from '@/components/content-management/pdf/footers/forms/UpdateTemplateFooterForm';
-import { PdfSettingsLayout } from '@/components/content-management/pdf/PdfSettingsLayout';
+import { UpdateTemplateFooterForm } from '@/components/content-management/templates/footers/forms/UpdateTemplateFooterForm';
+import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
 
 export default function Page() {
   const router = useRouter();
@@ -26,7 +26,10 @@ export default function Page() {
         ejsCode: data.ejsCode,
         previewPictureId: data.previewPictureId
       });
-      templateFooterStore.set('previewPicture', data.previewPicture ? `/storage/view/slug/${data.previewPicture.slug}` : null);
+      templateFooterStore.set(
+        'previewPicture',
+        data.previewPicture ? `/storage/view/slug/${data.previewPicture.slug}` : null
+      );
     }
   }, [data]);
 

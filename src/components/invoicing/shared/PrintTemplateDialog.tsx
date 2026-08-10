@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/shared';
-import { ResponseTemplateDto } from '@/types';
+import { ResponseTemplateDto, ResponseTemplateHeaderDto, ResponseTemplateFooterDto } from '@/types';
 import { cn } from '@/lib/utils';
 import { api } from '@/api';
 import { createPdfBlobUrl, revokePdfBlobUrl } from '@/utils/pdf.utils';
@@ -21,6 +21,8 @@ import { useFullScreen } from '@/hooks/useFullScreen';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import { ScrollBar } from '@/components/ui/scroll-area';
 import { Check, Expand, FileText, X } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const PDF_PAGE_WIDTH = 794;
 const PDF_PAGE_HEIGHT = 1123;
@@ -30,9 +32,11 @@ export interface PrintTemplateDialogContentProps {
   documentType: 'invoice' | 'quotation';
   documentId?: number;
   templates: ResponseTemplateDto[];
+  headers?: ResponseTemplateHeaderDto[];
+  footers?: ResponseTemplateFooterDto[];
   isLoading?: boolean;
   isPrinting?: boolean;
-  onConfirm: (templateId: string) => void;
+  onConfirm: (templateId: string, options?: { includeHeader: boolean; includeFooter: boolean; headerId?: string; footerId?: string }) => void;
   onCancel: () => void;
   className?: string;
 }
@@ -42,6 +46,8 @@ export const PrintTemplateDialogContent = ({
   documentType,
   documentId,
   templates,
+  headers,
+  footers,
   isLoading,
   isPrinting,
   onConfirm,
@@ -54,6 +60,10 @@ export const PrintTemplateDialogContent = ({
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = React.useState(false);
   const [previewError, setPreviewError] = React.useState<string | null>(null);
+  const [includeHeader, setIncludeHeader] = React.useState(true);
+  const [includeFooter, setIncludeFooter] = React.useState(true);
+  const [selectedHeaderId, setSelectedHeaderId] = React.useState<string>('');
+  const [selectedFooterId, setSelectedFooterId] = React.useState<string>('');
   const previewUrlRef = React.useRef<string | null>(null);
 
   const { isFullscreen, toggle: toggleFullscreen } = useFullScreen({
@@ -92,6 +102,10 @@ export const PrintTemplateDialogContent = ({
       setPreviewError(null);
       setIsPreviewLoading(false);
       setSelectedTemplateId('');
+      setIncludeHeader(true);
+      setIncludeFooter(true);
+      setSelectedHeaderId('');
+      setSelectedFooterId('');
     }
   }, [isOpen, revokePreview]);
 
@@ -123,10 +137,16 @@ export const PrintTemplateDialogContent = ({
       setPreviewError(null);
 
       try {
+        const pdfOptions = { 
+          includeHeader, 
+          includeFooter,
+          headerId: selectedHeaderId || undefined,
+          footerId: selectedFooterId || undefined
+        };
         const blob =
           documentType === 'quotation'
-            ? await api.core.documentPdf.previewWithQuotation(selectedTemplateId, documentId)
-            : await api.core.documentPdf.previewWithInvoice(selectedTemplateId, documentId);
+            ? await api.invoicing.quotation.previewPdf(selectedTemplateId, documentId, pdfOptions)
+            : await api.invoicing.invoice.previewPdf(selectedTemplateId, documentId, pdfOptions);
 
         if (cancelled) return;
 
@@ -152,7 +172,7 @@ export const PrintTemplateDialogContent = ({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [isOpen, selectedTemplateId, documentId, documentType, revokePreview, tInvoicing, dialogNs]);
+  }, [isOpen, selectedTemplateId, selectedHeaderId, selectedFooterId, documentId, documentType, includeHeader, includeFooter, revokePreview, tInvoicing, dialogNs]);
 
   React.useEffect(() => () => revokePreview(), [revokePreview]);
 
@@ -160,11 +180,11 @@ export const PrintTemplateDialogContent = ({
   const pdfViewParams = isFullscreen ? `${pdfEmbedParams}&view=Fit` : `${pdfEmbedParams}&view=FitH`;
 
   const previewBody = !documentId ? (
-    <div className="flex min-h-[320px] items-center justify-center p-6 text-center text-sm text-muted-foreground">
+    <div className="flex min-h-80 items-center justify-center p-6 text-center text-sm text-muted-foreground">
       {tInvoicing(`${dialogNs}.preview_unavailable`)}
     </div>
   ) : previewError ? (
-    <div className="flex min-h-[320px] items-center justify-center p-6 text-center text-sm text-destructive">
+    <div className="flex min-h-80 items-center justify-center p-6 text-center text-sm text-destructive">
       {previewError}
     </div>
   ) : previewUrl ? (
@@ -180,7 +200,7 @@ export const PrintTemplateDialogContent = ({
       </div>
     )
   ) : (
-    <div className="flex min-h-[320px] items-center justify-center text-sm text-muted-foreground">
+    <div className="flex min-h-80 items-center justify-center text-sm text-muted-foreground">
       {tInvoicing(`${dialogNs}.preview_loading`)}
     </div>
   );
@@ -190,7 +210,7 @@ export const PrintTemplateDialogContent = ({
     previewUrl &&
     typeof document !== 'undefined' &&
     createPortal(
-      <div className="fixed inset-0 z-[9999] flex flex-col bg-background">
+      <div className="fixed inset-0 z-9999 flex flex-col bg-background">
         <div className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <Label className="shrink-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -208,6 +228,16 @@ export const PrintTemplateDialogContent = ({
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-6 ml-6">
+              <div className="flex items-center gap-2">
+                <Switch id="fs-header" checked={includeHeader} onCheckedChange={setIncludeHeader} />
+                <Label htmlFor="fs-header" className="text-xs cursor-pointer">Header</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch id="fs-footer" checked={includeFooter} onCheckedChange={setIncludeFooter} />
+                <Label htmlFor="fs-footer" className="text-xs cursor-pointer">Footer</Label>
+              </div>
+            </div>
           </div>
           <Button type="button" variant="ghost" size="sm" onClick={toggleFullscreen} className="shrink-0">
             <X className="mr-1.5 size-4" />
@@ -231,7 +261,7 @@ export const PrintTemplateDialogContent = ({
     );
 
   const previewPanel = (
-    <div className="relative flex min-h-[360px] flex-1 min-w-0 flex-col">
+    <div className="relative flex min-h-90 flex-1 min-w-0 flex-col">
       <div className="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-3">
         <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {tInvoicing(`${dialogNs}.preview`)}
@@ -268,10 +298,10 @@ export const PrintTemplateDialogContent = ({
     <>
       {fullscreenOverlay}
       <div className={cn('flex max-h-[90vh] flex-col gap-0', className)}>
-        <DialogHeader className="shrink-0 border-b px-6 py-4">
-          <DialogTitle>{tInvoicing(titleKey)}</DialogTitle>
-          <DialogDescription>{tInvoicing(descriptionKey)}</DialogDescription>
-        </DialogHeader>
+        <div className="flex flex-col space-y-1.5 text-center sm:text-left shrink-0 border-b px-6 py-4">
+          <h2 className="text-lg font-semibold leading-none tracking-tight">{tInvoicing(titleKey)}</h2>
+          <p className="text-sm text-muted-foreground">{tInvoicing(descriptionKey)}</p>
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center py-16">
@@ -284,61 +314,194 @@ export const PrintTemplateDialogContent = ({
         ) : (
           <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)]">
             <div className="flex flex-col border-b md:border-b-0 md:border-r">
-              <div className="shrink-0 border-b px-4 py-3">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {tInvoicing(`${dialogNs}.select_template`)}
-                </Label>
-              </div>
               <ScrollAreaPrimitive.Root className="max-h-[min(60vh,680px)] flex-1 overflow-hidden">
                 <ScrollAreaPrimitive.Viewport className="h-full w-full">
-                  <div className="flex flex-col gap-2 p-3">
-                    {templates.map((template) => {
-                      const isSelected = selectedTemplateId === template.id;
-                      return (
-                        <button
-                          key={template.id}
-                          type="button"
-                          onClick={() => setSelectedTemplateId(template.id)}
-                          className={cn(
-                            'group w-full rounded-lg border p-3 text-left transition-all',
-                            'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                            isSelected
-                              ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
-                              : 'border-border bg-card'
-                          )}>
-                          <div className="flex items-start gap-3">
-                            <div
-                              className={cn(
-                                'mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
-                                isSelected
-                                  ? 'border-primary bg-primary text-primary-foreground'
-                                  : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
-                              )}>
-                              {isSelected ? (
-                                <Check className="size-4" strokeWidth={2.5} />
-                              ) : (
-                                <FileText className="size-4" />
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1 space-y-0.5">
-                              <p
+                  <Accordion type="single" collapsible defaultValue="templates" className="w-full">
+                    
+                    <AccordionItem value="templates" className="border-b-0">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 text-sm font-semibold uppercase tracking-wide text-muted-foreground border-b">
+                        {tInvoicing(`${dialogNs}.select_template`)}
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-4">
+                        <div className="flex flex-col gap-2 p-3">
+                          {templates.map((template) => {
+                            const isSelected = selectedTemplateId === template.id;
+                            return (
+                              <button
+                                key={template.id}
+                                type="button"
+                                onClick={() => setSelectedTemplateId(template.id)}
                                 className={cn(
-                                  'truncate text-sm font-medium leading-snug',
-                                  isSelected && 'text-primary'
+                                  'group w-full rounded-lg border p-3 text-left transition-all',
+                                  'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                  isSelected
+                                    ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
+                                    : 'border-border bg-card'
                                 )}>
-                                {template.name}
-                              </p>
-                              {template.description ? (
-                                <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                                  {template.description}
-                                </p>
-                              ) : null}
-                            </div>
+                                <div className="flex items-start gap-3">
+                                  <div
+                                    className={cn(
+                                      'mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
+                                      isSelected
+                                        ? 'border-primary bg-primary text-primary-foreground'
+                                        : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
+                                    )}>
+                                    {isSelected ? (
+                                      <Check className="size-4" strokeWidth={2.5} />
+                                    ) : (
+                                      <FileText className="size-4" />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1 space-y-0.5">
+                                    <p
+                                      className={cn(
+                                        'truncate text-sm font-medium leading-snug',
+                                        isSelected && 'text-primary'
+                                      )}>
+                                      {template.name}
+                                    </p>
+                                    {template.description ? (
+                                      <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                        {template.description}
+                                      </p>
+                                    ) : null}
+                                  </div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="headers" className="border-b-0 border-t">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 text-sm font-semibold uppercase tracking-wide text-muted-foreground border-b">
+                        Header
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-4 pt-4">
+                        <div className="flex items-center justify-between px-4 mb-4">
+                          <Label htmlFor="include-header" className="text-sm cursor-pointer text-muted-foreground">Include Header</Label>
+                          <Switch id="include-header" checked={includeHeader} onCheckedChange={setIncludeHeader} />
+                        </div>
+                        {includeHeader && (
+                          <div className="flex flex-col gap-2 px-3">
+                            <button
+                               type="button"
+                               onClick={() => setSelectedHeaderId('')}
+                               className={cn(
+                                 'group w-full rounded-lg border p-3 text-left transition-all',
+                                 'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                 selectedHeaderId === ''
+                                   ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
+                                   : 'border-border bg-card'
+                               )}>
+                               <div className="flex items-center gap-3">
+                                 <div className={cn(
+                                   'flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
+                                   selectedHeaderId === '' ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
+                                 )}>
+                                   {selectedHeaderId === '' ? <Check className="size-4" strokeWidth={2.5} /> : <FileText className="size-4" />}
+                                 </div>
+                                 <span className={cn('text-sm font-medium', selectedHeaderId === '' && 'text-primary')}>Default Template Header</span>
+                               </div>
+                            </button>
+                            {headers?.map((header) => {
+                              const isSelected = selectedHeaderId === header.id;
+                              return (
+                                <button
+                                  key={header.id}
+                                  type="button"
+                                  onClick={() => setSelectedHeaderId(header.id)}
+                                  className={cn(
+                                    'group w-full rounded-lg border p-3 text-left transition-all',
+                                    'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                    isSelected
+                                      ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
+                                      : 'border-border bg-card'
+                                  )}>
+                                  <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                      'flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
+                                      isSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
+                                    )}>
+                                      {isSelected ? <Check className="size-4" strokeWidth={2.5} /> : <FileText className="size-4" />}
+                                    </div>
+                                    <div className="min-w-0 flex-1 space-y-0.5">
+                                      <p className={cn('truncate text-sm font-medium leading-snug', isSelected && 'text-primary')}>{header.name}</p>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
                           </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="footers" className="border-b-0 border-t">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 text-sm font-semibold uppercase tracking-wide text-muted-foreground border-b">
+                        Footer
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-4 pt-4">
+                        <div className="flex items-center justify-between px-4 mb-4">
+                          <Label htmlFor="include-footer" className="text-sm cursor-pointer text-muted-foreground">Include Footer</Label>
+                          <Switch id="include-footer" checked={includeFooter} onCheckedChange={setIncludeFooter} />
+                        </div>
+                        {includeFooter && (
+                          <div className="flex flex-col gap-2 px-3">
+                            <button
+                               type="button"
+                               onClick={() => setSelectedFooterId('')}
+                               className={cn(
+                                 'group w-full rounded-lg border p-3 text-left transition-all',
+                                 'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                 selectedFooterId === ''
+                                   ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
+                                   : 'border-border bg-card'
+                               )}>
+                               <div className="flex items-center gap-3">
+                                 <div className={cn(
+                                   'flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
+                                   selectedFooterId === '' ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
+                                 )}>
+                                   {selectedFooterId === '' ? <Check className="size-4" strokeWidth={2.5} /> : <FileText className="size-4" />}
+                                 </div>
+                                 <span className={cn('text-sm font-medium', selectedFooterId === '' && 'text-primary')}>Default Template Footer</span>
+                               </div>
+                            </button>
+                            {footers?.map((footer) => {
+                              const isSelected = selectedFooterId === footer.id;
+                              return (
+                                <button
+                                  key={footer.id}
+                                  type="button"
+                                  onClick={() => setSelectedFooterId(footer.id)}
+                                  className={cn(
+                                    'group w-full rounded-lg border p-3 text-left transition-all',
+                                    'hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                    isSelected
+                                      ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/30'
+                                      : 'border-border bg-card'
+                                  )}>
+                                  <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                      'flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors',
+                                      isSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/25 bg-muted/40 text-muted-foreground group-hover:border-primary/30'
+                                    )}>
+                                      {isSelected ? <Check className="size-4" strokeWidth={2.5} /> : <FileText className="size-4" />}
+                                    </div>
+                                    <div className="min-w-0 flex-1 space-y-0.5">
+                                      <p className={cn('truncate text-sm font-medium leading-snug', isSelected && 'text-primary')}>{footer.name}</p>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </ScrollAreaPrimitive.Viewport>
                 <ScrollBar orientation="vertical" />
               </ScrollAreaPrimitive.Root>
@@ -348,16 +511,16 @@ export const PrintTemplateDialogContent = ({
           </div>
         )}
 
-        <DialogFooter className="shrink-0 border-t px-6 py-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 shrink-0 border-t px-6 py-4">
           <Button variant="outline" onClick={onCancel} disabled={isPrinting}>
             {t('commands.cancel')}
           </Button>
           <Button
-            onClick={() => selectedTemplateId && onConfirm(selectedTemplateId)}
+            onClick={() => selectedTemplateId && onConfirm(selectedTemplateId, { includeHeader, includeFooter, headerId: selectedHeaderId || undefined, footerId: selectedFooterId || undefined })}
             disabled={!selectedTemplateId || isPrinting || isLoading || templates.length === 0}>
             {isPrinting ? t('commands.printing') : t('commands.print')}
           </Button>
-        </DialogFooter>
+        </div>
       </div>
     </>
   );

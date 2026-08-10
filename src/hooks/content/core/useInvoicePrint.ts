@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { api } from '@/api';
 import { openPdfBlob } from '@/utils/pdf.utils';
 import { useDocumentTemplates } from '@/hooks/content/core/useDocumentTemplates';
+import { useQuery } from '@tanstack/react-query';
 import { usePrintTemplateDialog } from '../../../components/invoicing/usePrintTemplateDialog';
 
 export function useInvoicePrint(documentId?: number) {
@@ -14,6 +15,16 @@ export function useInvoicePrint(documentId?: number) {
   const targetIdRef = React.useRef<number | undefined>(documentId);
   const closePrintTemplateDialogRef = React.useRef<() => void>(() => {});
   const { data: templates = [], isLoading: isTemplatesLoading } = useDocumentTemplates('invoice');
+  
+  const { data: headers = [], isLoading: isHeadersLoading } = useQuery({
+    queryKey: ['template-headers'],
+    queryFn: () => api.core.templateHeader.findAll({ sort: 'name,ASC' })
+  });
+
+  const { data: footers = [], isLoading: isFootersLoading } = useQuery({
+    queryKey: ['template-footers'],
+    queryFn: () => api.core.templateFooter.findAll({ sort: 'name,ASC' })
+  });
 
   React.useEffect(() => {
     setTargetId(documentId);
@@ -21,10 +32,10 @@ export function useInvoicePrint(documentId?: number) {
   }, [documentId]);
 
   const { mutate: printInvoice, isPending: isPrintPending } = useMutation({
-    mutationFn: async (templateId: string) => {
+    mutationFn: async ({ templateId, options }: { templateId: string, options?: { includeHeader: boolean; includeFooter: boolean } }) => {
       const id = targetIdRef.current;
       if (!id) throw new Error('Invoice not found');
-      return api.invoicing.invoice.downloadPdf(id, templateId);
+      return api.invoicing.invoice.downloadPdf(id, templateId, options);
     },
     onSuccess: (pdf) => {
       openPdfBlob(pdf);
@@ -46,9 +57,11 @@ export function useInvoicePrint(documentId?: number) {
       documentType: 'invoice',
       documentId: targetId,
       templates,
-      isLoading: isTemplatesLoading,
+      headers,
+      footers,
+      isLoading: isTemplatesLoading || isHeadersLoading || isFootersLoading,
       isPrinting: isPrintPending,
-      onConfirm: printInvoice,
+      onConfirm: (templateId, options) => printInvoice({ templateId, options }),
       onClose: () => {
         setTargetId(documentId);
         targetIdRef.current = documentId;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { UpdateTemplateForm } from '@/components/content-management/templates/forms/UpdateTemplateForm';
 import { useRouter } from 'next/router';
-import { PdfSettingsLayout } from '@/components/content-management/pdf/PdfSettingsLayout';
+import { PdfSettingsLayout } from '@/components/content-management/templates/main/PdfSettingsLayout';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
@@ -28,7 +28,10 @@ export default function Page() {
         variables: data.variables ? JSON.stringify(data.variables) : undefined,
         previewPictureId: data.previewPictureId
       });
-      templateStore.set('previewPicture', data.previewPicture ? `/storage/view/slug/${data.previewPicture.slug}` : null);
+      templateStore.set(
+        'previewPicture',
+        data.previewPicture ? `/storage/view/slug/${data.previewPicture.slug}` : null
+      );
     }
   }, [data]);
 

@@ -19,10 +19,7 @@ import { getErrorMessage } from '@/utils/errors';
 import { useFullScreen } from '@/hooks/useFullScreen';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import { ScrollBar } from '@/components/ui/scroll-area';
-
-/** A4 page height at ~794px width (96dpi) */
-const PDF_PAGE_WIDTH = 794;
-const PDF_PAGE_HEIGHT = 1123;
+import { PDF_PAGE_HEIGHT, PDF_PAGE_WIDTH } from '@/types';
 
 interface TemplatePdfPreviewProps {
   className?: string;
@@ -103,8 +100,8 @@ export const TemplatePdfPreview = ({
     try {
       const docId = parseInt(selectedDocumentId, 10);
       const blob = isQuotation
-        ? await api.core.documentPdf.previewWithQuotation(templateId, docId)
-        : await api.core.documentPdf.previewWithInvoice(templateId, docId);
+        ? await api.invoicing.quotation.previewPdf(templateId, docId)
+        : await api.invoicing.invoice.previewPdf(templateId, docId);
 
       revokeCurrentPreview();
       const url = createPdfBlobUrl(blob);
@@ -129,8 +126,8 @@ export const TemplatePdfPreview = ({
       try {
         const docId = parseInt(selectedDocumentId, 10);
         const blob = isQuotation
-          ? await api.core.documentPdf.previewWithQuotation(templateId, docId)
-          : await api.core.documentPdf.previewWithInvoice(templateId, docId);
+          ? await api.invoicing.quotation.previewPdf(templateId, docId)
+          : await api.invoicing.invoice.previewPdf(templateId, docId);
 
         if (cancelled) return;
 
@@ -164,11 +161,11 @@ export const TemplatePdfPreview = ({
   const documentLabel = isQuotation ? 'Quotation' : 'Invoice';
 
   const previewContent = !selectedDocumentId ? (
-    <div className="flex min-h-[360px] items-center justify-center text-sm text-muted-foreground p-4 text-center">
+    <div className="flex min-h-90 items-center justify-center text-sm text-muted-foreground p-4 text-center">
       Select a {documentLabel.toLowerCase()} above to see how this template renders.
     </div>
   ) : previewError ? (
-    <div className="flex min-h-[360px] items-center justify-center text-sm text-destructive p-4 text-center">
+    <div className="flex min-h-90 items-center justify-center text-sm text-destructive p-4 text-center">
       {previewError}
     </div>
   ) : previewUrl ? (
@@ -182,7 +179,7 @@ export const TemplatePdfPreview = ({
       />
     </div>
   ) : (
-    <div className="flex min-h-[360px] items-center justify-center text-sm text-muted-foreground">
+    <div className="flex min-h-90 items-center justify-center text-sm text-muted-foreground">
       Generating preview…
     </div>
   );
@@ -191,9 +188,7 @@ export const TemplatePdfPreview = ({
     <div
       className={cn(
         'flex flex-col gap-3 bg-background transition-all duration-300 ease-in-out',
-        isFullscreen
-          ? 'fixed inset-0 z-50 p-4 animate-in fade-in zoom-in-95'
-          : 'h-full min-h-[420px]',
+        isFullscreen ? 'fixed inset-0 z-50 p-4 animate-in fade-in zoom-in-95' : 'h-full min-h-105',
         className
       )}>
       <div className="space-y-2 shrink-0">
@@ -267,8 +262,8 @@ export const TemplatePdfPreview = ({
               try {
                 const docId = parseInt(selectedDocumentId, 10);
                 const blob = isQuotation
-                  ? await api.core.documentPdf.previewWithQuotation(templateId, docId)
-                  : await api.core.documentPdf.previewWithInvoice(templateId, docId);
+                  ? await api.invoicing.quotation.previewPdf(templateId, docId)
+                  : await api.invoicing.invoice.previewPdf(templateId, docId);
                 openPdfBlob(blob);
               } catch {
                 toast.error('Failed to open PDF');
