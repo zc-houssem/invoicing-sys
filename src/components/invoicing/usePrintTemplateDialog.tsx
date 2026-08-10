@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDialog } from '@/components/shared/Dialogs';
-import { PrintTemplateDialogContent } from '@/components/invoicing/shared/PrintTemplateDialog';
+import { PrintTemplateDialogContent } from '@/components/invoicing-commons/PrintTemplateDialog';
 import { ResponseTemplateDto, ResponseTemplateHeaderDto, ResponseTemplateFooterDto } from '@/types';
 
 interface UsePrintTemplateDialogOptions {
