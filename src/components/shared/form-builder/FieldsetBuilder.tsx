@@ -14,7 +14,8 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
     <div
       className={cn(
         'flex w-full',
-        structure.orientation === 'vertical' ? 'flex-row xl:flex-col gap-10' : 'flex-col gap-5'
+        structure.orientation === 'vertical' ? 'flex-row xl:flex-col' : 'flex-col',
+        fieldset.gap || (structure.orientation === 'vertical' ? 'gap-10' : 'gap-5')
       )}>
       {fieldset.includeHeader && !structure.toggleableFieldsets && (
         <>
@@ -49,7 +50,8 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
           <div
             key={rowIndex}
             className={cn(
-              'grid gap-6 w-full',
+              'grid w-full',
+              row.gap || 'gap-6',
               structure.orientation === 'vertical' || fieldCount === 1
                 ? 'grid-cols-1'
                 : fieldCount === 2

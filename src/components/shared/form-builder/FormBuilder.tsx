@@ -36,7 +36,8 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
 
       <div
         className={cn(
-          'flex gap-4 xl:gap-10',
+          'flex w-full',
+          structure.gap || 'gap-4 xl:gap-10',
           structure?.orientation === 'vertical' ? 'flex-col xl:flex-row' : 'flex-col'
         )}>
         {structure.toggleableFieldsets ? (

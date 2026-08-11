@@ -13,6 +13,7 @@ export interface FormStructure {
   includeHeader?: boolean;
   fieldsets: Fieldset[];
   toggleableFieldsets?: boolean;
+  gap?: string;
 }
 
 export interface Fieldset {
@@ -27,11 +28,13 @@ export interface Fieldset {
   component?: React.ReactNode;
   includeHeader?: boolean;
   rows: FieldsetRow[];
+  gap?: string;
 }
 
 export interface FieldsetRow {
   className?: string;
   fields: Field[];
+  gap?: string;
 }
 
 export enum FieldVariant {
