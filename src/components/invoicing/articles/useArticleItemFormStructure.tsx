@@ -140,8 +140,10 @@ export const useArticleItemFormStructure = ({
     title: {
       value: `article-${index}`
     },
+
     fieldsets: [
       {
+        gap: 5,
         rows: [
           {
             fields: [titleField]
