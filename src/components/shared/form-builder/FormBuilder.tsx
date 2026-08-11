@@ -37,9 +37,10 @@ export const FormBuilder = ({ className, structure }: FormBuilderProps) => {
       <div
         className={cn(
           'flex w-full',
-          structure.gap || 'gap-4 xl:gap-10',
+          structure.gap === undefined && 'gap-4 xl:gap-10',
           structure?.orientation === 'vertical' ? 'flex-col xl:flex-row' : 'flex-col'
-        )}>
+        )}
+        style={{ gap: structure.gap }}>
         {structure.toggleableFieldsets ? (
           <Accordion
             type="multiple"

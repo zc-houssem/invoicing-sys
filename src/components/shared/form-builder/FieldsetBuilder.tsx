@@ -15,8 +15,9 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
       className={cn(
         'flex w-full',
         structure.orientation === 'vertical' ? 'flex-row xl:flex-col' : 'flex-col',
-        fieldset.gap || (structure.orientation === 'vertical' ? 'gap-10' : 'gap-5')
-      )}>
+        fieldset.gap === undefined && (structure.orientation === 'vertical' ? 'gap-10' : 'gap-5')
+      )}
+      style={{ gap: fieldset.gap }}>
       {fieldset.includeHeader && !structure.toggleableFieldsets && (
         <>
           <div className="flex flex-row gap-2 justify-between">
@@ -51,7 +52,7 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
             key={rowIndex}
             className={cn(
               'grid w-full',
-              row.gap || 'gap-6',
+              row.gap === undefined && 'gap-6',
               structure.orientation === 'vertical' || fieldCount === 1
                 ? 'grid-cols-1'
                 : fieldCount === 2
@@ -61,7 +62,8 @@ export const FieldsetBuilder = ({ fieldset, structure }: FieldsetContentProps) =
                     : fieldCount === 4
                       ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
                       : 'w-full'
-            )}>
+            )}
+            style={{ gap: row.gap }}>
             {row.fields.map((field) => {
               if (field.hidden) return null;
 
