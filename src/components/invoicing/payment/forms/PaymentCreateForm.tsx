@@ -167,7 +167,7 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
               onClick={() => {
                 onSubmit();
               }}>
-              <Save className="size-16" />
+              <Save />
               <span>{tCommon('commands.save')}</span>
             </Button>
             <Button
@@ -179,7 +179,7 @@ export const PaymentCreateForm = ({ className, enterpriseId }: PaymentFormProps)
               onClick={() => {
                 globalReset();
               }}>
-              <Repeat2 className="size-16" />
+              <Repeat2 />
               <span>{tCommon('commands.reset')}</span>
             </Button>
           </div>

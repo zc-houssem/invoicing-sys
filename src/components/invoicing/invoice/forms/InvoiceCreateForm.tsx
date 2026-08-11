@@ -137,7 +137,9 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
     () => systemEnterprises.find((enterprise) => enterprise.id === activeCompanyId),
     [systemEnterprises, activeCompanyId]
   );
-  useSequence(activeCompanyId, Sequences.INVOICE, (preview: string) => invoiceStore.set('sequencePreview', preview));
+  useSequence(activeCompanyId, Sequences.INVOICE, (preview: string) =>
+    invoiceStore.set('sequencePreview', preview)
+  );
 
   const { mutate: createInvoice, isPending: isCreationPending } = useMutation({
     mutationFn: async (data: CreateInvoiceDto) => api.invoicing.invoice.create(data),
@@ -189,44 +191,44 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
 
   const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
     useInvoiceCreateFormStructure({
-    store: invoiceStore,
-    enterprises,
-    interlocutorOptions: mapToSelectOptions({
-      data: interlocutors,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
-        const ei = item.enterpriseInterlocutors?.find(
-          (e) => e.enterpriseId === invoiceStore.createDto.enterpriseId
-        );
-        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
-      }
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
-        `${tCurrency(item.label)} (${item.extras.symbol})`
-    }),
-    taxWithholdingOptions: mapToSelectOptions({
-      data: taxWithholdings,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseRefParamDto<TaxWithholdingPayload>) =>
-        `${item.label} (${item.extras.rate}%)`
-    }),
-    bankAccountOptions: mapToSelectOptions({
-      data: bankAccounts,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
-    }),
-    isCreationPending,
-    selectedCurrency: selectedCurrency,
-    selectedTaxWithholding,
-    onAttachmentsUpload: handleAttachmentsUpload
-  });
+      store: invoiceStore,
+      enterprises,
+      interlocutorOptions: mapToSelectOptions({
+        data: interlocutors,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+          const ei = item.enterpriseInterlocutors?.find(
+            (e) => e.enterpriseId === invoiceStore.createDto.enterpriseId
+          );
+          return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+        }
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+          `${tCurrency(item.label)} (${item.extras.symbol})`
+      }),
+      taxWithholdingOptions: mapToSelectOptions({
+        data: taxWithholdings,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseRefParamDto<TaxWithholdingPayload>) =>
+          `${item.label} (${item.extras.rate}%)`
+      }),
+      bankAccountOptions: mapToSelectOptions({
+        data: bankAccounts,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
+      }),
+      isCreationPending,
+      selectedCurrency: selectedCurrency,
+      selectedTaxWithholding,
+      onAttachmentsUpload: handleAttachmentsUpload
+    });
 
   const isFormReady =
     !isEnterprisesPending &&
@@ -283,7 +285,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
               onClick={() => {
                 handleSubmit();
               }}>
-              <Save className="size-16" />
+              <Save />
               <span>{t('commands.save')}</span>
             </Button>
             <Button
@@ -294,7 +296,7 @@ export const InvoiceCreateForm = ({ className }: InvoiceCreateFormProps) => {
               onClick={() => {
                 handleSubmit();
               }}>
-              <Repeat2 className="size-16" />
+              <Repeat2 />
               <span>{t('commands.reset')}</span>
             </Button>
           </div>

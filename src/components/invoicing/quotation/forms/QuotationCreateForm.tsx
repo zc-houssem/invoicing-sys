@@ -178,36 +178,36 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
 
   const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
     useQuotationCreateFormStructure({
-    store: quotationStore,
-    enterprises,
-    interlocutorOptions: mapToSelectOptions({
-      data: interlocutors,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
-        const ei = item.enterpriseInterlocutors?.find(
-          (e) => e.enterpriseId === quotationStore.createDto.enterpriseId
-        );
-        return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
-      }
-    }),
-    currencyOptions: mapToSelectOptions({
-      data: currencies,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
-        `${tCurrency(item.label)} (${item.extras.symbol})`
-    }),
-    bankAccountOptions: mapToSelectOptions({
-      data: bankAccounts,
-      labelKey: '',
-      valueKey: 'id',
-      labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
-    }),
-    isCreationPending,
-    selectedCurrency: selectedCurrency,
-    onAttachmentsUpload: handleAttachmentsUpload
-  });
+      store: quotationStore,
+      enterprises,
+      interlocutorOptions: mapToSelectOptions({
+        data: interlocutors,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+          const ei = item.enterpriseInterlocutors?.find(
+            (e) => e.enterpriseId === quotationStore.createDto.enterpriseId
+          );
+          return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+        }
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+          `${tCurrency(item.label)} (${item.extras.symbol})`
+      }),
+      bankAccountOptions: mapToSelectOptions({
+        data: bankAccounts,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
+      }),
+      isCreationPending,
+      selectedCurrency: selectedCurrency,
+      onAttachmentsUpload: handleAttachmentsUpload
+    });
 
   const isFormReady = !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
 
@@ -244,7 +244,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               onClick={() => {
                 handleSubmit();
               }}>
-              <Save className="size-16" />
+              <Save />
               <span>{t('commands.save')}</span>
             </Button>
             <Button
@@ -255,7 +255,7 @@ export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => 
               onClick={() => {
                 handleSubmit();
               }}>
-              <Repeat2 className="size-16" />
+              <Repeat2 />
               <span>{t('commands.reset')}</span>
             </Button>
           </div>
