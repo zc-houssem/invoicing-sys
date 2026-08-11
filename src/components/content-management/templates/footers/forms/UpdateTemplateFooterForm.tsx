@@ -20,16 +20,16 @@ interface UpdateTemplateFooterFormProps {
   onSuccess?: () => void;
 }
 
-export const UpdateTemplateFooterForm = ({ className, onSuccess }: UpdateTemplateFooterFormProps) => {
+export const UpdateTemplateFooterForm = ({
+  className,
+  onSuccess
+}: UpdateTemplateFooterFormProps) => {
   const templateFooterStore = useTemplateFooterStore();
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
   React.useEffect(() => {
-    setIntro?.(
-      'Update Footer',
-      'Update a template footer.'
-    );
+    setIntro?.('Update Footer', 'Update a template footer.');
     return () => {
       clearIntro?.();
     };
@@ -46,7 +46,10 @@ export const UpdateTemplateFooterForm = ({ className, onSuccess }: UpdateTemplat
 
   const { mutate: updateTemplateFooter, isPending: isUpdateTemplateFooterPending } = useMutation({
     mutationFn: async () =>
-      api.core.templateFooter.update(templateFooterStore.response?.id as string, templateFooterStore.updateDto as any),
+      api.core.templateFooter.update(
+        templateFooterStore.response?.id as string,
+        templateFooterStore.updateDto as any
+      ),
     onSuccess() {
       toast.success('Footer updated successfully');
       onSuccess?.();
