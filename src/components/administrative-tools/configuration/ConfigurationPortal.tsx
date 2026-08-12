@@ -138,7 +138,7 @@ export const ConfigurationPortal = ({ className }: ConfigurationPortalProps) => 
   return (
     <div
       className={cn(
-        'flex flex-col flex-1 gap-4 overflow-hidden  container mx-auto p-1 mt-4',
+        'flex flex-col flex-1 gap-4 overflow-hidden container p-1 mt-4',
         className
       )}>
       {/* searsh bar */}

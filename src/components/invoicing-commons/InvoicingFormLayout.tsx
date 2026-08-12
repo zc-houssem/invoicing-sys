@@ -48,7 +48,7 @@ export const InvoicingFormLayout = ({
   }
 
   return (
-    <div className={cn('py-2 sm:py-4 w-full container mx-auto', className)}>
+    <div className={cn('py-2 sm:py-4 w-full container', className)}>
       {isMobile && (
         <div className="mb-4 flex justify-end">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
