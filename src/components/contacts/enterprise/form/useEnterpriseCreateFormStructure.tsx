@@ -237,9 +237,9 @@ export const useEnterpriseCreateFormStructure = ({
 
   const isNewInterlocutorField: Field<CheckboxFieldProps> = {
     id: 'is-new-interlocutor',
-    label: 'Create a new interlocutor',
+    label: tContact('enterprise.form.isNewInterlocutor'),
     variant: FieldVariant.CHECKBOX,
-    description: 'Check this to create a new interlocutor. Uncheck to select an existing one.',
+    description: tContact('enterprise.form.descriptions.isNewInterlocutor'),
     props: {
       checked: store.createDto.interlocutors?.[0]?.interlocutor !== undefined,
       onCheckedChange: (checked) => {
@@ -275,10 +275,10 @@ export const useEnterpriseCreateFormStructure = ({
 
   const existingInterlocutorField: Field<SelectFieldProps> = {
     id: 'existing-interlocutor',
-    label: 'Select Existing Interlocutor',
+    label: tContact('interlocutor.form.existingInterlocutor'),
     variant: FieldVariant.SELECT,
-    description: 'Select an existing interlocutor.',
-    placeholder: 'Select interlocutor',
+    description: tContact('interlocutor.form.descriptions.existingInterlocutor'),
+    placeholder: tContact('interlocutor.form.placeholders.existingInterlocutor'),
     props: {
       value: store.createDto.interlocutors?.[0]?.interlocutorId?.toString() || '',
       onValueChange: (value) => {
@@ -416,9 +416,9 @@ export const useEnterpriseCreateFormStructure = ({
   // additional information ****************************************************************************
   const noteField: Field<EditorFieldProps> = {
     id: 'note',
-    label: 'Note',
+    label: tContact('enterprise.form.notes'),
     variant: FieldVariant.EDITOR,
-    description: 'Additional notes about the enterprise.',
+    description: tContact('enterprise.form.descriptions.notes'),
     props: {
       value: store.createDto?.notes,
       onChange: (value) => {

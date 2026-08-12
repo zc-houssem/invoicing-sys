@@ -1,7 +1,17 @@
 import { z } from 'zod';
 
 const optionalUrl = z.preprocess(
-  (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+  (value) => {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed === '') return undefined;
+      if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+        return `https://${trimmed}`;
+      }
+      return trimmed;
+    }
+    return value;
+  },
   z.string().url().optional()
 );
 
@@ -30,9 +40,9 @@ const optionalEmail = z.preprocess(
 export const baseEnterpriseInformationValidationSchema = z.object({
   name: z
     .string({
-      required_error: 'Name is required'
+      required_error: 'enterprise.validation.name_required'
     })
-    .min(1, 'Name is required'),
+    .min(1, 'enterprise.validation.name_required'),
   taxId: optionalString,
   phone: optionalString,
   email: optionalEmail,
@@ -56,7 +66,7 @@ const requiresTaxId = (data: z.infer<typeof baseEnterpriseInformationValidationS
 export const createEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(
   requiresTaxId,
   {
-    message: 'Tax ID Number is required for non-particular enterprises',
+    message: 'enterprise.validation.tax_id_required',
     path: ['taxId']
   }
 );
@@ -64,7 +74,7 @@ export const createEnterpriseValidationSchema = baseEnterpriseInformationValidat
 export const updateEnterpriseValidationSchema = baseEnterpriseInformationValidationSchema.refine(
   requiresTaxId,
   {
-    message: 'Tax ID Number is required for non-particular enterprises',
+    message: 'enterprise.validation.tax_id_required',
     path: ['taxId']
   }
 );

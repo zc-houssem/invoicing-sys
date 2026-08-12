@@ -48,21 +48,22 @@ const steps = [
 
 const { Stepper } = defineStepper(...steps);
 
-const StepperFooterControls = ({ methods, isPending, handleSubmit, submitLabel }: any) => {
+const StepperFooterControls = ({ methods, isPending, handleSubmit, submitLabel, handleNext }: any) => {
   const { setContent } = useFooter();
+  const { t: tCommon } = useTranslation('common');
   React.useEffect(() => {
     setContent?.(
       <div className="flex items-center justify-end gap-2 px-4 py-1">
         {!methods.isFirst && (
           <Button variant="outline" size="sm" onClick={methods.prev} disabled={isPending}>
             <div className="flex items-center gap-2">
-              <ChevronLeft /> <span>Previous</span>
+              <ChevronLeft /> <span>{tCommon('pagination.previous')}</span>
             </div>
           </Button>
         )}
         <Button
           size="sm"
-          onClick={methods.isLast ? handleSubmit : methods.next}
+          onClick={methods.isLast ? handleSubmit : (handleNext ? () => handleNext(methods.current.id, methods.next) : methods.next)}
           disabled={isPending}>
           {methods.isLast ? (
             <div className="flex items-center gap-2">
@@ -71,14 +72,14 @@ const StepperFooterControls = ({ methods, isPending, handleSubmit, submitLabel }
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span>Next</span>
+              <span>{tCommon('pagination.next')}</span>
               <ChevronRight />
             </div>
           )}
         </Button>
       </div>
     );
-  }, [methods.current.id, isPending, handleSubmit, submitLabel, setContent]);
+  }, [methods.current.id, isPending, handleSubmit, submitLabel, setContent, handleNext, methods.next, methods.prev, tCommon]);
   return null;
 };
 
@@ -243,6 +244,7 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
     mutationFn: (data: UpdateEnterpriseDto) => api.core.enterprise.update(enterpriseId, data),
     onSuccess: () => {
       refetchEnterprise();
+      router.push(`/contacts/enterprises`);
       toast.success(tContact('enterprise.action_edit_success'));
     },
     onError: (error): void => {
@@ -286,6 +288,23 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
     });
   }, [enterpriseStore, updateEnterprise, tCommon]);
 
+  const handleNext = React.useCallback(
+    (currentId: string, next: () => void) => {
+      if (currentId === '1') {
+        const result = updateEnterpriseValidationSchema.safeParse(enterpriseStore.updateDto);
+        if (!result.success) {
+          enterpriseStore.set('errors', result.error.flatten().fieldErrors);
+          toast.error(tCommon('errors.validation'));
+          return;
+        } else {
+          enterpriseStore.set('errors', {});
+        }
+      }
+      next();
+    },
+    [enterpriseStore, tCommon]
+  );
+
   const loading =
     isFetchEnterprisePending ||
     isFetchActivitiesPending ||
@@ -305,8 +324,15 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
             <>
               <Stepper.Navigation className="shrink">
                 {methods.all.map((step, index) => (
-                  <Stepper.Step key={step.id} of={step.id} onClick={() => methods.goTo(step.id)}>
-                    <Stepper.Title>{step.title}</Stepper.Title>
+                  <Stepper.Step 
+                    key={step.id} 
+                    of={step.id} 
+                    onClick={() => {
+                      if (parseInt(step.id) < parseInt(methods.current.id)) {
+                        methods.goTo(step.id);
+                      }
+                    }}>
+                    <Stepper.Title>{tContact(`enterprise.form.steps.${step.id}.title`)}</Stepper.Title>
                   </Stepper.Step>
                 ))}
               </Stepper.Navigation>
@@ -327,7 +353,8 @@ export const EnterpriseUpdateForm = ({ enterpriseId, className }: EnterpriseUpda
                 methods={methods}
                 isPending={isUpdatePending}
                 handleSubmit={handleSubmit}
-                submitLabel="Save"
+                submitLabel={tCommon('commands.save')}
+                handleNext={handleNext}
               />
             </>
           );

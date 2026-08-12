@@ -203,13 +203,6 @@ export const useEnterpriseUpdateFormStructure = ({
   };
 
   const enterpriseInformation: FormStructure = {
-    title: {
-      value: 'Enterprise information'
-    },
-    description: {
-      value: 'Basic information about the enterprise.'
-    },
-    includeHeader: true,
     fieldsets: [
       {
         rows: [
@@ -355,9 +348,9 @@ export const useEnterpriseUpdateFormStructure = ({
   // additional information ****************************************************************************
   const noteField: Field<EditorFieldProps> = {
     id: 'note',
-    label: 'Note',
+    label: tContact('enterprise.form.notes'),
     variant: FieldVariant.EDITOR,
-    description: 'Additional notes about the enterprise.',
+    description: tContact('enterprise.form.descriptions.notes'),
     props: {
       value: store.updateDto?.notes,
       onChange: (value) => {
@@ -371,10 +364,6 @@ export const useEnterpriseUpdateFormStructure = ({
     title: {
       value: 'Additional information'
     },
-    description: {
-      value: 'Additional information about the enterprise.'
-    },
-    includeHeader: true,
     fieldsets: [
       {
         rows: [

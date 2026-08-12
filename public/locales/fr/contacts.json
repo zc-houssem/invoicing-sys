@@ -21,6 +21,13 @@
       "taxId": "Numéro d'identification fiscale",
       "notes": "Notes",
       "logo": "Logo",
+      "isNewInterlocutor": "Créer un nouvel interlocuteur",
+      "steps": {
+        "1": { "title": "Informations de l'entreprise" },
+        "2": { "title": "Informations de l'interlocuteur" },
+        "3": { "title": "Adresses" },
+        "4": { "title": "Informations supplémentaires" }
+      },
       "particular": {
         "noun": "Particulier",
         "positive": "Particulier",
@@ -50,6 +57,7 @@
         "taxId": "Le numéro d'identification fiscale de l'entreprise.",
         "notes": "Des notes supplémentaires sur l'entreprise.",
         "logo": "Le logo de l'entreprise.",
+        "isNewInterlocutor": "Cochez pour créer un nouvel interlocuteur. Décochez pour en sélectionner un existant.",
         "particular": "Indique si l'entreprise est un particulier ou non.",
         "activity": "L'activité de l'entreprise.",
         "currency": "La devise utilisée par l'entreprise.",
@@ -134,6 +142,10 @@
     "empty_cells": {
       "activity": "Aucune activité",
       "currency": "Aucune devise"
+    },
+    "validation": {
+      "name_required": "Le nom est requis",
+      "tax_id_required": "Le numéro d'identification fiscale est requis pour les entreprises (non-particulier)"
     }
   },
   "address": {

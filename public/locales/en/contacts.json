@@ -21,6 +21,13 @@
       "taxId": "Tax ID Number",
       "notes": "Notes",
       "logo": "Logo",
+      "isNewInterlocutor": "Create a new interlocutor",
+      "steps": {
+        "1": { "title": "Enterprise information" },
+        "2": { "title": "Interlocutor information" },
+        "3": { "title": "Addresses" },
+        "4": { "title": "Additional information" }
+      },
       "particular": {
         "noun": "Particular",
         "positive": "Particular",
@@ -50,6 +57,7 @@
         "taxId": "The tax ID number of the enterprise.",
         "notes": "Additional notes about the enterprise.",
         "logo": "The logo of the enterprise.",
+        "isNewInterlocutor": "Check this to create a new interlocutor. Uncheck to select an existing one.",
         "particular": "Indicates whether the enterprise is a particular or not.",
         "activity": "The activity of the enterprise.",
         "currency": "The currency used by the enterprise.",
@@ -134,6 +142,10 @@
     "empty_cells": {
       "activity": "No activity",
       "currency": "No currency"
+    },
+    "validation": {
+      "name_required": "Name is required",
+      "tax_id_required": "Tax ID Number is required for non-particular enterprises"
     }
   },
   "address": {
