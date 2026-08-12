@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Info, File, FileText, Wallet, Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '@/components/sidebar-nav';
+import SidebarNav from '@/components/shared/sidebar-nav';
 import { Spinner } from '@/components/shared';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import { useIntro } from '@/context/IntroContext';
@@ -88,7 +88,11 @@ export const UserDetails = ({ className, userId, children }: UserDetailsProps) =
           <SidebarNav items={sidebarNavItems} />
         </aside>
         <div className="flex flex-col flex-7 overflow-hidden">
-          {!isFetchUserPending ? children : <Spinner className="h-screen" show={isFetchUserPending} />}
+          {!isFetchUserPending ? (
+            children
+          ) : (
+            <Spinner className="h-screen" show={isFetchUserPending} />
+          )}
         </div>
       </div>
     </div>

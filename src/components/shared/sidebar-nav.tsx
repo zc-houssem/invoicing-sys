@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { useRouter } from 'next/router';
 import { ExternalLink } from 'lucide-react';
 
@@ -109,18 +109,18 @@ export default function SidebarNav({
 }: SidebarNavProps) {
   const router = useRouter();
 
-  const flatItems = useMemo(
+  const flatItems = React.useMemo(
     () => (sections ? sections.flatMap((section) => section.items) : items),
     [sections, items]
   );
 
-  const normalizedPath = useMemo(() => {
+  const normalizedPath = React.useMemo(() => {
     if (activeHref) return activeHref;
     if (!router || !router.asPath) return '';
     return router.asPath.split('?')[0].split('#')[0];
   }, [router, activeHref]);
 
-  const activeItem = useMemo(
+  const activeItem = React.useMemo(
     () => flatItems.find((item) => item.href === normalizedPath) || flatItems[0],
     [flatItems, normalizedPath]
   );

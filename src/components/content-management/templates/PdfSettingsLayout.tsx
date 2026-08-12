@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '@/components/sidebar-nav';
+import SidebarNav from '@/components/shared/sidebar-nav';
 import { Type, LayoutTemplate } from 'lucide-react';
 
 interface PdfSettingsLayoutProps {

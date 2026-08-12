@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '../sidebar-nav';
+import SidebarNav from '../shared/sidebar-nav';
 import { Building, Landmark, MapPin, HashIcon, MessageCircle, Users } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
 import { useUI } from '@/context/UIContext';

@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Info, File, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '@/components/sidebar-nav';
+import SidebarNav from '@/components/shared/sidebar-nav';
 import { useInterlocutor } from '@/hooks/content/core/useInterlocutor';
 import { Spinner } from '@/components/shared';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
@@ -47,7 +47,17 @@ export const InterlocutorDetails = ({
       clearIntro?.();
       clearRoutes?.();
     };
-  }, [interlocutor, fullName, router.locale, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
+  }, [
+    interlocutor,
+    fullName,
+    router.locale,
+    tCommon,
+    tContacts,
+    setIntro,
+    clearIntro,
+    setRoutes,
+    clearRoutes
+  ]);
 
   const sidebarNavItems = [
     {

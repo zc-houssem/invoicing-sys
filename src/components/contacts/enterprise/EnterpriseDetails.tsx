@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Info, Hourglass, File, FileText, Wallet, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '@/components/sidebar-nav';
+import SidebarNav from '@/components/shared/sidebar-nav';
 import { Spinner } from '@/components/shared';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';

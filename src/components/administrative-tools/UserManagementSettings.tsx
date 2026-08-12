@@ -1,6 +1,6 @@
 import { Lock, PackageCheck, Users } from 'lucide-react';
 import { Separator } from '../ui/separator';
-import SidebarNav from '../sidebar-nav';
+import SidebarNav from '../shared/sidebar-nav';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 

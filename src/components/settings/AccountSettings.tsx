@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import SidebarNav from '../sidebar-nav';
+import SidebarNav from '../shared/sidebar-nav';
 import { User } from 'lucide-react';
 import { useIntro } from '@/context/IntroContext';
 import { useUI } from '@/context/UIContext';
@@ -26,7 +26,15 @@ export const AccountSettings: React.FC<AccountSettingsProps> = ({ className, chi
       clearIntro?.();
       clearEnableMainOverflow?.();
     };
-  }, [router.locale, setIntro, clearIntro, setEnableMainOverflow, clearEnableMainOverflow, tCommon, tSettings]);
+  }, [
+    router.locale,
+    setIntro,
+    clearIntro,
+    setEnableMainOverflow,
+    clearEnableMainOverflow,
+    tCommon,
+    tSettings
+  ]);
 
   const sidebarNavItems = [
     {
