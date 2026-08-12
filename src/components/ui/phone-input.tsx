@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from './skeleton';
 
@@ -64,6 +63,14 @@ type CountrySelectProps = {
   options: CountrySelectOption[];
 };
 
+const getCallingCode = (country: RPNInput.Country) => {
+  try {
+    return country ? RPNInput.getCountryCallingCode(country) : '';
+  } catch {
+    return '';
+  }
+};
+
 const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProps) => {
   const { t: tCommon } = useTranslation('common');
   const handleSelect = React.useCallback(
@@ -79,32 +86,36 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
         <Button
           type="button"
           variant={'outline'}
-          className={cn('flex gap-1 rounded-e-none rounded-s-lg')}
+          className={cn('flex gap-1 rounded-e-none rounded-s-lg px-3 border-r-0 h-9')}
           disabled={disabled}>
           <FlagComponent country={value} countryName={value} />
           <ChevronsUpDown
-            className={cn('h-4 w-4 opacity-50', disabled ? 'hidden' : 'opacity-100')}
+            className={cn('-mr-1 h-4 w-4 opacity-50', disabled ? 'hidden' : 'opacity-100')}
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[300px] p-0">
-        <Command>
+      <PopoverContent align="start" className="w-75 p-0">
+        <Command className="bg-background">
           <CommandInput placeholder={tCommon('phone-input.search') + '...'} />
           <CommandList>
-            <ScrollArea className="h-72">
-              <CommandEmpty>{tCommon('phone-input.not_found')}</CommandEmpty>
-              <CommandGroup>
-                {options
-                  .filter((x) => x.value)
-                  .map((option) => (
-                    <CommandItem key={option.value} onSelect={() => handleSelect(option.value)}>
+            <CommandEmpty>{tCommon('phone-input.not_found')}</CommandEmpty>
+            <CommandGroup>
+              {options
+                .filter((x) => x.value)
+                .map((option) => {
+                  const code = getCallingCode(option.value);
+                  return (
+                    <CommandItem
+                      key={option.value}
+                      value={`${option.label} ${option.value} ${code}`}
+                      onSelect={() => handleSelect(option.value)}>
                       <span className="w-1/3 text-start">
                         <FlagComponent country={option.value} countryName={option.label} />
                       </span>
                       <span className="flex-1 text-sm w-1/3 text-center">{option.value}</span>
-                      {option.value && (
+                      {code && (
                         <span className="text-foreground/50 text-sm w-1/3 text-end">
-                          {`+${RPNInput.getCountryCallingCode(option.value)}`}
+                          {`+${code}`}
                         </span>
                       )}
                       <CheckIcon
@@ -114,9 +125,9 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
                         )}
                       />
                     </CommandItem>
-                  ))}
-              </CommandGroup>
-            </ScrollArea>
+                  );
+                })}
+            </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>
@@ -128,7 +139,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
 
   return (
-    <span className="bg-foreground/20 flex h-5 w-7 overflow-hidden rounded-sm [&_svg]:w-full [&_svg]:h-full [&_svg]:object-cover">
+    <span className="flex h-4 w-6 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-muted [&_svg]:h-full [&_svg]:w-full">
       {Flag && <Flag title={countryName} />}
     </span>
   );
