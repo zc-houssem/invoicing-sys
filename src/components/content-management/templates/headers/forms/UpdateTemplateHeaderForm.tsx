@@ -2,6 +2,8 @@ import React from 'react';
 import { useUpdateTemplateHeaderFormStructure } from './useUpdateTemplateHeaderFormStructure';
 import { useTemplateHeaderStore } from '@/hooks/stores/useTemplateHeaderStore';
 import { useIntro } from '@/context/IntroContext';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useTranslation } from 'react-i18next';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -25,13 +27,24 @@ export const UpdateTemplateHeaderForm = ({ className, onSuccess }: UpdateTemplat
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContentManagement } = useTranslation('content-management');
+
   React.useEffect(() => {
     setIntro?.(
       'Update Header',
       'Update a template header.'
     );
+    setRoutes?.([
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
+      { title: tContentManagement('pdf.menu.headers', { defaultValue: 'Headers' }), href: '/content-management/pdf/headers' },
+      { title: 'Update Header' }
+    ]);
     return () => {
       clearIntro?.();
+      clearRoutes?.();
     };
   }, []);
 

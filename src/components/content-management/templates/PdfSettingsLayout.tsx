@@ -33,12 +33,12 @@ export const PdfSettingsLayout: React.FC<PdfSettingsLayoutProps> = ({ className,
   ];
 
   return (
-    <div className={cn('flex flex-col flex-1', className)}>
-      <div className="flex flex-col flex-1 lg:flex-row gap-4">
-        <aside className="flex-1 mb-2">
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <div className="flex flex-col flex-1 lg:flex-row gap-4 overflow-hidden">
+        <aside className="lg:flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-7 min-w-0">{children}</div>
+        <div className="flex flex-col flex-7 overflow-hidden">{children}</div>
       </div>
     </div>
   );

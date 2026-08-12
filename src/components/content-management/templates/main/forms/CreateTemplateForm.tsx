@@ -2,6 +2,8 @@ import React from 'react';
 import { useCreateTemplateFormStructure } from './useCreateTemplateFormStructure';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useIntro } from '@/context/IntroContext';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useTranslation } from 'react-i18next';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,14 +28,25 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContentManagement } = useTranslation('content-management');
+
   React.useEffect(() => {
     setIntro?.(
       'Create Template',
       'Register a template record linked to a document type. PDF output uses EJS + Puppeteer on the server.'
     );
+    setRoutes?.([
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
+      { title: tContentManagement('pdf.menu.templates', { defaultValue: 'Templates' }), href: '/content-management/pdf/templates' },
+      { title: 'Create Template' }
+    ]);
     return () => {
       templateStore.reset();
       clearIntro?.();
+      clearRoutes?.();
     };
   }, []);
 

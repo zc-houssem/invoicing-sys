@@ -2,6 +2,8 @@ import React from 'react';
 import { useCreateTemplateFooterFormStructure } from './useCreateTemplateFooterFormStructure';
 import { useTemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
 import { useIntro } from '@/context/IntroContext';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useTranslation } from 'react-i18next';
 import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,14 +28,25 @@ export const CreateTemplateFooterForm = ({ className }: CreateTemplateFooterForm
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContentManagement } = useTranslation('content-management');
+
   React.useEffect(() => {
     setIntro?.(
       'Create Footer',
       'Register a template footer.'
     );
+    setRoutes?.([
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
+      { title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }), href: '/content-management/pdf/footers' },
+      { title: 'Create Footer' }
+    ]);
     return () => {
       templateFooterStore.reset();
       clearIntro?.();
+      clearRoutes?.();
     };
   }, []);
 

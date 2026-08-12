@@ -1,4 +1,6 @@
 import { useIntro } from '@/context/IntroContext';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useTranslation } from 'react-i18next';
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { cn } from '@/lib/utils';
 import { ServerErrorResponse, UpdateTemplateDto } from '@/types';
@@ -31,14 +33,25 @@ export const UpdateTemplateForm = ({ id, className }: UpdateTemplateFormProps) =
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
 
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContentManagement } = useTranslation('content-management');
+
   React.useEffect(() => {
     setIntro?.(
       'Update Template',
       'Update template metadata and preview PDF output with a real quotation or invoice.'
     );
+    setRoutes?.([
+      { title: tCommon('menu.contentManagement.title') },
+      { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
+      { title: tContentManagement('pdf.menu.templates', { defaultValue: 'Templates' }), href: '/content-management/pdf/templates' },
+      { title: 'Update Template' }
+    ]);
     return () => {
       templateStore.reset();
       clearIntro?.();
+      clearRoutes?.();
     };
   }, []);
 

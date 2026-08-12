@@ -47,7 +47,7 @@ export const AccountSettings: React.FC<AccountSettingsProps> = ({ className, chi
   return (
     <div className={cn('flex flex-col flex-1', className)}>
       <div className="flex flex-col flex-1 lg:flex-row gap-4">
-        <aside className="flex-1 mb-2">
+        <aside className="lg:flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
         <div className="flex flex-col flex-7 min-w-0">{children}</div>

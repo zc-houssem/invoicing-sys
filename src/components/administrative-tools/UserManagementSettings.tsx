@@ -42,10 +42,10 @@ export default function UserManagementSettings({ className, children }: UserMana
       </div>
       <Separator className="my-4 lg:my-6" />
       <div className="flex-1 flex flex-col overflow-hidden md:space-y-2 lg:flex-row lg:space-x-12 ">
-        <aside className="flex-1 mb-2">
+        <aside className="lg:flex-1 mb-2">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="flex flex-col flex-[7] overflow-hidden">{children}</div>
+        <div className="flex flex-col flex-7 overflow-hidden">{children}</div>
       </div>
     </div>
   );

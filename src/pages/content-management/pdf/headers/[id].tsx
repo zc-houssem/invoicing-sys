@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
 import { useTemplateHeaderStore } from '@/hooks/stores/useTemplateHeaderStore';
 import { UpdateTemplateHeaderForm } from '@/components/content-management/templates/headers/forms/UpdateTemplateHeaderForm';
-import { PdfSettingsLayout } from '@/components/content-management/templates/PdfSettingsLayout';
+
 
 export default function Page() {
   const router = useRouter();
@@ -34,8 +34,8 @@ export default function Page() {
   }, [data]);
 
   return (
-    <PdfSettingsLayout>
+    <>
       {isPending ? <div>Loading...</div> : <UpdateTemplateHeaderForm />}
-    </PdfSettingsLayout>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { PdfSettingsLayout } from '@/components/content-management/templates/PdfSettingsLayout';
+
 import { useTemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/api';
@@ -36,8 +36,8 @@ export default function Page() {
   }, [data]);
 
   return (
-    <PdfSettingsLayout>
+    <>
       {isPending ? <div>Loading...</div> : <UpdateTemplateForm id={id} />}
-    </PdfSettingsLayout>
+    </>
   );
 }
