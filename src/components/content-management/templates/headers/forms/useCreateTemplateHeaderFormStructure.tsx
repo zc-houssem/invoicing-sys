@@ -3,7 +3,6 @@ import {
   Field,
   FieldVariant,
   FormStructure,
-  ImageFieldProps,
   SelectFieldProps,
   SelectOption,
   TextareaFieldProps,
@@ -13,7 +12,7 @@ import { TemplateHeaderStore } from '@/hooks/stores/useTemplateHeaderStore';
 import { useTranslation } from 'react-i18next';
 
 interface useCreateTemplateHeaderFormStructureProps {
-  store: any;
+  store: TemplateHeaderStore;
   templateTypes: SelectOption[];
 }
 
@@ -22,7 +21,6 @@ export const useCreateTemplateHeaderFormStructure = ({
   templateTypes
 }: useCreateTemplateHeaderFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',

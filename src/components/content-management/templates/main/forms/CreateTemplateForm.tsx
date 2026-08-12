@@ -40,7 +40,10 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tContentManagement('pdf.menu.templates', { defaultValue: 'Templates' }), href: '/content-management/pdf/templates' },
+      {
+        title: tContentManagement('pdf.menu.templates', { defaultValue: 'Templates' }),
+        href: '/content-management/pdf/templates'
+      },
       { title: 'Create Template' }
     ]);
     return () => {
@@ -86,8 +89,8 @@ export const CreateTemplateForm = ({ className }: CreateTemplateFormProps) => {
     <div className={cn('flex flex-col flex-1 overflow-auto p-4 gap-4', className)}>
       <div className="max-w-xl mx-auto w-full my-auto space-y-4">
         <p className="text-sm text-muted-foreground">
-          Templates link a name and document type to a server-side EJS template. PDF layout
-          is defined in backend template files — no file upload or visual editor required.
+          Templates link a name and document type to a server-side EJS template. PDF layout is
+          defined in backend template files — no file upload or visual editor required.
         </p>
         <FormBuilder structure={formStructure} />
         <div className="flex justify-end">

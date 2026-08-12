@@ -37,7 +37,10 @@ export const CreateTemplateHeaderForm = ({ className }: CreateTemplateHeaderForm
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tContentManagement('pdf.menu.headers', { defaultValue: 'Headers' }), href: '/content-management/pdf/headers' },
+      {
+        title: tContentManagement('pdf.menu.headers', { defaultValue: 'Headers' }),
+        href: '/content-management/pdf/headers'
+      },
       { title: 'Create Header' }
     ]);
     return () => {

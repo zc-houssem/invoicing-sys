@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Field,
   FieldVariant,
@@ -21,7 +20,6 @@ export const useUpdateTemplateHeaderFormStructure = ({
   templateTypes
 }: useUpdateTemplateHeaderFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',

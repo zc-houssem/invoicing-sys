@@ -22,7 +22,10 @@ interface UpdateTemplateHeaderFormProps {
   onSuccess?: () => void;
 }
 
-export const UpdateTemplateHeaderForm = ({ className, onSuccess }: UpdateTemplateHeaderFormProps) => {
+export const UpdateTemplateHeaderForm = ({
+  className,
+  onSuccess
+}: UpdateTemplateHeaderFormProps) => {
   const templateHeaderStore = useTemplateHeaderStore();
   const { setIntro, clearIntro } = useIntro();
   const { templateTypes, isTemplateTypePending } = useTemplateTypes();
@@ -32,14 +35,14 @@ export const UpdateTemplateHeaderForm = ({ className, onSuccess }: UpdateTemplat
   const { t: tContentManagement } = useTranslation('content-management');
 
   React.useEffect(() => {
-    setIntro?.(
-      'Update Header',
-      'Update a template header.'
-    );
+    setIntro?.('Update Header', 'Update a template header.');
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tContentManagement('pdf.menu.headers', { defaultValue: 'Headers' }), href: '/content-management/pdf/headers' },
+      {
+        title: tContentManagement('pdf.menu.headers', { defaultValue: 'Headers' }),
+        href: '/content-management/pdf/headers'
+      },
       { title: 'Update Header' }
     ]);
     return () => {
@@ -59,7 +62,10 @@ export const UpdateTemplateHeaderForm = ({ className, onSuccess }: UpdateTemplat
 
   const { mutate: updateTemplateHeader, isPending: isUpdateTemplateHeaderPending } = useMutation({
     mutationFn: async () =>
-      api.core.templateHeader.update(templateHeaderStore.response?.id as string, templateHeaderStore.updateDto as any),
+      api.core.templateHeader.update(
+        templateHeaderStore.response?.id as string,
+        templateHeaderStore.updateDto as any
+      ),
     onSuccess() {
       toast.success('Header updated successfully');
       onSuccess?.();

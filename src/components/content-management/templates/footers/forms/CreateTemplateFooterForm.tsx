@@ -33,14 +33,14 @@ export const CreateTemplateFooterForm = ({ className }: CreateTemplateFooterForm
   const { t: tContentManagement } = useTranslation('content-management');
 
   React.useEffect(() => {
-    setIntro?.(
-      'Create Footer',
-      'Register a template footer.'
-    );
+    setIntro?.('Create Footer', 'Register a template footer.');
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }), href: '/content-management/pdf/footers' },
+      {
+        title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }),
+        href: '/content-management/pdf/footers'
+      },
       { title: 'Create Footer' }
     ]);
     return () => {

@@ -1,4 +1,8 @@
-import { CreateTemplateFooterDto, ResponseTemplateFooterDto, UpdateTemplateFooterDto } from '@/types';
+import {
+  CreateTemplateFooterDto,
+  ResponseTemplateFooterDto,
+  UpdateTemplateFooterDto
+} from '@/types';
 import { BaseActions, createBaseStore } from './useBaseStore';
 
 interface TemplateFooterData {
@@ -7,17 +11,13 @@ interface TemplateFooterData {
   createDtoErrors?: Partial<Record<keyof CreateTemplateFooterDto, string[]>>;
   updateDto?: UpdateTemplateFooterDto;
   updateDtoErrors?: Partial<Record<keyof UpdateTemplateFooterDto, string[]>>;
-
-  previewPicture?: File | string | null;
-  progress: number;
 }
 
 interface ITemplateFooterStore extends TemplateFooterData {}
 
-export interface TemplateFooterStore extends ITemplateFooterStore, BaseActions<ITemplateFooterStore> {
-  setProgress: (progress: number) => void;
-  setPreviewPicture: (file: File | string | null) => void;
-}
+export interface TemplateFooterStore
+  extends ITemplateFooterStore,
+    BaseActions<ITemplateFooterStore> {}
 
 const initialState: TemplateFooterData = {
   response: null,
@@ -26,11 +26,9 @@ const initialState: TemplateFooterData = {
     description: '',
     ejsCode: '',
     previewPictureId: undefined
-  },
-  previewPicture: null,
-  progress: 0
+  }
 };
 
-export const useTemplateFooterStore = createBaseStore<ITemplateFooterStore>({
+export const useTemplateFooterStore = createBaseStore<TemplateFooterStore>({
   ...initialState
 });

@@ -2,7 +2,6 @@ import {
   Field,
   FieldVariant,
   FormStructure,
-  ImageFieldProps,
   SelectFieldProps,
   SelectOption,
   TextareaFieldProps,
@@ -10,8 +9,6 @@ import {
 } from '@/components/shared/form-builder/types';
 import { TemplateStore } from '@/hooks/stores/useTemplateStore';
 import { useTranslation } from 'react-i18next';
-
-import React from 'react';
 
 interface useUpdateTemplateFormStructureProps {
   store: TemplateStore;
@@ -23,7 +20,6 @@ export const useUpdateTemplateFormStructure = ({
   templateTypes
 }: useUpdateTemplateFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',
@@ -76,7 +72,6 @@ export const useUpdateTemplateFormStructure = ({
     }
   };
 
-
   const formStructure: FormStructure = {
     title: {
       value: 'Update Template'
@@ -84,11 +79,7 @@ export const useUpdateTemplateFormStructure = ({
     includeHeader: false,
     fieldsets: [
       {
-        rows: [
-          { fields: [nameField] },
-          { fields: [typeField] },
-          { fields: [descriptionField] }
-        ]
+        rows: [{ fields: [nameField] }, { fields: [typeField] }, { fields: [descriptionField] }]
       }
     ]
   };

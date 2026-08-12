@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Field,
   FieldVariant,
@@ -9,9 +8,10 @@ import {
   TextFieldProps
 } from '@/components/shared/form-builder/types';
 import { useTranslation } from 'react-i18next';
+import { TemplateFooterStore } from '@/hooks/stores/useTemplateFooterStore';
 
 interface useCreateTemplateFooterFormStructureProps {
-  store: any;
+  store: TemplateFooterStore;
   templateTypes: SelectOption[];
 }
 
@@ -20,7 +20,6 @@ export const useCreateTemplateFooterFormStructure = ({
   templateTypes
 }: useCreateTemplateFooterFormStructureProps) => {
   const { t } = useTranslation('content-management');
-  const [isUploadPending, setIsUploadPending] = React.useState(false);
 
   const nameField: Field<TextFieldProps> = {
     id: 'name',

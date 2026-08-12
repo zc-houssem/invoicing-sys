@@ -39,7 +39,10 @@ export const UpdateTemplateFooterForm = ({
     setRoutes?.([
       { title: tCommon('menu.contentManagement.title') },
       { title: tCommon('menu.contentManagement.subs.pdf', { defaultValue: 'PDF Settings' }) },
-      { title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }), href: '/content-management/pdf/footers' },
+      {
+        title: tContentManagement('pdf.menu.footers', { defaultValue: 'Footers' }),
+        href: '/content-management/pdf/footers'
+      },
       { title: 'Update Footer' }
     ]);
     return () => {

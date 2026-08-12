@@ -18,10 +18,7 @@ interface TemplateData {
 
 interface ITemplateStore extends TemplateData {}
 
-export interface TemplateStore extends ITemplateStore, BaseActions<ITemplateStore> {
-  setProgress: (progress: number) => void;
-  setPreviewPicture: (file: File | string | null) => void;
-}
+export interface TemplateStore extends ITemplateStore, BaseActions<ITemplateStore> {}
 
 const initialState: TemplateData = {
   response: null,
@@ -38,6 +35,6 @@ const initialState: TemplateData = {
   progress: 0
 };
 
-export const useTemplateStore = createBaseStore<ITemplateStore>({
+export const useTemplateStore = createBaseStore<TemplateStore>({
   ...initialState
 });
