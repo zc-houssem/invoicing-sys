@@ -138,7 +138,8 @@ export const TemplatePortal = ({ className }: TemplatePortalProps) => {
         page: debouncedPage.toString(),
         limit: debouncedSize.toString(),
         sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'asc' : 'desc'}`,
-        search: debouncedSearchTerm
+        search: debouncedSearchTerm,
+        join: 'templateType'
       })
   });
 
