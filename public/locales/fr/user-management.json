@@ -1,0 +1,407 @@
+{
+  "userManagement": {
+    "page": {
+      "user": "Utilisateur",
+      "users": "Utilisateurs",
+      "title": "Gestion des Utilisateurs",
+      "description": "Gérez les utilisateurs, leurs rôles et permissions.",
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "approve": "Approuver",
+      "disapprove": "Désapprouver",
+      "editUser": "Modifier l'Utilisateur",
+      "createUser": "Créer un Utilisateur",
+      "deleteUser": "Supprimer l'Utilisateur",
+      "notify": "Notifier",
+      "userDetails": "Détails de l'Utilisateur"
+    },
+    "detailmenu": {
+      "title": "{{userName}}",
+      "description": "Gérer les informations et l'activité de {{userName}}",
+      "overview": "Aperçu",
+      "systemEnterprises": "Entreprises Système",
+      "quotations": "Devis",
+      "invoices": "Factures",
+      "payments": "Paiements"
+    },
+    "details": {
+      "general_information": "Informations Générales",
+      "account_information": "Informations du Compte",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "approved": "Approuvé",
+      "pending_approval": "En attente d'approbation",
+      "emailVerified": "Email Vérifié",
+      "notVerified": "Non Vérifié",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour",
+      "systemEnterprises": {
+        "title": "Entreprises Système",
+        "singular": "Entreprise Système",
+        "plural": "Entreprises Système",
+        "proprietaryBadge": "Propriétaire",
+        "actions": {
+          "disassociate": "Dissocier",
+          "remove": "Supprimer"
+        },
+        "columns": {
+          "name": "Nom",
+          "phone": "Téléphone",
+          "taxId": "Numéro fiscal",
+          "owner": "Propriétaire",
+          "memberSince": "Membre depuis"
+        },
+        "form": {
+          "enterprise": "Entreprise Système",
+          "enterprisePlaceholder": "Sélectionner une entreprise système",
+          "enterpriseDescription": "Sélectionnez l'entreprise système à laquelle ajouter cet utilisateur.",
+          "noAvailableEnterprises": "Aucune entreprise système disponible à ajouter."
+        },
+        "sheets": {
+          "create": {
+            "title": "Ajouter à une Entreprise Système",
+            "description": "Ajouter cet utilisateur à une entreprise système existante."
+          }
+        },
+        "dialogs": {
+          "disassociate": {
+            "title": "Dissocier de",
+            "description": "Cet utilisateur perdra l'accès à cette entreprise système."
+          },
+          "remove": {
+            "title": "Supprimer",
+            "description": "Cette action est irréversible et supprimera définitivement cette entreprise système."
+          }
+        },
+        "messages": {
+          "addSuccess": "Utilisateur ajouté à l'entreprise système avec succès.",
+          "addFailure": "Échec de l'ajout de l'utilisateur à l'entreprise système.",
+          "disassociateSuccess": "Utilisateur dissocié de l'entreprise système avec succès.",
+          "disassociateFailure": "Échec de la dissociation de l'utilisateur de l'entreprise système."
+        }
+      }
+    },
+    "columns": {
+      "id": "ID",
+      "photo": "Photo",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "dateOfBirth": "Date de naissance",
+      "isActive": "Actif",
+      "isApproved": "Approuvé",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "emailVerified": "Email vérifié",
+      "role": "Rôle",
+      "roleId": "ID du rôle",
+      "createdAt": "Créé le",
+      "updatedAt": "Mise à jour le"
+    },
+    "forms": {
+      "step1Title": "Informations Générales",
+      "step1FieldTitle": "Informations de l'Utilisateur",
+      "step1Description": "Remplissez les informations de base de l'utilisateur.",
+      "step2Title": "Informations du Profil",
+      "step2FieldTitle": "Informations du Profil",
+      "step2Description": "Remplissez les détails du profil de l'utilisateur.",
+      "step3Title": "Informations Officielles",
+      "step3FieldTitle": "Informations Officielles",
+      "step3Description": "Remplissez les informations officielles de l'utilisateur.",
+      "step4Title": "Photos",
+      "step4Description": "Téléversez les fichiers de profil pour l'utilisateur.",
+      "step4FieldTitle": "Téléversements de Profil",
+      "photo": "Photo de Profil",
+      "photoDescription": "Photo de profil de l'utilisateur.",
+      "username": "Nom d'utilisateur",
+      "usernamePlaceholder": "ex. johndoe",
+      "usernameDescription": "Utilisé pour se connecter à la plateforme.",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Entrez le mot de passe",
+      "passwordDescription": "Mot de passe pour se connecter au compte.",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Répétez le mot de passe",
+      "confirmPasswordDescription": "Doit correspondre au mot de passe ci-dessus.",
+      "role": "Rôle",
+      "rolePlaceholder": "Sélectionnez le rôle de l'utilisateur",
+      "roleDescription": "Sélectionnez le rôle de l'utilisateur.",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "ex. John",
+      "firstNameDescription": "Prénom de l'utilisateur.",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "ex. Doe",
+      "lastNameDescription": "Nom de famille de l'utilisateur.",
+      "dateOfBirth": "Date de naissance",
+      "dateOfBirthPlaceholder": "AAAA-MM-JJ",
+      "dateOfBirthDescription": "Date de naissance de l'utilisateur.",
+      "email": "Email",
+      "emailPlaceholder": "ex. johndoe@example.com",
+      "emailDescription": "Adresse email associée au compte.",
+      "phone": "Téléphone",
+      "phonePlaceholder": "ex. +1234567890",
+      "phoneDescription": "Numéro de téléphone de l'utilisateur.",
+      "CIN": "CIN",
+      "CINPlaceholder": "ex. 123456",
+      "CINDescription": "Numéro CIN de l'utilisateur.",
+      "bio": "Biographie",
+      "bioPlaceholder": "Parlez-nous de vous...",
+      "bioDescription": "Biographie ou informations personnelles de l'utilisateur.",
+      "gender": "Genre",
+      "genderPlaceholder": "ex. Homme, Femme",
+      "genderDescription": "Genre de l'utilisateur.",
+      "isPrivate": "Confidentialité du Profil",
+      "isPrivateDescription": "Si activé, le profil de l'utilisateur sera privé et non visible par les autres.",
+      "isPrivatePlaceholder": "Sélectionnez si le profil doit être privé",
+      "region": "Région",
+      "regionPlaceholder": "ex. Amérique du Nord",
+      "regionDescription": "Région ou emplacement de l'utilisateur.",
+      "officialDocument": "Document Officiel",
+      "officialDocumentDescription": "Téléversez le document officiel",
+      "driverLicenseDocument": "Permis de Conduire",
+      "driverLicenseDocumentDescription": "Téléversez le permis de conduire",
+      "createUser": "Créer un utilisateur",
+      "createUserSuccess": "Utilisateur créé avec succès.",
+      "createUserError": "Erreur lors de la création de l'utilisateur.",
+      "editUser": "Modifier l'utilisateur",
+      "updateUserSuccess": "Utilisateur mis à jour avec succès.",
+      "updateUserError": "Erreur lors de la mise à jour de l'utilisateur.",
+      "deleteUser": "Supprimer l'utilisateur",
+      "deleteUserConfirmation": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "deleteUserSuccess": "Utilisateur supprimé avec succès.",
+      "deleteUserError": "Erreur lors de la suppression de l'utilisateur.",
+      "activateUserSuccess": "Utilisateur activé avec succès.",
+      "activateUserError": "Erreur lors de l'activation de l'utilisateur.",
+      "deactivateUserSuccess": "Utilisateur désactivé avec succès.",
+      "deactivateUserError": "Erreur lors de la désactivation de l'utilisateur.",
+      "approveUserSuccess": "Utilisateur approuvé avec succès.",
+      "approveUserError": "Erreur lors de l'approbation de l'utilisateur.",
+      "disapproveUserSuccess": "Utilisateur désapprouvé avec succès.",
+      "disapproveUserError": "Erreur lors de la désapprobation de l'utilisateur.",
+      "requirePasswordCheckTitle": "Exiger une mise à jour du mot de passe",
+      "requirePasswordCheckDescription": "Les utilisateurs seront invités à mettre à jour leur mot de passe lors de leur prochaine connexion."
+    },
+    "sheet": {
+      "createUserTitle": "Créer un utilisateur",
+      "updateUserTitle": "Mettre à jour un utilisateur",
+      "createUserDescription": "Utilisez ce formulaire pour définir un nouvel utilisateur dans le système. Un utilisateur est identifié par son adresse e-mail unique. Remplissez tous les champs obligatoires pour que l'utilisateur soit ajouté avec succès.",
+      "updateUserDescription": "Utilisez ce formulaire pour mettre à jour un utilisateur existant dans le système. Un utilisateur est identifié par son adresse e-mail unique. Remplissez tous les champs obligatoires pour que l'utilisateur soit mis à jour avec succès."
+    },
+    "dialogs": {
+      "deleteUserTitle": "Supprimer l'Utilisateur",
+      "deleteUserDescription": "Cette action est irréversible et permanente. La suppression de l'utilisateur supprimera tous les rôles et connexions associés, affectant leur accès et permissions. Veuillez procéder avec prudence.",
+      "activateUserTitle": "Activer l'Utilisateur",
+      "activateUserDescription": "Activer l'utilisateur lui permettra de se connecter et d'accéder à la plateforme.",
+      "deactivateUserTitle": "Désactiver l'Utilisateur",
+      "deactivateUserDescription": "Désactiver l'utilisateur le rendra incapable de se connecter à la plateforme, mais conservera ses données.",
+      "approveUserTitle": "Approuver l'Utilisateur",
+      "approveUserDescription": "Approuver l'utilisateur lui permettra d'accéder à la plateforme et de commencer à utiliser ses fonctionnalités.",
+      "disapproveUserTitle": "Désapprouver l'Utilisateur",
+      "disapproveUserDescription": "Désapprouver l'utilisateur le rendra incapable d'accéder à la plateforme, mais conservera ses données."
+    },
+    "errors": {
+      "notDefined": "N'est pas défini.",
+      "roleNotFound": "Rôle non trouvé.",
+      "generalError": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "validation": {
+      "invalidUsernameFormat": "Nom d'utilisateur invalide, il ne doit contenir que des lettres, des chiffres ou des traits de soulignement",
+      "invalidUsernameLength": "Nom d'utilisateur invalide, il doit contenir au moins 3 caractères",
+      "invalidEmail": "E-mail invalide",
+      "invalidFirstNameLength": "Prénom invalide, il doit contenir au moins 3 caractères",
+      "firstNameTooLong": "Le prénom ne doit pas dépasser 25 caractères",
+      "invalidFirstNameFormat": "Le prénom ne doit contenir que des lettres et des espaces",
+      "invalidLastNameLength": "Nom invalide, il doit contenir au moins 3 caractères",
+      "lastNameTooLong": "Le nom ne doit pas dépasser 25 caractères",
+      "invalidLastNameFormat": "Le nom ne doit contenir que des lettres et des espaces",
+      "invalidAge": "L'utilisateur doit avoir au moins 13 ans",
+      "invalidPasswordLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "roleRequired": "Veuillez sélectionner un rôle"
+    },
+    "messages": {
+      "userCreatedSuccess": "Utilisateur créé avec succès",
+      "userUpdatedSuccess": "Utilisateur mis à jour avec succès",
+      "userDeletedSuccess": "Utilisateur supprimé avec succès",
+      "userActivatedSuccess": "Utilisateur activé avec succès",
+      "userDeactivatedSuccess": "Utilisateur désactivé avec succès",
+      "userApprovedSuccess": "Utilisateur approuvé avec succès",
+      "userDisapprovedSuccess": "Utilisateur désapprouvé avec succès"
+    },
+    "inspect": {
+      "tabs": {
+        "about": "À propos",
+        "book": "Livre",
+        "activity": "Activité",
+        "conversations": "Conversations",
+        "notifications": "Notifications",
+        "settings": "Paramètres"
+      },
+      "stats": {
+        "services": "Services"
+      },
+      "books": {
+        "education": {
+          "page": {
+            "title": "Formation"
+          },
+          "messages": {
+            "createdSuccess": "Formation créée avec succès",
+            "updatedSuccess": "Formation mise à jour avec succès",
+            "deletedSuccess": "Formation supprimée avec succès"
+          },
+          "forms": {
+            "title": "Titre",
+            "titlePlaceholder": "Entrez le diplôme ou le titre du programme",
+            "titleDescription": "Nom de votre diplôme, certificat ou programme",
+            "institution": "Établissement",
+            "institutionPlaceholder": "Entrez le nom de l’école ou de l’université",
+            "institutionDescription": "Nom de l’établissement d’enseignement",
+            "startDate": "Date de début",
+            "startDateDescription": "Date de début de cette formation",
+            "endDate": "Date de fin",
+            "endDateDescription": "Date de fin de cette formation (laisser vide si en cours)",
+            "description": "Description",
+            "descriptionPlaceholder": "Décrivez vos études, réalisations ou spécialisation",
+            "descriptionDescription": "Détails sur votre formation et vos réalisations",
+            "updateTitle": "Mettre à jour la formation"
+          },
+          "sheet": {
+            "createTitle": "Ajouter une formation",
+            "createDescription": "Ajouter une nouvelle formation à votre profil",
+            "updateTitle": "Modifier la formation",
+            "updateDescription": "Mettre à jour les informations de votre formation"
+          },
+          "dialogs": {
+            "deleteTitle": "Supprimer la formation",
+            "deleteDescription": "Êtes-vous sûr de vouloir supprimer cette formation ? Cette action est irréversible."
+          },
+          "validation": {
+            "titleTooShort": "Le titre doit contenir au moins 2 caractères",
+            "titleTooLong": "Le titre ne peut pas dépasser 100 caractères",
+            "institutionTooShort": "L’établissement doit contenir au moins 2 caractères",
+            "institutionTooLong": "L’établissement ne peut pas dépasser 100 caractères",
+            "startDateRequired": "La date de début est requise",
+            "startDateFuture": "La date de début ne peut pas être dans le futur",
+            "endDateBeforeStart": "La date de fin doit être postérieure à la date de début",
+            "endDateFuture": "La date de fin ne peut pas être dans le futur",
+            "descriptionTooLong": "La description ne peut pas dépasser 500 caractères"
+          }
+        },
+        "experience": {
+          "page": {
+            "title": "Expérience"
+          },
+          "messages": {
+            "createdSuccess": "Expérience créée avec succès",
+            "updatedSuccess": "Expérience mise à jour avec succès",
+            "deletedSuccess": "Expérience supprimée avec succès"
+          },
+          "forms": {
+            "title": "Titre",
+            "titlePlaceholder": "Entrez l’intitulé du poste",
+            "titleDescription": "Votre rôle ou poste au sein de l’entreprise",
+            "company": "Entreprise",
+            "companyPlaceholder": "Entrez le nom de l’entreprise",
+            "companyDescription": "Nom de l’entreprise ou de l’organisation",
+            "startDate": "Date de début",
+            "startDateDescription": "Date de début de ce poste",
+            "endDate": "Date de fin",
+            "endDateDescription": "Date de fin de ce poste (laisser vide si actuel)",
+            "description": "Description",
+            "descriptionPlaceholder": "Décrivez vos responsabilités et réalisations",
+            "descriptionDescription": "Détails sur votre rôle et vos accomplissements",
+            "updateTitle": "Mettre à jour l’expérience",
+            "location": "Lieu",
+            "locationPlaceholder": "ex : San Francisco, CA",
+            "locationDescription": "Localisation physique du lieu de travail",
+            "locationType": "Type de lieu",
+            "locationTypePlaceholder": "Sélectionner le type de lieu",
+            "locationTypeDescription": "Comment le travail est effectué",
+            "workType": "Type d'emploi",
+            "workTypePlaceholder": "Sélectionner le type d'emploi",
+            "workTypeDescription": "Type de contrat de travail",
+            "locationTypes": {
+              "Remote": "Distanciel",
+              "On-Site": "Sur site",
+              "Hybrid": "Hybride"
+            },
+            "workTypes": {
+              "Full-Time": "Temps plein",
+              "Part-Time": "Temps partiel",
+              "Temporary": "Temporaire",
+              "Internship": "Stage",
+              "Freelance": "Freelance",
+              "Volunteer": "Bénévolat",
+              "Apprenticeship": "Apprentissage"
+            }
+          },
+          "sheet": {
+            "createTitle": "Ajouter une expérience",
+            "createDescription": "Ajouter une nouvelle expérience professionnelle à votre profil",
+            "updateTitle": "Modifier l’expérience",
+            "updateDescription": "Mettre à jour les informations de votre expérience"
+          },
+          "dialogs": {
+            "deleteTitle": "Supprimer l’expérience",
+            "deleteDescription": "Êtes-vous sûr de vouloir supprimer cette expérience ? Cette action est irréversible."
+          },
+          "validation": {
+            "titleTooShort": "Le titre doit contenir au moins 2 caractères",
+            "titleTooLong": "Le titre ne peut pas dépasser 100 caractères",
+            "companyTooShort": "L’entreprise doit contenir au moins 2 caractères",
+            "companyTooLong": "L’entreprise ne peut pas dépasser 100 caractères",
+            "startDateRequired": "La date de début est requise",
+            "startDateFuture": "La date de début ne peut pas être dans le futur",
+            "endDateBeforeStart": "La date de fin doit être postérieure à la date de début",
+            "endDateFuture": "La date de fin ne peut pas être dans le futur",
+            "descriptionTooLong": "La description ne peut pas dépasser 500 caractères"
+          }
+        },
+        "ref-params": {
+          "industry": {
+            "messages": {
+              "updatedSuccess": "Secteur mis à jour avec succès"
+            },
+            "forms": {
+              "reset": "Réinitialiser"
+            }
+          }
+        }
+      },
+      "about": {
+        "title": "À propos",
+        "Bio": "Aucune biographie disponible",
+        "contact": "Informations de contact",
+        "personal": "Informations personnelles",
+        "account": "Informations du compte",
+        "documents": "Documents",
+        "emailVerified": "Email vérifié",
+        "gender": "Genre",
+        "female": "Femme",
+        "male": "Homme",
+        "profile": "Visibilité du profil",
+        "private": "Privé",
+        "public": "Public",
+        "role": "Rôle",
+        "memberSince": "Membre depuis",
+        "lastUpdated": "Dernière mise à jour",
+        "officialDocument": "Document officiel",
+        "driverLicense": "Permis de conduire"
+      },
+      "settings": {
+        "title": "Paramètres",
+        "manageAccount": "Gérer le compte",
+        "account": "Compte",
+        "updateAccount": "Mettre à jour les informations du compte",
+        "editAccount": "Modifier le compte",
+        "privacy": "Confidentialité",
+        "managePrivacy": "Gérer les paramètres de confidentialité",
+        "privacySettings": "Paramètres de confidentialité",
+        "notifications": "Notifications",
+        "configureNotifications": "Configurer les notifications",
+        "notificationSettings": "Paramètres de notification",
+        "testNotification": "Tester la notification"
+      },
+      "noPhoneNumber": "Aucun numéro de téléphone"
+    }
+  }
+}

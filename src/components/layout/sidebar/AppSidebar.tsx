@@ -2,21 +2,23 @@ import * as React from 'react';
 import {
   BookUser,
   Building,
+  Building2,
   Cpu,
   File,
-  FileCog,
   FileText,
+  Landmark,
   LayoutDashboard,
   Magnet,
   Package,
   Printer,
+  Rows3Icon,
   Settings,
   Shield,
   ShoppingCart,
+  Table,
   UserCog,
   Users,
-  Wallet,
-  Wrench
+  Wallet
 } from 'lucide-react';
 
 import {
@@ -24,22 +26,17 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail
+  SidebarRail,
+  useSidebar
 } from '@/components/ui/sidebar';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
 import { MainNav } from './MainNav';
-import { UserNav } from './UserNav';
 import { TeamSwitcher } from './TeamSwitcher';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import logoLight from 'src/assets/logo.png';
-import logoDark from 'src/assets/logo-light.png';
 import { useTranslation } from 'react-i18next';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = useRouter();
-  const { theme } = useTheme();
-  const { t: tCommon } = useTranslation('common');
+  const { t } = useTranslation('common');
+  const { systemEnterprises } = useSystemEnterprises();
 
   const data = {
     user: {
@@ -47,42 +44,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       email: 'm@example.com',
       avatar: '/avatars/shadcn.jpg'
     },
-    teams: [
-      {
-        name: 'Zedney Creative',
-        logo: React.useMemo(() => {
-          return (
-            <Image
-              src={theme == 'light' ? logoLight : logoDark}
-              alt="logo"
-              onClick={() => router.push('/dashboard')}
-            />
-          );
-        }, [theme, router]),
-        plan: 'Free'
-      }
-    ],
+    teams: systemEnterprises.map((enterprise) => ({
+      id: enterprise.id,
+      name: enterprise.name,
+      logoId: enterprise.logoId,
+      plan: enterprise.system ? t('company.system_company') : t('company.workspace')
+    })),
     navMain: [
       {
         id: 1,
-        title: tCommon('menu.dashboard'),
+        title: t('menu.dashboard.title'),
         url: '#',
         icon: LayoutDashboard,
         items: []
       },
       {
         id: 2,
-        title: tCommon('menu.contacts'),
+        title: t('menu.contacts.title'),
         url: '#',
         icon: Users,
         items: [
           {
-            title: tCommon('submenu.firms'),
-            url: '/contacts/firms',
+            title: t('menu.contacts.subs.enterprises'),
+            url: '/contacts/enterprises',
             icon: Building
           },
           {
-            title: tCommon('submenu.interlocutors'),
+            title: t('menu.contacts.subs.interlocutors'),
             url: '/contacts/interlocutors',
             icon: BookUser
           }
@@ -90,22 +78,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 3,
-        title: tCommon('menu.selling'),
+        title: t('menu.selling.title'),
         url: '#',
         icon: Package,
         items: [
           {
-            title: tCommon('submenu.quotations'),
+            title: t('menu.selling.subs.quotation'),
             url: '/selling/quotations',
             icon: File
           },
           {
-            title: tCommon('submenu.invoices'),
+            title: t('menu.selling.subs.invoice'),
             url: '/selling/invoices',
             icon: FileText
           },
           {
-            title: tCommon('submenu.payments'),
+            title: t('menu.selling.subs.payment'),
             url: '/selling/payments',
             icon: Wallet
           }
@@ -113,27 +101,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 4,
-        title: tCommon('menu.buying'),
+        title: t('menu.buying.title'),
         url: '#',
         icon: ShoppingCart,
         items: [
           {
-            title: tCommon('submenu.quotations'),
+            title: t('menu.buying.subs.quotation'),
             url: '/buying/quotation',
             icon: File
           },
           {
-            title: tCommon('submenu.invoices'),
+            title: t('menu.buying.subs.invoice'),
             url: '/buying/invoices',
             icon: FileText
           },
           {
-            title: tCommon('submenu.payments'),
+            title: t('menu.buying.subs.payment'),
             url: '/buying/payments',
             icon: Wallet
           },
           {
-            title: tCommon('submenu.withholding'),
+            title: t('menu.buying.subs.taxWithholding'),
             url: '/buying/withholding',
             icon: Magnet
           }
@@ -141,63 +129,123 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         id: 5,
-        title: tCommon('menu.administrative_tools'),
-        url: '#',
-        icon: Shield,
+        title: t('menu.contentManagement.title'),
+        url: '/content-management',
+        icon: Package,
         items: [
           {
-            title: tCommon('submenu.user_management'),
-            url: '/administrative-tools/user-management/users',
-            icon: Users
+            title: t('menu.contentManagement.subs.bankAccounts'),
+            url: '/content-management/bank-accounts',
+            icon: Landmark
           },
           {
-            title: tCommon('submenu.logger'),
-            url: '/administrative-tools/logger',
-            icon: Cpu
+            title: t('menu.contentManagement.subs.taxRates'),
+            url: '/content-management/tax-rates',
+            icon: Wallet
+          },
+          {
+            title: t('menu.contentManagement.subs.refTypes'),
+            url: '/content-management/reference-types',
+            icon: Rows3Icon
+          },
+          {
+            title: t('menu.contentManagement.subs.refParams'),
+            url: '/content-management/reference-parameters',
+            icon: Table
+          },
+          {
+            title: t('menu.contentManagement.subs.pdf'),
+            url: '/content-management/pdf',
+            icon: Printer
           }
         ]
       },
       {
         id: 6,
-        title: tCommon('menu.settings'),
+        title: t('menu.administrativeTools.title'),
+        url: '#',
+        icon: Shield,
+        items: [
+          {
+            title: t('menu.administrativeTools.subs.users'),
+            url: '/administrative-tools/user-management/users',
+            icon: Users
+          },
+          {
+            title: t('menu.administrativeTools.subs.roles'),
+            url: '/administrative-tools/user-management/roles',
+            icon: UserCog
+          },
+          {
+            title: t('menu.administrativeTools.subs.configuration'),
+            url: '/administrative-tools/configuration',
+            icon: Settings
+          },
+          {
+            title: t('menu.administrativeTools.subs.logger'),
+            url: '/administrative-tools/logger',
+            icon: Cpu
+          },
+          {
+            title: t('menu.administrativeTools.subs.devLogger'),
+            url: '/administrative-tools/dev-logger',
+            icon: Cpu
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: t('menu.settings.title'),
         url: '#',
         icon: Settings,
         items: [
           {
-            title: tCommon('submenu.account'),
+            title: t('menu.account.title'),
             url: '/settings/account/profile',
             icon: UserCog
           },
           {
-            title: tCommon('submenu.system'),
-            url: '/settings/system/activity',
-            icon: FileCog
-          },
-          {
-            title: tCommon('submenu.pdf'),
-            url: '/settings/pdf/live',
-            icon: Printer
-          },
-          {
-            title: tCommon('submenu.other'),
-            url: '#',
-            icon: Wrench
+            title: t('menu.enterprise.title'),
+            url: '/settings/account/my-enterprise',
+            icon: Building2
           }
         ]
       }
     ]
   };
+  const { open, toggleSidebar } = useSidebar();
+
+  const hoverToggledRef = React.useRef(false);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+    e.stopPropagation();
+    if (!open) {
+      toggleSidebar();
+      hoverToggledRef.current = true;
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+    e.stopPropagation();
+    if (hoverToggledRef.current) {
+      toggleSidebar();
+      hoverToggledRef.current = false;
+    }
+  };
+
   return (
-    <Sidebar collapsible="icon" {...props} className="bg-zinc-900 text-white">
+    <Sidebar
+      collapsible="icon"
+      {...props}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <MainNav items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        <UserNav user={data.user} />
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

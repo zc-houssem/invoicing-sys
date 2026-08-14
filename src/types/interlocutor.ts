@@ -1,6 +1,6 @@
 import { FirmInterlocutorEntry } from './firm-interlocutor-entry';
 import { PagedResponse } from './response';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { DatabaseEntity } from './response/database-entity';
 
 export interface Interlocutor extends DatabaseEntity {
   id?: number;

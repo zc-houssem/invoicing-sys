@@ -1,0 +1,92 @@
+import { ResponseInvoiceDto } from './invoice';
+import { ResponseEnterpriseDto, ResponseInterlocutorDto } from '../enterprise';
+import { ResponseRefParamDto, CurrencyPayload } from '../reference-types';
+import { DatabaseEntity } from '@/types/response/database-entity';
+import { ResponseStorageDto } from '../storage';
+import { ResponseUserDto } from '../user-management';
+
+export enum PAYMENT_MODE {
+  Cash = 'Cash',
+  Transfer = 'Transfer',
+  Check = 'Check',
+  CreditCard = 'CreditCard',
+  Other = 'Other'
+}
+
+export enum PAYMENT_STATUS {
+  Draft = 'Draft',
+  Validated = 'Validated',
+  Cancelled = 'Cancelled'
+}
+
+export interface CreatePaymentInvoiceEntryDto {
+  invoiceId: number;
+  amount: number;
+  invoice?: ResponseInvoiceDto;
+}
+
+export interface CreatePaymentUploadDto {
+  uploadId?: number;
+  order?: number;
+}
+
+export interface CreatePaymentDto {
+  sequence?: string;
+  amount?: number;
+  fee?: number;
+  convertionRate?: number;
+  date: Date | null;
+  mode: PAYMENT_MODE;
+  notes?: string;
+  systemEnterpriseId?: number;
+  enterpriseId?: number;
+  interlocutorId?: number;
+  currencyId?: number;
+  createdById?: string;
+  invoices: CreatePaymentInvoiceEntryDto[];
+  uploads: CreatePaymentUploadDto[];
+}
+
+export interface UpdatePaymentDto extends Partial<CreatePaymentDto> {
+  status?: string;
+}
+
+export interface ResponsePaymentInvoiceEntryDto {
+  id: number;
+  paymentId: number;
+  invoiceId: number;
+  amount: number;
+  invoice: ResponseInvoiceDto;
+  payment?: ResponsePaymentDto;
+}
+
+export interface ResponsePaymentUploadDto {
+  id: number;
+  paymentId: number;
+  uploadId: number;
+  upload: ResponseStorageDto;
+}
+
+export interface ResponsePaymentDto extends DatabaseEntity {
+  id: number;
+  status: string;
+  sequence?: string;
+  amount: number;
+  fee: number;
+  convertionRate: number;
+  date: Date;
+  mode: string;
+  notes?: string;
+  systemEnterprise?: ResponseEnterpriseDto;
+  systemEnterpriseId?: number;
+  enterprise: ResponseEnterpriseDto;
+  enterpriseId: number;
+  interlocutor: ResponseInterlocutorDto;
+  interlocutorId: number;
+  currency: ResponseRefParamDto<CurrencyPayload>;
+  currencyId: number;
+  createdBy?: ResponseUserDto;
+  createdById?: string;
+  invoices: ResponsePaymentInvoiceEntryDto[];
+  uploads: ResponsePaymentUploadDto[];
+}

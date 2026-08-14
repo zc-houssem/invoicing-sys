@@ -1,0 +1,29 @@
+{
+  "logger": {
+    "intro": "Audit & Monitoring",
+    "introTitle": "Logs",
+    "singularName": "Log Entry",
+    "pluralName": "Log Entries",
+    "introDescription": "Monitor and analyze system activities, API calls, and user actions",
+    "columns": {
+      "event": "Event",
+      "description": "Description",
+      "loggedAt": "Logged At"
+    }
+  },
+  "devLogger": {
+    "intro": "Audit & Monitoring",
+    "introTitle": "Developer Logs",
+    "singularName": "Log Entry",
+    "pluralName": "Log Entries",
+    "introDescription": "Analyze API requests, methods used, and technical information related to system actions",
+    "columns": {
+      "event": "Event",
+      "method": "Method",
+      "apiEndpoint": "API Endpoint",
+      "user": "User",
+      "loggedAt": "Logged At",
+      "logInfo": "Log Information"
+    }
+  }
+}

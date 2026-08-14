@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/common';
-import { useDialog } from '@/components/common/Dialogs';
+import { Spinner } from '@/components/shared';
+import { useDialog } from '@/components/shared/Dialogs';
 
 export const useInterlocutorPromoteDialog = (
   interlocutorFullName?: string,

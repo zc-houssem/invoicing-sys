@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/common';
-import { useDialog } from '@/components/common/Dialogs';
-import { useInterlocutorManager } from '../hooks/useInterlocutorManager';
+import { Spinner } from '@/components/shared';
+import { useDialog } from '@/components/shared/Dialogs';
+import { useInterlocutorStore } from '@/hooks/stores/useInterlocutorStore';
 
 export const useInterlocutorDisassociateDialog = (
   interlocutorFullName?: string,
@@ -12,7 +12,7 @@ export const useInterlocutorDisassociateDialog = (
   const { t: tCommon } = useTranslation('common');
   const { t: tContacts } = useTranslation('contacts');
 
-  const interlocutorManager = useInterlocutorManager();
+  const interlocutorStore = useInterlocutorStore();
 
   const {
     DialogFragment: disassociateInterlocutorDialog,
@@ -31,7 +31,7 @@ export const useInterlocutorDisassociateDialog = (
         <div className="flex gap-2 justify-end">
           <Button
             onClick={() => {
-              disassociateInterlocutor?.(interlocutorManager.id);
+              disassociateInterlocutor?.(interlocutorStore.enterpriseInterlocutorId);
               closeDisassociateInterlocutorDialog();
             }}>
             {tCommon('commands.confirm')}

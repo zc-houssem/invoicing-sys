@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { FirmUpdateForm } from '@/components/contacts/firm/FirmUpdateForm';
-import { Page404 } from '@/components/common';
+import { EnterpriseUpdateForm } from '@/components/contacts/enterprise/form/EnterpriseUpdateForm';
+import { Page404 } from '@/components/shared';
 
 export default function Page() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Page() {
   if (!id) return <Page404 />;
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <FirmUpdateForm firmId={parseInt(id)} className="mx-5 lg:mx-10" />
+      <EnterpriseUpdateForm enterpriseId={parseInt(id)} className="mx-5 lg:mx-10" />
     </div>
   );
 }

@@ -1,132 +1,253 @@
 {
-  "common": {
-    "address": {
-      "address": "Adresse",
-      "address2": "Complément d'adresse",
-      "country": "Pays",
-      "region": "Gouvernorat",
-      "zip_code": "Code Postal"
+  "common": {},
+  "page": {
+    "enterprises": {
+      "title": "Entreprises",
+      "description": "Consultez, créez et gérez vos entreprises clientes et fournisseurs."
     },
-    "contact_information": "Informations Contacts",
-    "firm_information": "Informations Entreprise",
-    "quotations_list": "Liste des Devis"
+    "interlocutors": {
+      "title": "Interlocuteurs",
+      "description": "Consultez et gérez les personnes de contact liées à vos entreprises."
+    }
   },
-  "firm": {
-    "action_add_failure": "Erreur lors de la création de l'entreprise",
-    "action_add_success": "Entreprise ajoutée avec succès",
-    "action_remove_failure": "Erreur lors de la suppression de la entreprise",
-    "action_remove_success": "Entreprise supprimée avec succès",
-    "add_button_label": "Nouvelle Entreprise",
-    "attributes": {
-      "activity": "Activité",
-      "created_at": "Date de Création",
-      "currency": "Devise",
-      "delivery_address": "Adresse de livraison",
-      "entreprise_name": "Nom de l'entreprise",
-      "entreprise_type": "Entreprise",
-      "main_interlocurtor_name": "Nom de l'interlocuteur",
-      "main_interlocurtor_surname": "Prénom de l'interlocuteur",
-      "invoicing_address": "Adresse de facturation",
-      "notes": "Remarques",
-      "particular_entreprise_type": "Particulier",
-      "payment_conditions": "Conditions de paiement",
+  "enterprise": {
+    "single": "Entreprise",
+    "plural": "Entreprises",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
       "phone": "Téléphone",
-      "tax_number": "Numéro d'identification fiscale",
-      "type": "Type d'entreprise",
-      "website": "Site Web"
+      "website": "Site Web",
+      "taxId": "Numéro d'identification fiscale",
+      "notes": "Notes",
+      "logo": "Logo",
+      "isNewInterlocutor": "Créer un nouvel interlocuteur",
+      "steps": {
+        "1": { "title": "Informations de l'entreprise" },
+        "2": { "title": "Informations de l'interlocuteur" },
+        "3": { "title": "Adresses" },
+        "4": { "title": "Informations supplémentaires" }
+      },
+      "particular": {
+        "noun": "Particulier",
+        "positive": "Particulier",
+        "negative": "Entreprise"
+      },
+      "activity": "Activité",
+      "currency": "Devise",
+      "paymentConditions": "Conditions de paiement",
+      "deliveryAddress": "Adresse de livraison",
+      "invoicingAddress": "Adresse de facturation",
+      "placeholders": {
+        "name": "Entrez le nom de l'entreprise",
+        "email": "Entrez l'email de l'entreprise",
+        "phone": "Entrez le téléphone de l'entreprise",
+        "website": "Entrez le site web de l'entreprise",
+        "taxId": "Entrez le numéro d'identification fiscale de l'entreprise",
+        "notes": "Entrez des notes sur l'entreprise",
+        "activity": "Entrez l'activité de l'entreprise",
+        "currency": "Entrez la devise de l'entreprise",
+        "paymentConditions": "Entrez les conditions de paiement de l'entreprise"
+      },
+      "descriptions": {
+        "name": "Le nom de l'entreprise.",
+        "email": "L'adresse email de l'entreprise.",
+        "phone": "Le numéro de téléphone de l'entreprise.",
+        "website": "Le site web de l'entreprise.",
+        "taxId": "Le numéro d'identification fiscale de l'entreprise.",
+        "notes": "Des notes supplémentaires sur l'entreprise.",
+        "logo": "Le logo de l'entreprise.",
+        "isNewInterlocutor": "Cochez pour créer un nouvel interlocuteur. Décochez pour en sélectionner un existant.",
+        "particular": "Indique si l'entreprise est un particulier ou non.",
+        "activity": "L'activité de l'entreprise.",
+        "currency": "La devise utilisée par l'entreprise.",
+        "paymentConditions": "Les conditions de paiement de l'entreprise.",
+        "deliveryAddress": "L'adresse de livraison de l'entreprise.",
+        "invoicingAddress": "L'adresse de facturation de l'entreprise."
+      }
     },
-    "card_description": "Cette section offre un aperçu complet et structuré de l'ensemble des entreprises, garantissant clarté et facilité d'accès.",
-    "errors": {
-      "empty_entreprise_name": "Nom de de l'entreprise est obligatoire",
-      "firm_name_already_taken": "Le nom de l'entreprise est déjà utilisé",
-      "tax_number_already_taken": "Le numéro fiscal est déjà utilisé"
+    "table": {
+      "columns": {
+        "logo": "Logo",
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "website": "Site Web",
+        "taxId": "Numéro d'identification fiscale",
+        "particular": {
+          "noun": "Particulier",
+          "positive": "Particulier",
+          "negative": "Entreprise"
+        },
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      },
+      "emptyCells": {
+        "phone": "Aucun téléphone",
+        "email": "Aucun email",
+        "website": "Aucun site web",
+        "taxId": "Aucun numéro d'identification fiscale",
+        "activity": "Aucune activité"
+      }
     },
-    "delete_label": "Suppression du l'entreprise",
-    "delete_prompt": "Voulez-vous vraiment supprimer l'entreprise",
     "detailmenu": {
-      "title": "Les détails de {{firmName}}",
-      "description": "Vous pouvez éditer et inspecter tous les détails de {{firmName}} ici.",
-      "overview": "Aperçu Général",
+      "title": "Détails de l'entreprise",
+      "description": "Gérer les informations et les relations de {{enterpriseName}}",
+      "overview": "Aperçu",
       "interlocutors": "Interlocuteurs",
-      "chronological": "Chronologie",
       "quotations": "Devis",
       "invoices": "Factures",
-      "payments": "Paiements"
+      "payments": "Paiements",
+      "chronological": "Chronologique"
     },
-    "introduce_info": "Saisissez les informations de l'entreprise",
-    "introduce_info_description": "Veuillez renseigner les détails de la nouvelle entreprise en fournissant toutes les informations requises.",
-    "edit_info": "Modifier les informations de {{firmName}}",
-    "edit_info_description": "Vous pouvez modifier {{firmName}} ici en fournissant les informations requises",
-    "empty_table": "Aucune Entreprise trouvée",
-    "empty_cells": {
-      "phone": "Aucun Téléphone",
-      "website": "Aucun Site Web",
-      "activity": "Aucune Activité",
-      "currency": "Aucun Devise",
-      "tax_number": "Aucun Numéro d'Identification Fiscale"
+    "action_remove_success": "Entreprise supprimée avec succès",
+    "action_remove_failure": "Échec de la suppression de l'entreprise",
+    "singular": "Entreprise",
+    "new": "Nouvelle entreprise",
+    "create_page": {
+      "description": "Remplissez le formulaire ci-dessous pour créer une nouvelle entreprise."
     },
-    "new": "Nouvelle Entreprise",
-    "presented_by": "présenté par",
-    "plural": "Entreprises",
-    "singular": "Entreprise"
-  },
-  "interlocutor": {
-    "action_add_failure": "Erreur lors de la création de l'interlocuteur",
-    "action_add_success": "Interlocuteur ajoutée avec succès",
-    "action_associate_failure": "Erreur lors de l'association de l'interlocuteur",
-    "action_associate_success": "Interlocuteur associé avec succès",
-    "action_disassociate_failure": "Erreur lors de la dissociation de l'interlocuteur",
-    "action_disassociate_success": "Interlocuteur dissocié avec succès",
-    "action_promote_failure": "Erreur lors de la promotion de l'interlocuteur",
-    "action_promote_success": "Interlocuteur promotionné avec succès",
-    "action_remove_failure": "Erreur lors de la suppression de l'interlocuteur",
-    "action_remove_success": "Interlocuteur supprimée avec succès",
-    "action_update_failure": "Erreur lors de la mise à jour de l'interlocuteur",
-    "action_update_success": "Interlocuteur mis à jour avec succès",
-    "associate_firm": "Ajouter une entreprise",
-    "associate_firm_when empty": "Aucune association d'entreprise, Ajoutez la première association ?",
-    "associate_firm_prompt": "Choisir une entreprise",
-    "add_button_label": "Nouvel Interlocuteur",
-    "attributes": {
-      "created_at": "Date de Création",
-      "email": "Email",
-      "is_main": "Principal",
+    "edit_page": {
+      "description": "Mettez à jour les informations de cette entreprise."
+    },
+    "action_add_success": "Entreprise ajoutée avec succès",
+    "action_add_failure": "Échec de l'ajout de l'entreprise",
+    "edit": "Modifier l'entreprise",
+    "action_edit_success": "Entreprise mise à jour avec succès",
+    "action_edit_failure": "Échec de la mise à jour de l'entreprise",
+    "delete_prompt": "Voulez-vous vraiment supprimer l'entreprise",
+    "delete_dialog_description": "Cette action est irréversible et supprimera définitivement cette entreprise.",
+    "details": {
+      "general_information": "Informations générales",
       "name": "Nom",
       "phone": "Téléphone",
-      "position": "Position",
-      "surname": "Prénom",
-      "title": "Titre",
-      "firms": "Entreprises"
+      "email": "Email",
+      "website": "Site Web",
+      "tax_id": "Numéro d'identification fiscale",
+      "type": "Type",
+      "particular": "Particulier",
+      "company": "Entreprise",
+      "activity": "Activité",
+      "financial_information": "Informations financières",
+      "currency": "Devise",
+      "payment_condition": "Condition de paiement",
+      "invoicing_address": "Adresse de facturation",
+      "delivery_address": "Adresse de livraison",
+      "notes": "Notes"
     },
-    "card_description": "Cette section offre un aperçu complet et structuré de l'ensemble des interlocuteurs, garantissant clarté et facilité d'accès.",
-
-    "create_dialog_description": "Utilisez ce menu pour créer un nouvel interlocuteur ou associer un interlocuteur existant. Assurez-vous de remplir tous les champs obligatoires avant d'enregistrer vos modifications.",
-    "update_dialog_description": "Introduisez les détails pour mettre à jour l'interlocuteur. Assurez-vous que tous les champs obligatoires sont remplis avant d'enregistrer.",
-    "disassociate_dialog_description": "Cette action est permanente et ne peut pas être annulée. Toutes les associations avec cette entreprise seront également supprimées.",
-    "promote_dialog_description": "Assurez-vous que cette action correspond à leurs responsabilités, car elle peut avoir un impact sur la fonctionnalité du système.",
-    "delete_dialog_description": "Cette action est permanente et ne peut pas être annulée. Toutes les associations avec cet interlocuteur seront également supprimées.",
-
-    "delete_label": "Suppression du l'interlocuteur",
-
-    "disassociate_prompt": "Voulez-vous vraiment dissocier l'interlocuteur",
-    "promote_prompt": "Voulez-vous vraiment promouvoir l'interlocuteur",
-    "delete_prompt": "Voulez-vous vraiment supprimer",
-
+    "attributes": {
+      "activity": "Activité",
+      "currency": "Devise"
+    },
     "empty_cells": {
-      "phone": "Aucun Téléphone",
-      "position": "Aucune Position"
+      "activity": "Aucune activité",
+      "currency": "Aucune devise"
     },
-    "create_or_associate": {
-      "new": "Nouvel Interlocuteur",
-      "associate": "Interlocuteur existant"
-    },
-    "errors": {
-      "surpassed_firm_limit": "Vous avez mentionné toutes les entreprises disponibles"
-    },
-    "list": "Liste des Interlocuteurs",
-    "new": "Nouvel Interlocuteur",
-    "update": "Mise à jour Interlocutor",
+    "validation": {
+      "name_required": "Le nom est requis",
+      "tax_id_required": "Le numéro d'identification fiscale est requis pour les entreprises (non-particulier)"
+    }
+  },
+  "address": {
+    "form": {
+      "address": "Adresse",
+      "address2": "Adresse ligne 2",
+      "zipCode": "Code postal",
+      "region": "Région",
+      "country": "Pays",
+      "placeholders": {
+        "address": "Entrez l'adresse",
+        "address2": "Entrez des informations supplémentaires sur l'adresse",
+        "zipCode": "Entrez le code postal",
+        "region": "Entrez la région",
+        "country": "Sélectionnez le pays"
+      },
+      "descriptions": {
+        "address": "L'adresse.",
+        "address2": "Des informations supplémentaires sur l'adresse.",
+        "zipCode": "Le code postal.",
+        "region": "La région.",
+        "country": "Le pays."
+      }
+    }
+  },
+  "interlocutor": {
+    "singular": "Interlocuteur",
     "plural": "Interlocuteurs",
-    "singular": "Interlocuteur"
+    "new": "Nouvel Interlocuteur",
+    "create_dialog_title": "Créer un interlocuteur",
+    "create_dialog_description": "Créez un nouvel interlocuteur en remplissant les détails ci-dessous.",
+    "update_dialog_title": "Modifier l'interlocuteur",
+    "update_dialog_description": "Modifiez les détails de l'interlocuteur ci-dessous.",
+    "form": {
+      "socialTitle": "Civilité",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "position": "Poste",
+      "associateExisting": "Associer un interlocuteur existant",
+      "existingInterlocutor": "Interlocuteur",
+      "noAvailableInterlocutors": "Aucun interlocuteur disponible à ajouter.",
+      "placeholders": {
+        "socialTitle": "Sélectionnez la civilité",
+        "firstName": "Entrez le prénom de l'interlocuteur",
+        "lastName": "Entrez le nom de l'interlocuteur",
+        "email": "Entrez l'email de l'interlocuteur",
+        "phone": "Entrez le téléphone de l'interlocuteur",
+        "position": "Entrez le poste de l'interlocuteur",
+        "existingInterlocutor": "Sélectionnez un interlocuteur"
+      },
+      "descriptions": {
+        "socialTitle": "La civilité de l'interlocuteur.",
+        "firstName": "Le prénom de l'interlocuteur.",
+        "lastName": "Le nom de l'interlocuteur.",
+        "email": "L'adresse email de l'interlocuteur.",
+        "phone": "Le numéro de téléphone de l'interlocuteur.",
+        "position": "Le poste de l'interlocuteur.",
+        "existingInterlocutor": "Sélectionnez un interlocuteur pas encore lié à cette entreprise."
+      }
+    },
+    "table": {
+      "columns": {
+        "socialTitle": "Civilité",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le",
+        "position": "Poste"
+      },
+      "emptyCells": {
+        "email": "Aucun email",
+        "phone": "Aucun téléphone",
+        "position": "Aucun poste"
+      }
+    },
+    "detailmenu": {
+      "title": "Détails de l'interlocuteur",
+      "description": "Gérer les informations de {{interlocutorName}}",
+      "overview": "Aperçu",
+      "quotations": "Devis",
+      "invoices": "Factures"
+    },
+    "validation": {
+      "name_required": "Le prénom est requis",
+      "surname_required": "Le nom est requis",
+      "email_invalid": "Adresse email invalide"
+    },
+    "action_remove_success": "Interlocuteur supprimé avec succès",
+    "action_remove_failure": "Échec de la suppression de l'interlocuteur",
+    "action_add_success": "Interlocuteur ajouté avec succès",
+    "action_add_failure": "Échec de l'ajout de l'interlocuteur",
+    "action_edit_success": "Interlocuteur mis à jour avec succès",
+    "action_edit_failure": "Échec de la mise à jour de l'interlocuteur",
+    "action_disassociate_success": "Interlocuteur dissocié avec succès",
+    "action_disassociate_failure": "Échec de la dissociation de l'interlocuteur",
+    "delete_prompt": "Voulez-vous vraiment supprimer l'interlocuteur",
+    "delete_dialog_description": "Cette action est irréversible et supprimera définitivement cet interlocuteur.",
+    "disassociate_prompt": "Voulez-vous vraiment dissocier l'interlocuteur",
+    "disassociate_dialog_description": "Cet interlocuteur ne sera plus associé à cette entreprise."
   }
 }

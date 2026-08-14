@@ -1,16 +1,11 @@
 import { z } from 'zod';
 
-export const taxSchema = z.object({
-  id: z.number().optional(),
+export const createTaxRateSchema = z.object({
   label: z.string().min(3, { message: 'label_length_error' }),
   value: z.number().positive({ message: 'value_interval_error' }),
-  isRate: z.boolean().optional(),
-  isSpecial: z.boolean().optional(),
+  type: z.enum(['rate', 'fixed']),
+  special: z.boolean(),
   currencyId: z.number().nullable().optional()
 });
 
-export const createTaxSchema = taxSchema.omit({
-  id: true
-});
-
-export const updateTaxSchema = taxSchema.partial();
+export const updateTaxRateSchema = createTaxRateSchema.partial();

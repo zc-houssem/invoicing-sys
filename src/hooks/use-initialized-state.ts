@@ -18,24 +18,35 @@ const useInitializedState = ({
 }: UseInitializedStateProps) => {
   const [initialData, setInitialData] = React.useState<any | null>(null);
   const [isDataLoaded, setIsDataLoaded] = React.useState(false);
+  const lastInitializedDataRef = React.useRef<any>(null);
 
-  const initializeData = () => {
-    if (data) {
+  const initializeData = React.useCallback(
+    (force = false) => {
+      if (loading) return;
+
+      if (
+        !force &&
+        lastInitializedDataRef.current !== null &&
+        _.isEqual(lastInitializedDataRef.current, data)
+      ) {
+        return;
+      }
+
       setFormData(data);
       setInitialData(getCurrentData());
       setIsDataLoaded(true);
-    }
-  };
+      lastInitializedDataRef.current = _.cloneDeep(data);
+    },
+    [data, getCurrentData, loading, setFormData]
+  );
 
   React.useEffect(() => {
-    if (!loading) {
-      initializeData();
-    }
-  }, [data, loading]);
+    initializeData();
+  }, [initializeData]);
 
   const globalReset = () => {
     resetData();
-    initializeData();
+    initializeData(true);
   };
 
   const isDisabled = React.useMemo(() => {

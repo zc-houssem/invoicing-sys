@@ -1,52 +1,95 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/api';
-import { BreadcrumbCommon } from '@/components/common';
-import { Spinner } from '@/components/common';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Info, File, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import SidebarNav from '@/components/shared/sidebar-nav';
+import { useInterlocutor } from '@/hooks/content/core/useInterlocutor';
+import { Spinner } from '@/components/shared';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useIntro } from '@/context/IntroContext';
+import { useRouter } from 'next/router';
 
 interface InterlocutorDetailsProps {
   className?: string;
-  interlocutorId: string;
+  interlocutorId: number;
+  children?: React.ReactNode;
 }
 
-export const InterlocutorDetails: React.FC<InterlocutorDetailsProps> = ({
+export const InterlocutorDetails = ({
   className,
-  interlocutorId
-}) => {
-  const {
-    isPending: isFetchPending,
-    error,
-    data: interlocutor
-  } = useQuery({
-    queryKey: ['interlocutor', interlocutorId],
-    queryFn: () => api.interlocutor.findOne(parseInt(interlocutorId))
-  });
+  interlocutorId,
+  children
+}: InterlocutorDetailsProps) => {
+  const router = useRouter();
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContacts } = useTranslation('contacts');
 
-  if (error) return 'An error has occurred: ' + error.message;
-  if (isFetchPending || !interlocutor)
-    return <Spinner className="h-screen" show={isFetchPending} />;
+  const { setIntro, clearIntro } = useIntro();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+
+  const { interlocutor, isFetchInterlocutorPending } = useInterlocutor({ id: interlocutorId });
+
+  const fullName = `${interlocutor?.firstName || ''} ${interlocutor?.lastName || ''}`.trim();
+
+  React.useEffect(() => {
+    if (interlocutor) {
+      setIntro?.(
+        fullName,
+        tContacts('interlocutor.detailmenu.description', { interlocutorName: fullName })
+      );
+    }
+    setRoutes?.([
+      { title: tCommon('menu.contacts.title'), href: '/contacts' },
+      { title: tCommon('menu.contacts.subs.interlocutors'), href: '/contacts/interlocutors' },
+      { title: fullName }
+    ]);
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+    };
+  }, [
+    interlocutor,
+    fullName,
+    router.locale,
+    tCommon,
+    tContacts,
+    setIntro,
+    clearIntro,
+    setRoutes,
+    clearRoutes
+  ]);
+
+  const sidebarNavItems = [
+    {
+      title: tContacts('interlocutor.detailmenu.overview'),
+      icon: <Info size={18} />,
+      href: `/contacts/interlocutor/${interlocutorId}`
+    },
+    {
+      title: tContacts('interlocutor.detailmenu.quotations'),
+      icon: <File size={18} />,
+      href: `/contacts/interlocutor/${interlocutorId}/quotations`
+    },
+    {
+      title: tContacts('interlocutor.detailmenu.invoices'),
+      icon: <FileText size={18} />,
+      href: `/contacts/interlocutor/${interlocutorId}/invoices`
+    }
+  ];
+
   return (
-    <div className={cn('overflow-auto p-8', className)}>
-      <BreadcrumbCommon
-        hierarchy={[
-          { title: 'Contacts', href: '/contacts' },
-          { title: 'Entreprise', href: '/contacts/interlocutor' },
-          { title: interlocutor?.name || '' }
-        ]}
-      />
-      <div>
-        <Tabs defaultValue="overview" className={cn('', className)}>
-          <TabsList className="grid grid-cols-1 md:grid-cols-3 w-full h-fit">
-            <TabsTrigger value="overview">Aperçu Général</TabsTrigger>
-            <TabsTrigger value="quotations">Devis</TabsTrigger>
-            <TabsTrigger value="invoices">Factures</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview"></TabsContent>
-          <TabsContent value="quotations"></TabsContent>
-          <TabsContent value="invoices"></TabsContent>
-        </Tabs>
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <div className="flex-1 flex flex-col overflow-hidden md:space-y-2 lg:flex-row lg:space-x-12 ">
+        <aside className="lg:flex-1 mb-2">
+          <SidebarNav items={sidebarNavItems} />
+        </aside>
+        <div className="flex flex-col flex-7 overflow-hidden">
+          {!isFetchInterlocutorPending ? (
+            children
+          ) : (
+            <Spinner className="h-screen" show={isFetchInterlocutorPending} />
+          )}
+        </div>
       </div>
     </div>
   );

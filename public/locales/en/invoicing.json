@@ -1,177 +1,404 @@
 {
   "common": {
-    "firm_not_there": "Can't find what you're looking for? Add a firm from here."
+    "financialResume": "Financial Resume"
   },
   "quotation": {
-    "action_download_failure": "Error while downloading the quotation",
-    "action_download_success": "Quotation successfully downloaded",
-    "action_duplicate_failure": "Error while duplicating the quotation",
-    "action_duplicate_success": "Quotation successfully duplicated",
-    "action_remove_failure": "Error while removing the quotation",
-    "action_remove_success": "Quotation successfully removed",
-    "associate_firm": "Choose a firm",
-    "associate_interlocutor": "Choose an interlocutor",
-    "add_button_label": "New quotation",
-    "attributes": {
-      "number": "N°",
-      "date": "Date",
-      "due_date": "Due date",
-      "object": "Object",
-      "firm": "Firm",
-      "interlocutor": "Interlocutor",
-      "invoicing_address": "Invoicing address",
-      "delivery_address": "Delivery address",
-      "status": "Status",
-      "sub_total": "Sub-Total",
-      "discount": "Discount",
-      "total": "Total",
-      "general_condition": "General conditions",
-      "created_at": "Date of creation",
-      "notes": "Notes",
-      "files": "Files",
-      "no_date": "Missing Date",
-      "no_due_date": "Missing Due Date"
-    },
-    "card_description": "This section provides a clear and organized view of all your quotations.",
-    "errors": {
-      "surpassed_tax_limit": "You have used all available taxes"
-    },
-    "new": "New quotation",
-    "status": {
-      "accepted": "Accepted",
-      "draft": "Draft",
-      "expired": "Expired",
-      "non_existent": "Non-Existent",
-      "sent": "Sent",
-      "rejected": "Rejected",
-      "validated": "Validated",
-      "invoiced": "Invoiced"
-    },
-    "mark_invoiced": "Changer le statut sans générer de nouvelle facture",
-    "file_duplication": "Do you want also to duplicate files ?",
     "plural": "Quotations",
     "singular": "Quotation",
-    "use_default_condition": "Use default condition"
+    "intro": {
+      "title": "Selling Quotations",
+      "description": "Here you can manage your selling quotations, which will be used for sales and invoicing."
+    },
+    "form": {
+      "date": "Date",
+      "dueDate": "Due date",
+      "object": "Object",
+      "enterprise": "Enterprise",
+      "interlocutor": "Interlocutor",
+      "generalConditions": "General conditions",
+      "currency": "Currency",
+      "bankAccount": "Bank Account",
+      "invoices": "Invoices",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
+      "includeOnQuotation": {
+        "title": "Include on quotation",
+        "bankingDetails": "Banking details",
+        "articlesDescription": "Articles description",
+        "invoicingAddress": "Invoicing address",
+        "deliveryAddress": "Delivery address",
+        "generalConditions": "General conditions"
+      },
+      "placeholders": {
+        "date": "Select a date",
+        "dueDate": "Select a due date",
+        "object": "Enter an object",
+        "enterprise": "Select an enterprise",
+        "interlocutor": "Select an interlocutor",
+        "currency": "Select a currency",
+        "bankAccount": "Select a bank account",
+        "generalConditions": "Enter general conditions"
+      },
+      "descriptions": {
+        "date": "Select the date of the quotation.",
+        "dueDate": "Select the due date for this quotation.",
+        "object": "Enter the object of the quotation. This is a brief description of what the quotation is about.",
+        "enterprise": "Select the enterprise for which this quotation is being created.",
+        "interlocutor": "Select the interlocutor for this quotation. The options available will depend on the enterprise you have selected.",
+        "generalConditions": "Enter the general conditions for this quotation. You can use the editor to format the text as needed.",
+        "currency": "Select the currency for this quotation.",
+        "bankAccount": "Select the bank account to be used for this quotation.",
+        "sequence": "Auto-generated sequence based on the company's configuration.",
+        "createdBy": "User who created this quotation.",
+        "creatingAs": "You will be recorded as the creator of this quotation.",
+        "systemEnterprise": "System enterprise that issued this quotation.",
+        "issuingAs": "This quotation will be issued under the active system enterprise."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "sequence": "Sequence",
+        "object": "Object",
+        "date": "Date",
+        "status": "Status",
+        "dueDate": "Due date",
+        "enterprise": "Enterprise",
+        "interlocutor": "Interlocutor",
+        "createdBy": "Created by",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at"
+      }
+    },
+    "status": {
+      "New": "New",
+      "Draft": "Draft",
+      "Sent": "Sent",
+      "Accepted": "Accepted",
+      "Rejected": "Rejected",
+      "Expired": "Expired",
+      "Converted": "Converted",
+      "Invoiced": "Invoiced",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled",
+      "Validated": "Validated"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete this quotation",
+        "description": "This action cannot be undone. This will permanently delete the quotation from our database.",
+        "confirm": "Yes, delete it",
+        "cancel": "No, keep it"
+      }
+    },
+    "actions": {
+      "send": "Send",
+      "accept": "Accept",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "validate": "Validate",
+      "invalidate": "Invalidate",
+      "to_invoice": "To Invoice",
+      "roll_back": "Roll back",
+      "revive": "Revive"
+    },
+    "invoice_dialog": {
+      "title": "To Invoice",
+      "description": "Do you want to create an invoice using the information of the quotation?",
+      "create_additional": "To invoice",
+      "create_additional_description": "Are you sure you want to create an additional invoice for this quotation?",
+      "yes": "Yes, create invoice",
+      "no": "No, just update status"
+    },
+    "print_dialog": {
+      "title": "Print document",
+      "description": "Choose a template and preview the PDF before printing.",
+      "select_template": "Template",
+      "preview": "Preview",
+      "preview_loading": "Generating preview…",
+      "preview_error": "Failed to generate preview",
+      "preview_unavailable": "Save the document before previewing.",
+      "fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "no_templates": "No templates are available for quotations."
+    },
+    "messages": {
+      "status_updated": "Quotation status updated successfully",
+      "duplicate_success": "Quotation duplicated successfully",
+      "duplicate_failed": "Failed to duplicate quotation",
+      "invoice_created": "Invoice created successfully",
+      "invoice_failed": "Failed to create invoice",
+      "print_success": "Quotation PDF generated successfully",
+      "print_failed": "Failed to generate quotation PDF"
+    }
   },
   "invoice": {
-    "action_download_failure": "Error while downloading the invoice",
-    "action_download_success": "Invoice successfully downloaded",
-    "action_duplicate_failure": "Error while duplicating the invoice",
-    "action_duplicate_success": "Invoice successfully duplicated",
-    "action_remove_failure": "Error while removing the invoice",
-    "action_remove_success": "Invoice successfully removed",
-    "associate_firm": "Choose a firm",
-    "associate_interlocutor": "Choose an interlocutor",
-    "add_button_label": "New invoice",
-    "attributes": {
-      "number": "N°",
-      "date": "Date",
-      "due_date": "Due date",
-      "object": "Object",
-      "firm": "Firm",
-      "interlocutor": "Interlocutor",
-      "invoicing_address": "Invoicing address",
-      "delivery_address": "Delivery address",
-      "status": "Status",
-      "sub_total": "Sub-Total",
-      "discount": "Discount",
-      "total": "Total",
-      "tax_stamp": "Tax stamp",
-      "general_condition": "General conditions",
-      "created_at": "Date of creation",
-      "notes": "Notes",
-      "files": "Files",
-      "remaining_amount": "Remaining amount",
-      "amount_paid": "Amount paid",
-      "payment": "Payment",
-      "withholding": "Tax withholding",
-      "no_date": "Missing Date",
-      "no_due_date": "Missing Due Date"
-    },
-    "invoice_list": "Invoice list",
-    "new": "New invoice",
-    "status": {
-      "draft": "Draft",
-      "expired": "Expired",
-      "non_existent": "Non-Existent",
-      "sent": "Sent",
-      "paid": "Paid",
-      "partially_paid": "Partially paid",
-      "unpaid": "Unpaid",
-      "validated": "Validated"
-    },
-    "card_description": "This section provides a clear and organized view of all your invoices.",
-    "file_duplication": "Do you want also to duplicate files ?",
     "plural": "Invoices",
     "singular": "Invoice",
-    "use_default_condition": "Use default condition"
+    "intro": {
+      "title": "Selling Invoices",
+      "description": "Here you can manage your selling invoices, which will be used for sales and invoicing."
+    },
+    "form": {
+      "date": "Date",
+      "dueDate": "Due date",
+      "object": "Object",
+      "enterprise": "Enterprise",
+      "interlocutor": "Interlocutor",
+      "generalConditions": "General conditions",
+      "currency": "Currency",
+      "bankAccount": "Bank Account",
+      "taxWithholding": "Tax Withholding",
+      "fromQuotation": "Generated from quotation",
+      "viewQuotation": "View Quotation #",
+      "payments": "Payments",
+      "amountPaid": "Amount Paid",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
+      "includeOnInvoice": {
+        "bankingDetails": "Banking details",
+        "articlesDescription": "Articles description",
+        "invoicingAddress": "Invoicing address",
+        "deliveryAddress": "Delivery address",
+        "generalConditions": "General conditions",
+        "taxStamp": "Tax stamp"
+      },
+      "placeholders": {
+        "date": "Select a date",
+        "dueDate": "Select a due date",
+        "object": "Enter an object",
+        "enterprise": "Select an enterprise",
+        "interlocutor": "Select an interlocutor",
+        "currency": "Select a currency",
+        "bankAccount": "Select a bank account",
+        "taxWithholding": "Select a tax withholding",
+        "generalConditions": "Enter general conditions"
+      },
+      "descriptions": {
+        "date": "Select the date of the invoice.",
+        "dueDate": "Select the due date for this invoice.",
+        "object": "Enter the object of the invoice. This is a brief description of what the invoice is about.",
+        "enterprise": "Select the enterprise for which this invoice is being created.",
+        "interlocutor": "Select the interlocutor for this invoice. The options available will depend on the enterprise you have selected.",
+        "generalConditions": "Enter the general conditions for this invoice. You can use the editor to format the text as needed.",
+        "currency": "Select the currency for this invoice.",
+        "bankAccount": "Select the bank account to be used for this invoice.",
+        "taxWithholding": "Select the tax withholding to be applied to this invoice.",
+        "sequence": "Auto-generated sequence based on the company's configuration.",
+        "createdBy": "User who created this invoice.",
+        "creatingAs": "You will be recorded as the creator of this invoice.",
+        "systemEnterprise": "System enterprise that issued this invoice.",
+        "issuingAs": "This invoice will be issued under the active system enterprise."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "sequence": "Sequence",
+        "object": "Object",
+        "date": "Date",
+        "status": "Status",
+        "dueDate": "Due date",
+        "enterprise": "Enterprise",
+        "interlocutor": "Interlocutor",
+        "createdBy": "Created by",
+        "total": "Total TTC",
+        "taxWithholding": "Retenue à la source",
+        "amountToPay": "Amount to Pay",
+        "amountPaid": "Amount Paid",
+        "payments": "Payments",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at"
+      }
+    },
+    "status": {
+      "New": "New",
+      "Draft": "Draft",
+      "Validated": "Validated",
+      "Sent": "Sent",
+      "PartiallyPaid": "Partially Paid",
+      "Partially Paid": "Partially Paid",
+      "Paid": "Paid",
+      "Overdue": "Overdue",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled"
+    },
+    "remaining": "Remaining",
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete this invoice",
+        "description": "This action cannot be undone. This will permanently delete the invoice from our database.",
+        "confirm": "Yes, delete it",
+        "cancel": "No, keep it"
+      }
+    },
+    "actions": {
+      "validate": "Validate",
+      "send": "Send",
+      "cancel": "Cancel",
+      "invalidate": "Invalidate",
+      "refund": "Refund"
+    },
+    "print_dialog": {
+      "title": "Print document",
+      "description": "Choose a template and preview the PDF before printing.",
+      "select_template": "Template",
+      "preview": "Preview",
+      "preview_loading": "Generating preview…",
+      "preview_error": "Failed to generate preview",
+      "preview_unavailable": "Save the document before previewing.",
+      "fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "no_templates": "No templates are available for invoices."
+    },
+    "messages": {
+      "print_success": "Invoice PDF generated successfully",
+      "print_failed": "Failed to generate invoice PDF"
+    }
   },
   "article": {
-    "attributes": {
-      "title": "Title",
-      "quantity": "Qte.",
-      "taxes": "Taxes",
-      "tax_excluded": "Price excluding tax",
-      "tax_included": "All taxes included Price",
-      "unit_price": "U.P",
-      "description": "Description"
+    "buttons": {
+      "addArticle": "Add article",
+      "deleteArticle": "Delete article"
     },
-    "no_applied_tax": "No tax applied",
-    "manager": "Article management",
-    "manager_statement_quotation": "List quotation's items",
-    "manager_statement_invoice": "List invoice's items",
-    "new": "New article",
-    "singular": "Article",
-    "plural": "Articles"
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "quantity": "Quantity",
+      "unitPrice": "Unit price",
+      "priceExcludingTax": "Price excluding tax",
+      "priceIncludingTax": "Price including tax",
+      "netToPay": "Net to Pay",
+      "totalTax": "Total tax",
+      "totalDiscount": "Total discount",
+      "taxStamp": "Tax stamp",
+      "taxRates": "Tax rates",
+      "applyTaxWithholdingToHT": "Calculate tax withholding from Price HT",
+      "discountType": {
+        "label": "Discount type",
+        "options": {
+          "rate": "Percentage",
+          "fixed": "Fixed amount"
+        }
+      },
+      "discountValue": "Discount value",
+      "placeholders": {
+        "title": "Enter the article title",
+        "description": "Enter the article description",
+        "quantity": "Enter the quantity",
+        "unitPrice": "Enter the unit price",
+        "discountType": "Select the discount type",
+        "discountValue": "Enter the discount value",
+        "taxRates": "Select applicable tax rates"
+      }
+    }
   },
   "payment": {
-    "add_button_label": "New payment",
-    "singular": "Payment",
+    "intro": {
+      "title": "Payments",
+      "description": "Here you can manage your payments."
+    },
     "plural": "Payments",
-    "card_description": "This section provides a clear and organized view of all your payments.",
-    "attributes": {
-      "number": "N°",
+    "singular": "Payment",
+    "new": "New payment",
+    "section": {
+      "general": "General Information",
+      "financial": "Financial Information",
+      "invoices": "Invoice Management",
+      "attachments": "Attachments"
+    },
+    "form": {
       "date": "Date",
+      "sequence": "Sequence",
+      "enterprise": "Enterprise",
+      "currency": "Currency",
+      "convertionRate": "Conversion rate",
       "mode": "Payment mode",
       "amount": "Amount",
-      "currency": "Currency",
       "fee": "Fee",
-      "convertion_rate": "Exchange rate",
-      "created_at": "Date of creation",
-      "notes": "Notes",
-      "files": "Files"
+      "notes": "Notes / Remarks",
+      "files": "Attached documents",
+      "createdBy": "Created by",
+      "creatingAs": "Creating as",
+      "systemEnterprise": "System enterprise",
+      "issuingAs": "Issuing as",
+      "placeholders": {
+        "date": "Select payment date",
+        "enterprise": "Select an enterprise",
+        "currency": "Select currency",
+        "convertionRate": "Enter conversion rate",
+        "mode": "Select payment mode",
+        "amount": "Enter amount",
+        "fee": "Enter fee",
+        "notes": "Enter your notes or remarks here"
+      },
+      "descriptions": {
+        "date": "Select the payment execution date.",
+        "sequence": "Auto-generated sequence based on enterprise configuration.",
+        "enterprise": "Select the enterprise associated with this payment.",
+        "currency": "Select the currency used for this payment.",
+        "convertionRate": "Specify the conversion rate if paying in a foreign currency.",
+        "mode": "Choose the payment method (transfer, check, cash, etc.).",
+        "amount": "Enter total payment amount.",
+        "fee": "Enter bank or transaction fees.",
+        "notes": "Enter any specific notes or instructions.",
+        "createdBy": "User who created this payment.",
+        "creatingAs": "You will be recorded as the creator of this payment.",
+        "systemEnterprise": "System enterprise that recorded this payment.",
+        "issuingAs": "This payment will be recorded under the active system enterprise."
+      }
     },
-    "empty_cells": {
-      "currency": "No currency"
+    "modes": {
+      "Cash": "Cash",
+      "Transfer": "Bank Transfer",
+      "Check": "Check",
+      "CreditCard": "Credit Card",
+      "Other": "Other"
     },
-    "new": "New payment",
-    "payment_mode": {
-      "cash": "Cash",
-      "credit_card": "Credit Card",
-      "check": "Check",
-      "bank_transfer": "Bank transfer",
-      "wire_transfer": "Wire transfer"
+    "table": {
+      "columns": {
+        "status": "Status"
+      }
+    },
+    "status": {
+      "New": "New",
+      "Draft": "Draft",
+      "Validated": "Validated",
+      "Cancelled": "Cancelled",
+      "Canceled": "Cancelled"
     },
     "financial_status": {
-      "available": "Available",
-      "used": "Used",
-      "received": "Received"
+      "received": "Received Amount",
+      "used": "Used Amount",
+      "available": "Available Amount"
     },
-    "no_invoices": "No unpaid invoices Found"
-  },
-  "controls": {
-    "associate_quotation": "Associated quotation",
-    "article_description": "Articles description",
-    "currency_select_placeholder": "Choose a currency",
-    "currency_details": "Currency",
-    "bank_select_placeholder": "Choose a bank account",
-    "quotation_select_placeholder": "Choose a quotation",
-    "bank_details": "Banking details",
-    "no_bank_accounts": "No bank account found",
-    "no_associated_quotation": "No associated quotation",
-    "include_on_quotation": "Include on quotation",
-    "extra_entries": "Additional entries",
-    "withholding": "Tax withholding",
-    "tax_withholding_select_placeholder": "Choose a tax withholding"
+    "invoice_item": {
+      "already_paid": "Total of previous payments",
+      "already_remaining": "Balance due before operation",
+      "new_paid": "Entered payment amount",
+      "new_remaining": "New balance due",
+      "rate_avant": "Rate before",
+      "rate_paid": "Payment rate",
+      "rate_after": "Rate after",
+      "rate_remaining": "Remaining rate"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete this payment",
+        "description": "This action cannot be undone. This will permanently delete the payment from our database.",
+        "confirm": "Yes, delete it",
+        "cancel": "No, keep it"
+      }
+    },
+    "actions": {
+      "validate": "Validate",
+      "cancel": "Cancel",
+      "invalidate": "Invalidate",
+      "back_to_draft": "Back to draft"
+    }
   }
 }

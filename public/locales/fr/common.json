@@ -1,10 +1,89 @@
 {
   "404": {
-    "go_back": "Retour au tableau de bord",
-    "note1": "Il manque quelque chose...",
-    "note2": "Désolé, nous ne pouvons pas trouver cette page. Vous trouverez beaucoup de choses à explorer sur la page d'accueil."
+    "go_back": "Retourner au tableau de bord",
+    "note1": "Quelque chose manque...",
+    "note2": "Désolé, nous ne trouvons pas cette page. Vous trouverez plein de choses à explorer sur la page d'accueil."
   },
-  "add_joints": "Ajouter des Pièces Jointes",
+  "menu": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "subs": {}
+    },
+    "contacts": {
+      "title": "Contacts",
+      "subs": {
+        "enterprises": "Entreprises",
+        "interlocutors": "Interlocuteurs",
+        "addresses": "Mes adresses"
+      },
+      "description": "Gérez vos contacts, entreprises et interlocuteurs."
+    },
+    "selling": {
+      "title": "Ventes",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements"
+      }
+    },
+    "buying": {
+      "title": "Achats",
+      "subs": {
+        "invoice": "Factures",
+        "quotation": "Devis",
+        "payment": "Paiements",
+        "taxWithholding": "Retenue à la source"
+      }
+    },
+    "contentManagement": {
+      "title": "Gestion de contenu",
+      "subs": {
+        "bankAccounts": "Comptes bancaires",
+        "taxRates": "Taux de taxe",
+        "refTypes": "Types de référence",
+        "refParams": "Paramètres de référence",
+        "pdf": "Paramètres PDF",
+        "templates": "Modèles"
+      }
+    },
+    "administrativeTools": {
+      "title": "Outils administratifs",
+      "subs": {
+        "users": "Utilisateurs",
+        "roles": "Rôles",
+        "permissions": "Permissions",
+        "configuration": "Configurations",
+        "logger": "Journal",
+        "devLogger": "Journal Technique",
+        "system": "Système"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subs": {
+        "account": "Compte",
+        "system": "Système"
+      }
+    },
+    "account": {
+      "title": "Compte"
+    },
+    "enterprise": {
+      "title": "Entreprise",
+      "add": "Ajouter une entreprise"
+    }
+  },
+  "general": {
+    "more": "plus",
+    "unknown": "inconnu"
+  },
+  "add_joints": "Ajouter des pièces jointes",
+  "coming_soon": {
+    "coming_soon": "Bientôt disponible",
+    "go_back": "Retour au tableau de bord",
+    "note1": "Quelque chose d'incroyable arrive bientôt !",
+    "note2": "Nous travaillons dur pour vous apporter de nouvelles fonctionnalités. Restez à l'écoute !"
+  },
   "answer": {
     "yes": "Oui",
     "no": "Non"
@@ -14,13 +93,7 @@
     "dark": "Sombre",
     "light": "Clair",
     "system": "Système",
-    "theme": "Theme"
-  },
-  "coming_soon": {
-    "coming_soon": "Bientôt disponible",
-    "go_back": "Retour au tableau de bord",
-    "note1": "Quelque chose d'incroyable arrive bientôt !",
-    "note2": "Nous travaillons dur pour vous apporter de nouvelles fonctionnalités. Restez à l'écoute !"
+    "theme": "Thème"
   },
   "commands": {
     "apply": "Appliquer",
@@ -38,11 +111,13 @@
     "display": "Afficher",
     "download": "Télécharger",
     "duplicate": "Dupliquer",
+    "edit": "Modifier",
     "hide": "Masquer",
     "initialize": "Initialiser",
     "to_invoice": "Facturer",
     "inspect": "Inspecter",
     "modify": "Modifier",
+    "new": "Nouveau",
     "reject": "Rejeter",
     "resend": "Renvoyer",
     "save": "Enregistrer",
@@ -50,6 +125,9 @@
     "search_sort_by": "Rechercher/Trier par",
     "send": "Envoyer",
     "shrink": "Réduire",
+    "print": "Imprimer",
+    "printing": "Impression...",
+    "duplicating": "Duplication...",
     "promote": "Promouvoir",
     "reset": "Réinitialiser",
     "validate": "Valider",
@@ -65,6 +143,7 @@
     "multiple_files_max_size_sentence": "Vous pouvez télécharger {{count}} fichiers (jusqu'à {{size}} chacun)",
     "single_file_max_size_sentence": "Vous pouvez télécharger un fichier d'une taille maximale de {{size}}",
     "no_selected_file": "Aucun fichier sélectionné",
+    "no_files_exist": "Aucun fichier",
     "drop_image": "Faites glisser l'image",
     "select_image": "Cliquez pour sélectionner",
     "rejected_empty_file_warning": "Le fichier {{name}} est vide et a été rejeté.",
@@ -77,14 +156,6 @@
     "word": "Langue",
     "en": "Anglais 🇬🇧",
     "fr": "Français 🇫🇷"
-  },
-  "menu": {
-    "buying": "Achat",
-    "contacts": "Contacts",
-    "dashboard": "Tableau de bord",
-    "selling": "Vente",
-    "administrative_tools": "Outils Administratifs",
-    "settings": "Réglage"
   },
   "order": {
     "asc": "Croissant",
@@ -104,26 +175,13 @@
   "pick_date": "Choisissez une Date",
   "start_date": "Date de début",
   "end_date": "Date de fin",
-  "submenu": {
-    "account": "Compte",
-    "firms": "Entreprises",
-    "interlocutors": "Interlocuteurs",
-    "invoices": "Factures",
-    "other": "Autre",
-    "quotations": "Devis",
-    "payments": "Paiements",
-    "user_management": "Gestion des utilisateurs",
-    "logger": "Journalisation",
-    "system": "Système",
-    "withholding": "Retenue à la source",
-    "pdf": "PDF"
-  },
   "settings": {
     "account": {
       "singular": "Compte",
       "plural": "Comptes",
       "my_profile": "Mon Profil",
-      "my_cabinet": "Mon Cabinet",
+      "my_enterprise": "Mon Entreprise",
+      "members": "Membres",
       "bank_accounts": "Comptes Bancaires"
     },
     "system": {
@@ -154,5 +212,52 @@
     "main_m": "Principal",
     "main_f": "Principale",
     "or": "ou"
+  },
+  "company": {
+    "main_company": "Entreprise principale",
+    "system_company": "Entreprise système",
+    "workspace": "Espace de travail",
+    "active_company": "Entreprise active"
+  },
+  "datatable": {
+    "paginationPhrase": "Affichage de la page {{page}} sur {{total}}",
+    "clearCriterias": "Effacer les critères",
+    "search": "Rechercher {{entity}}...",
+    "noResults": "Aucun résultat",
+    "visibleColumns": "Colonnes Visibles",
+    "order": {
+      "asc": "Croissant",
+      "desc": "Décroissant"
+    },
+    "filter": {
+      "title": "Filtrer",
+      "clear": "Effacer le filtre",
+      "valuePlaceholder": "Valeur",
+      "selectPlaceholder": "Sélectionnez une option...",
+      "dateFrom": "De",
+      "dateTo": "À",
+      "operators": {
+        "$eq": "Égal",
+        "!$eq": "Différent de",
+        "$cont": "Contient",
+        "$gt": "Supérieur à",
+        "$lt": "Inférieur à"
+      }
+    },
+    "export": {
+      "title": "Exporter vers Excel",
+      "description": "Choisissez les données à exporter.",
+      "currentPage": "Page actuelle",
+      "allData": "Toutes les données",
+      "success": "Exportation réussie",
+      "error": "Échec de l'exportation. Veuillez réessayer.",
+      "noData": "Aucune donnée disponible à exporter"
+    }
+  },
+  "submenu": {
+    "enterprises": "Entreprises"
+  },
+  "errors": {
+    "validation": "Erreur de validation. Veuillez vérifier les champs."
   }
 }

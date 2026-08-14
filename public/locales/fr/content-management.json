@@ -1,0 +1,357 @@
+{
+  "refType": {
+    "page": {
+      "title": "Types de référence",
+      "description": "Gérez les types de référence."
+    },
+    "singularName": "Type de référence",
+    "pluralName": "Types de référence",
+    "columns": {
+      "id": "ID",
+      "label": "Libellé",
+      "description": "Description",
+      "parent": "Parent",
+      "extras": "Extras",
+      "createdAt": "Créé le",
+      "updatedAt": "Mis à jour le",
+      "noDescription": "Aucune description",
+      "noParent": "Aucun parent"
+    },
+    "forms": {
+      "create": {
+        "title": "Créer un type de référence",
+        "description": "Créer un nouveau type de référence.",
+        "parent": "Parent",
+        "extras": "Extras"
+      },
+      "update": {
+        "title": "Mettre à jour un type de référence",
+        "description": "Mettre à jour un nouveau type de référence.",
+        "parent": "Parent",
+        "extras": "Extras"
+      },
+      "delete": {
+        "title": "Supprimer un type de référence",
+        "description": "Êtes-vous sûr de vouloir supprimer ce type de référence ?",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    },
+    "sheet": {
+      "create": {
+        "title": "Créer un type de référence",
+        "description": "Utilisez ce formulaire pour définir un nouveau type de référence."
+      },
+      "update": {
+        "title": "Mettre à jour un type de référence",
+        "description": "Utilisez ce formulaire pour mettre à jour un type de référence existant."
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer un type de référence",
+        "description": "Cette action est irréversible et permanente. La suppression du type de référence supprimera tous les paramètres associés, Veuillez procéder avec prudence.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    }
+  },
+  "refParam": {
+    "page": {
+      "title": "Paramètres de référence",
+      "description": "Gérez les paramètres de référence."
+    },
+    "singularName": "Paramètre de référence",
+    "pluralName": "Paramètres de référence",
+    "columns": {
+      "id": "ID",
+      "label": "Libellé",
+      "description": "Description",
+      "refTypeId": "Type de référence",
+      "extras": "Extras",
+      "createdAt": "Créé le",
+      "updatedAt": "Mis à jour le",
+      "noDescription": "Aucune description"
+    },
+    "forms": {
+      "create": {
+        "title": "Créer un paramètre de référence",
+        "description": "Créer un nouveau paramètre de référence."
+      },
+      "update": {
+        "title": "Mettre à jour un paramètre de référence",
+        "description": "Mettre à jour un nouveau paramètre de référence."
+      }
+    },
+    "sheet": {
+      "create": {
+        "title": "Créer un paramètre de référence",
+        "description": "Utilisez ce formulaire pour définir un nouveau paramètre de référence."
+      },
+      "update": {
+        "title": "Mettre à jour un paramètre de référence",
+        "description": "Utilisez ce formulaire pour mettre à jour un paramètre de référence existant."
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer un paramètre de référence",
+        "description": "Cette action est irréversible et permanente. La suppression du paramètre de référence supprimera tous les paramètres associés, Veuillez procéder avec prudence.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    }
+  },
+  "bankAccount": {
+    "page": {
+      "title": "Comptes bancaires",
+      "description": "Ici, vous pouvez gérer vos comptes bancaires, qui seront utilisés pour les paiements et la facturation."
+    },
+    "entity": {
+      "singular": "Compte bancaire",
+      "plural": "Comptes bancaires"
+    },
+    "actions": {
+      "promote": "Promouvoir",
+      "demote": "Rétrograder"
+    },
+    "sheets": {
+      "create": {
+        "title": "Créer un compte bancaire",
+        "description": "Utilisez ce formulaire pour définir un nouveau compte bancaire."
+      },
+      "update": {
+        "title": "Mettre à jour un compte bancaire",
+        "description": "Utilisez ce formulaire pour mettre à jour un compte bancaire existant."
+      }
+    },
+    "form": {
+      "name": "Nom de la banque",
+      "bic": "BIC",
+      "rib": "Numéro de compte",
+      "iban": "IBAN",
+      "currency": "Devise",
+      "main": "Compte principal",
+      "placeholders": {
+        "name": "Entrez le nom de la banque",
+        "bic": "Entrez le BIC",
+        "rib": "Entrez le numéro de compte",
+        "iban": "Entrez l'IBAN",
+        "currency": "Sélectionnez la devise"
+      },
+      "descriptions": {
+        "name": "Le nom de la banque.",
+        "bic": "Le code d'identification bancaire (BIC) est un code unique utilisé pour identifier les banques et les institutions financières dans le monde entier. Il est également connu sous le nom de code SWIFT. Le BIC est utilisé pour les transferts d'argent internationaux et autres transactions financières afin de garantir que les fonds sont envoyés à la bonne banque.",
+        "rib": "Le RIB (Relevé d'Identité Bancaire) est un document qui contient toutes les informations nécessaires sur un compte bancaire en France. Il comprend des détails tels que le nom du titulaire du compte, le nom de la banque, le code de l'agence, le numéro de compte et la clé RIB. Le RIB est couramment utilisé pour les transactions domestiques en France.",
+        "iban": "Le numéro de compte bancaire international (IBAN) est un format standardisé pour identifier les comptes bancaires à travers les frontières. Il se compose d'un code pays, de deux chiffres de contrôle et d'un numéro de compte bancaire de base (BBAN). L'IBAN est utilisé pour les transferts d'argent internationaux afin de garantir que les fonds sont envoyés au bon compte dans un autre pays.",
+        "currency": "La devise associée au compte bancaire.",
+        "main": "Définir ce compte comme compte bancaire principal utilisé par défaut."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Nom de la banque",
+        "bic": "BIC",
+        "rib": "Numéro de compte",
+        "iban": "IBAN",
+        "currency": "Devise",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      },
+      "emptyCells": {
+        "currency": "Aucune devise"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer le compte bancaire",
+        "description": "Cette action est irréversible et permanente. La suppression de ce compte bancaire peut affecter les devis et factures existants. Veuillez procéder avec prudence.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    },
+    "messages": {
+      "createSuccess": "Compte bancaire créé avec succès.",
+      "createFailure": "Échec de la création du compte bancaire.",
+      "updateSuccess": "Compte bancaire mis à jour avec succès.",
+      "updateFailure": "Échec de la mise à jour du compte bancaire.",
+      "deleteSuccess": "Compte bancaire supprimé avec succès.",
+      "deleteFailure": "Échec de la suppression du compte bancaire."
+    }
+  },
+  "taxRate": {
+    "page": {
+      "title": "Taux de taxe",
+      "description": "Ici, vous pouvez gérer vos taux de taxe, qui seront appliqués à vos produits et services."
+    },
+    "entity": {
+      "singular": "Taux de taxe",
+      "plural": "Taux de taxe"
+    },
+    "sheets": {
+      "create": {
+        "title": "Créer un taux de taxe",
+        "description": "Utilisez ce formulaire pour définir un nouveau taux de taxe."
+      },
+      "update": {
+        "title": "Mettre à jour un taux de taxe",
+        "description": "Utilisez ce formulaire pour mettre à jour un taux de taxe existant."
+      }
+    },
+    "form": {
+      "label": "Libellé",
+      "value": "Valeur",
+      "type": "Type",
+      "special": "Taxe spéciale",
+      "specificCurrency": "Devise spécifique",
+      "currency": "Devise",
+      "placeholders": {
+        "label": "Ex. FODEC",
+        "value": "Ex. 10",
+        "type": "Ex. Pourcentage",
+        "currency": "Ex. Dinar Tunisien"
+      },
+      "descriptions": {
+        "label": "Un nom unique pour la taxe (ex. TVA, FODEC).",
+        "value": "La valeur de la taxe (ex. 10 pour 10%).",
+        "type": "Le type de taxe (pourcentage ou montant fixe).",
+        "special": "Une taxe spéciale est appliquée sur le montant après que les taxes normales ont déjà été calculées.",
+        "specificCurrency": "Définir une devise spécifique pour cette taxe.",
+        "currency": "La devise associée à ce taux de taxe."
+      },
+      "options": {
+        "percentage": "Pourcentage (%)",
+        "fixed": "Montant fixe"
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "label": "Libellé",
+        "type": "Type",
+        "value": "Valeur",
+        "special": "Spéciale",
+        "currency": "Devise",
+        "rate": "Taux",
+        "fixed": "Fixe",
+        "applicable_on_all": "Applicable sur toutes les devises",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      },
+      "emptyCells": {
+        "currency": "Applicable sur toutes les devises"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer le taux de taxe",
+        "description": "Cette action est irréversible et permanente. La suppression de ce taux de taxe affectera tous les produits et services associés. Veuillez procéder avec prudence.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      }
+    },
+    "messages": {
+      "createSuccess": "Taux de taxe créé avec succès.",
+      "createFailure": "Échec de la création du taux de taxe.",
+      "updateSuccess": "Taux de taxe mis à jour avec succès.",
+      "updateFailure": "Échec de la mise à jour du taux de taxe.",
+      "deleteSuccess": "Taux de taxe supprimé avec succès.",
+      "deleteFailure": "Échec de la suppression du taux de taxe."
+    }
+  },
+  "template": {
+    "page": {
+      "title": "Modèles",
+      "description": "Ici, vous pouvez gérer vos modèles de documents."
+    },
+    "form": {
+      "file": "Fichier du modèle",
+      "name": "Nom du modèle",
+      "description": "Description du modèle",
+      "type": "Type de modèle",
+      "placeholders": {
+        "file": "Téléchargez le fichier du modèle",
+        "name": "Entrez le nom du modèle",
+        "description": "Entrez la description du modèle",
+        "type": "Sélectionnez le type de modèle"
+      },
+      "descriptions": {
+        "file": "Le fichier associé au modèle.",
+        "name": "Le nom du modèle.",
+        "description": "Une description facultative du modèle.",
+        "type": "Le type de modèle (ex. facture, devis, etc.)."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Nom",
+        "description": "Description",
+        "type": "Type",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    }
+  },
+  "configuration": {
+    "page": {
+      "title": "Configuration",
+      "description": "Gérez et configurez les propriétés de l'application de manière structurée"
+    },
+    "breadcrumbs": {
+      "contentManagement": "Gestion de contenu",
+      "configuration": "Configuration"
+    },
+    "actions": {
+      "saveChanges": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "resetAll": "Réinitialiser tout"
+    },
+    "messages": {
+      "updateSuccess": "La configuration a été mise à jour avec succès",
+      "updateError": "Échec de la mise à jour de la configuration",
+      "resetSuccess": "La configuration a été réinitialisée aux valeurs d'origine",
+      "noSearchResults": "Aucun paramètre de configuration ne correspond à votre recherche",
+      "noParams": "Aucun paramètre de configuration trouvé"
+    },
+    "searchPlaceholder": "Rechercher des paramètres...",
+    "loading": {
+      "configurations": "Chargement de la configuration..."
+    },
+    "inputs": {
+      "enter": "Saisir {{name}}",
+      "select": "Sélectionner {{name}}"
+    },
+    "groups": {
+      "count": "({{count}})"
+    }
+  },
+  "pdf": {
+    "menu": {
+      "templates": "Modèles",
+      "headers": "En-têtes",
+      "footers": "Pieds de page"
+    },
+    "headers": {
+      "title": "En-têtes",
+      "coming_soon": "Gestion des en-têtes à venir."
+    },
+    "footers": {
+      "title": "Pieds de page",
+      "coming_soon": "Gestion des pieds de page à venir."
+    }
+  },
+  "templateHeader": {
+    "page": {
+      "title": "En-têtes",
+      "description": "Ici, vous pouvez gérer les en-têtes de vos documents."
+    }
+  },
+  "templateFooter": {
+    "page": {
+      "title": "Pieds de page",
+      "description": "Ici, vous pouvez gérer les pieds de page de vos documents."
+    }
+  }
+}

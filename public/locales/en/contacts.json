@@ -1,132 +1,253 @@
 {
-  "common": {
-    "address": {
-      "address": "Address",
-      "address2": "Complementary Address",
-      "country": "Country",
-      "region": "Region",
-      "zip_code": "Zip Code"
+  "common": {},
+  "page": {
+    "enterprises": {
+      "title": "Enterprises",
+      "description": "Browse, create, and manage your client and supplier enterprises."
     },
-    "contact_information": "Contact Information",
-    "firm_information": "Firm Information",
-    "quotations_list": "Quotations List"
+    "interlocutors": {
+      "title": "Interlocutors",
+      "description": "Browse and manage contact persons linked to your enterprises."
+    }
   },
-  "firm": {
-    "action_add_failure": "Error while creating the firm",
-    "action_add_success": "Firm successfully added",
-    "action_remove_failure": "Error while removing the firm",
-    "action_remove_success": "Firm successfully removed",
-    "add_button_label": "New Firm",
-    "attributes": {
-      "activity": "Activity",
-      "created_at": "Date of Creation",
-      "currency": "Currency",
-      "delivery_address": "Delivery Address",
-      "entreprise_name": "Enterprise Name",
-      "entreprise_type": "Entreprise",
-      "main_interlocurtor_name": "Interlocuteur Name",
-      "main_interlocurtor_surname": "Interlocuteur Surname",
-      "invoicing_address": "Invoicing Address",
-      "notes": "Notes",
-      "particular_entreprise_type": "Particular",
-      "payment_conditions": "Payment Conditions",
+  "enterprise": {
+    "single": "Enterprise",
+    "plural": "Enterprises",
+    "form": {
+      "name": "Name",
+      "email": "Email",
       "phone": "Phone",
-      "tax_number": "Tax Identification Number",
-      "type": "Firm Type",
-      "website": "Website"
+      "website": "Website",
+      "taxId": "Tax ID Number",
+      "notes": "Notes",
+      "logo": "Logo",
+      "isNewInterlocutor": "Create a new interlocutor",
+      "steps": {
+        "1": { "title": "Enterprise information" },
+        "2": { "title": "Interlocutor information" },
+        "3": { "title": "Addresses" },
+        "4": { "title": "Additional information" }
+      },
+      "particular": {
+        "noun": "Particular",
+        "positive": "Particular",
+        "negative": "Enterprise"
+      },
+      "activity": "Activity",
+      "currency": "Currency",
+      "paymentConditions": "Payment Conditions",
+      "deliveryAddress": "Delivery Address",
+      "invoicingAddress": "Invoicing Address",
+      "placeholders": {
+        "name": "Enter the enterprise name",
+        "email": "Enter the enterprise email",
+        "phone": "Enter the enterprise phone",
+        "website": "Enter the enterprise website",
+        "taxId": "Enter the enterprise tax ID number",
+        "notes": "Enter notes about the enterprise",
+        "activity": "Enter the enterprise activity",
+        "currency": "Enter the enterprise currency",
+        "paymentConditions": "Enter the enterprise payment conditions"
+      },
+      "descriptions": {
+        "name": "The name of the enterprise.",
+        "email": "The email address of the enterprise.",
+        "phone": "The phone number of the enterprise.",
+        "website": "The website of the enterprise.",
+        "taxId": "The tax ID number of the enterprise.",
+        "notes": "Additional notes about the enterprise.",
+        "logo": "The logo of the enterprise.",
+        "isNewInterlocutor": "Check this to create a new interlocutor. Uncheck to select an existing one.",
+        "particular": "Indicates whether the enterprise is a particular or not.",
+        "activity": "The activity of the enterprise.",
+        "currency": "The currency used by the enterprise.",
+        "paymentConditions": "The payment conditions of the enterprise.",
+        "deliveryAddress": "The delivery address of the enterprise.",
+        "invoicingAddress": "The invoicing address of the enterprise."
+      }
     },
-    "card_description": "This section offers a comprehensive and structured overview of all firm, ensuring clarity and ease of access.",
-    "errors": {
-      "empty_entreprise_name": "Firm name is required",
-      "firm_name_already_taken": "Firm name is already taken",
-      "tax_number_already_taken": "Tax number is already taken"
+    "table": {
+      "columns": {
+        "logo": "Logo",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "taxId": "Tax ID Number",
+        "particular": {
+          "noun": "Particular",
+          "positive": "Particular",
+          "negative": "Enterprise"
+        },
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      },
+      "emptyCells": {
+        "phone": "No phone",
+        "email": "No email",
+        "website": "No website",
+        "taxId": "No tax ID",
+        "activity": "No activity"
+      }
     },
-    "deleteLabel": "Deletion of Firm",
-    "deletePrompt": "Do you really want to delete the firm",
     "detailmenu": {
-      "title": "{{firmName}}'s Details",
-      "description": "You can edit the inspect all details of {{firmName}} here.",
+      "title": "Enterprise Details",
+      "description": "Manage {{enterpriseName}}'s information and relations",
       "overview": "Overview",
       "interlocutors": "Interlocutors",
-      "chronological": "Chronological",
       "quotations": "Quotations",
       "invoices": "Invoices",
-      "payments": "Payments"
+      "payments": "Payments",
+      "chronological": "Chronological"
     },
-    "introduce_info": "Enter the company information",
-    "introduce_info_description": "Please provide the required details of the new company in the fields below.",
-    "edit_info": "Edit {{firmName}} Information",
-    "edit_info_description": "You can edit the {{firmName}} here by providing the required information.",
-    "empty_table": "No Firms found ",
-    "empty_cells": {
-      "phone": "No Phone",
-      "website": "No Website",
-      "activity": "No Activity",
-      "currency": "No Currency",
-      "tax_number": "No Tax Number"
+    "action_remove_success": "Enterprise successfully removed",
+    "action_remove_failure": "Failed to remove enterprise",
+    "singular": "Enterprise",
+    "new": "New Enterprise",
+    "create_page": {
+      "description": "Fill out the form below to create a new enterprise."
     },
-    "new": "New Firm",
-    "plural": "Firms",
-    "presented_by": "presented By",
-    "singular": "Firm"
-  },
-  "interlocutor": {
-    "action_add_failure": "Error while creating the interlocutor",
-    "action_add_success": "Interlocutor successfully added",
-    "action_associate_failure": "Error while associating the interlocutor",
-    "action_associate_success": "Interlocutor successfully associated",
-    "action_disassociate_failure": "Error while disassociating the interlocutor",
-    "action_disassociate_success": "Interlocutor successfully disassociated",
-    "action_promote_failure": "Error while promoting the interlocutor",
-    "action_promote_success": "Interlocutor successfully promoted",
-    "action_remove_failure": "Error while removing the interlocutor",
-    "action_remove_success": "Interlocutor successfully removed",
-    "action_update_failure": "Error while updating the interlocutor",
-    "action_update_success": "Interlocutor successfully updated",
-    "associate_firm": "Add Firm",
-    "associate_firm_when empty": "No firm association, Add the first association ?",
-    "associate_firm_prompt": "Select Firm",
-    "add_button_label": "New Interlocutor",
-    "attributes": {
-      "created_at": "Date of Creation",
-      "email": "Email",
-      "is_main": "Main",
+    "edit_page": {
+      "description": "Update the information for this enterprise."
+    },
+    "action_add_success": "Enterprise successfully added",
+    "action_add_failure": "Failed to add enterprise",
+    "edit": "Edit Enterprise",
+    "action_edit_success": "Enterprise successfully updated",
+    "action_edit_failure": "Failed to update enterprise",
+    "delete_prompt": "Are you sure you want to delete the enterprise",
+    "delete_dialog_description": "This action is irreversible and will permanently delete this enterprise.",
+    "details": {
+      "general_information": "General Information",
       "name": "Name",
       "phone": "Phone",
-      "position": "Position",
-      "surname": "Surname",
-      "title": "Title",
-      "firms": "Firms"
+      "email": "Email",
+      "website": "Website",
+      "tax_id": "Tax ID",
+      "type": "Type",
+      "particular": "Particular",
+      "company": "Company",
+      "activity": "Activity",
+      "financial_information": "Financial Information",
+      "currency": "Currency",
+      "payment_condition": "Payment Condition",
+      "invoicing_address": "Invoicing Address",
+      "delivery_address": "Delivery Address",
+      "notes": "Notes"
     },
-    "card_description": "This section offers a comprehensive and structured overview of all interlocutors, ensuring clarity and ease of access.",
-
-    "create_dialog_description": "Use this menu to create a new interlocutor or associate an existing one. Make sure all required fields are filled before saving.",
-    "update_dialog_description": "Enter the details to update the interlocutor. Make sure all required fields are filled before saving.",
-    "disassociate_dialog_description": "This action is permanent and cannot be undone. All associations with this company will also be removed.",
-    "promote_dialog_description": "Ensure this action aligns with their responsibilities, as it may impact system functionality.",
-    "delete_dialog_description": "This action is permanent and cannot be undone. All associations with this interlocutor will also be removed.",
-
-    "delete_label": "Deletion of Interlocutor",
-
-    "disassociate_prompt": "Do you really want to disassociate the interlocutor",
-    "promote_prompt": "Do you really want to promote the interlocutor",
-    "delete_prompt": "Do you really want to delete the interlocutor",
-
+    "attributes": {
+      "activity": "Activity",
+      "currency": "Currency"
+    },
     "empty_cells": {
-      "phone": "No Phone",
-      "position": "No Position"
+      "activity": "No activity",
+      "currency": "No currency"
     },
-    "create_or_associate": {
-      "new": "New Interlocutor",
-      "associate": "Existing Interlocutor"
-    },
-    "errors": {
-      "surpassed_firm_limit": "You have mentioned all the possible firm available"
-    },
-    "list": "List of Interlocutors",
-    "new": "New Interlocutor",
-    "update": "Update Interlocutor",
+    "validation": {
+      "name_required": "Name is required",
+      "tax_id_required": "Tax ID Number is required for non-particular enterprises"
+    }
+  },
+  "address": {
+    "form": {
+      "address": "Address",
+      "address2": "Address Line 2",
+      "zipCode": "Postal Code",
+      "region": "Region",
+      "country": "Country",
+      "placeholders": {
+        "address": "Enter the address",
+        "address2": "Enter the address line 2",
+        "zipCode": "Enter the postal code",
+        "region": "Enter the region",
+        "country": "Select the country"
+      },
+      "descriptions": {
+        "address": "The address.",
+        "address2": "Additional address information.",
+        "zipCode": "The postal code.",
+        "region": "The region.",
+        "country": "The country."
+      }
+    }
+  },
+  "interlocutor": {
+    "singular": "Interlocutor",
     "plural": "Interlocutors",
-    "singular": "Interlocutor"
+    "new": "New Interlocutor",
+    "create_dialog_title": "Create Interlocutor",
+    "create_dialog_description": "Create a new interlocutor by filling out the details below.",
+    "update_dialog_title": "Update Interlocutor",
+    "update_dialog_description": "Update the interlocutor details below.",
+    "form": {
+      "socialTitle": "Social Title",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "position": "Position",
+      "associateExisting": "Associate an existing interlocutor",
+      "existingInterlocutor": "Interlocutor",
+      "noAvailableInterlocutors": "No interlocutors available to add.",
+      "placeholders": {
+        "socialTitle": "Select the social title",
+        "firstName": "Enter the first name",
+        "lastName": "Enter the last name",
+        "email": "Enter the email",
+        "phone": "Enter the phone number",
+        "position": "Enter the position",
+        "existingInterlocutor": "Select an interlocutor"
+      },
+      "descriptions": {
+        "socialTitle": "The social title of the interlocutor.",
+        "firstName": "The first name of the interlocutor.",
+        "lastName": "The last name of the interlocutor.",
+        "email": "The email address of the interlocutor.",
+        "phone": "The phone number of the interlocutor.",
+        "position": "The position of the interlocutor within the enterprise.",
+        "existingInterlocutor": "Select an interlocutor not yet linked to this enterprise."
+      }
+    },
+    "table": {
+      "columns": {
+        "socialTitle": "Social Title",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "position": "Position"
+      },
+      "emptyCells": {
+        "email": "No email",
+        "phone": "No phone",
+        "position": "No position"
+      }
+    },
+    "detailmenu": {
+      "title": "Interlocutor Details",
+      "description": "Manage {{interlocutorName}}'s information",
+      "overview": "Overview",
+      "quotations": "Quotations",
+      "invoices": "Invoices"
+    },
+    "validation": {
+      "name_required": "First name is required",
+      "surname_required": "Last name is required",
+      "email_invalid": "Invalid email address"
+    },
+    "action_remove_success": "Interlocutor successfully removed",
+    "action_remove_failure": "Failed to remove interlocutor",
+    "action_add_success": "Interlocutor successfully added",
+    "action_add_failure": "Failed to add interlocutor",
+    "action_edit_success": "Interlocutor successfully updated",
+    "action_edit_failure": "Failed to update interlocutor",
+    "action_disassociate_success": "Interlocutor successfully disassociated",
+    "action_disassociate_failure": "Failed to disassociate interlocutor",
+    "delete_prompt": "Are you sure you want to delete the interlocutor",
+    "delete_dialog_description": "This action is irreversible and will permanently delete this interlocutor.",
+    "disassociate_prompt": "Are you sure you want to disassociate the interlocutor",
+    "disassociate_dialog_description": "This interlocutor will no longer be associated with this enterprise."
   }
 }

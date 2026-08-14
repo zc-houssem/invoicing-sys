@@ -1,5 +1,5 @@
-import { LoggerMain } from '@/components/administrative-tools/Logger/LoggerMain';
+import { LoggerPortal } from '@/components/administrative-tools/logger/LoggerPortal';
 
 export default function Page() {
-  return <LoggerMain />;
+  return <LoggerPortal />;
 }

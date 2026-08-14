@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 export const usePermissions = (enabled: boolean = true) => {
   const { isFetching: isFetchPermissionsPending, data: permissionsResp } = useQuery({
     queryKey: ['permissions'],
-    queryFn: () => api.permission.findAll(),
+    queryFn: () => api.admin.permission.findAll(),
     enabled
   });
 

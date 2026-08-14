@@ -36,7 +36,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
   ) => {
     const { locale } = useRouter();
 
-    const [value, setValue] = React.useState(_value as string);
+    const [value, setValue] = React.useState((_value as string) ?? '');
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       onValueChange && onValueChange(value);
       onBlur && onBlur(e);
@@ -47,7 +47,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     React.useEffect(() => {
-      setValue(_value as string);
+      setValue((_value as string) ?? '');
     }, [_value]);
 
     const selectedDate = React.useMemo(() => {
@@ -78,7 +78,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
                 e.stopPropagation();
               }}
               ref={ref}
-              value={value}
+              value={value ?? ''}
               onChange={(e) => {
                 onChange(e);
               }}
@@ -99,12 +99,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, InputProps>(
           <Calendar
             locale={locale == 'fr' ? fr : enUS}
             mode="single"
-            selected={selectedDate}
+            selected={selectedDate as any}
             defaultMonth={selectedDate}
             month={selectedDate}
             classNames={{
               caption_dropdowns: 'w-full justify-center items-start flex gap-2 p-2'
-            }}
+            } as any}
+            // @ts-ignore
             captionLayout="dropdown-buttons"
             fromYear={1890}
             toYear={2200}

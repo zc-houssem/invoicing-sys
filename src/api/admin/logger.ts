@@ -1,44 +1,40 @@
-import { Log, PagedLogs } from '@/types';
+import { Paginated, QueryParams, ResponseLogDto } from '@/types';
 import axios from '../axios';
-import { QueryParams } from '@/types/response/QueryParams';
 
-const findPaginated = async (
-  page: number = 1,
-  size: number = 5,
-  order: 'ASC' | 'DESC' = 'ASC',
-  sortKey: string = 'id',
-  searchKey: string = 'id',
-  search: string = '',
-  relations: string[] = ['user']
-): Promise<PagedLogs> => {
-  const response = await axios.get<PagedLogs>(
-    `admin/logger/list?sort=${sortKey},${order}&filter=${searchKey}||$cont||${search}&limit=${size}&page=${page}&join=${relations.join(',')}`
-  );
-  return response.data;
-};
-
-const findPaginatedRawFunction = async ({
-  page,
-  limit,
+const findPaginated = async ({
+  page = '1',
+  limit = '5',
   sort,
-  filter,
-  join
-}: QueryParams): Promise<PagedLogs> => {
-  const response = await axios.get<PagedLogs>(`admin/logger/list`, {
-    params: {
-      page,
-      limit,
-      sort,
-      filter,
-      join
-    }
-  });
+  search = '',
+  filter = '',
+  join = 'user'
+}: QueryParams): Promise<Paginated<ResponseLogDto>> => {
+  const params: { [key: string]: string | undefined } = {
+    page,
+    limit,
+    sort
+  };
+
+  if (search) params.search = search;
+  if (filter) params.filter = filter;
+  if (join) params.join = join;
+
+  const response = await axios.get<Paginated<ResponseLogDto>>(`/admin/logger/list`, { params });
   return response.data;
 };
 
-const find = async (): Promise<Log[]> => {
-  const response = await axios.get('admin/logger/all?join=user');
+const findAll = async (): Promise<ResponseLogDto[]> => {
+  const response = await axios.get<ResponseLogDto[]>(`/admin/logger/all`);
   return response.data;
 };
 
-export const logger = { find, findPaginated, findPaginatedRawFunction };
+const findById = async (id: string | number): Promise<ResponseLogDto> => {
+  const response = await axios.get<ResponseLogDto>(`/admin/logger/${id}`);
+  return response.data;
+};
+
+export const logger = {
+  findPaginated,
+  findAll,
+  findById
+};

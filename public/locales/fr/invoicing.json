@@ -1,178 +1,405 @@
 {
   "common": {
-    "firm_not_there": "Vous ne trouvez pas ce que vous cherchez ? Ajoutez une entreprise ici."
+    "financialResume": "Résumé financier"
   },
   "quotation": {
-    "action_download_failure": "Erreur lors de la telechargement du devis",
-    "action_download_success": "Devis telechargé avec succès",
-    "action_duplicate_failure": "Erreur lors de la duplication du devis",
-    "action_duplicate_success": "Devis dupliquée avec succès",
-    "action_remove_failure": "Erreur lors de la suppression du devis",
-    "action_remove_success": "Devis supprimée avec succès",
-    "associate_firm": "Choisissez une entreprise",
-    "associate_interlocutor": "Choisissez un interlocuteur",
-    "add_button_label": "Nouveau devis",
-    "attributes": {
-      "number": "N°",
-      "date": "Date",
-      "due_date": "Échéance",
-      "object": "Objet",
-      "firm": "Entreprise",
-      "interlocutor": "Interlocuteur",
-      "invoicing_address": "Adresse de facturation",
-      "delivery_address": "Adresse de livraison",
-      "status": "Statut",
-      "sub_total": "Sous-total",
-      "discount": "Remise",
-      "total": "Total",
-      "general_condition": "Conditions générales",
-      "created_at": "Date de création",
-      "notes": "Remarques",
-      "files": "Pièces jointes",
-      "no_date": "Date manquante",
-      "no_due_date": "Date d'échéance manquante"
-    },
-    "card_description": "Cette section fournit une vue claire et organisée de tous vos devis.",
-    "errors": {
-      "surpassed_tax_limit": "Vous avez utilisé tous les taxes disponibles"
-    },
-    "new": "Nouveau devis",
-    "status": {
-      "accepted": "Accepté",
-      "draft": "Broullion",
-      "expired": "Expiré",
-      "non_existent": "Inexistante",
-      "sent": "Envoyé",
-      "rejected": "Rejeté",
-      "validated": "Validé",
-      "invoiced": "Facturé"
-    },
-    "mark_invoiced": "Changer le statut sans générer de nouvelle facture",
-    "file_duplication": "Voulez-vous également dupliquer les fichiers ?",
     "plural": "Devis",
     "singular": "Devis",
-    "use_default_condition": "Utiliser la condition par défaut"
+    "intro": {
+      "title": "Devis de vente",
+      "description": "Ici, vous pouvez gérer vos devis de vente, qui seront utilisés pour les ventes et la facturation."
+    },
+    "form": {
+      "date": "Date",
+      "dueDate": "Échéance",
+      "object": "Objet",
+      "enterprise": "Entreprise",
+      "interlocutor": "Interlocuteur",
+      "generalConditions": "Conditions générales",
+      "currency": "Devise",
+      "bankAccount": "Compte bancaire",
+      "invoices": "Factures liées",
+      "createdBy": "Créé par",
+      "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Émission en tant que",
+      "includeOnQuotation": {
+        "title": "Inclure sur le devis",
+        "bankingDetails": "Coordonnées bancaires",
+        "articlesDescription": "Description des articles",
+        "invoicingAddress": "Adresse de facturation",
+        "deliveryAddress": "Adresse de livraison",
+        "generalConditions": "Conditions générales"
+      },
+      "placeholders": {
+        "date": "Sélectionnez une date",
+        "dueDate": "Sélectionnez une date d'échéance",
+        "object": "Entrez un objet",
+        "enterprise": "Sélectionnez une entreprise",
+        "interlocutor": "Sélectionnez un interlocuteur",
+        "currency": "Sélectionnez une devise",
+        "bankAccount": "Sélectionnez un compte bancaire",
+        "generalConditions": "Saisissez les conditions générales"
+      },
+      "descriptions": {
+        "date": "Sélectionnez la date du devis.",
+        "dueDate": "Sélectionnez la date d'échéance pour ce devis.",
+        "object": "Entrez l'objet du devis. Il s'agit d'une brève description de ce à quoi le devis se rapporte.",
+        "enterprise": "Sélectionnez l'entreprise pour laquelle ce devis est créé.",
+        "interlocutor": "Sélectionnez l'interlocuteur pour ce devis. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
+        "generalConditions": "Entrez les conditions générales pour ce devis. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
+        "currency": "Sélectionnez la devise pour ce devis.",
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour ce devis.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
+        "createdBy": "Utilisateur ayant créé ce devis.",
+        "creatingAs": "Vous serez enregistré comme créateur de ce devis.",
+        "systemEnterprise": "Entreprise système ayant émis ce devis.",
+        "issuingAs": "Ce devis sera émis au nom de l'entreprise système active."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "sequence": "Séquence",
+        "object": "Objet",
+        "date": "Date",
+        "status": "Statut",
+        "dueDate": "Échéance",
+        "enterprise": "Entreprise",
+        "interlocutor": "Interlocuteur",
+        "createdBy": "Créé par",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    },
+    "status": {
+      "New": "Nouveau",
+      "Draft": "Brouillon",
+      "Sent": "Envoyé",
+      "Accepted": "Accepté",
+      "Rejected": "Refusé",
+      "Expired": "Expiré",
+      "Converted": "Converti",
+      "Invoiced": "Facturé",
+      "Cancelled": "Annulé",
+      "Canceled": "Annulé",
+      "Validated": "Validé"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Êtes-vous sûr de vouloir supprimer ce devis",
+        "description": "Cette action est irréversible. Cela supprimera définitivement le devis de notre base de données.",
+        "confirm": "Oui, supprimez-le",
+        "cancel": "Non, conservez-le"
+      }
+    },
+    "actions": {
+      "send": "Envoyer",
+      "accept": "Accepter",
+      "reject": "Refuser",
+      "cancel": "Annuler",
+      "validate": "Valider",
+      "invalidate": "Invalider",
+      "to_invoice": "Facturer",
+      "roll_back": "Revenir en arrière",
+      "revive": "Réactiver"
+    },
+    "invoice_dialog": {
+      "title": "Facturer",
+      "description": "Voulez-vous créer une facture en utilisant les informations du devis ?",
+      "create_additional": "Facturer",
+      "create_additional_description": "Êtes-vous sûr de vouloir créer une facture supplémentaire pour ce devis ?",
+      "yes": "Oui, créer la facture",
+      "no": "Non, juste mettre à jour le statut"
+    },
+    "print_dialog": {
+      "title": "Imprimer le document",
+      "description": "Choisissez un modèle et prévisualisez le PDF avant l'impression.",
+      "select_template": "Modèle",
+      "preview": "Aperçu",
+      "preview_loading": "Génération de l'aperçu…",
+      "preview_error": "Échec de la génération de l'aperçu",
+      "preview_unavailable": "Enregistrez le document avant de prévisualiser.",
+      "fullscreen": "Plein écran",
+      "exit_fullscreen": "Quitter le plein écran",
+      "no_templates": "Aucun modèle n'est disponible pour les devis."
+    },
+    "messages": {
+      "status_updated": "Statut du devis mis à jour avec succès",
+      "duplicate_success": "Devis dupliqué avec succès",
+      "duplicate_failed": "Échec de la duplication du devis",
+      "invoice_created": "Facture créée avec succès",
+      "invoice_failed": "Échec de la création de la facture",
+      "print_success": "PDF du devis généré avec succès",
+      "print_failed": "Échec de la génération du PDF du devis"
+    }
   },
   "invoice": {
-    "action_download_failure": "Erreur lors de la telechargement du facture",
-    "action_download_success": "Facture telechargé avec succès",
-    "action_duplicate_failure": "Erreur lors de la duplication du facture",
-    "action_duplicate_success": "Facture dupliquée avec succès",
-    "action_remove_failure": "Erreur lors de la suppression du facture",
-    "action_remove_success": "Facture supprimée avec succès",
-    "associate_firm": "Choisissez une entreprise",
-    "associate_interlocutor": "Choisissez un interlocuteur",
-    "add_button_label": "Nouvelle facture",
-    "attributes": {
-      "number": "N°",
-      "date": "Date",
-      "due_date": "Échéance",
-      "object": "Objet",
-      "firm": "Entreprise",
-      "interlocutor": "Interlocuteur",
-      "invoicing_address": "Adresse de facturation",
-      "delivery_address": "Adresse de livraison",
-      "status": "Statut",
-      "sub_total": "Sous-total",
-      "discount": "Remise",
-      "total": "Total",
-      "tax_stamp": "Timbre Fiscal",
-      "general_condition": "Conditions générales",
-      "created_at": "Date de création",
-      "notes": "Remarques",
-      "files": "Pièces jointes",
-      "remaining_amount": "Montant restant",
-      "amount_paid": "Montant payé",
-      "payment": "Paiement",
-      "withholding": "Retenus à la source",
-      "no_date": "Date manquante",
-      "no_due_date": "Date d'échéance manquante"
-    },
-    "invoice_list": "Liste des factures",
-    "new": "Nouvelle facture",
-    "status": {
-      "draft": "Broullion",
-      "expired": "Expiré",
-      "non_existent": "Inexistante",
-      "sent": "Envoyé",
-      "paid": "Payé",
-      "partially_paid": "Payée partiellement",
-      "unpaid": "Inpayée",
-      "validated": "Validé"
-    },
-    "card_description": "Cette section fournit une vue claire et organisée de toutes vos factures.",
-    "file_duplication": "Voulez-vous également dupliquer les fichiers ?",
     "plural": "Factures",
     "singular": "Facture",
-    "use_default_condition": "Utiliser la condition par défaut"
+    "intro": {
+      "title": "Factures de vente",
+      "description": "Ici, vous pouvez gérer vos factures de vente, qui seront utilisées pour les ventes et la facturation."
+    },
+    "form": {
+      "date": "Date",
+      "dueDate": "Échéance",
+      "object": "Objet",
+      "enterprise": "Entreprise",
+      "interlocutor": "Interlocuteur",
+      "generalConditions": "Conditions générales",
+      "currency": "Devise",
+      "bankAccount": "Compte bancaire",
+      "taxWithholding": "Retenue à la source",
+      "fromQuotation": "Généré à partir du devis",
+      "viewQuotation": "Voir le devis n°",
+      "payments": "Paiements",
+      "amountPaid": "Montant payé",
+      "createdBy": "Créé par",
+      "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Émission en tant que",
+      "includeOnInvoice": {
+        "bankingDetails": "Coordonnées bancaires",
+        "articlesDescription": "Description des articles",
+        "invoicingAddress": "Adresse de facturation",
+        "deliveryAddress": "Adresse de livraison",
+        "generalConditions": "Conditions générales",
+        "taxStamp": "Timbre fiscal"
+      },
+      "placeholders": {
+        "date": "Sélectionnez une date",
+        "dueDate": "Sélectionnez une date d'échéance",
+        "object": "Entrez un objet",
+        "enterprise": "Sélectionnez une entreprise",
+        "interlocutor": "Sélectionnez un interlocuteur",
+        "currency": "Sélectionnez une devise",
+        "bankAccount": "Sélectionnez un compte bancaire",
+        "taxWithholding": "Sélectionnez une retenue à la source",
+        "generalConditions": "Saisissez les conditions générales"
+      },
+      "descriptions": {
+        "date": "Sélectionnez la date de la facture.",
+        "dueDate": "Sélectionnez la date d'échéance pour cette facture.",
+        "object": "Entrez l'objet de la facture. Il s'agit d'une brève description de ce à quoi la facture se rapporte.",
+        "enterprise": "Sélectionnez l'entreprise pour laquelle cette facture est créé.",
+        "interlocutor": "Sélectionnez l'interlocuteur pour cette facture. Les options disponibles dépendront de l'entreprise que vous avez sélectionnée.",
+        "generalConditions": "Entrez les conditions générales pour cette facture. Vous pouvez utiliser l'éditeur pour formater le texte si nécessaire.",
+        "currency": "Sélectionnez la devise pour cette facture.",
+        "bankAccount": "Sélectionnez le compte bancaire à utiliser pour cette facture.",
+        "taxWithholding": "Sélectionnez la retenue à la source à appliquer à cette facture.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
+        "createdBy": "Utilisateur ayant créé cette facture.",
+        "creatingAs": "Vous serez enregistré comme créateur de cette facture.",
+        "systemEnterprise": "Entreprise système ayant émis cette facture.",
+        "issuingAs": "Cette facture sera émise au nom de l'entreprise système active."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "sequence": "Séquence",
+        "object": "Objet",
+        "date": "Date",
+        "status": "Statut",
+        "dueDate": "Échéance",
+        "enterprise": "Entreprise",
+        "interlocutor": "Interlocuteur",
+        "createdBy": "Créé par",
+        "total": "Total TTC",
+        "taxWithholding": "Retenue à la source",
+        "amountToPay": "Montant à payer",
+        "amountPaid": "Montant payé",
+        "payments": "Paiements",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le"
+      }
+    },
+    "status": {
+      "New": "Nouvelle",
+      "Draft": "Brouillon",
+      "Validated": "Validée",
+      "Sent": "Envoyée",
+      "PartiallyPaid": "Partiellement payée",
+      "Partially Paid": "Partiellement payée",
+      "Paid": "Payée",
+      "Overdue": "En retard",
+      "Cancelled": "Annulée",
+      "Canceled": "Annulée"
+    },
+    "remaining": "Reste à payer",
+    "dialogs": {
+      "delete": {
+        "title": "Êtes-vous sûr de vouloir supprimer cette facture",
+        "description": "Cette action est irréversible. Cela supprimera définitivement la facture de notre base de données.",
+        "confirm": "Oui, supprimez-le",
+        "cancel": "Non, conservez-le"
+      }
+    },
+    "actions": {
+      "validate": "Valider",
+      "send": "Envoyer",
+      "cancel": "Annuler",
+      "invalidate": "Invalider",
+      "refund": "Rembourser"
+    },
+    "print_dialog": {
+      "title": "Imprimer le document",
+      "description": "Choisissez un modèle et prévisualisez le PDF avant l'impression.",
+      "select_template": "Modèle",
+      "preview": "Aperçu",
+      "preview_loading": "Génération de l'aperçu…",
+      "preview_error": "Échec de la génération de l'aperçu",
+      "preview_unavailable": "Enregistrez le document avant de prévisualiser.",
+      "fullscreen": "Plein écran",
+      "exit_fullscreen": "Quitter le plein écran",
+      "no_templates": "Aucun modèle n'est disponible pour les factures."
+    },
+    "messages": {
+      "print_success": "PDF de la facture généré avec succès",
+      "print_failed": "Échec de la génération du PDF de la facture"
+    }
   },
   "article": {
-    "attributes": {
-      "title": "Titre",
-      "quantity": "Qte.",
-      "taxes": "Taxes",
-      "tax_excluded": "Prix HT",
-      "tax_included": "Prix TTC",
-      "unit_price": "P.U",
-      "description": "Description"
+    "buttons": {
+      "addArticle": "Ajouter un article",
+      "deleteArticle": "Supprimer l'article"
     },
-    "no_applied_tax": "Aucune taxe appliquée",
-    "manager": "Gestion articles",
-    "manager_statement": "Lister les articles de devis",
-    "manager_statement_quotation": "Lister les articles de devis",
-    "manager_statement_invoice": "Lister les articles de la facture",
-    "new": "Nouveau article",
-    "singular": "Article",
-    "plural": "Articles"
+    "form": {
+      "title": "Titre",
+      "description": "Description",
+      "quantity": "Quantité",
+      "unitPrice": "Prix unitaire",
+      "priceExcludingTax": "Prix HT",
+      "priceIncludingTax": "Prix TTC",
+      "netToPay": "Net à payer",
+      "totalTax": "Total taxe",
+      "totalDiscount": "Total remise",
+      "taxStamp": "Timbre fiscal",
+      "taxRates": "Taux de taxe",
+      "applyTaxWithholdingToHT": "Calculer la retenue à la source à partir du Prix HT",
+      "discountType": {
+        "label": "Type de remise",
+        "options": {
+          "rate": "Pourcentage",
+          "fixed": "Montant fixe"
+        }
+      },
+      "discountValue": "Valeur de la remise",
+      "totalPrice": "Prix total",
+      "placeholders": {
+        "title": "Entrez le titre de l'article",
+        "description": "Entrez la description de l'article",
+        "quantity": "Entrez la quantité",
+        "unitPrice": "Entrez le prix unitaire",
+        "discountType": "Sélectionnez le type de remise",
+        "discountValue": "Entrez la valeur de la remise",
+        "taxRates": "Sélectionnez les taux de taxe applicables"
+      }
+    }
   },
   "payment": {
-    "add_button_label": "Nouveau paiement",
-    "singular": "Paiement",
+    "intro": {
+      "title": "Paiements",
+      "description": "Ici, vous pouvez gérer vos paiements."
+    },
     "plural": "Paiements",
-    "card_description": "Cette section fournit une vue claire et organisée de tous vos paiements.",
-    "attributes": {
-      "number": "N°",
+    "singular": "Paiement",
+    "new": "Nouveau paiement",
+    "section": {
+      "general": "Informations générales",
+      "financial": "Informations financières",
+      "invoices": "Gestion des factures",
+      "attachments": "Pièces jointes"
+    },
+    "form": {
       "date": "Date",
+      "sequence": "Séquence",
+      "enterprise": "Entreprise",
+      "currency": "Devise",
+      "convertionRate": "Taux de conversion",
       "mode": "Mode de paiement",
       "amount": "Montant",
-      "currency": "Devise",
       "fee": "Frais",
-      "convertion_rate": "Taux de change",
-      "created_at": "Date de création",
-      "notes": "Remarques",
-      "files": "Pièces jointes"
+      "notes": "Notes / Remarques",
+      "files": "Documents rattachés",
+      "createdBy": "Créé par",
+      "creatingAs": "Création en tant que",
+      "systemEnterprise": "Entreprise système",
+      "issuingAs": "Enregistrement en tant que",
+      "placeholders": {
+        "date": "Sélectionnez la date du paiement",
+        "enterprise": "Sélectionnez une entreprise",
+        "currency": "Sélectionnez la devise",
+        "convertionRate": "Entrez le taux de conversion",
+        "mode": "Sélectionnez le mode de paiement",
+        "amount": "Entrez le montant",
+        "fee": "Entrez les frais",
+        "notes": "Saisissez vos notes ou remarques ici"
+      },
+      "descriptions": {
+        "date": "Sélectionnez la date de réalisation du paiement.",
+        "sequence": "Séquence générée automatiquement selon la configuration de l'entreprise.",
+        "enterprise": "Sélectionnez l'entreprise associée à ce paiement.",
+        "currency": "Sélectionnez la devise utilisée pour ce paiement.",
+        "convertionRate": "Spécifiez le taux de conversion s'il s'agit d'une devise étrangère.",
+        "mode": "Choisissez le mode de paiement (virement, chèque, espèce, etc.).",
+        "amount": "Saisissez le montant total du paiement.",
+        "fee": "Saisissez les frais bancaires ou annexes associés.",
+        "notes": "Saisissez toute remarque ou instruction spécifique.",
+        "createdBy": "Utilisateur ayant créé ce paiement.",
+        "creatingAs": "Vous serez enregistré comme créateur de ce paiement.",
+        "systemEnterprise": "Entreprise système ayant enregistré ce paiement.",
+        "issuingAs": "Ce paiement sera enregistré au nom de l'entreprise système active."
+      }
     },
-    "empty_cells": {
-      "currency": "Aucun devise"
+    "modes": {
+      "Cash": "Espèces",
+      "Transfer": "Virement bancaire",
+      "Check": "Chèque",
+      "CreditCard": "Carte bancaire",
+      "Other": "Autre"
     },
-    "new": "Nouveau paiement",
-    "payment_mode": {
-      "cash": "En espèce",
-      "credit_card": "Carte de crédit",
-      "check": "Chèque",
-      "bank_transfer": "Remise bancaire",
-      "wire_transfer": "Virement bancaire"
+    "table": {
+      "columns": {
+        "status": "Statut"
+      }
+    },
+    "status": {
+      "New": "Nouveau",
+      "Draft": "Brouillon",
+      "Validated": "Validé",
+      "Cancelled": "Annulé",
+      "Canceled": "Annulé"
     },
     "financial_status": {
-      "available": "Disponible",
-      "used": "Utilisé",
-      "received": "Reçu"
+      "received": "Montant reçu",
+      "used": "Montant utilisé",
+      "available": "Montant disponible"
     },
-    "no_invoices": "Aucune facture impayée trouvée"
-  },
-  "controls": {
-    "associate_quotation": "Devis associés",
-    "article_description": "Description des articles",
-    "currency_select_placeholder": "Choisissez une devise",
-    "currency_details": "Devise",
-    "bank_select_placeholder": "Choisissez une compte bancaire",
-    "quotation_select_placeholder": "Choisissez un devis",
-    "bank_details": "Détails bancaires",
-    "no_bank_accounts": " Aucun compte bancaire trouvé",
-    "no_associated_quotation": "Aucun devis associé",
-    "include_on_quotation": "Inclure sur le devis",
-    "extra_entries": "Entrées supplémentaires",
-    "withholding": "Retenus à la source",
-    "tax_withholding_select_placeholder": "Choisissez une retenue à la source"
+    "invoice_item": {
+      "already_paid": "Total des paiements antérieurs",
+      "already_remaining": "Solde dû avant opération",
+      "new_paid": "Montant du règlement saisi",
+      "new_remaining": "Nouveau solde dû",
+      "rate_avant": "Taux avant",
+      "rate_paid": "Taux payé",
+      "rate_after": "Taux après",
+      "rate_remaining": "Taux restant"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Êtes-vous sûr de vouloir supprimer ce paiement",
+        "description": "Cette action est irréversible. Cela supprimera définitivement le paiement de notre base de données.",
+        "confirm": "Oui, supprimez-le",
+        "cancel": "Non, conservez-le"
+      }
+    },
+    "actions": {
+      "validate": "Valider",
+      "cancel": "Annuler",
+      "invalidate": "Invalider",
+      "back_to_draft": "Retour au brouillon"
+    }
   }
 }

@@ -1,0 +1,215 @@
+import { api } from '@/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { useRouter } from 'next/router';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/errors';
+import { useDebounce } from '@/hooks/other/useDebounce';
+import { useTranslation } from 'react-i18next';
+import { useEnterpriseColumns } from './columns';
+import { useBreadcrumb } from '@/context/BreadcrumbContext';
+import { useIntro } from '@/context/IntroContext';
+import { cn } from '@/lib/utils';
+import { DataTable } from '@/components/shared/data-table/data-table';
+import { DataTableColumnFilterOption, DataTableConfig } from '@/components/shared/data-table/types';
+import { buildDataTableFilterString } from '@/components/shared/data-table/column-filter';
+import { useDataTableState } from '@/hooks/other/useDataTableState';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { useEnterpriseDeleteDialog } from './modal/EnterpriseDeleteDialog';
+import { ResponseEnterpriseDto } from '@/types/core/enterprise';
+import { useActivities } from '@/hooks/content/core/useActivities';
+
+interface EnterprisePortalProps {
+  className?: string;
+}
+
+export const EnterprisePortal = ({ className }: EnterprisePortalProps) => {
+  const router = useRouter();
+
+  const { t: tCommon } = useTranslation('common');
+  const { t: tContacts } = useTranslation('contacts');
+  const { setIntro, clearIntro } = useIntro();
+  const { setRoutes, clearRoutes } = useBreadcrumb();
+
+  React.useEffect(() => {
+    setIntro?.(tContacts('page.enterprises.title'), tContacts('page.enterprises.description'));
+    setRoutes?.([
+      { title: tCommon('menu.contacts.title'), href: '/contacts' },
+      { title: tCommon('menu.contacts.subs.enterprises') }
+    ]);
+    return () => {
+      clearIntro?.();
+      clearRoutes?.();
+    };
+  }, [router.locale, tCommon, tContacts, setIntro, clearIntro, setRoutes, clearRoutes]);
+
+  const enterpriseStore = useEnterpriseStore();
+
+  const {
+    page, setPage,
+    size, setSize,
+    sortDetails, setSortDetails,
+    searchTerm, setSearchTerm,
+    columnFilters, setColumnFilters,
+    tableReset
+  } = useDataTableState('enterprise-table');
+
+  const { value: debouncedPage, loading: paging } = useDebounce<number>(page, 500);
+  const { value: debouncedSize, loading: resizing } = useDebounce<number>(size, 500);
+
+  const { value: debouncedSortDetails, loading: sorting } = useDebounce<typeof sortDetails>(
+    sortDetails,
+    500
+  );
+
+  const { value: debouncedSearchTerm, loading: searching } = useDebounce<string>(searchTerm, 500);
+  const { value: debouncedColumnFilters, loading: filtering } = useDebounce<Record<string, string>>(
+    columnFilters,
+    500
+  );
+
+  const filterString = React.useMemo(
+    () => buildDataTableFilterString('system||$eq||0', debouncedColumnFilters),
+    [debouncedColumnFilters]
+  );
+
+  const {
+    isPending: isFetchPending,
+    error,
+    data: enterprisesResp,
+    refetch: refetchEnterprises
+  } = useQuery({
+    queryKey: [
+      'enterprises',
+      debouncedPage,
+      debouncedSize,
+      debouncedSortDetails.order,
+      debouncedSortDetails.sortKey,
+      debouncedSearchTerm,
+      debouncedColumnFilters
+    ],
+    queryFn: () =>
+      api.core.enterprise.findPaginated({
+        page: debouncedPage.toString(),
+        limit: debouncedSize.toString(),
+        sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+        search: debouncedSearchTerm,
+        filter: filterString,
+        join: 'activity'
+      })
+  });
+
+  const enterprises = React.useMemo(() => {
+    return enterprisesResp?.data || [];
+  }, [enterprisesResp]);
+
+  const { mutate: removeEnterprise, isPending: isDeletePending } = useMutation({
+    mutationFn: (id: number) => api.core.enterprise.remove(id),
+    onSuccess: () => {
+      if (enterprises?.length == 1 && page > 1) setPage(page - 1);
+      toast.success(tContacts('enterprise.action_remove_success'));
+      refetchEnterprises();
+      enterpriseStore.reset();
+    },
+    onError: (error) => {
+      toast.error(
+        getErrorMessage('contacts', error, tContacts('enterprise.action_remove_failure'))
+      );
+    }
+  });
+
+  const { deleteEnterpriseDialog, openDeleteEnterpriseDialog } = useEnterpriseDeleteDialog(
+    enterpriseStore?.response?.name,
+    () => {
+      if (enterpriseStore?.response?.id) {
+        removeEnterprise(enterpriseStore.response.id);
+      }
+    },
+    isDeletePending
+  );
+
+  const context: DataTableConfig<ResponseEnterpriseDto> = {
+    singularName: tContacts('enterprise.singular'),
+    pluralName: tContacts('enterprise.plural'),
+    inspectCallback: (entity: ResponseEnterpriseDto) => {
+      router.push(`/contacts/enterprise/${entity.id}`);
+    },
+    createCallback: () => {
+      router.push('/contacts/new-enterprise');
+    },
+    updateCallback: (entity: ResponseEnterpriseDto) => {
+      router.push(`/contacts/modify-enterprise/${entity.id}`);
+    },
+    deleteCallback: () => {
+      openDeleteEnterpriseDialog();
+    },
+    additionalActions: {},
+    searchTerm,
+    setSearchTerm,
+    page,
+    totalPageCount: enterprisesResp?.meta.pageCount || 0,
+    setPage,
+    size,
+    setSize,
+    order: sortDetails.order,
+    sortKey: sortDetails.sortKey,
+    setSortDetails: (order: boolean, sortKey: string) => setSortDetails({ order, sortKey }),
+    ...tableReset,
+    columnFilters,
+    setColumnFilter: (filterKey, filterParam) => {
+      setPage(1);
+      setColumnFilters((previous) => {
+        if (!filterParam) {
+          const { [filterKey]: _, ...rest } = previous;
+          return rest;
+        }
+        return { ...previous, [filterKey]: filterParam };
+      });
+    },
+    targetEntity: (enterprise: ResponseEnterpriseDto) => {
+      enterpriseStore.setNested('response.id', enterprise.id);
+      enterpriseStore.setNested('response.name', enterprise.name);
+    },
+    exportConfig: {
+      enabled: true,
+      filename: 'enterprises',
+      fetchAll: () =>
+        api.core.enterprise.findAll({
+          sort: `${debouncedSortDetails.sortKey},${debouncedSortDetails.order ? 'ASC' : 'DESC'}`,
+          search: debouncedSearchTerm,
+          filter: filterString
+        })
+    }
+  };
+
+  const { activities } = useActivities();
+  const activityFilterOptions: DataTableColumnFilterOption[] = React.useMemo(
+    () =>
+      activities.map((activity) => ({
+        label: activity.label,
+        filter: `activityId||$eq||${activity.id}`
+      })),
+    [activities]
+  );
+
+  const columns = useEnterpriseColumns(context, activityFilterOptions);
+
+  const isPending =
+    isFetchPending || isDeletePending || paging || resizing || searching || sorting || filtering;
+
+  if (error) return 'An error has occurred: ' + error.message;
+  return (
+    <div className={cn('flex flex-col flex-1 overflow-hidden', className)}>
+      <DataTable
+        className="flex flex-col flex-1 overflow-auto p-1"
+        containerClassName="overflow-auto"
+        data={enterprises}
+        columns={columns}
+        context={context}
+        isPending={isPending}
+      />
+
+      {deleteEnterpriseDialog}
+    </div>
+  );
+};

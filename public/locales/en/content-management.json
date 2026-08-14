@@ -1,0 +1,361 @@
+{
+  "refType": {
+    "page": {
+      "title": "Reference Types",
+      "description": "Manage reference types."
+    },
+    "singularName": "Reference Type",
+    "pluralName": "Reference Types",
+    "columns": {
+      "id": "ID",
+      "label": "Label",
+      "description": "Description",
+      "parent": "Parent",
+      "extras": "Extras",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "noDescription": "No description",
+      "noParent": "No parent"
+    },
+    "forms": {
+      "create": {
+        "title": "Create Reference Type",
+        "description": "Create a new reference type.",
+        "parent": "Parent",
+        "extras": "Extras"
+      },
+      "update": {
+        "title": "Update Reference Type",
+        "description": "Update a new reference type.",
+        "parent": "Parent",
+        "extras": "Extras"
+      }
+    },
+    "sheet": {
+      "create": {
+        "title": "Create Reference Type",
+        "description": "Use this form to define a new reference type."
+      },
+      "update": {
+        "title": "Update Reference Type",
+        "description": "Use this form to update an existing reference type."
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete Reference Type",
+        "description": "This action is irreversible and permanent. Deleting the reference type will remove all associated parameters, Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Reference Type created successfully.",
+      "updateSuccess": "Reference Type updated successfully.",
+      "deleteSuccess": "Reference Type deleted successfully."
+    }
+  },
+  "refParam": {
+    "page": {
+      "title": "Reference Parameters",
+      "description": "Manage reference parameters."
+    },
+    "singularName": "Reference Parameter",
+    "pluralName": "Reference Parameters",
+    "columns": {
+      "id": "ID",
+      "label": "Label",
+      "description": "Description",
+      "refTypeId": "Reference Type",
+      "extras": "Extras",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "noDescription": "No description"
+    },
+    "forms": {
+      "create": {
+        "title": "Create Reference Parameter",
+        "description": "Create a new reference parameter."
+      },
+      "update": {
+        "title": "Update Reference Parameter",
+        "description": "Update a new reference parameter."
+      }
+    },
+    "sheet": {
+      "create": {
+        "title": "Create Reference Parameter",
+        "description": "Use this form to define a new reference parameter."
+      },
+      "update": {
+        "title": "Update Reference Parameter",
+        "description": "Use this form to update an existing reference parameter."
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete Reference Parameter",
+        "description": "This action is irreversible and permanent. Deleting the reference parameter will remove all associated parameters, Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Reference Parameter created successfully.",
+      "updateSuccess": "Reference Parameter updated successfully.",
+      "deleteSuccess": "Reference Parameter deleted successfully."
+    }
+  },
+  "bankAccount": {
+    "page": {
+      "title": "Bank Accounts",
+      "description": "Here you can manage your bank accounts, which will be used for payments and invoicing."
+    },
+    "entity": {
+      "singular": "Bank Account",
+      "plural": "Bank Accounts"
+    },
+    "actions": {
+      "promote": "Promote",
+      "demote": "Demote"
+    },
+    "sheets": {
+      "create": {
+        "title": "Create Bank Account",
+        "description": "Use this form to define a new bank account."
+      },
+      "update": {
+        "title": "Update Bank Account",
+        "description": "Use this form to update an existing bank account."
+      }
+    },
+    "form": {
+      "name": "Bank Name",
+      "bic": "BIC",
+      "rib": "Account Number",
+      "iban": "IBAN",
+      "currency": "Currency",
+      "main": "Main Account",
+      "placeholders": {
+        "name": "Enter the bank name",
+        "bic": "Enter the BIC code",
+        "rib": "Enter the account number",
+        "iban": "Enter the IBAN code",
+        "currency": "Enter the currency"
+      },
+      "descriptions": {
+        "name": "The name of the bank.",
+        "bic": "The BIC code of the bank.",
+        "rib": "The account number of the bank account.",
+        "iban": "The IBAN code of the bank account.",
+        "currency": "The currency of the bank account.",
+        "main": "Mark this account as the primary bank account used by default."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Bank Name",
+        "bic": "BIC",
+        "rib": "Account Number",
+        "iban": "IBAN",
+        "currency": "Currency",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      },
+      "emptyCells": {
+        "currency": "No currency"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete Bank Account",
+        "description": "This action is irreversible and permanent. Deleting this bank account may affect existing quotations and invoices. Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Bank account created successfully.",
+      "createFailure": "Failed to create bank account.",
+      "updateSuccess": "Bank account updated successfully.",
+      "updateFailure": "Failed to update bank account.",
+      "deleteSuccess": "Bank account deleted successfully.",
+      "deleteFailure": "Failed to delete bank account."
+    }
+  },
+  "taxRate": {
+    "page": {
+      "title": "Tax Rates",
+      "description": "Here you can manage your tax rates, which will be applied to your products and services."
+    },
+    "entity": {
+      "singular": "Tax Rate",
+      "plural": "Tax Rates"
+    },
+    "sheets": {
+      "create": {
+        "title": "Create Tax Rate",
+        "description": "Use this form to define a new tax rate."
+      },
+      "update": {
+        "title": "Update Tax Rate",
+        "description": "Use this form to update an existing tax rate."
+      }
+    },
+    "form": {
+      "label": "Label",
+      "value": "Value",
+      "type": "Type",
+      "special": "Special Tax",
+      "specificCurrency": "Specific Currency",
+      "currency": "Currency",
+      "placeholders": {
+        "label": "Ex. FODEC",
+        "value": "Ex. 10",
+        "type": "Ex. Percentage",
+        "currency": "Ex. Tunisian Dinar"
+      },
+      "descriptions": {
+        "label": "A unique name for the tax (e.g., VAT, FODEC).",
+        "value": "The value of the tax (e.g., 10 for 10%).",
+        "type": "The type of tax (percentage or fixed amount).",
+        "special": "A special tax is applied on the amount after normal taxes have already been calculated.",
+        "specificCurrency": "Set a specific currency for this tax.",
+        "currency": "The currency associated with this tax rate."
+      },
+      "options": {
+        "percentage": "Percentage (%)",
+        "fixed": "Fixed Amount"
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "label": "Label",
+        "type": "Type",
+        "value": "Value",
+        "special": "Special",
+        "currency": "Currency",
+        "rate": "Rate",
+        "fixed": "Fixed",
+        "applicable_on_all": "Applicable on all currencies",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      },
+      "emptyCells": {
+        "currency": "Applicable on all currencies"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete Tax Rate",
+        "description": "This action is irreversible and permanent. Deleting this tax rate will affect all associated products and services. Please proceed with caution.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "messages": {
+      "createSuccess": "Tax rate created successfully.",
+      "createFailure": "Failed to create tax rate.",
+      "updateSuccess": "Tax rate updated successfully.",
+      "updateFailure": "Failed to update tax rate.",
+      "deleteSuccess": "Tax rate deleted successfully.",
+      "deleteFailure": "Failed to delete tax rate."
+    }
+  },
+  "template": {
+    "page": {
+      "title": "Templates",
+      "description": "Here you can manage your document templates."
+    },
+    "form": {
+      "file": "Template File",
+      "name": "Template Name",
+      "type": "Template Type",
+      "description": "Description",
+      "placeholders": {
+        "file": "Upload the template file",
+        "name": "Enter the template name",
+        "type": "Select the template type",
+        "description": "Enter a description for the template"
+      },
+      "descriptions": {
+        "file": "The file associated with the template.",
+        "name": "The name of the template.",
+        "type": "The type of the template (e.g., invoice, quote).",
+        "description": "A brief description of the template."
+      }
+    },
+    "table": {
+      "columns": {
+        "id": "ID",
+        "name": "Name",
+        "type": "Type",
+        "description": "Description",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      }
+    }
+  },
+  "configuration": {
+    "page": {
+      "title": "Configuration",
+      "description": "Manage and configure application properties in a structured format"
+    },
+    "breadcrumbs": {
+      "contentManagement": "Content Management",
+      "configuration": "Configuration"
+    },
+    "actions": {
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "resetAll": "Reset All"
+    },
+    "messages": {
+      "updateSuccess": "Configuration updated successfully",
+      "updateError": "Failed to update configuration",
+      "resetSuccess": "Configuration reset to original values",
+      "noSearchResults": "No configuration parameters match your search",
+      "noParams": "No configuration parameters found"
+    },
+    "searchPlaceholder": "Search parameters...",
+    "loading": {
+      "configurations": "Loading configuration..."
+    },
+    "inputs": {
+      "enter": "Enter {{name}}",
+      "select": "Select {{name}}"
+    },
+    "groups": {
+      "count": "({{count}})"
+    }
+  },
+  "pdf": {
+    "menu": {
+      "templates": "Templates",
+      "headers": "Headers",
+      "footers": "Footers"
+    },
+    "headers": {
+      "title": "Headers",
+      "coming_soon": "Header management coming soon."
+    },
+    "footers": {
+      "title": "Footers",
+      "coming_soon": "Footer management coming soon."
+    }
+  },
+  "templateHeader": {
+    "page": {
+      "title": "Headers",
+      "description": "Here you can manage your document headers."
+    }
+  },
+  "templateFooter": {
+    "page": {
+      "title": "Footers",
+      "description": "Here you can manage your document footers."
+    }
+  }
+}

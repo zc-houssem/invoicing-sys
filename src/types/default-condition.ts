@@ -1,15 +1,10 @@
-import { ACTIVITY_TYPE } from './enums/activity-type';
-import { DOCUMENT_TYPE } from './enums/document-type';
-import { DatabaseEntity } from './response/DatabaseEntity';
+import { Sequences } from './sequence';
 
-export interface DefaultCondition extends DatabaseEntity {
-  id?: number;
-  document_type?: DOCUMENT_TYPE;
-  activity_type?: ACTIVITY_TYPE;
-  value?: string;
+export interface DefaultCondition {
+  id: number;
+  enterpriseId: number;
+  document_type: Sequences;
+  value: string;
 }
 
-export interface UpdateDefaultConditionDto {
-  id?: number;
-  value?: string;
-}
+export type UpdateDefaultConditionDto = Partial<DefaultCondition>;

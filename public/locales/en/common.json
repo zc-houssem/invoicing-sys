@@ -4,6 +4,79 @@
     "note1": "Something is missing...",
     "note2": "Sorry, we can't find this page. You'll find plenty of things to explore on the homepage."
   },
+  "menu": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subs": {}
+    },
+    "contacts": {
+      "title": "Contacts",
+      "subs": {
+        "enterprises": "Enterprises",
+        "interlocutors": "Interlocutors",
+        "addresses": "My Addresses"
+      },
+      "description": "Manage your contacts, enterprises, and interlocutors."
+    },
+    "buying": {
+      "title": "Buying",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments"
+      }
+    },
+    "selling": {
+      "title": "Selling",
+      "subs": {
+        "invoices": "Invoices",
+        "quotations": "Quotations",
+        "payments": "Payments",
+        "taxWithholdings": "Tax Withholdings"
+      }
+    },
+    "contentManagement": {
+      "title": "Content Management",
+      "subs": {
+        "bankAccounts": "Bank Accounts",
+        "taxRates": "Tax Rates",
+        "refTypes": "Reference Types",
+        "refParams": "Reference Parameters",
+        "pdf": "PDF Settings",
+        "templates": "Templates"
+      }
+    },
+    "administrativeTools": {
+      "title": "Administrative Tools",
+      "subs": {
+        "users": "Users",
+        "roles": "Roles",
+        "permissions": "Permissions",
+        "configuration": "Configurations",
+        "logger": "Logger",
+        "devLogger": "Technical Logger",
+        "system": "System"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subs": {
+        "account": "Account",
+        "system": "System"
+      }
+    },
+    "account": {
+      "title": "Account"
+    },
+    "enterprise": {
+      "title": "Enterprise",
+      "add": "Add enterprise"
+    }
+  },
+  "general": {
+    "more": "more",
+    "unknown": "unknown"
+  },
   "add_joints": "Add Attachments",
   "answer": {
     "yes": "Yes",
@@ -38,11 +111,13 @@
     "display": "Display",
     "download": "Download",
     "duplicate": "Duplicate",
+    "edit": "Edit",
     "hide": "Hide",
     "initialize": "Initialize",
     "to_invoice": "To Invoice",
     "inspect": "Inspect",
     "modify": "Modify",
+    "new": "New",
     "reject": "Reject",
     "resend": "Resend",
     "save": "Save",
@@ -50,6 +125,9 @@
     "search_sort_by": "Search/Sort By",
     "send": "Send",
     "shrink": "Shrink",
+    "print": "Print",
+    "printing": "Printing...",
+    "duplicating": "Duplicating...",
     "promote": "Promote",
     "reset": "Reset",
     "validate": "Validate",
@@ -65,6 +143,7 @@
     "multiple_files_max_size_sentence": "You can upload {{count}} files (up to {{size}} each)",
     "single_file_max_size_sentence": "You can upload a file with size up to {{size}}",
     "no_selected_file": "No Selected Files",
+    "no_files_exist": "No files exist",
     "drop_image": "Drop the image",
     "select_image": "Click to Select",
     "rejected_empty_file_warning": "File {{name}} is empty and has been rejected.",
@@ -77,14 +156,6 @@
     "word": "Language",
     "en": "English 🇬🇧",
     "fr": "French 🇫🇷"
-  },
-  "menu": {
-    "buying": "Buying",
-    "contacts": "Contacts",
-    "dashboard": "Dashboard",
-    "selling": "Selling",
-    "administrative_tools": "Administrative Tools",
-    "settings": "Settings"
   },
   "order": {
     "asc": "Ascending",
@@ -104,20 +175,6 @@
   "pick_date": "Pick a Date",
   "start_date": "Start Date",
   "end_date": "End Date",
-  "submenu": {
-    "account": "Account",
-    "firms": "Firms",
-    "interlocutors": "Interlocutors",
-    "invoices": "Invoices",
-    "other": "Other",
-    "quotations": "Quotations",
-    "payments": "Payments",
-    "user_management": "User Management",
-    "logger": "Logger",
-    "system": "System",
-    "withholding": "Withholding",
-    "pdf": "PDF"
-  },
   "administrative-tools": {
     "logger": {},
     "user_management": {
@@ -131,7 +188,8 @@
       "singular": "Account",
       "plural": "Accounts",
       "my_profile": "My Profile",
-      "my_cabinet": "My Cabinet",
+      "my_enterprise": "My Enterprise",
+      "members": "Members",
       "bank_accounts": "Bank Accounts"
     },
     "system": {
@@ -157,5 +215,52 @@
     "main_m": "Main",
     "main_f": "Main",
     "or": "or"
+  },
+  "company": {
+    "main_company": "Main Company",
+    "system_company": "System company",
+    "workspace": "Workspace",
+    "active_company": "Active company"
+  },
+  "datatable": {
+    "paginationPhrase": "Showing Page {{page}} of {{total}}",
+    "clearCriterias": "Clear criterias",
+    "search": "Search {{entity}}...",
+    "noResults": "No results",
+    "visibleColumns": "Visible Columns",
+    "order": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    },
+    "filter": {
+      "title": "Filter",
+      "clear": "Clear filter",
+      "valuePlaceholder": "Value",
+      "selectPlaceholder": "Select an option...",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "operators": {
+        "$eq": "Equal",
+        "!$eq": "Not equal",
+        "$cont": "Contains",
+        "$gt": "Greater than",
+        "$lt": "Less than"
+      }
+    },
+    "export": {
+      "title": "Export to Excel",
+      "description": "Choose which data you want to export.",
+      "currentPage": "Current page",
+      "allData": "All data",
+      "success": "Export completed successfully",
+      "error": "Export failed. Please try again.",
+      "noData": "No data available to export"
+    }
+  },
+  "submenu": {
+    "enterprises": "Enterprises"
+  },
+  "errors": {
+    "validation": "Validation error. Please check the fields."
   }
 }

@@ -83,7 +83,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         {...getRootProps()}
         className={cn(
           className,
-          'flex flex-col items-center justify-center rounded-lg p-4 shadow-sm shadow-foreground cursor-pointer gap-2 w-full'
+          'flex flex-col items-center justify-center rounded-lg p-4 cursor-pointer gap-2 w-full'
         )}>
         <Label className="italic mb-2 flex items-center gap-2">
           {icon}

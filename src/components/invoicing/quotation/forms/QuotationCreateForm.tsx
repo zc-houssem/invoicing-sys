@@ -1,0 +1,268 @@
+import { useQuotationCreateFormStructure } from './useQuotationCreateFormStructure';
+import { useSequence } from '@/hooks/useSequence';
+import { InvoicingFormLayout } from '@/components/invoicing-commons/InvoicingFormLayout';
+import { useInvoicingFormScroll } from '@/components/invoicing-commons/useInvoicingFormScroll';
+import { useQuotationStore } from '@/hooks/stores/useQuotationStore';
+import { FormBuilder } from '@/components/shared/form-builder/FormBuilder';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/api';
+import { toast } from 'sonner';
+import { createDraftQuotationSchema } from '@/types/validations/quotation.validation';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useEnterprises } from '@/hooks/content/core/useEnterprises';
+import { mapToSelectOptions } from '@/components/shared/form-builder/utils/mapToSelectOptions';
+import { useEnterpriseInterlocutors } from '@/hooks/content/core/useEnterpriseInterlocutors';
+import { Spinner } from '@/components/shared';
+import { useCurrentUser } from '@/hooks/content/user/useCurrentUser';
+import React from 'react';
+import { useRouter } from 'next/router';
+import { useEnterpriseStore } from '@/hooks/stores/useEnterpriseStore';
+import { useActiveCompanyContext } from '@/context/ActiveCompanyContext';
+import { useSystemEnterprises } from '@/hooks/content/core/useSystemEnterprise';
+import { Sequences } from '@/types/sequence';
+import { useArticleStore } from '@/hooks/stores/useArticleStore';
+import {
+  CreateQuotationArticleDto,
+  CreateQuotationDto,
+  CurrencyPayload,
+  ResponseBankAccountDto,
+  ResponseInterlocutorDto,
+  ResponseRefParamDto,
+  ServerErrorResponse
+} from '@/types';
+import { useCurrencies } from '@/hooks/content/core/useCurrencies';
+import { useTranslation } from 'react-i18next';
+import { useBankAccounts } from '@/hooks/content/core/useBankAccounts';
+import { Button } from '@/components/ui/button';
+import { Repeat2, Save } from 'lucide-react';
+import { DocumentMetaHeader } from '../../DocumentMetaHeader';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+
+interface QuotationCreateFormProps {
+  className?: string;
+}
+
+export const QuotationCreateForm = ({ className }: QuotationCreateFormProps) => {
+  const router = useRouter();
+  const { t } = useTranslation('common');
+  const { t: tInvoicing } = useTranslation('invoicing');
+  const { t: tCurrency } = useTranslation('currency');
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const quotationStore = useQuotationStore();
+  const { user: currentUser } = useCurrentUser();
+  const enterpriseStore = useEnterpriseStore();
+  const articleStore = useArticleStore();
+
+  React.useEffect(() => {
+    return () => {
+      quotationStore.reset();
+      enterpriseStore.reset();
+    };
+  }, []);
+
+  const handleAttachmentsUpload = React.useCallback(
+    async (
+      files: File[],
+      {
+        onProgress,
+        onSuccess,
+        onError
+      }: {
+        onProgress: (file: File, progress: number) => void;
+        onSuccess: (file: File) => void;
+        onError: (file: File, error: Error) => void;
+      }
+    ) => {
+      await Promise.all(
+        files.map(async (file) => {
+          try {
+            const results = await api.upload.uploadFiles([file], (percent) => {
+              onProgress(file, percent);
+            });
+            const uploaded = results[0];
+            const currentFiles = useQuotationStore.getState().files;
+            quotationStore.set(
+              'files',
+              currentFiles.map((mf) =>
+                mf.file === file
+                  ? { ...mf, serverId: String(uploaded.id ?? ''), progress: 100 }
+                  : mf
+              )
+            );
+            onSuccess(file);
+          } catch (err) {
+            const error = err instanceof Error ? err : new Error('Upload failed');
+            onError(file, error);
+          }
+        })
+      );
+    },
+    []
+  );
+
+  const { enterprises, isEnterprisesPending } = useEnterprises({
+    join: ['invoicingAddress', 'deliveryAddress'],
+    excludeSystem: true
+  });
+  const { interlocutors, isFetchInterlocutorsPending } = useEnterpriseInterlocutors({
+    enterpriseId: quotationStore.createDto.enterpriseId,
+    enabled: !!quotationStore.createDto.enterpriseId
+  });
+
+  const { currencies, isCurrenciesPending } = useCurrencies();
+  const selectedCurrency = React.useMemo(
+    () =>
+      currencies.find(
+        (c) => c.id === quotationStore.createDto.currencyId
+      ) as ResponseRefParamDto<CurrencyPayload>,
+    [quotationStore.createDto.currencyId, currencies]
+  );
+
+  const { bankAccounts, isBankAccountsPending } = useBankAccounts();
+  const { activeCompanyId } = useActiveCompanyContext();
+  const { systemEnterprises } = useSystemEnterprises();
+  const activeSystemEnterprise = React.useMemo(
+    () => systemEnterprises.find((enterprise) => enterprise.id === activeCompanyId),
+    [systemEnterprises, activeCompanyId]
+  );
+  useSequence(activeCompanyId, Sequences.QUOTATION, (preview: string) =>
+    quotationStore.set('sequencePreview', preview)
+  );
+
+  const { mutate: createQuotation, isPending: isCreationPending } = useMutation({
+    mutationFn: async (data: CreateQuotationDto) => api.invoicing.quotation.create(data),
+    onSuccess: (data) => {
+      quotationStore.reset();
+      router.push('/selling/quotations');
+      toast.success('Quotation created successfully!');
+    },
+    onError: (error: ServerErrorResponse) => {
+      toast.error(
+        error.response?.data.message || 'An error occurred while creating the quotation.'
+      );
+    }
+  });
+
+  const handleSubmit = () => {
+    const result = createDraftQuotationSchema.safeParse(quotationStore.createDto);
+
+    if (!result.success) {
+      quotationStore.set('createDtoErrors', result.error.flatten().fieldErrors);
+      return;
+    } else {
+      createQuotation({
+        ...quotationStore.createDto,
+        systemEnterpriseId: activeCompanyId ?? undefined,
+        quotationArticles: articleStore.articles.map(
+          (article, order) =>
+            ({
+              article: {
+                title: article.title,
+                description: article.description
+              },
+              order,
+              quantity: article.quantity,
+              unitPrice: article.unitPrice,
+              discountType: article.discountType,
+              discountValue: article.discountValue,
+              taxIds: article.taxIds
+            }) satisfies CreateQuotationArticleDto
+        ),
+        uploads: quotationStore.files
+          .filter((mf) => mf.serverId)
+          .map((mf, order) => ({ uploadId: Number(mf.serverId), order }))
+      });
+    }
+  };
+
+  const { mainFormStructure, sidebarFormStructure, sidebarIncludeOnFormStructure } =
+    useQuotationCreateFormStructure({
+      store: quotationStore,
+      enterprises,
+      interlocutorOptions: mapToSelectOptions({
+        data: interlocutors,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseInterlocutorDto) => {
+          const ei = item.enterpriseInterlocutors?.find(
+            (e) => e.enterpriseId === quotationStore.createDto.enterpriseId
+          );
+          return `${item.title ? `${item.title} ` : ''}${item.firstName} ${item.lastName}${ei?.position ? ` (${ei.position})` : ''}`;
+        }
+      }),
+      currencyOptions: mapToSelectOptions({
+        data: currencies,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseRefParamDto<CurrencyPayload>) =>
+          `${tCurrency(item.label)} (${item.extras.symbol})`
+      }),
+      bankAccountOptions: mapToSelectOptions({
+        data: bankAccounts,
+        labelKey: '',
+        valueKey: 'id',
+        labelKeyTransformer: (_label, item: ResponseBankAccountDto) => `${item.name} - ${item.rib}`
+      }),
+      isCreationPending,
+      selectedCurrency: selectedCurrency,
+      onAttachmentsUpload: handleAttachmentsUpload
+    });
+
+  const isFormReady = !isEnterprisesPending && !isCurrenciesPending && !isBankAccountsPending;
+
+  useInvoicingFormScroll(isFormReady);
+
+  if (!isFormReady) {
+    return <Spinner className="items-start justify-start pt-8" />;
+  }
+
+  return (
+    <InvoicingFormLayout
+      className={className}
+      isMobile={isMobile}
+      sidebarTitle={t('commands.actions')}
+      main={<FormBuilder structure={mainFormStructure} />}
+      sidebar={
+        <>
+          <DocumentMetaHeader
+            status={tInvoicing('quotation.status.New')}
+            statusLabel={tInvoicing('quotation.table.columns.status')}
+            createdByLabel={tInvoicing('quotation.form.creatingAs')}
+            user={currentUser}
+            systemEnterpriseLabel={tInvoicing('quotation.form.issuingAs')}
+            systemEnterprise={activeSystemEnterprise}
+          />
+          <Separator />
+          <div className="flex flex-col gap-2 w-full">
+            <Label className="text-xs font-bold">Actions</Label>
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-xl"
+              variant={'outline'}
+              onClick={() => {
+                handleSubmit();
+              }}>
+              <Save />
+              <span>{t('commands.save')}</span>
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-xl"
+              variant={'ghost'}
+              onClick={() => {
+                handleSubmit();
+              }}>
+              <Repeat2 />
+              <span>{t('commands.reset')}</span>
+            </Button>
+          </div>
+          <FormBuilder structure={sidebarFormStructure} />
+          <FormBuilder structure={sidebarIncludeOnFormStructure} />
+        </>
+      }
+    />
+  );
+};

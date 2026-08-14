@@ -1,11 +1,5 @@
-import React from 'react';
-import UserManagementSettings from '@/components/administrative-tools/UserManagementSettings';
-import UserMain from '@/components/administrative-tools/UserManagement/user/UserMain';
+import { Users } from '@/components/administrative-tools/users/Users';
 
 export default function Page() {
-  return (
-    <UserManagementSettings>
-      <UserMain />
-    </UserManagementSettings>
-  );
+  return <Users />;
 }
